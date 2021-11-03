@@ -1,0 +1,12 @@
+BasicTile,BasicTile,BasicTile,BasicTile
+BasicSadTile,BasicTile,BasicTile,BasicTile
+BasicTile,BasicTile,BasicTile,BasicTile
+BasicTile,BasicSadTile,BasicTile,BasicTile
+BasicTile,BasicTile,BasicTile,BasicTile
+BasicTile,BasicTile,BasicSadTile,BasicTile
+BasicTile,BasicTile,BasicTile,BasicTile
+BasicTile,BasicTile,BasicTile,BasicSadTile
+BasicTile,BasicTile,BasicTile,BasicTile
+BasicSadTile,BasicTile,BasicSadTile,BasicTile
+BasicTile,BasicSadTile,BasicSadTile,BasicTile
+BasicTile,BasicTile,BasicTile,BasicTile

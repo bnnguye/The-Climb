@@ -1,0 +1,9 @@
+BasicTile,BasicTile,BasicTile,BasicTile
+BasicTile,BasicTile,BasicTile,BasicTile
+BasicTopTile,BasicLeftTile,SlowTile,BasicTopTile
+SlowTile,BasicTile,IceTile,SlowTile
+BasicTopTile,BasicLeftTile,BasicTopTile,SlowTile
+IceTopTile,SlowTile,BasicTile,BasicTile
+BasicTopTile,BasicLeftTile,IceTile,SlowTile
+IceTile,BasicTopTile,BasicTopTile,BasicTile
+BasicTopTile,BasicTile,BasicTile,BasicTile

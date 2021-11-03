@@ -1,0 +1,8 @@
+BasicTile,BasicTile,BasicTile,BasicTile
+BasicTile,BasicTile,BasicLeftTile,BasicTile
+BasicTile,BasicTile,BasicLeftTile,BasicTile
+BasicTile,BasicTile,BasicTile,BasicTile
+BasicTile,BasicTile,BasicLeftTile,BasicTile
+BasicTile,BasicTile,BasicLeftTile,BasicTile
+BasicTile,BasicTile,BasicTile,BasicTile
+BasicTile,BasicTile,BasicTile,BasicTile

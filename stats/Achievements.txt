@@ -1,0 +1,10 @@
+This file includes achievements and information on how to unlock each unlockable character. To read this, we will have [Unlockable Character] then [Character involved in unlocking] [line No of their stat] [value threshold].
+
+Nino Miku 1 10
+Futaba Mai 1 10
+Ruka Chizuru 1 10
+Aki 02 1 10
+Chika Nino 1 10
+Emilia Aki 1 10
+Asuna Emilia 1 10
+Raphtalia Ruka 1 10
