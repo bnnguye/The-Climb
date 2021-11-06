@@ -88,7 +88,6 @@ public class Game extends AbstractGame {
     private final Music mainMusic;
     private ArrayList<Music> musics;
     private boolean picked;
-    private double progress = 0;
     Rectangle bottomRectangle;
     Rectangle topRectangle;
 
@@ -133,6 +132,8 @@ public class Game extends AbstractGame {
     private int keyboardTimer = 0;
     private boolean endDialogue = false;
     private String currentMode;
+    private Map mapToTransitionTo;
+    private Image sceneToTransitionTo;
 
     private Image menuBackground;
     private String menuTitle;
@@ -254,6 +255,12 @@ public class Game extends AbstractGame {
         menuTitle = "";
         getGameStats();
         loadStory();
+        if (currentStory >= currentScene) {
+            currentMode = "Scene";
+        }
+        else {
+            currentMode = "Story";
+        }
 
     }
 
@@ -261,7 +268,7 @@ public class Game extends AbstractGame {
     protected void update(Input input) {
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
         if (frame % 144 == 0) {
-            //System.out.println(frame/144);
+            System.out.println(frame/144);
         }
         frame ++;
         if ((!mainMenuMusic.played) && ((!SettingsSingleton.getInstance().getGameStateString().equals("Game")) && (!SettingsSingleton.getInstance().getGameStateString().equals("Story")))) {
@@ -392,7 +399,7 @@ public class Game extends AbstractGame {
                 }
             }
             drawBorders();
-                // react to player movement relative to character icons
+            // react to player movement relative to character icons
             for (Character character: characters) {
                 for (Player player: players) {
                     Image border = new Image("res/Selected/Selected.png");
@@ -430,7 +437,7 @@ public class Game extends AbstractGame {
             }
             if (picked) {
                 if (waitTimer < 0) {
-                    if(SettingsSingleton.getInstance().getLevel() == 2) {
+                    if(SettingsSingleton.getInstance().getLevel() == 99) {
                         SettingsSingleton.getInstance().setGameState(6);
                     }
                     else {
@@ -607,7 +614,7 @@ public class Game extends AbstractGame {
         }
         else if (SettingsSingleton.getInstance().getGameState() == 6) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
-            if (SettingsSingleton.getInstance().getLevel() < 2) {
+            if (SettingsSingleton.getInstance().getLevel() < 99) {
                 if (!SettingsSingleton.getInstance().getGameStateString().equals("Game")) {
                     int playerSize = players.size() + 1;
                     for (Player player : players) {
@@ -626,12 +633,7 @@ public class Game extends AbstractGame {
                 }
                 startCountdown();
                 map.draw();
-                if (java.time.LocalTime.now().getHour() > 18) {
-                    gameFont.drawString(String.format("%d/%dm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, DO.setBlendColour(new Colour(1,1,1)));
-                }
-                else {
-                    gameFont.drawString(String.format("%d/%dm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, DO.setBlendColour(new Colour(0, 0, 0)));
-                }
+                drawCurrentHeight();
 
                 for (Player player : players) {
                     if (!player.isDead()) {
@@ -851,7 +853,7 @@ public class Game extends AbstractGame {
                     obstacles.removeAll(obstaclesToRemove);
                 }
             }
-            else if (SettingsSingleton.getInstance().getLevel() == 2) {
+            else {
                 if (!SettingsSingleton.getInstance().getGameStateString().equals("Story")) {
                     SettingsSingleton.getInstance().setGameStateString("Story");
                 }
@@ -860,7 +862,7 @@ public class Game extends AbstractGame {
                     map.draw();
                 }
                 else if (currentBackground != null) {
-                    currentBackground.drawFromTopLeft(currentBackgroundPoint.x, currentBackgroundPoint.y);
+                    currentBackground.drawFromTopLeft(0,0);
                 }
                 if (dark) {
                     darken();
@@ -879,8 +881,6 @@ public class Game extends AbstractGame {
                                 lastStory = currentStory;
                                 playingDialogue = true;
                                 endDialogue = false;
-                                map = new MapTrainingGround();
-                                map.generateMap();
                                 changeMainMusic("music/Fight1.wav");
                             }
 
@@ -891,8 +891,10 @@ public class Game extends AbstractGame {
                                 }
                                 if(!map.hasFinished()) {
                                     map.updateTiles(0.8);
+                                    drawCurrentHeight();
                                 }
                                 else {
+                                    titleFont.drawString("CLEAR! REACH THE TOP!", 16, FONT_SIZE, DO.setBlendColour(black));
                                     double playersFinished = 0;
                                     for (Player player : players) {
                                         if (player.getCharacter().getPos().distanceTo(new Point(player.getCharacter().getPos().x, 0)) < 10) {
@@ -901,15 +903,15 @@ public class Game extends AbstractGame {
                                     }
                                     if (playersFinished == players.size()) {
                                         playingStory = false;
-                                        transitionTimer = 500;
+                                        startTransition();
                                         currentScene++;
+                                        sceneToTransitionTo = new Image("res/background/Nino.png");
                                     }
                                 }
                             }
 
                             if (!startStory) {
                                 startStory = true;
-                                progress = 0;
                                 double spawnDivider = 1;
                                 for (Player player : players) {
                                     player.getCharacter().setPosition(new Point(spawnDivider * Window.getWidth() / (players.size() + 2), Window.getHeight() - 100));
@@ -929,7 +931,7 @@ public class Game extends AbstractGame {
                             if (lastScene != currentScene) {
                                 lastScene = currentScene;
                                 changeMainMusic("music/Idle.wav");
-                                currentBackground = new Image("res/background/Futaba.png");
+                                changeBackground(new Image("res/background/Futaba.png"));
                                 playingDialogue = true;
                                 endDialogue = false;
                             }
@@ -942,9 +944,10 @@ public class Game extends AbstractGame {
                                 dialogueCounter++;
                             }
                             if (endDialogue) {
-                                transitionTimer = 500;
+                                startTransition();
                                 dark = false;
                                 playingStory = true;
+                                mapToTransitionTo = new MapTrainingGround();
                             }
                         }
 
@@ -954,7 +957,6 @@ public class Game extends AbstractGame {
                                 playingDialogue = true;
                                 endDialogue = false;
                                 changeMainMusic("music/Idle.wav");
-                                currentBackground = new Image("res/background/Nino.png");
                             }
                         }
                     }
@@ -1064,6 +1066,7 @@ public class Game extends AbstractGame {
                     }
                 }
             }
+
         }
         else if (SettingsSingleton.getInstance().getGameState() == 7) {
             map.draw();
@@ -1137,7 +1140,6 @@ public class Game extends AbstractGame {
                         buttons.clear();
                     }
                     else if (SettingsSingleton.getInstance().getGameStateString().equals("Menu")) {
-
                         map = null;
                         unlocked = checkAchievementsInGame();
                         if (unlocked != null) {
@@ -1232,7 +1234,7 @@ public class Game extends AbstractGame {
         return false;
     }
 
-        public String playDialogue(Integer dialogueInt, String mode) {
+    public String playDialogue(Integer dialogueInt, String mode) {
         String currentDialogue = "";
         try {
             if (mode.equals("Story")) {
@@ -1606,11 +1608,17 @@ public class Game extends AbstractGame {
         if (transitionTimer > 0) {
             if (transitionTimer > 250) {
                 Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 1 - (transitionTimer - 250)/250));
-                System.out.println(1 - (transitionTimer - 250)/250);
             }
             else if (transitionTimer == 250) {
-                map = null;
-                changeBackground(null);
+                if (playingStory) {
+                    changeBackground(null);
+                    map = mapToTransitionTo;
+                    map.generateMap();
+                }
+                else {
+                    map = null;
+                    changeBackground(sceneToTransitionTo);
+                }
             }
             else if (transitionTimer < 250) {
                 Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, transitionTimer/250));
@@ -1784,4 +1792,18 @@ public class Game extends AbstractGame {
             player.setMapChosen(map);
         }
     }
+
+    public void drawCurrentHeight() {
+        if (java.time.LocalTime.now().getHour() > 18) {
+            gameFont.drawString(String.format("%d/%dm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, DO.setBlendColour(new Colour(1,1,1)));
+        }
+        else {
+            gameFont.drawString(String.format("%d/%dm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, DO.setBlendColour(new Colour(0, 0, 0)));
+        }
+    }
+
+    public void startTransition() {
+        transitionTimer = 500;
+    }
+
 }
