@@ -14,5 +14,12 @@ public class RetryButton extends Button {
         DO.setBlendColour(blackTranslucent);
     }
 
-    public void playAction() { SettingsSingleton.getInstance().setGameStateString("Retry");}
+    public void playAction() {
+        if (SettingsSingleton.getInstance().getLevel() < 99) {
+            SettingsSingleton.getInstance().setGameStateString("Retry");
+        }
+        else {
+            SettingsSingleton.getInstance().setGameStateString("Continue");
+        }
+    }
 }

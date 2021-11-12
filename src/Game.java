@@ -75,16 +75,9 @@ public class Game extends AbstractGame {
     SideCharacter Yugi;
 
     private double spacer = 300;
-    private final Music music;
-    private final Music mainMenuMusic;
-    private final Music gameMusic;
-    private final Music congratulationsMusic;
-    private final Music startMusic;
-    private final Music challengerMusic;
-    private final Music whoMusic;
+    private String currentMusic;
+    private final Music soundEffectMusic;
     private final Music voiceMusic;
-    private final Music clickMusic;
-    private final Music keyboardMusic;
     private final Music mainMusic;
     private ArrayList<Music> musics;
     private boolean picked;
@@ -95,6 +88,7 @@ public class Game extends AbstractGame {
     Map map;
 
     private boolean winnerPlayed = false;
+    boolean playingAnimation = false;
     private String[] dialogueLine;
     Scanner dialogueScanner;
     ArrayList<String> dialogueWords;
@@ -105,7 +99,9 @@ public class Game extends AbstractGame {
 
     //Story variables
     private boolean playingDialogue = false;
-    private boolean playingStory = true;
+    private boolean playingStory = false;
+    private boolean playingScene = false;
+    private boolean playingMap = false;
     private boolean startStory = false;
     private int currentDialogue = 0;
     private int currentStory = 0;
@@ -115,7 +111,7 @@ public class Game extends AbstractGame {
     private Image currentBackground;
     private Point currentBackgroundPoint = new Point(0,0);
     private String dialogueString = "";
-    private Colour dialogueColour = new Colour(77.0/255, 57.0/255, 37.0/255, 1);
+    private Colour dialogueColour = new Colour(77.0/255, 57.0/255, 37.0/255, 0.7);
     private double dialogueWidth = Window.getWidth()*0.1;
     private double dialogueLength = Window.getHeight() - 300;
     private int maxLines = 7;
@@ -134,6 +130,7 @@ public class Game extends AbstractGame {
     private String currentMode;
     private Map mapToTransitionTo;
     private Image sceneToTransitionTo;
+    private boolean failed = false;
 
     private Image menuBackground;
     private String menuTitle;
@@ -220,26 +217,12 @@ public class Game extends AbstractGame {
         powerUps = new ArrayList<>();
         powerUpsToRemove = new ArrayList<>();
 
-        music = new Music();
-        mainMenuMusic = new Music();
-        gameMusic = new Music();
-        startMusic = new Music();
-        challengerMusic = new Music();
-        whoMusic = new Music();
         voiceMusic = new Music();
-        congratulationsMusic = new Music();
-        clickMusic = new Music();
-        keyboardMusic = new Music();
+        soundEffectMusic = new Music();
         mainMusic = new Music();
         musics = new ArrayList<>();
-        musics.add(music);
-        musics.add(mainMenuMusic);
-        musics.add(gameMusic);
-        musics.add(startMusic);
-        musics.add(challengerMusic);
-        musics.add(whoMusic);
-        musics.add(congratulationsMusic);
-        musics.add(clickMusic);
+        musics.add(soundEffectMusic);
+        musics.add(soundEffectMusic);
 
         playableMaps = new ArrayList<>();
         playableMaps.add(new MapTrainingGround());
@@ -251,7 +234,10 @@ public class Game extends AbstractGame {
         playableMaps.add(new MapUpsideDownCups());
 
 
+        bottomRectangle = new Rectangle(0, Window.getHeight() - 20, Window.getWidth(), 20);
+        topRectangle = new Rectangle(0, 0, Window.getWidth(), 20);
         menuBackground = new Image("res/menu/MainMenu.PNG");
+        currentMusic = "music/Game Main Menu.wav";
         menuTitle = "";
         getGameStats();
         loadStory();
@@ -266,27 +252,12 @@ public class Game extends AbstractGame {
 
     @Override
     protected void update(Input input) {
+        changeMainMusic(currentMusic);
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
         if (frame % 144 == 0) {
             System.out.println(frame/144);
         }
         frame ++;
-        if ((!mainMenuMusic.played) && ((!SettingsSingleton.getInstance().getGameStateString().equals("Game")) && (!SettingsSingleton.getInstance().getGameStateString().equals("Story")))) {
-            if (!SettingsSingleton.getInstance().getGameStateString().equals("Unlocked")) {
-                mainMenuMusic.run("music/Game Main Menu.wav");
-                mainMenuMusic.played = true;
-            }
-        }
-        if ((SettingsSingleton.getInstance().getGameStateString().equals("Game")) && mainMenuMusic.played) {
-            mainMenuMusic.stopMusic();
-        }
-        else if ((SettingsSingleton.getInstance().getGameStateString().equals("Story")) && mainMenuMusic.played) {
-            mainMenuMusic.stopMusic();
-        }
-
-        if ((!SettingsSingleton.getInstance().getGameStateString().equals("Game")) && (gameMusic.played)) {
-            gameMusic.stopMusic();
-        }
 
         menuBackground.drawFromTopLeft(0, 0);
         Drawing.drawRectangle(0, 0, Window.getWidth(), 100, black);
@@ -299,13 +270,14 @@ public class Game extends AbstractGame {
                 button.toggleHover(input.getMousePosition());
                 if (input.wasPressed(MouseButtons.LEFT)) {
                     if (button.isHovering()) {
-                        clickMusic.playMusic("music/Click.wav");
+                        soundEffectMusic.playMusic("music/Click.wav");
                         button.playAction();
                     }
                 }
             }
         }
         if (SettingsSingleton.getInstance().getGameState() == 0) {
+            currentMusic = "music/Game Main Menu.wav";
             saveStatsChecker();
             if (!SettingsSingleton.getInstance().getGameStateString().equals("Main Menu")) {
                 buttons.clear();
@@ -447,6 +419,9 @@ public class Game extends AbstractGame {
                 else {
                     waitTimer--;
                 }
+            }
+            else {
+                waitTimer = 840;
             }
 
         }
@@ -623,24 +598,16 @@ public class Game extends AbstractGame {
                         player.getCharacter().setPosition(spawnPoint);
                         playerSize -= 1;
                     }
-                    music.playMusic("music/Start.wav");
-                    int trackNo = (int) Math.round(Math.random()*2 - 0.5);
-                    gameMusic.playMusic(String.format("music/Fight%d.wav", trackNo));
-                    gameMusic.played = true;
-                    bottomRectangle = new Rectangle(0, Window.getHeight() - 20, Window.getWidth(), 20);
-                    topRectangle = new Rectangle(0, 0, Window.getWidth(), 20);
+                    //int trackNo = (int) Math.round(Math.random()*2 - 0.5);
+                    //currentMusic = String.format("music/Fight%d.wav", trackNo);
+                    currentMusic = String.format("music/Fight%d.wav", SettingsSingleton.getInstance().getMapNo());
                     SettingsSingleton.getInstance().setGameStateString("Game");
                 }
                 startCountdown();
                 map.draw();
                 drawCurrentHeight();
 
-                for (Player player : players) {
-                    if (!player.isDead()) {
-                        player.getCharacter().draw();
-                    }
-                    gameFont.drawString(String.format("P%s", player.getId()), player.getCharacter().getPos().x, player.getCharacter().getPos().y + 100);
-                }
+                render();
                 if (countDown < 3 * frames) {
                     Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, (390.0 - currentFrame)/390.0));
                     String string;
@@ -656,12 +623,8 @@ public class Game extends AbstractGame {
                     countdownFont.drawString(String.format("%s", string), Window.getWidth() / 2 - 125, Window.getHeight() / 2);
                     currentFrame++;
                 } else {
-                    Zoro.setMap(map);
-                    Jotaro.setPowerUps(powerUps);
-                    Jotaro.setMap(map);
-                    Itachi.setPowerUps(powerUps);
-                    Yugi.setMap(map);
-                    boolean playingAnimation = false;
+                    prepareSideCharacters();
+                    playingAnimation = false;
                     boolean characterMusic = false;
                     for (Player player : players) {
                         if (player.getSideCharacter().getName().equals("Yugi")) {
@@ -684,17 +647,10 @@ public class Game extends AbstractGame {
                                 }
                             }
                             characterMusic = true;
-                            if (gameMusic.played == true) {
-                                gameMusic.stopMusic();
-                                gameMusic.played = false;
-                            }
                         }
                     }
-                    if ((!characterMusic) && (!gameMusic.played)) {
-                        int trackNo = (int) Math.round(Math.random()*100/3);
-                        System.out.println(trackNo);
-                        gameMusic.playMusic(String.format("music/Fight%d.wav", trackNo));
-                        gameMusic.played = true;
+                    if (!characterMusic) {
+                        currentMusic = String.format("music/Fight%d.wav", SettingsSingleton.getInstance().getMapNo());
                     }
                     if(!map.hasFinished()) {
                         Colour playColor = new Colour(1, 0.3, 0.3);
@@ -708,34 +664,8 @@ public class Game extends AbstractGame {
                             } else {
                                 map.updateTiles(0.8);
                             }
-                            if (SettingsSingleton.getInstance().getLevel() == 0) {
-                                if (Math.random() > 0.98) {
-                                    obstacles.add(new Ball());
-                                }
-                            } else if (SettingsSingleton.getInstance().getLevel() == 1) {
-                                if (Math.random() > 0.96) {
-                                    if (Math.random() > 0.8) {
-                                        obstacles.add(new Balloon());
-                                        music.playMusic("RedBalloon.wav");
-                                    } else {
-                                        obstacles.add(new Ball());
-                                    }
-                                }
-                            }
-                            if (Math.random() < 0.006) {
-                                double powerUpNumber = Math.random();
-                                if (powerUpNumber <= 0.22) {
-                                    powerUps.add(new SpeedUp());
-                                } else if ((powerUpNumber > 0.22) && (powerUpNumber < 0.44)) {
-                                    powerUps.add(new Shield());
-                                } else if ((powerUpNumber >= 0.44) && (powerUpNumber < 0.66)) {
-                                    powerUps.add(new Minimiser());
-                                } else if ((powerUpNumber >= 0.66) && (powerUpNumber < 0.88)) {
-                                    powerUps.add(new SpeedDown());
-                                } else {
-                                    powerUps.add(new NoblePhantasm());
-                                }
-                            }
+                            spawnObstacles();
+                            spawnPowerUps();
                         }
                     }
                     else {
@@ -751,86 +681,11 @@ public class Game extends AbstractGame {
                             }
                         }
                     }
-
-                    for (Obstacle obstacle : obstacles) {
-                        obstacle.getImage().drawFromTopLeft(obstacle.getPos().x, obstacle.getPos().y);
-                        Drawing.drawRectangle(obstacle.getPos(), obstacle.getImage().getWidth(), obstacle.getImage().getHeight(), new Colour(0, 0, 0, 0.5));
-                        if (!playingAnimation) {
-                            obstacle.move();
-                        }
-                        for (Player player : players) {
-                            if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(obstacle.getImage().getBoundingBoxAt(new Point(obstacle.getPos().x + obstacle.getImage().getWidth()/2, obstacle.getPos().y + obstacle.getImage().getHeight()/2)))) {
-                                if (!player.isDead()) {
-                                    if (player.getCharacter().hasShield()) {
-                                        player.getCharacter().popShield();
-                                        obstaclesToRemove.add(obstacle);
-                                    }
-                                    else {
-                                        player.setDead();
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        if ((obstacle.getPos().y > Window.getHeight()) && (!obstaclesToRemove.contains(obstacle))) {
-                            obstaclesToRemove.add(obstacle);
-                        }
-                    }
-
-                    for (Player player: players) {
-                        if (!player.isDead()) {
-                            if (!playingAnimation) {
-                                player.moveCharacter(input);
-                            }
-                        }
-                        if (!map.hasFinished()) {
-                            if ((player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(bottomRectangle)) || (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(topRectangle))) {
-                                if (!player.isDead()) {
-                                    player.setDead();
-                                }
-                                break;
-                            }
-                        }
-                        for (Tile tile : map.getVisibleTiles()) {
-                            if ((tile.getName().equals("Ice")) && (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(tile.getImage().getBoundingBoxAt(new Point(tile.getPos().x + tile.getImage().getWidth()/2, tile.getPos().y + tile.getImage().getHeight()/2))))) {
-                                player.getCharacter().onIce();
-                            }
-                            else if ((tile.getName().equals("Slow")) && (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(tile.getImage().getBoundingBoxAt(new Point(tile.getPos().x + tile.getImage().getWidth()/2, tile.getPos().y + tile.getImage().getHeight()/2))))) {
-                                player.getCharacter().onSlow();
-                            }
-                            if (tile.getCollisionBlocks().size() > 0) {
-                                if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(tile.getImage().getBoundingBoxAt(new Point(tile.getPos().x + tile.getImage().getWidth()/2, tile.getPos().y + tile.getImage().getHeight()/2)))) {
-                                    for (CollisionBlock block : tile.getCollisionBlocks()) {
-                                        if (block.hasCollided(player)) {
-                                            if(!player.isDead()) {
-                                                player.setDead();
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    for (PowerUp powerUp : powerUps) {
-                        powerUp.getImage().drawFromTopLeft(powerUp.getPos().x, powerUp.getPos().y);
-                        if (!playingAnimation) {
-                            powerUp.move();
-                        }
-
-                        for (Player player : players) {
-                            if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(powerUp.getImage().getBoundingBoxAt(new Point(powerUp.getPos().x + 25, powerUp.getPos().y + 25)))) {
-                                if (!player.isDead()) {
-                                    player.getCharacter().getPowerUp(powerUp);
-                                    powerUpsToRemove.add(powerUp);
-                                    break;
-                                }
-                            }
-                        }
-                        if (powerUp.getPos().y > Window.getHeight()) {
-                            powerUpsToRemove.add(powerUp);
-                        }
-                    }
+                    updateObjects();
+                    updatePlayerMovement(input);
+                    checkCollisionPowerUps();
+                    checkCollisionObstacles();
+                    checkCollisionTiles();
                     if (!SettingsSingleton.getInstance().getGameStateString().equals("Win")) {
                         int deathCounter = 0;
                         for (Player player : players) {
@@ -857,12 +712,12 @@ public class Game extends AbstractGame {
                 if (!SettingsSingleton.getInstance().getGameStateString().equals("Story")) {
                     SettingsSingleton.getInstance().setGameStateString("Story");
                 }
-                updateStory(currentDialogue, currentStory);
+                updateStory(currentScene);
                 if (map != null) {
                     map.draw();
                 }
                 else if (currentBackground != null) {
-                    currentBackground.drawFromTopLeft(0,0);
+                    currentBackground.drawFromTopLeft(currentBackgroundPoint.x, currentBackgroundPoint.y);
                 }
                 if (dark) {
                     darken();
@@ -881,7 +736,7 @@ public class Game extends AbstractGame {
                                 lastStory = currentStory;
                                 playingDialogue = true;
                                 endDialogue = false;
-                                changeMainMusic("music/Fight1.wav");
+                                currentMusic = "music/Fight1.wav";
                             }
 
                             if (endDialogue) {
@@ -902,7 +757,9 @@ public class Game extends AbstractGame {
                                         }
                                     }
                                     if (playersFinished == players.size()) {
+                                        startStory = false;
                                         playingStory = false;
+                                        playingScene = true;
                                         startTransition();
                                         currentScene++;
                                         sceneToTransitionTo = new Image("res/background/Nino.png");
@@ -920,17 +777,65 @@ public class Game extends AbstractGame {
                         }
 
                         else if (currentStory == 1) {
+                            if (lastStory != currentStory) {
+                                lastStory = currentStory;
+                                playingDialogue = true;
+                                endDialogue = false;
+                                currentMusic = "music/Fight2.wav";
+                                double spawnDivider = 1;
+                                for (Player player : players) {
+                                    player.getCharacter().setPosition(new Point(spawnDivider * Window.getWidth() / (players.size() + 2), Window.getHeight() - 100));
+                                }
+                            }
 
+                            if (endDialogue) {
+                                updatePlayerMovement(input);
+                                render();
+                                spawnObstacles();
+                                checkCollisionPowerUps();
+                                checkCollisionObstacles();
+                                checkCollisionTiles();
+                                for (Player player: players) {
+                                    if (player.isDead()) {
+                                        SettingsSingleton.getInstance().setGameState(7);
+                                        failed = true;
+                                    }
+                                }
+                                if(!map.hasFinished()) {
+                                    map.updateTiles(0.8);
+                                    drawCurrentHeight();
+                                    displayCharacterStats(players);
+                                    spawnObstacles();
+                                    updateObjects();
+                                }
+                                else {
+                                    titleFont.drawString("CLEAR! REACH THE TOP!", 16, FONT_SIZE, DO.setBlendColour(black));
+                                    double playersFinished = 0;
+                                    for (Player player : players) {
+                                        if (player.getCharacter().getPos().distanceTo(new Point(player.getCharacter().getPos().x, 0)) < 10) {
+                                            playersFinished++;
+                                        }
+                                    }
+                                    if (playersFinished == players.size()) {
+                                        startStory = false;
+                                        playingStory = false;
+                                        playingScene = true;
+                                        startTransition();
+                                        currentScene++;
+                                        sceneToTransitionTo = new Image("res/background/Nino.png");
+                                    }
+                                }
+                            }
                         }
                     }
-                    else {
+                    else if (playingScene){
                         currentMode = "Scene";
                         currentDialogue = currentScene;
 
                         if(currentScene == 0) {
                             if (lastScene != currentScene) {
                                 lastScene = currentScene;
-                                changeMainMusic("music/Idle.wav");
+                                currentMusic = "music/Idle.wav";
                                 changeBackground(new Image("res/background/Futaba.png"));
                                 playingDialogue = true;
                                 endDialogue = false;
@@ -939,14 +844,15 @@ public class Game extends AbstractGame {
                                 dark = true;
                             }
                             if (dialogueCounter == 10) {
-                                changeMainMusic("music/Scary.wav");
-                                shakeTimer = 1 * frames;
+                                currentMusic = "music/Scary.wav";
+                                shakeTimer = 2 * frames;
                                 dialogueCounter++;
                             }
                             if (endDialogue) {
                                 startTransition();
                                 dark = false;
                                 playingStory = true;
+                                playingScene = false;
                                 mapToTransitionTo = new MapTrainingGround();
                             }
                         }
@@ -956,9 +862,20 @@ public class Game extends AbstractGame {
                                 lastScene = currentScene;
                                 playingDialogue = true;
                                 endDialogue = false;
-                                changeMainMusic("music/Idle.wav");
+                                currentMusic = "music/Idle.wav";
+                                changeBackground(new Image("res/background/Nino.png"));
+                            }
+                            if (endDialogue) {
+                                playingStory = true;
+                                playingScene = false;
+                                currentStory++;
+                                startTransition();
+                                mapToTransitionTo = new MapSpookySpikes();
                             }
                         }
+                    }
+                    else if (playingMap) {
+
                     }
                     // code for displaying dialogue
                     if (playingDialogue) {
@@ -1039,13 +956,13 @@ public class Game extends AbstractGame {
                                         if (currentLines < maxLines) {
                                             dialogueString += playDialogue(currentDialogue, currentMode).charAt(dialogueIndex);
                                             if (keyboardTimer > 9) {
-                                                music.playMusic("music/Type.wav");
+                                                soundEffectMusic.playMusic("music/Type.wav");
                                                 keyboardTimer = 0;
                                             }
                                             else {
                                                 keyboardTimer++;
                                             }
-                                            keyboardMusic.played = true;
+                                            soundEffectMusic.played = true;
                                             if (dialogueIndex < playDialogue(currentDialogue, currentMode).length()) {
                                                 dialogueIndex++;
                                             }
@@ -1069,100 +986,123 @@ public class Game extends AbstractGame {
 
         }
         else if (SettingsSingleton.getInstance().getGameState() == 7) {
-            map.draw();
-            for (Obstacle obstacle: obstacles) {
-                obstacle.getImage().drawFromTopLeft(obstacle.getPos().x, obstacle.getPos().y);
-            }
-            for (Player player: players) {
-                player.getCharacter().draw();
-                player.getCharacter().resetTimer();
-                if (!player.isDead()) {
-                    if (SettingsSingleton.getInstance().getWinner().getId() == player.getId()) {
-                        Image winner = new Image(String.format("res/Renders/%s.png", player.getCharacter().getName()));
-                        Image comrade = new Image(String.format("res/Renders/%s.png", player.getSideCharacter().getName()));
-                        if (winnerTimer < winner.getWidth() + comrade.getWidth()/2) {
-                            winnerTimer+=10;
+            render();
+            if (SettingsSingleton.getInstance().getLevel() == 99) {
+                displayFailScreen();
+                if (SettingsSingleton.getInstance().getGameStateString().equals("Continue")) {
+                    changeMainMusic(currentMusic);
+                    buttons.clear();
+                    SettingsSingleton.getInstance().setGameState(6);
+                    map.generateMap();
+                    double spawnDivider = 1;
+                    for (Player player : players) {
+                        player.getCharacter().setPosition(new Point(spawnDivider * Window.getWidth() / (players.size() + 2), Window.getHeight() - 100));
+                        player.getCharacter().resetTimer();
+                        if (player.isDead()) {
+                            player.setDead();
                         }
-                        Colour transparent = new Colour(0, 0, 0, 0.5);
-                        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), transparent);
-                        winner.draw(Window.getWidth() - winnerTimer, Window.getHeight()/2 +200);
-                        comrade.draw(Window.getWidth() - winnerTimer + winner.getWidth(), Window.getHeight()/2 + 200);
-                        victoryFont.drawString(String.format("Player %d: %s is victorious!", SettingsSingleton.getInstance().getWinner().getId(), SettingsSingleton.getInstance().getWinner().getCharacter().getName()), 16, 100);
                     }
+                    powerUps.removeAll(powerUps);
+                    obstacles.removeAll(obstacles);
                 }
             }
-            if (SettingsSingleton.getInstance().getGameStateString().equals("Win")) {
-                music.playMusic("music/Congratulations.wav");
-                SettingsSingleton.getInstance().setGameStateString("Congratulations");
-            }
-            if (!winnerPlayed) {
+            else {
+                currentMusic = "music/Game Main Menu.wav";
                 for (Player player: players) {
                     player.getCharacter().resetTimer();
-                    if (player.getCharacter() != null) {
-                        if (player.getCharacter().getName().equals(SettingsSingleton.getInstance().getWinner().getCharacter().getName())) {
-                            player.getCharacter().updateStats(true, true);
-                            player.recordWin();
-                        }
-                        else {
-                            player.getCharacter().updateStats(true, false);
+                    if (!player.isDead()) {
+                        if (SettingsSingleton.getInstance().getWinner().getId() == player.getId()) {
+                            Image winner = new Image(String.format("res/Renders/%s.png", player.getCharacter().getName()));
+                            Image comrade = new Image(String.format("res/Renders/%s.png", player.getSideCharacter().getName()));
+                            if (winnerTimer < winner.getWidth() + comrade.getWidth()/2) {
+                                winnerTimer+=10;
+                            }
+                            Colour transparent = new Colour(0, 0, 0, 0.5);
+                            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), transparent);
+                            winner.draw(Window.getWidth() - winnerTimer, Window.getHeight()/2 +200);
+                            comrade.draw(Window.getWidth() - winnerTimer + winner.getWidth(), Window.getHeight()/2 + 200);
+                            victoryFont.drawString(String.format("Player %d: %s is victorious!", SettingsSingleton.getInstance().getWinner().getId(), SettingsSingleton.getInstance().getWinner().getCharacter().getName()), 16, 100);
                         }
                     }
                 }
-                statTracker[SettingsSingleton.getInstance().getLevel() + 1] = statTracker[SettingsSingleton.getInstance().getLevel() + 1] + 1;
-                SettingsSingleton.getInstance().getWinner().getCharacter().playLine();
-                winnerPlayed = true;
-                buttons.clear();
-                Button backToStartButton = new BackToStartButton("Main Menu",new Rectangle(new Point(0, Window.getHeight() / 1.5 + 160), Window.getWidth(), 160));
-                Button retryButton = new RetryButton("Restart", new Rectangle(new Point(0, Window.getHeight() / 2 + 160), Window.getWidth(), 160));
-                buttons.add(backToStartButton);
-                buttons.add(retryButton);
-            }
-            drawButtons();
-            if (input.wasPressed(MouseButtons.LEFT)) {
-                if((SettingsSingleton.getInstance().getGameStateString().equals("Retry")) || (SettingsSingleton.getInstance().getGameStateString().equals("Menu"))) {
-                    for (SideCharacter character: sideCharacters) {
-                        character.reset();
-                        character.stopMusic();
-                    }
-                    for (Character character: characters) {
-                        character.stopMusic();
-                    }
-                    if (SettingsSingleton.getInstance().getGameStateString().equals("Retry")) {
-                        for (Player player: players) {
-                            player.getCharacter().resetTimer();
-                            player.getSideCharacter().reset();
-                            if (player.isDead()) {
-                                player.setDead();
+                if (SettingsSingleton.getInstance().getGameStateString().equals("Win")) {
+                    soundEffectMusic.playMusic("music/Congratulations.wav");
+                    SettingsSingleton.getInstance().setGameStateString("Congratulations");
+                }
+                if (!winnerPlayed) {
+                    for (Player player: players) {
+                        player.getCharacter().resetTimer();
+                        if (player.getCharacter() != null) {
+                            if (player.getCharacter().getName().equals(SettingsSingleton.getInstance().getWinner().getCharacter().getName())) {
+                                player.getCharacter().updateStats(true, true);
+                                player.recordWin();
+                            }
+                            else {
+                                player.getCharacter().updateStats(true, false);
                             }
                         }
-                        map.generateMap();
-                        SettingsSingleton.getInstance().setGameState(6);
-                        buttons.clear();
                     }
-                    else if (SettingsSingleton.getInstance().getGameStateString().equals("Menu")) {
-                        map = null;
-                        unlocked = checkAchievementsInGame();
-                        if (unlocked != null) {
-                            SettingsSingleton.getInstance().setGameState(8);
-                            saveStats();
+                    statTracker[SettingsSingleton.getInstance().getLevel() + 1] = statTracker[SettingsSingleton.getInstance().getLevel() + 1] + 1;
+                    SettingsSingleton.getInstance().getWinner().getCharacter().playLine();
+                    winnerPlayed = true;
+                    buttons.clear();
+                    Button backToStartButton = new BackToStartButton("Main Menu",new Rectangle(new Point(0, Window.getHeight() / 1.5 + 160), Window.getWidth(), 160));
+                    Button retryButton = new RetryButton("Restart", new Rectangle(new Point(0, Window.getHeight() / 2 + 160), Window.getWidth(), 160));
+                    buttons.add(backToStartButton);
+                    buttons.add(retryButton);
+                }
+                drawButtons();
+                if (input.wasPressed(MouseButtons.LEFT)) {
+                    if((SettingsSingleton.getInstance().getGameStateString().equals("Retry")) || (SettingsSingleton.getInstance().getGameStateString().equals("Menu"))) {
+                        for (Music music: musics) {
+                            if (music.clip.isActive()) {
+                                music.stopMusic();
+                            }
                         }
-                        else {
-                            SettingsSingleton.getInstance().setGameState(0);
+                        for (SideCharacter character: sideCharacters) {
+                            character.reset();
+                            character.stopMusic();
                         }
-                        players.clear();
-                        buttons.clear();
+                        for (Character character: characters) {
+                            character.stopMusic();
+                        }
+                        if (SettingsSingleton.getInstance().getGameStateString().equals("Retry")) {
+                            for (Player player: players) {
+                                player.getCharacter().resetTimer();
+                                player.getSideCharacter().reset();
+                                if (player.isDead()) {
+                                    player.setDead();
+                                }
+                            }
+                            map.generateMap();
+                            SettingsSingleton.getInstance().setGameState(6);
+                            buttons.clear();
+                        }
+                        else if (SettingsSingleton.getInstance().getGameStateString().equals("Menu")) {
+                            map = null;
+                            unlocked = checkAchievementsInGame();
+                            if (unlocked != null) {
+                                SettingsSingleton.getInstance().setGameState(8);
+                                saveStats();
+                            }
+                            else {
+                                SettingsSingleton.getInstance().setGameState(0);
+                            }
+                            players.clear();
+                            buttons.clear();
+                        }
+                        if (map != null) {
+                            map.setJotaroAbility(false);
+                        }
+                        obstacles.removeAll(obstacles);
+                        powerUps.removeAll(powerUps);
+                        waitTimer = 840;
+                        winnerTimer = 0;
+                        winnerPlayed = false;
+                        currentFrame = 0;
+                        countDown = 0;
+                        saveStats();
                     }
-                    if (map != null) {
-                        map.setJotaroAbility(false);
-                    }
-                    obstacles.removeAll(obstacles);
-                    powerUps.removeAll(powerUps);
-                    waitTimer = 840;
-                    winnerTimer = 0;
-                    winnerPlayed = false;
-                    currentFrame = 0;
-                    countDown = 0;
-                    saveStats();
                 }
             }
         }
@@ -1178,18 +1118,15 @@ public class Game extends AbstractGame {
                 for (Character character: characters) {
                     character.stopMusic();
                 }
-                whoMusic.playMusic("music/Who.wav");
+                currentMusic = "music/Who.wav";
                 SettingsSingleton.getInstance().setGameStateString("Unlocked");
             }
-            Colour black = new Colour(0, 0, 0, (float) (whoMusic.clip.getFrameLength() - whoMusic.clip.getFramePosition())/ (float) whoMusic.clip.getFrameLength());
+            Colour black = new Colour(0, 0, 0, (float) (mainMusic.clip.getFrameLength() - mainMusic.clip.getFramePosition())/ (float) mainMusic.clip.getFrameLength());
             Image background = new Image(String.format("res/background/%s.png", unlocked.getName()));
             background.drawFromTopLeft(0,0);
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
-            if (whoMusic.clip.getFramePosition() >= whoMusic.clip.getFrameLength()) {
-                if (challengerMusic.played == false) {
-                    challengerMusic.playMusic(String.format("music/%sUnlock.wav", unlocked.getName()));
-                    challengerMusic.played = true;
-                }
+            if (mainMusic.clip.getFramePosition() >= mainMusic.clip.getFrameLength()) {
+                currentMusic = String.format("music/%sUnlock.wav", unlocked.getName());
                 if (!voiceMusic.played) {
                     voiceMusic.playMusic(String.format("music/%sVoice.wav", unlocked.getName()));
                     voiceMusic.played = true;
@@ -1198,9 +1135,11 @@ public class Game extends AbstractGame {
                 Image unlockedImage = new Image(String.format("res/Renders/%s.png", unlocked.getName()));
                 unlockedImage.draw(Window.getWidth()/2, Window.getHeight()/2 + 300);
                 if (input.wasPressed(MouseButtons.LEFT)) {
-                    voiceMusic.stopMusic();
-                    challengerMusic.stopMusic();
-                    whoMusic.stopMusic();
+                    for (Music music: musics) {
+                        if (music.clip.isActive()) {
+                            music.stopMusic();
+                        }
+                    }
                     SettingsSingleton.getInstance().setGameState(0);
                 }
             }
@@ -1525,26 +1464,28 @@ public class Game extends AbstractGame {
             while(storyScanner.hasNextLine()) {
                 String[] line = storyScanner.nextLine().split(" ");
                 if (lineNumber == 0) {
-                    currentScene = Integer.parseInt(line[line.length- 1]) - 1;
+                    currentScene = Integer.parseInt(line[line.length- 1]);
                     if (currentScene < 0) {
                         currentScene = 0;
                     }
                 }
                 else if (lineNumber == 1) {
-                    currentStory = Integer.parseInt(line[line.length - 1]) - 1;
+                    currentStory = Integer.parseInt(line[line.length - 1]);
                     if (currentStory < 0) {
                         currentStory = 0;
                     }
                 }
                 lineNumber++;
             }
-            playingStory = currentScene > currentStory;
+            if (!playingMap) {
+                playingScene = true;
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void updateStory(int currentDialogue, int currentStory) {
+    public void updateStory(int currentProgress) {
         String tempFile = "stats/TempStory.txt";
         String currentFile = "stats/Story.txt";
         File oldFile = new File(currentFile);
@@ -1555,7 +1496,7 @@ public class Game extends AbstractGame {
             FileWriter fw = new FileWriter(tempFile, true);
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter pw = new PrintWriter(bw);
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 1; i++) {
                 if (!storyScanner.hasNextLine()) {
                     System.out.println("Scanner could not find given line no.");
                     return;
@@ -1566,11 +1507,7 @@ public class Game extends AbstractGame {
                     for (int j = 0; j < line.length - 1; j++) {
                         newLine += line[j] + " ";
                     }
-                    if (i == 0) {
-                        newLine += String.format("%d", currentDialogue);
-                    } else if (i == 1) {
-                        newLine += String.format("%d", currentStory);
-                    }
+                    newLine += String.format("%d", currentProgress);
                     pw.println(newLine);
                 }
             }
@@ -1700,12 +1637,16 @@ public class Game extends AbstractGame {
     }
 
     public void changeMainMusic(String filePath) {
-        if (mainMusic.played) {
-            mainMusic.stopMusic();
+        if (mainMusic.musicPath == null) {
+            mainMusic.run(filePath);
         }
-        mainMusic.run(filePath);
-        mainMusic.played = true;
-
+        else {
+            if (!currentMusic.replaceAll("/", "\\\\").equals(mainMusic.musicPath.getPath())) {
+                mainMusic.stopMusic();
+                mainMusic.run(filePath);
+            }
+        }
+        mainMusic.musicPath = new File(filePath);
     }
 
     public void changeBackground(Image background) {
@@ -1788,7 +1729,7 @@ public class Game extends AbstractGame {
 
     public void pickMap(Player player, Map map) {
         if (player.getMapChosen() == null) {
-            music.playMusic("music/Click.wav");
+            soundEffectMusic.playMusic("music/Click.wav");
             player.setMapChosen(map);
         }
     }
@@ -1806,4 +1747,174 @@ public class Game extends AbstractGame {
         transitionTimer = 500;
     }
 
+
+    public void checkCollisionTiles() {
+        for (Player player: players) {
+            if (!map.hasFinished()) {
+                if ((player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(bottomRectangle)) || (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(topRectangle))) {
+                    if (!player.isDead()) {
+                        player.setDead();
+                    }
+                    break;
+                }
+            }
+            for (Tile tile : map.getVisibleTiles()) {
+                if ((tile.getName().equals("Ice")) && (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(tile.getImage().getBoundingBoxAt(new Point(tile.getPos().x + tile.getImage().getWidth()/2, tile.getPos().y + tile.getImage().getHeight()/2))))) {
+                    player.getCharacter().onIce();
+                }
+                else if ((tile.getName().equals("Slow")) && (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(tile.getImage().getBoundingBoxAt(new Point(tile.getPos().x + tile.getImage().getWidth()/2, tile.getPos().y + tile.getImage().getHeight()/2))))) {
+                    player.getCharacter().onSlow();
+                }
+                if (tile.getCollisionBlocks().size() > 0) {
+                    if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(tile.getImage().getBoundingBoxAt(new Point(tile.getPos().x + tile.getImage().getWidth()/2, tile.getPos().y + tile.getImage().getHeight()/2)))) {
+                        for (CollisionBlock block : tile.getCollisionBlocks()) {
+                            if (block.hasCollided(player)) {
+                                if(!player.isDead()) {
+                                    player.setDead();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void updatePlayerMovement(Input input) {
+        for (Player player: players) {
+            if (!player.isDead()) {
+                if (!playingAnimation) {
+                    player.moveCharacter(input);
+                }
+            }
+        }
+    }
+
+    public void checkCollisionObstacles() {
+        for (Obstacle obstacle: obstacles) {
+            for (Player player : players) {
+                if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(obstacle.getImage().getBoundingBoxAt(new Point(obstacle.getPos().x + obstacle.getImage().getWidth()/2, obstacle.getPos().y + obstacle.getImage().getHeight()/2)))) {
+                    if (!player.isDead()) {
+                        if (player.getCharacter().hasShield()) {
+                            player.getCharacter().popShield();
+                            obstaclesToRemove.add(obstacle);
+                        }
+                        else {
+                            player.setDead();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void checkCollisionPowerUps() {
+        for (PowerUp powerUp: powerUps) {
+            for (Player player : players) {
+                if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(powerUp.getImage().getBoundingBoxAt(new Point(powerUp.getPos().x + 25, powerUp.getPos().y + 25)))) {
+                    if (!player.isDead()) {
+                        player.getCharacter().getPowerUp(powerUp);
+                        powerUpsToRemove.add(powerUp);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void spawnPowerUps() {
+        if (Math.random() < 0.006) {
+            double powerUpNumber = Math.random();
+            if (powerUpNumber <= 0.22) {
+                powerUps.add(new SpeedUp());
+            } else if ((powerUpNumber > 0.22) && (powerUpNumber < 0.44)) {
+                powerUps.add(new Shield());
+            } else if ((powerUpNumber >= 0.44) && (powerUpNumber < 0.66)) {
+                powerUps.add(new Minimiser());
+            } else if ((powerUpNumber >= 0.66) && (powerUpNumber < 0.88)) {
+                powerUps.add(new SpeedDown());
+            } else {
+                powerUps.add(new NoblePhantasm());
+            }
+        }
+    }
+
+    public void spawnObstacles() {
+        if (SettingsSingleton.getInstance().getLevel() == 0) {
+            if (Math.random() > 0.98) {
+                obstacles.add(new Ball());
+            }
+        } else if (SettingsSingleton.getInstance().getLevel() == 1) {
+            if (Math.random() > 0.96) {
+                if (Math.random() > 0.8) {
+                    obstacles.add(new Balloon());
+                } else {
+                    obstacles.add(new Ball());
+                }
+            }
+        }
+        else {
+            if (Math.random() > 0.98) {
+                obstacles.add(new Ball());
+            }
+        }
+    }
+
+    public void render() {
+        map.draw();
+        for (Player player : players) {
+            if (!player.isDead()) {
+                player.getCharacter().draw();
+            }
+            gameFont.drawString(String.format("P%s", player.getId()), player.getCharacter().getPos().x, player.getCharacter().getPos().y + 100);
+        }
+        for (PowerUp powerUp: powerUps) {
+            powerUp.getImage().drawFromTopLeft(powerUp.getPos().x, powerUp.getPos().y);
+        }
+        for (Obstacle obstacle: obstacles) {
+            obstacle.getImage().drawFromTopLeft(obstacle.getPos().x, obstacle.getPos().y);
+        }
+    }
+
+    public void prepareSideCharacters() {
+        Zoro.setMap(map);
+        Jotaro.setPowerUps(powerUps);
+        Jotaro.setMap(map);
+        Itachi.setPowerUps(powerUps);
+        Yugi.setMap(map);
+    }
+
+    public void displayFailScreen() {
+        if (failed) {
+            failed = false;
+            buttons.clear();
+            buttons.add(new RetryButton("Continue?", new Rectangle(new Point(0, Window.getHeight() / 2), Window.getWidth(), 160)));
+            buttons.add(new BackToStartButton("Exit", new Rectangle(new Point(0, Window.getHeight() / 1.5), Window.getWidth(), 160)));
+            changeMainMusic("music/Game Main Menu.wav");
+        }
+        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.7));
+        victoryFont.drawString("YOU FAILED THE CLIMB!", 30, 110);
+        drawButtons();
+    }
+
+    public void updateObjects() {
+        for (Obstacle obstacle : obstacles) {
+            if (!playingAnimation) {
+                obstacle.move();
+            }
+            if ((obstacle.getPos().y > Window.getHeight()) && (!obstaclesToRemove.contains(obstacle))) {
+                obstaclesToRemove.add(obstacle);
+            }
+        }
+        for (PowerUp powerUp : powerUps) {
+            if (!playingAnimation) {
+                powerUp.move();
+            }
+            if (powerUp.getPos().y > Window.getHeight()) {
+                powerUpsToRemove.add(powerUp);
+            }
+        }
+    }
 }

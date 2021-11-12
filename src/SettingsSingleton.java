@@ -5,6 +5,7 @@ public class SettingsSingleton {
     private ArrayList<Button> buttons;
     private static int gameState = 0;
     private static int level;
+    private static int difficulty;
     private static int players = 0;
     private static String gameStateString = "";
     private static int mapNo;
@@ -32,6 +33,8 @@ public class SettingsSingleton {
     public void setMapNo(int num) { mapNo = num;}
     public int getLevel() {return level;}
     public int getMapNo() {return mapNo;}
+    public int getDifficulty () {return difficulty;}
+    public void setDifficulty(int num) {difficulty = num;}
 
     public void setPlayers(int players) {
         SettingsSingleton.players = players;

@@ -6,7 +6,7 @@ public class StoryButton extends Button {
     }
 
     public void playAction() {
-        SettingsSingleton.getInstance().setLevel(2);
+        SettingsSingleton.getInstance().setLevel(99);
         SettingsSingleton.getInstance().setGameState(2);
     }
 }

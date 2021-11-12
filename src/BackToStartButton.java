@@ -19,5 +19,5 @@ public class BackToStartButton extends Button {
         }
     }
 
-    public void playAction() { SettingsSingleton.getInstance().setGameStateString("Menu");}
+    public void playAction() { SettingsSingleton.getInstance().setGameStateString("Menu"); SettingsSingleton.getInstance().setGameState(0);}
 }
