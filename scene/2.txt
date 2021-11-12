@@ -1,0 +1,9 @@
+M: Do you remember how to climb?
+Mai: I think.
+M: Okay, let’s see how you do!
+Tutorial: Press (W/^) to move up the Climb, (A/<) to move left, (D/>) to move right, and (S/v) to move down. Reach the top of the climb to progress!
+M: Well done Mai! Seems that you’re good to go.
+M: Here, take this! You’re going to need it if you’re going to venture out.
+M hands you a map.
+M: Safe journey! If you ever feel like you need a place to rest, feel free to come by.
+You leave.

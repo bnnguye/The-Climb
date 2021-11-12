@@ -1,8 +1,4 @@
-Mai: Oh... the wall is so high! How am I ever going to climb it and catch up to them?
-Tutorial: Hello there.
-Mai: Woah, who are you?
-Tutorial: I am a very good bad boy.
-Mai: ...
-Tutorial: To climb, use WASD for Player 1, and arrow keys for Player 2.
-Mai: Oh so with that I can climb the wall?
-Tutorial: Yes. Go on now. Prank em John!
+Nino: Do you remember how to climb?
+Mai: I think.
+Nino: Okay, let’s see how you do!
+Tutorial: For (P1/P2), press (W/^) to move up the Climb, (A/<) to move left, (D/>) to move right, and (S/v) to move down. Reach the top of the climb to progress!

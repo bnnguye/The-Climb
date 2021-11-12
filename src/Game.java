@@ -21,7 +21,6 @@ public class Game extends AbstractGame {
     // Stat variable
     int[] statTracker = new int[4];
 
-
     private final int frames = 144;
     private int countDown = 0;
     private int waitTimer = 840;
@@ -191,6 +190,7 @@ public class Game extends AbstractGame {
         allCharacters.add(Tutorial);
         allCharacters.add(Chika);
         allCharacters.add(Emilia);
+        allCharacters.add(Asuna);
         for(Character character: allCharacters) {
             character.setStats();
         }
@@ -604,8 +604,6 @@ public class Game extends AbstractGame {
                     SettingsSingleton.getInstance().setGameStateString("Game");
                 }
                 startCountdown();
-                map.draw();
-                drawCurrentHeight();
 
                 render();
                 if (countDown < 3 * frames) {
@@ -746,7 +744,6 @@ public class Game extends AbstractGame {
                                 }
                                 if(!map.hasFinished()) {
                                     map.updateTiles(0.8);
-                                    drawCurrentHeight();
                                 }
                                 else {
                                     titleFont.drawString("CLEAR! REACH THE TOP!", 16, FONT_SIZE, DO.setBlendColour(black));
@@ -803,13 +800,11 @@ public class Game extends AbstractGame {
                                 }
                                 if(!map.hasFinished()) {
                                     map.updateTiles(0.8);
-                                    drawCurrentHeight();
                                     displayCharacterStats(players);
                                     spawnObstacles();
                                     updateObjects();
                                 }
                                 else {
-                                    titleFont.drawString("CLEAR! REACH THE TOP!", 16, FONT_SIZE, DO.setBlendColour(black));
                                     double playersFinished = 0;
                                     for (Player player : players) {
                                         if (player.getCharacter().getPos().distanceTo(new Point(player.getCharacter().getPos().x, 0)) < 10) {
@@ -835,25 +830,22 @@ public class Game extends AbstractGame {
                         if(currentScene == 0) {
                             if (lastScene != currentScene) {
                                 lastScene = currentScene;
-                                currentMusic = "music/Idle.wav";
+                                currentMusic = "music/Scary.wav";
                                 changeBackground(new Image("res/background/Futaba.png"));
                                 playingDialogue = true;
                                 endDialogue = false;
                             }
-                            if (dialogueCounter > 9) {
+                            if (dialogueCounter >= 0) {
                                 dark = true;
                             }
-                            if (dialogueCounter == 10) {
-                                currentMusic = "music/Scary.wav";
+                            if (dialogueCounter == 7) {
                                 shakeTimer = 2 * frames;
                                 dialogueCounter++;
                             }
                             if (endDialogue) {
                                 startTransition();
                                 dark = false;
-                                playingStory = true;
-                                playingScene = false;
-                                mapToTransitionTo = new MapTrainingGround();
+                                currentScene = 1;
                             }
                         }
 
@@ -865,12 +857,18 @@ public class Game extends AbstractGame {
                                 currentMusic = "music/Idle.wav";
                                 changeBackground(new Image("res/background/Nino.png"));
                             }
+                            if (dialogueCounter == 0) {
+                                dark = true;
+                            }
+                            else if (dialogueCounter > 2) {
+                                dark = false;
+                            }
                             if (endDialogue) {
                                 playingStory = true;
                                 playingScene = false;
-                                currentStory++;
+                                currentStory = 0;
                                 startTransition();
-                                mapToTransitionTo = new MapSpookySpikes();
+                                mapToTransitionTo = new MapTrainingGround();
                             }
                         }
                     }
@@ -1192,8 +1190,12 @@ public class Game extends AbstractGame {
             int currentLineLength = 0;
             for (String word: dialogueWords) {
                 for (Character character: allCharacters) {
-                    if (word.substring(0, word.length()-1).equals(character.getName())) {
-                        currentLineLength = word.length();
+                    if (word.endsWith(":")) {
+                        if (word.substring(0, word.length()-1).equals(character.getName())) {
+                            //currentLineLength = word.length() + 2;
+                            currentLineLength = 0;
+                            break;
+                        }
                     }
                 }
                 if (currentLineLength + word.length() + 1 < MAX_DIALOGUE_LIMIT) {
@@ -1875,6 +1877,12 @@ public class Game extends AbstractGame {
         }
         for (Obstacle obstacle: obstacles) {
             obstacle.getImage().drawFromTopLeft(obstacle.getPos().x, obstacle.getPos().y);
+        }
+        if (map.hasFinished()) {
+            titleFont.drawString("CLEAR! REACH THE TOP!", 16, FONT_SIZE, DO.setBlendColour(black));
+        }
+        else {
+            drawCurrentHeight();
         }
     }
 

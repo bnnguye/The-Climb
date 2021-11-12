@@ -1,18 +1,5 @@
-Mai: What map is this?
-Tutorial: A different one.
-Mai: What's with the red bars and stuff?
-Tutorial: We're progressing into the game mechanics.
-Tutorial: Basically, the red bars will kill you instantly if you touch it.
-Mai: Sheesh
-Sakuta: Sheesh
-Unknown: Sheesh
-Aki: Sheesh
-Miku: Sheesh
-Nino: Shee-
-Tutorial: Okay relax relax.
-Tutorial: There are different types of tiles. Besides the normal tiles, there are also icy tiles and mouldy tiles. While you're on an icy tile, your movespeed is increased.
-Tutorial: On the other hand, your movespeed is decreased while on a mouldy tile.
-Mai: Oh okay that makes sense. So now there's variation to the way people play the game?
-Tutorial: ...
-Tutorial: Yes.
-Tutorial: Anyways, let's try this map and try not to die. Good luck!
+Nino: Well done Mai! Seems that you’re good to go.
+Nino: Here, take this! You’re going to need it if you’re going to venture out.
+Nino: hands you a map.
+Nino: Safe journey! If you ever feel like you need a place to rest, feel free to come by.
+Mai: *You leave.
