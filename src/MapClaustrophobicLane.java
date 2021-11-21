@@ -19,29 +19,29 @@ public class MapClaustrophobicLane extends Map {
 
     public Tile tileChooser(String line, Point point) {
         Tile tile = null;
-        if (line.equals("BasicTile")) {
-            tile = new BasicTile(point);
+        if (line.equals("Basic")) {
+            tile = new TileBasic(point);
         }
-        else if (line.equals("BasicTopTile")) {
-            tile = new BasicTopTile(point);
+        else if (line.equals("BasicTop")) {
+            tile = new TileBasicTop(point);
         }
-        else if (line.equals("BasicLeftTile")) {
-            tile = new BasicLeftTile(point);
+        else if (line.equals("BasicLeft")) {
+            tile = new TileBasicLeft(point);
         }
-        else if (line.equals("IceTile")) {
-            tile = new IceTile(point);
+        else if (line.equals("Ice")) {
+            tile = new TileIce(point);
         }
-        else if (line.equals("IceTopTile")) {
-            tile = new IceTopTile(point);
+        else if (line.equals("IceTop")) {
+            tile = new TileIceTop(point);
         }
-        else if (line.equals("SlowTile")) {
-            tile = new SlowTile(point);
+        else if (line.equals("Slow")) {
+            tile = new TileSlow(point);
         }
-        else if (line.equals("SlowLeftTile")) {
-            tile = new SlowLeftTile(point);
+        else if (line.equals("SlowLeft")) {
+            tile = new TileSlowLeft(point);
         }
-        else if (line.equals("BasicSadTile")) {
-            tile = new BasicSadTile(point);
+        else if (line.equals("BasicSad")) {
+            tile = new TileBasicSad(point);
         }
         return tile;
     }

@@ -1,6 +1,6 @@
-BasicTile,BasicTile,BasicTile,BasicTile
-BasicTile,BasicTile,BasicTile,BasicTile
-BasicTile,BasicTile,BasicTile,BasicTile
-BasicTile,BasicTile,BasicTile,BasicTile
-BasicTile,BasicTile,BasicTile,BasicTile
-BasicTile,BasicTile,BasicTile,BasicTile
+TileBasic,TileBasic,TileBasic,TileBasic
+TileBasic,TileBasic,TileBasic,TileBasic
+TileBasic,TileBasic,TileBasic,TileBasic
+TileBasic,TileBasic,TileBasic,TileBasic
+TileBasic,TileBasic,TileBasic,TileBasic
+TileBasic,TileBasic,TileBasic,TileBasic

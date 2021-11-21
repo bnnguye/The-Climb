@@ -1,8 +1,8 @@
-BasicTile,BasicTile,BasicTile,BasicTile
-BasicTile,BasicTile,BasicLeftTile,BasicTile
-BasicTile,BasicTile,BasicLeftTile,BasicTile
-BasicTile,BasicTile,BasicTile,BasicTile
-BasicTile,BasicTile,BasicLeftTile,BasicTile
-BasicTile,BasicTile,BasicLeftTile,BasicTile
-BasicTile,BasicTile,BasicTile,BasicTile
-BasicTile,BasicTile,BasicTile,BasicTile
+Basic,Basic,Basic,Basic
+Basic,Basic,BasicLeft,Basic
+Basic,Basic,BasicLeft,Basic
+Basic,Basic,Basic,Basic
+Basic,Basic,BasicLeft,Basic
+Basic,Basic,BasicLeft,Basic
+Basic,Basic,Basic,Basic
+Basic,Basic,Basic,Basic

@@ -36,4 +36,6 @@ public class CollisionBlock {
 
     public Point getPos() { return this.pos;}
 
+    public void setPos(Point point) { this.pos = point;}
+
 }
