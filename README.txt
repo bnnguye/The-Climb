@@ -38,4 +38,8 @@ POWERUPS
 SpeedUp: Grants a movement speed buff for five seconds.
 Shield: Grants a shield that breaks when colliding with an obstacle.
 Minimiser: Transform into a mini version of the character and be less vulnerable to colliding with obstacles.
-Noble Phantasm: Grants all other PowerUps.
+Noble Phantasm: Activates a special ability, varies based on the side character chosen.
+
+POWERDOWNS
+
+SpeedDown: Grants a movement speed debuff for five seconds.
