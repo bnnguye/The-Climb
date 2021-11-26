@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class TileSlowTop extends Tile {
 
     String name = "SlowTop";
+    String type = "Slow";
     ArrayList<CollisionBlock> collisionBlocks = new ArrayList<>();
     Point pos;
     Image image = new Image("res/Tiles/BasicTile.png");
@@ -57,4 +58,5 @@ public class TileSlowTop extends Tile {
         return this.image;
     }
     public String getName() {return this.name;}
+    public String getType() {return this.type;}
 }

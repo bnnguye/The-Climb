@@ -1,6 +1,8 @@
 Basic,Basic,Basic,Basic
-Basic,Basic,Basic,Basic
-Basic,BasicLeft,Basic,BasicLeft
-Basic,BasicLeft,Basic,BasicLeft
-Ice,Ice,Ice,Ice
-IceTop,IceTop,Slow,SlowLeft
+Basic,Basic,Basic,BasicTop
+BasicLeft,BasicTop,BasicLeft,BasicTop
+Basic,Ice,IceTop,Ice
+IceTop,IceTop,IceTop,Ice
+IceTop,Ice,IceTop,Ice
+IceTop,Ice,IceTop,Ice
+Basic,BasicTop,BasicLeft,Basic

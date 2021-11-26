@@ -9,6 +9,7 @@ public class TileSlowLeft extends Tile {
     Point pos;
     Image image = new Image("res/Tiles/BasicTile.png");
     String name = "SlowLeft";
+    String type = "Slow";
 
     TileSlowLeft(Point point) {
         super(point);
@@ -58,4 +59,5 @@ public class TileSlowLeft extends Tile {
     }
 
     public String getName() {return this.name;}
+    public String getType() {return this.type;}
 }

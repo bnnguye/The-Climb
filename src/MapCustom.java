@@ -55,6 +55,7 @@ public class MapCustom extends Map {
         }
     }
 
+
     public Image getMapPeek() {
         return this.mapPeek;
     }

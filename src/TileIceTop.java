@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class TileIceTop extends Tile {
 
     String name = "IceTop";
+    String type = "Ice";
     ArrayList<CollisionBlock> collisionBlocks = new ArrayList<>();
     Point pos;
     Image image = new Image("res/Tiles/BasicTile.png");
@@ -57,4 +58,5 @@ public class TileIceTop extends Tile {
         return this.image;
     }
     public String getName() {return this.name;}
+    public String getType() {return this.type;}
 }

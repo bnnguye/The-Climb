@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public abstract class Tile {
     String name= "";
+    String type = "";
     ArrayList<CollisionBlock> collisionBlocks;
     Image image;
     Point pos;
@@ -35,4 +36,5 @@ public abstract class Tile {
     }
 
     public String getName() { return name;}
+    public String getType() {return type;}
 }

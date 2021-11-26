@@ -9,6 +9,7 @@ public class TileBasicLeft extends Tile {
     Point pos;
     Image image = new Image("res/Tiles/BasicTile.png");
     String name = "BasicLeft";
+    String type = "Basic";
 
     TileBasicLeft(Point point) {
         super(point);
@@ -58,4 +59,5 @@ public class TileBasicLeft extends Tile {
     }
 
     public String getName() {return this.name;}
+    public String getType() {return this.type;}
 }

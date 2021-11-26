@@ -27,6 +27,8 @@ public class Game extends AbstractGame {
     private int winnerTimer = 0;
     private int currentFrame = 0;
 
+    private ArrayList<StringDisplay> stringDisplays;
+
     private final Font titleFont = new Font("res/fonts/DejaVuSans-Bold.ttf", FONT_SIZE);
     private final Font victoryFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 110);
     private final Font playerFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 50);
@@ -91,6 +93,7 @@ public class Game extends AbstractGame {
     Tile tile1;
     Tile tile2;
     Tile tile3;
+    int offset = 0;
 
 
     private boolean winnerPlayed = false;
@@ -157,6 +160,7 @@ public class Game extends AbstractGame {
 
         settingsSingleton = SettingsSingleton.getInstance();
         DO = new DrawOptions();
+        stringDisplays = new ArrayList<>();
         players = new ArrayList<>();
         players.add( new PlayerOne());
         characters = new ArrayList<>();
@@ -270,6 +274,7 @@ public class Game extends AbstractGame {
     @Override
     protected void update(Input input) {
         changeMainMusic(currentMusic);
+        updateDisplayStrings();
         updateSounds();
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
         if (frame % 144 == 0) {
@@ -1173,14 +1178,21 @@ public class Game extends AbstractGame {
             if (!addingTile) {
                 playerFont.drawString("S: Save and Exit ESC: Exit without Saving Arrow Keys: Navigate\nA: Add, R: Remove last block", 100, 50);
                 if (input.wasPressed(Keys.UP)) {
-                    map.updateTiles(100);
+                    updateTiles(100);
+                    offset++;
                 }
                 if (input.wasPressed((Keys.DOWN))) {
-                    map.updateTiles(-100);
+                    updateTiles(-100);
+                    offset--;
                 }
                 if (input.wasPressed(Keys.S)) {
-                    saveCustomMap();
-                    SettingsSingleton.getInstance().setGameState(0);
+                    if (customMapTiles.size()%4 != 0) {
+                        addDisplayString("Error: Cannot save map. Map not complete! (Row is not filled)", 5);
+                    }
+                    else {
+                        saveCustomMap();
+                        SettingsSingleton.getInstance().setGameState(0);
+                    }
                 }
                 if (input.wasPressed(Keys.A)) {
                     addingTile = true;
@@ -1257,6 +1269,7 @@ public class Game extends AbstractGame {
                 }
             }
         }
+        showDisplayStrings();
     }
 
     public boolean checkStats(String characterName, int line, int threshold) {
@@ -1896,10 +1909,10 @@ public class Game extends AbstractGame {
                 }
             }
             for (Tile tile : map.getVisibleTiles()) {
-                if ((tile.getName().equals("Ice")) && (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(tile.getImage().getBoundingBoxAt(new Point(tile.getPos().x + tile.getImage().getWidth()/2, tile.getPos().y + tile.getImage().getHeight()/2))))) {
+                if ((tile.getType().equals("Ice")) && (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(tile.getImage().getBoundingBoxAt(new Point(tile.getPos().x + tile.getImage().getWidth()/2, tile.getPos().y + tile.getImage().getHeight()/2))))) {
                     player.getCharacter().onIce();
                 }
-                else if ((tile.getName().equals("Slow")) && (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(tile.getImage().getBoundingBoxAt(new Point(tile.getPos().x + tile.getImage().getWidth()/2, tile.getPos().y + tile.getImage().getHeight()/2))))) {
+                else if ((tile.getType().equals("Slow")) && (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(tile.getImage().getBoundingBoxAt(new Point(tile.getPos().x + tile.getImage().getWidth()/2, tile.getPos().y + tile.getImage().getHeight()/2))))) {
                     player.getCharacter().onSlow();
                 }
                 if (tile.getCollisionBlocks().size() > 0) {
@@ -2088,7 +2101,7 @@ public class Game extends AbstractGame {
         System.out.println(line);
         int currentRow = customMapTiles.size()/4;
         int currentBlocksInRow = customMapTiles.size()%4;
-        Point point = new Point(480 * currentBlocksInRow, 600 + -475 * currentRow);
+        Point point = new Point(480 * currentBlocksInRow, 100*offset + 600 + -475 * currentRow);
 
         Tile tile = null;
         if (line.equals("Basic")) {
@@ -2118,5 +2131,36 @@ public class Game extends AbstractGame {
         if (tile != null) {
             customMapTiles.add(tile);
         }
+    }
+
+    public void updateTiles(int offset) {
+        for (Tile tile: customMapTiles) {
+            tile.setPos(new Point(tile.getPos().x, tile.getPos().y + offset));
+        }
+    }
+
+    public void showDisplayStrings() {
+        int i = 1;
+        for (StringDisplay stringDisplay: stringDisplays) {
+            playerFont.drawString(stringDisplay.getName(), 0, 60*i);
+            i++;
+        }
+    }
+
+    public void updateDisplayStrings() {
+        ArrayList<StringDisplay> stringDisplaysToRemove = new ArrayList<>();
+        for (StringDisplay stringDisplay: stringDisplays) {
+            if (stringDisplay.getTime() < 0) {
+                stringDisplaysToRemove.add(stringDisplay);
+            }
+            else {
+                stringDisplay.update();
+            }
+        }
+        stringDisplays.removeAll(stringDisplaysToRemove);
+    }
+
+    public void addDisplayString(String string, int time) {
+        stringDisplays.add(new StringDisplay(string, time));
     }
 }
