@@ -3,6 +3,7 @@ import bagel.Window;
 import bagel.util.Point;
 
 public class Ball extends Obstacle {
+    private String name = "Ball";
     Image image = new Image("res/obstacles/rock.png");
     Point pos;
     double speed = 4;
@@ -31,4 +32,5 @@ public class Ball extends Obstacle {
         this.gojoAbility = bool;
     }
     public void setJotaroAbility(boolean bool) {jotaroAbility = bool;}
+    public String getName() {return this.name;}
 }

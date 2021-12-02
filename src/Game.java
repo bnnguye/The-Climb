@@ -10,6 +10,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
+/** "The Climb" - A game created by Bill Nguyen **/
+
 public class Game extends AbstractGame {
 
     private final int FONT_SIZE = 80;
@@ -21,7 +24,7 @@ public class Game extends AbstractGame {
     // Stat variable
     int[] statTracker = new int[4];
 
-    private final int frames = 144;
+    private final double frames = 144;
     private int countDown = 0;
     private int waitTimer = 840;
     private int winnerTimer = 0;
@@ -37,6 +40,7 @@ public class Game extends AbstractGame {
     private final Font countdownFont = new Font("res/fonts/conformable.otf", 300);
     private final Font dialogueFont = new Font("res/fonts/DejaVuSans-Bold.ttf", DIALOGUE_FONT_SIZE);
     private final Font playerMapFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 40);
+    private final Font introFont = new Font("res/fonts/Storytime.ttf", 80);
     private final DrawOptions DO;
 
 
@@ -60,6 +64,7 @@ public class Game extends AbstractGame {
     Character Unknown;
     Character Aki;
     Character Tutorial;
+    Character Dio;
     Character Chika;
     Character Emilia;
     Character Asuna;
@@ -102,7 +107,7 @@ public class Game extends AbstractGame {
     Scanner dialogueScanner;
     ArrayList<String> dialogueWords;
 
-    int timeToSaveStats = 60 * frames;
+    double timeToSaveStats = 60 * frames;
     int currentTimeToSaveStats = 0;
 
 
@@ -111,7 +116,6 @@ public class Game extends AbstractGame {
     private boolean playingStory = false;
     private boolean playingScene = false;
     private boolean playingMap = false;
-    private boolean startStory = false;
     private int currentDialogue = 0;
     private int currentStory = 0;
     private int currentScene = 0;
@@ -120,7 +124,7 @@ public class Game extends AbstractGame {
     private Image currentBackground;
     private Point currentBackgroundPoint = new Point(0,0);
     private String dialogueString = "";
-    private Colour dialogueColour = new Colour(77.0/255, 57.0/255, 37.0/255, 0.7);
+    private Colour dialogueColour = new Colour(77.0/255, 57.0/255, 37.0/255, 0.5);
     private double dialogueWidth = Window.getWidth()*0.1;
     private double dialogueLength = Window.getHeight() - 300;
     private int maxLines = 7;
@@ -130,7 +134,7 @@ public class Game extends AbstractGame {
     private boolean playNextCharacter = true;
     private Character dialogueCharacter = null;
     private Character nextCharacter = null;
-    private int shakeTimer = 0;
+    private double shakeTimer = 0;
     private double transitionTimer = 0;
     private boolean dark = false;
     private int dialogueCounter = 0;
@@ -146,7 +150,8 @@ public class Game extends AbstractGame {
 
     private final Colour black = new Colour(0, 0, 0, 1);
     private final Colour white = new Colour(1, 1, 1, 1);
-    Colour darken = new Colour(0, 0, 0, 0.7);
+    Colour red = new Colour(1, 0.3, 0.3);
+    Colour darken = new Colour(0, 0, 0, 0.85);
 
     private int frame = 0;
 
@@ -155,7 +160,7 @@ public class Game extends AbstractGame {
         new Game().run();
     }
 
-    public Game(){
+    public Game()   {
         super(1920, 1080);
 
         settingsSingleton = SettingsSingleton.getInstance();
@@ -182,6 +187,7 @@ public class Game extends AbstractGame {
         Asuna = new CharacterAsuna();
         Raphtalia = new CharacterRaphtalia();
         Tutorial = new Tutorial();
+        Dio = new CharacterDio();
         characters.add(Chizuru);
         characters.add(zeroTwo);
         characters.add(Miku);
@@ -202,6 +208,7 @@ public class Game extends AbstractGame {
         allCharacters.add(Chika);
         allCharacters.add(Emilia);
         allCharacters.add(Asuna);
+        allCharacters.add(Dio);
         for(Character character: allCharacters) {
             character.setStats();
         }
@@ -277,10 +284,7 @@ public class Game extends AbstractGame {
         updateDisplayStrings();
         updateSounds();
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
-        if (frame % 144 == 0) {
-            System.out.println(frame/144);
-        }
-        frame ++;
+        SettingsSingleton.getInstance().updateTime();
 
         if (menuBackground != null) {
             menuBackground.drawFromTopLeft(0, 0);
@@ -291,6 +295,7 @@ public class Game extends AbstractGame {
         if (menuTitle != null) {
             titleFont.drawString(menuTitle, 0, 75);
         }
+
 
         if (SettingsSingleton.getInstance().getButtons().size() > 0 ) {
             for (Button button: SettingsSingleton.getInstance().getButtons()) {
@@ -304,7 +309,7 @@ public class Game extends AbstractGame {
             }
         }
         if (SettingsSingleton.getInstance().getGameState() == 0) {
-            currentMusic = "music/Game Main Menu.wav";
+            currentMusic = "music/Silence.wav";
             saveStatsChecker();
             if (!SettingsSingleton.getInstance().getGameStateString().equals("Main Menu")) {
                 buttons.clear();
@@ -677,12 +682,8 @@ public class Game extends AbstractGame {
                         currentMusic = String.format("music/Fight%d.wav", SettingsSingleton.getInstance().getMapNo());
                     }
                     if(!map.hasFinished()) {
-                        Colour playColor = new Colour(1, 0.3, 0.3);
-
                         if(!playingAnimation) {
                             displayCharacterStats(players);
-                            Drawing.drawRectangle(0, Window.getHeight() - 20, Window.getWidth(), 20, playColor);
-                            Drawing.drawRectangle(0, 0, Window.getWidth(), 20, playColor);
                             if (SettingsSingleton.getInstance().getLevel() == 0) {
                                 map.updateTiles(0.4);
                             } else {
@@ -728,17 +729,15 @@ public class Game extends AbstractGame {
                             }
                         }
                     }
-                    powerUps.removeAll(powerUpsToRemove);
-                    obstacles.removeAll(obstaclesToRemove);
+
                 }
             }
             else {
                 if (!SettingsSingleton.getInstance().getGameStateString().equals("Story")) {
                     SettingsSingleton.getInstance().setGameStateString("Story");
                 }
-                updateStory(currentScene);
                 if (map != null) {
-                    map.draw();
+                    render();
                 }
                 else if (currentBackground != null) {
                     currentBackground.drawFromTopLeft(currentBackgroundPoint.x, currentBackgroundPoint.y);
@@ -756,67 +755,42 @@ public class Game extends AbstractGame {
                         currentDialogue = currentStory;
 
                         if (currentStory == 0) {
+                            currentMusic = "music/Fight0.wav";
                             if (lastStory != currentStory) {
                                 lastStory = currentStory;
                                 playingDialogue = true;
                                 endDialogue = false;
-                                currentMusic = "music/Fight1.wav";
                             }
 
                             if (endDialogue) {
-                                for (Player player: players) {
-                                    player.getCharacter().draw();
-                                    player.moveCharacter(input);
-                                }
+                                updatePlayerMovement(input);
                                 if(!map.hasFinished()) {
-                                    map.updateTiles(0.8);
+                                    map.updateTiles(1);
                                 }
                                 else {
-                                    titleFont.drawString("CLEAR! REACH THE TOP!", 16, FONT_SIZE, DO.setBlendColour(black));
-                                    double playersFinished = 0;
-                                    for (Player player : players) {
-                                        if (player.getCharacter().getPos().distanceTo(new Point(player.getCharacter().getPos().x, 0)) < 10) {
-                                            playersFinished++;
-                                        }
+                                    if (playersPassed()) {
+                                        mapToTransitionTo = new MapTrainingGround2();
+                                        map = mapToTransitionTo;
+                                        map.generateMap();
+                                        currentStory = 1;
                                     }
-                                    if (playersFinished == players.size()) {
-                                        startStory = false;
-                                        playingStory = false;
-                                        playingScene = true;
-                                        startTransition();
-                                        currentScene++;
-                                        sceneToTransitionTo = new Image("res/background/Nino.png");
-                                    }
-                                }
-                            }
-
-                            if (!startStory) {
-                                startStory = true;
-                                double spawnDivider = 1;
-                                for (Player player : players) {
-                                    player.getCharacter().setPosition(new Point(spawnDivider * Window.getWidth() / (players.size() + 2), Window.getHeight() - 100));
                                 }
                             }
                         }
 
                         else if (currentStory == 1) {
+                            currentMusic = "music/Fight1.wav";
                             if (lastStory != currentStory) {
+                                setPlayersPosition();
                                 lastStory = currentStory;
                                 playingDialogue = true;
                                 endDialogue = false;
                                 currentMusic = "music/Fight2.wav";
-                                double spawnDivider = 1;
-                                for (Player player : players) {
-                                    player.getCharacter().setPosition(new Point(spawnDivider * Window.getWidth() / (players.size() + 2), Window.getHeight() - 100));
-                                }
                             }
 
                             if (endDialogue) {
                                 updatePlayerMovement(input);
                                 render();
-                                spawnObstacles();
-                                checkCollisionPowerUps();
-                                checkCollisionObstacles();
                                 checkCollisionTiles();
                                 for (Player player: players) {
                                     if (player.isDead()) {
@@ -827,23 +801,90 @@ public class Game extends AbstractGame {
                                 if(!map.hasFinished()) {
                                     map.updateTiles(0.8);
                                     displayCharacterStats(players);
-                                    spawnObstacles();
-                                    updateObjects();
                                 }
                                 else {
-                                    double playersFinished = 0;
-                                    for (Player player : players) {
-                                        if (player.getCharacter().getPos().distanceTo(new Point(player.getCharacter().getPos().x, 0)) < 10) {
-                                            playersFinished++;
-                                        }
+                                    if (playersPassed()) {
+                                        map.generateMap();
+                                        currentStory++;
                                     }
-                                    if (playersFinished == players.size()) {
-                                        startStory = false;
+                                }
+                            }
+                        }
+                        else if (currentStory == 2) {
+                            currentMusic = "music/Fight2.wav";
+                            if (lastStory != currentStory) {
+                                setPlayersPosition();
+                                lastStory = currentStory;
+                                playingDialogue = true;
+                                endDialogue = false;
+                                currentMusic = "music/Fight1.wav";
+                            }
+
+                            if (endDialogue) {
+                                updatePlayerMovement(input);
+                                render();
+                                checkCollisionPowerUps();
+                                checkCollisionObstacles();
+                                checkCollisionTiles();
+                                updateObjects();
+                                for (Player player: players) {
+                                    if (player.isDead()) {
+                                        SettingsSingleton.getInstance().setGameState(7);
+                                        failed = true;
+                                    }
+                                }
+                                if(!map.hasFinished()) {
+                                    map.updateTiles(0.8);
+                                    displayCharacterStats(players);
+                                    spawnObstacles();
+                                }
+                                else {
+                                    if (playersPassed()) {
                                         playingStory = false;
                                         playingScene = true;
-                                        startTransition();
                                         currentScene++;
-                                        sceneToTransitionTo = new Image("res/background/Nino.png");
+                                        updateStory(currentScene);
+                                        sceneToTransitionTo = new Image("res/background/Futaba.png");
+                                        startTransition();
+                                    }
+                                }
+                            }
+                        }
+                        else if (currentStory == 3) {
+                            currentMusic = "music/Dio.wav";
+                            if (lastStory != currentStory) {
+                                setPlayersPosition();
+                                lastStory = currentStory;
+                                playingDialogue = true;
+                                endDialogue = false;
+                            }
+
+                            if (endDialogue) {
+                                updatePlayerMovement(input);
+                                render();
+                                checkCollisionPowerUps();
+                                checkCollisionObstacles();
+                                checkCollisionTiles();
+                                updateObjects();
+                                for (Player player: players) {
+                                    if (player.isDead()) {
+                                        SettingsSingleton.getInstance().setGameState(7);
+                                        failed = true;
+                                    }
+                                }
+                                if(!map.hasFinished()) {
+                                    map.updateTiles(0.8);
+                                    displayCharacterStats(players);
+                                    spawnObstacles();
+                                }
+                                else {
+                                    if (playersPassed()) {
+                                        playingStory = false;
+                                        playingScene = true;
+                                        currentScene++;
+                                        updateStory(currentScene);
+                                        sceneToTransitionTo = new Image("res/background/Futaba.png");
+                                        startTransition();
                                     }
                                 }
                             }
@@ -856,13 +897,11 @@ public class Game extends AbstractGame {
                         if(currentScene == 0) {
                             if (lastScene != currentScene) {
                                 lastScene = currentScene;
-                                currentMusic = "music/Scary.wav";
-                                changeBackground(new Image("res/background/Futaba.png"));
+                                currentMusic = "music/Rain 1.wav";
+                                changeBackground(new Image("res/background/Mountain.png"));
+                                dark = true;
                                 playingDialogue = true;
                                 endDialogue = false;
-                            }
-                            if (dialogueCounter >= 0) {
-                                dark = true;
                             }
                             if (dialogueCounter == 7) {
                                 shakeTimer = 2 * frames;
@@ -870,8 +909,8 @@ public class Game extends AbstractGame {
                             }
                             if (endDialogue) {
                                 startTransition();
-                                dark = false;
-                                currentScene = 1;
+                                sceneToTransitionTo = new Image("res/background/Nino.png");
+                                currentScene++;
                             }
                         }
 
@@ -881,7 +920,6 @@ public class Game extends AbstractGame {
                                 playingDialogue = true;
                                 endDialogue = false;
                                 currentMusic = "music/Idle.wav";
-                                changeBackground(new Image("res/background/Nino.png"));
                             }
                             if (dialogueCounter == 0) {
                                 dark = true;
@@ -890,11 +928,60 @@ public class Game extends AbstractGame {
                                 dark = false;
                             }
                             if (endDialogue) {
+                                startTransition();
+                                currentScene = 2;
+                                sceneToTransitionTo = new Image("res/background/Nino.png");
+                            }
+                        }
+                        else if (currentScene == 2) {
+                            if (lastScene != currentScene) {
+                                if (currentBackground == null) {
+                                    changeBackground(new Image("res/background/Nino.png"));
+                                }
+                                lastScene = currentScene;
+                                playingDialogue = true;
+                                endDialogue = false;
+                                currentMusic = "music/Idle.wav";
+                            }
+                            if (endDialogue) {
                                 playingStory = true;
                                 playingScene = false;
                                 currentStory = 0;
                                 startTransition();
                                 mapToTransitionTo = new MapTrainingGround();
+                                setPlayersPosition();
+                            }
+                        }
+                        else if (currentScene == 3) {
+                            if (lastScene != currentScene) {
+                                if (currentBackground == null) {
+                                    changeBackground(new Image("res/background/Nino.png"));
+                                }
+                                currentStory = 3;
+                                lastScene = currentScene;
+                                playingDialogue = true;
+                                endDialogue = false;
+                                currentMusic = "music/Idle.wav";
+                            }
+                            if (endDialogue) {
+                                startTransition();
+                                sceneToTransitionTo = new Image("res/background/Dio.png");
+                                currentScene++;
+                            }
+                        }
+                        else if (currentScene == 4) {
+                            if (lastScene != currentScene) {
+                                lastScene = currentScene;
+                                playingDialogue = true;
+                                endDialogue = false;
+                                currentMusic = "music/Dio.wav";
+                            }
+                            if (endDialogue) {
+                                startTransition();
+                                mapToTransitionTo = new MapDioMansion();
+                                playingScene = false;
+                                playingStory = true;
+                                setPlayersPosition();
                             }
                         }
                     }
@@ -1018,16 +1105,19 @@ public class Game extends AbstractGame {
                     buttons.clear();
                     SettingsSingleton.getInstance().setGameState(6);
                     map.generateMap();
-                    double spawnDivider = 1;
                     for (Player player : players) {
-                        player.getCharacter().setPosition(new Point(spawnDivider * Window.getWidth() / (players.size() + 2), Window.getHeight() - 100));
                         player.getCharacter().resetTimer();
                         if (player.isDead()) {
                             player.setDead();
                         }
                     }
+                    setPlayersPosition();
                     powerUps.removeAll(powerUps);
                     obstacles.removeAll(obstacles);
+                }
+                else if (SettingsSingleton.getInstance().getGameStateString().equals("Menu")) {
+                    failed = false;
+                    SettingsSingleton.getInstance().setGameState(0);
                 }
             }
             else {
@@ -1190,6 +1280,7 @@ public class Game extends AbstractGame {
                         addDisplayString("Error: Cannot save map. Map not complete! (Row is not filled)", 5);
                     }
                     else {
+                        addDisplayString("Success: Map saved.", 5);
                         saveCustomMap();
                         SettingsSingleton.getInstance().setGameState(0);
                     }
@@ -1285,7 +1376,7 @@ public class Game extends AbstractGame {
         String currentDialogue = "";
         try {
             if (mode.equals("Story")) {
-                dialogueScanner = new Scanner(new File(String.format("dialogue/%d.txt", dialogueInt)));
+                dialogueScanner = new Scanner(new File(String.format("story/%d.txt", dialogueInt)));
             }
             else {
                 dialogueScanner = new Scanner(new File(String.format("scene/%d.txt", dialogueInt)));
@@ -1631,6 +1722,8 @@ public class Game extends AbstractGame {
             File dump = new File(currentFile);
             newFile.renameTo(dump);
 
+            stringDisplays.add(new StringDisplay("Story saved successfully.", 3));
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -1654,26 +1747,26 @@ public class Game extends AbstractGame {
     }
 
     public void transition() {
-        if (transitionTimer > 0) {
-            if (transitionTimer > 250) {
-                Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 1 - (transitionTimer - 250)/250));
-            }
-            else if (transitionTimer == 250) {
-                if (playingStory) {
-                    changeBackground(null);
-                    map = mapToTransitionTo;
-                    map.generateMap();
-                }
-                else {
-                    map = null;
-                    changeBackground(sceneToTransitionTo);
-                }
-            }
-            else if (transitionTimer < 250) {
-                Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, transitionTimer/250));
-            }
-            transitionTimer--;
+        if (transitionTimer >= 3 * frames) {
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 1 - (transitionTimer - 3*frames)/(2*frames)));
         }
+        else if ((transitionTimer < 3 * frames) && (transitionTimer > 2 * frames)) {
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0,0,0,1));
+        }
+        else if (transitionTimer <= 2 * frames) {
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, transitionTimer/(2*frames)));
+        }
+        if (transitionTimer == 2.5 * frames) {
+            dark = false;
+            if (playingStory) {
+                map = mapToTransitionTo;
+                map.generateMap();
+            }
+            else {
+                changeBackground(sceneToTransitionTo);
+            }
+        }
+        transitionTimer--;
     }
 
     public void darken() {
@@ -1886,21 +1979,22 @@ public class Game extends AbstractGame {
 
     public void drawCurrentHeight() {
         if (java.time.LocalTime.now().getHour() > 18) {
-            gameFont.drawString(String.format("%d/%dm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, DO.setBlendColour(new Colour(1,1,1)));
+            gameFont.drawString(String.format("%4.0f/%4.0fm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, DO.setBlendColour(new Colour(1,1,1)));
         }
         else {
-            gameFont.drawString(String.format("%d/%dm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, DO.setBlendColour(new Colour(0, 0, 0)));
+            gameFont.drawString(String.format("%4.0f/%4.0fm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, DO.setBlendColour(new Colour(0, 0, 0)));
         }
     }
 
     public void startTransition() {
-        transitionTimer = 500;
+        transitionTimer = 5 * frames;
     }
-
 
     public void checkCollisionTiles() {
         for (Player player: players) {
             if (!map.hasFinished()) {
+                Drawing.drawRectangle(0, Window.getHeight() - 20, Window.getWidth(), 20, red);
+                Drawing.drawRectangle(0, 0, Window.getWidth(), 20, red);
                 if ((player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(bottomRectangle)) || (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(topRectangle))) {
                     if (!player.isDead()) {
                         player.setDead();
@@ -1946,18 +2040,25 @@ public class Game extends AbstractGame {
             for (Player player : players) {
                 if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(obstacle.getImage().getBoundingBoxAt(new Point(obstacle.getPos().x + obstacle.getImage().getWidth()/2, obstacle.getPos().y + obstacle.getImage().getHeight()/2)))) {
                     if (!player.isDead()) {
+                        obstaclesToRemove.add(obstacle);
                         if (player.getCharacter().hasShield()) {
                             player.getCharacter().popShield();
-                            obstaclesToRemove.add(obstacle);
                         }
                         else {
-                            player.setDead();
-                            break;
+                            if (obstacle.getName().equals("StunBall")) {
+                                System.out.println("Stunned");
+                                player.getCharacter().gotStunned();
+                            }
+                            else {
+                                player.setDead();
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
+        obstacles.removeAll(obstaclesToRemove);
     }
 
     public void checkCollisionPowerUps() {
@@ -1972,6 +2073,7 @@ public class Game extends AbstractGame {
                 }
             }
         }
+        powerUps.removeAll(powerUpsToRemove);
     }
 
     public void spawnPowerUps() {
@@ -1992,7 +2094,20 @@ public class Game extends AbstractGame {
     }
 
     public void spawnObstacles() {
-        if (SettingsSingleton.getInstance().getLevel() == 0) {
+        if (SettingsSingleton.getInstance().getLevel() == 99) {
+            if (currentStory == 3) {
+                if (Math.random() > 0.96) {
+                    if (Math.random() > 0.7) {
+                        obstacles.add(new Balloon());
+                    } else if (Math.random() > 0.5) {
+                        obstacles.add(new Ball());
+                    } else {
+                        obstacles.add(new StunBall());
+                    }
+                }
+            }
+        }
+        else if (SettingsSingleton.getInstance().getLevel() == 0) {
             if (Math.random() > 0.98) {
                 obstacles.add(new Ball());
             }
@@ -2048,7 +2163,7 @@ public class Game extends AbstractGame {
             buttons.clear();
             buttons.add(new ButtonRetry("Continue?", new Rectangle(new Point(0, Window.getHeight() / 2), Window.getWidth(), 160)));
             buttons.add(new ButtonBackToStart("Exit", new Rectangle(new Point(0, Window.getHeight() / 1.5), Window.getWidth(), 160)));
-            changeMainMusic("music/Game Main Menu.wav");
+            currentMusic = "music/Game Main Menu.wav";
         }
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.7));
         victoryFont.drawString("YOU FAILED THE CLIMB!", 30, 110);
@@ -2098,7 +2213,6 @@ public class Game extends AbstractGame {
     }
 
     public void addTileToCustomMap(String line) {
-        System.out.println(line);
         int currentRow = customMapTiles.size()/4;
         int currentBlocksInRow = customMapTiles.size()%4;
         Point point = new Point(480 * currentBlocksInRow, 100*offset + 600 + -475 * currentRow);
@@ -2162,5 +2276,26 @@ public class Game extends AbstractGame {
 
     public void addDisplayString(String string, int time) {
         stringDisplays.add(new StringDisplay(string, time));
+    }
+
+    public void setPlayersPosition() {
+        double spawnDivider = 1;
+        for (Player player : players) {
+            player.getCharacter().setPosition(new Point(spawnDivider * Window.getWidth() / (players.size() + 2), Window.getHeight() - 100));
+            spawnDivider++;
+        }
+    }
+
+    public boolean playersPassed() {
+        double playersFinished = 0;
+        for (Player player : players) {
+            if (player.getCharacter().getPos().distanceTo(new Point(player.getCharacter().getPos().x, 0)) < 10) {
+                playersFinished++;
+            }
+        }
+        if (playersFinished >= players.size()) {
+            return true;
+        }
+        return false;
     }
 }

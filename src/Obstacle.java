@@ -3,6 +3,7 @@ import bagel.Window;
 import bagel.util.Point;
 
 public abstract class Obstacle {
+    private String name = "";
     Image image;
     Point pos;
     double speed;
@@ -21,4 +22,5 @@ public abstract class Obstacle {
     public void setPos(Point point) { pos = point;}
     public void setGojoAbility(boolean bool) { gojoAbility = bool;}
     public void setJotaroAbility(boolean bool) {jotaroAbility = bool;}
+    public String getName() {return "";}
 }

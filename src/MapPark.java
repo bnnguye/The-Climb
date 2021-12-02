@@ -13,8 +13,8 @@ public class MapPark extends Map {
     Image mapPeek = new Image(String.format("res/mapPeeks/%d.png", this.level));
     Point pos;
     ArrayList<Tile> tiles = new ArrayList<>();
-    int height = 0;
-    int currentHeight = 0;
+    double height = 0;
+    double currentHeight = 0;
     boolean jotaroAbility = false;
 
     public Tile tileChooser(String line, Point point) {
@@ -70,7 +70,7 @@ public class MapPark extends Map {
 
     public void updateTiles(double shift) {
         if (!this.jotaroAbility) {
-            currentHeight ++;
+            currentHeight += shift;
         }
         ArrayList<Tile>tilesToRemove = new ArrayList<>();
         if (!this.jotaroAbility) {
@@ -88,7 +88,7 @@ public class MapPark extends Map {
     }
 
     public boolean hasFinished() {
-        return this.currentHeight == this.height;
+        return this.currentHeight >= this.height;
     }
 
     public void generateMap() {
@@ -125,11 +125,11 @@ public class MapPark extends Map {
         }
         return visibleTiles;
     }
-    public int getHeight() {
+    public double getHeight() {
         return this.height;
     }
 
-    public int getCurrentHeight() {
+    public double getCurrentHeight() {
         return this.currentHeight;
     }
     public void setJotaroAbility(boolean bool) { this.jotaroAbility = bool;}

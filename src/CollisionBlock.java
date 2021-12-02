@@ -13,7 +13,10 @@ public class CollisionBlock {
     Colour color = new Colour(1, 0.3, 0.3);
 
     public CollisionBlock(Point point, double width, double height) {
-        this.rectangle = new Rectangle(point, width, height);
+        height+=5;
+        width+=5;
+        point = new Point(point.x - 10, point.y - 100);
+        this.rectangle = new Rectangle(new Point(point.x, point.y), width, height);
         this.width = width;
         this.height = height;
         this.pos = point;

@@ -1,6 +1,5 @@
-TileBasic,TileBasic,TileBasic,TileBasic
-TileBasic,TileBasic,TileBasic,TileBasic
-TileBasic,TileBasic,TileBasic,TileBasic
-TileBasic,TileBasic,TileBasic,TileBasic
-TileBasic,TileBasic,TileBasic,TileBasic
-TileBasic,TileBasic,TileBasic,TileBasic
+Basic,Basic,Basic,Basic
+Basic,Basic,Basic,Basic
+Basic,Basic,Basic,Basic
+Basic,Basic,Basic,Basic
+Basic,Basic,Basic,Basic

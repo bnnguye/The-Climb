@@ -32,6 +32,7 @@ abstract class Character extends Object {
     boolean hisokaAbility = false;
     boolean jotaroAbility = false;
     boolean yugiAbility = false;
+    private double stunTime = 0;
 
     public Image getIcon() {
         return icon;
@@ -156,4 +157,6 @@ abstract class Character extends Object {
     }
 
     public void setYugiAbility(boolean bool) {}
+
+    public void gotStunned() {}
 }

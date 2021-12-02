@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class CharacterChizuru extends Character{
+    private final double frames = 144;
     Player player;
     String name = "Chizuru";
     Image icon = new Image(String.format("res/icons/%s.png", this.name));
@@ -33,68 +34,72 @@ public class CharacterChizuru extends Character{
     private int hisokaTimer = 0;
     boolean jotaroAbility = false;
     boolean yugiAbility = false;
+    private double stunTime = 0;
 
     public Image getIcon() { return this.icon;}
     public Image getImage() { return this.image;}
     public String getName() { return this.name;}
 
     public void move(String key) {
-        if(!this.jotaroAbility) {
-            double currentSpeed = this.speed;
-            if (this.yugiAbility) {
-                currentSpeed = this.speed * 1.25;
-            }
-            if (this.hisokaAbility) {
-                if (this.hisokaTimer < 2 * 144) {
-                    this.hisokaTimer++;
+        if (stunTime > 0) {
+            stunTime --;
+        }
+        else {
+            if (!this.jotaroAbility) {
+                double currentSpeed = this.speed;
+                if (this.yugiAbility) {
+                    currentSpeed = this.speed * 1.25;
                 }
-                else {
-                    this.hisokaAbility = false;
-                    this.hisokaTimer = 0;
+                if (this.hisokaAbility) {
+                    if (this.hisokaTimer < 2 * 144) {
+                        this.hisokaTimer++;
+                    } else {
+                        this.hisokaAbility = false;
+                        this.hisokaTimer = 0;
+                    }
                 }
-            }
-            if (this.speedUp) {
-                currentSpeed = 2 * this.speed;
-            }
-            else if (this.speedDown) {
-                currentSpeed = 0.5 * this.speed;
-            }
-            if (this.gojoAbility) {
-                currentSpeed = 0.5 * this.speed;
-            }
-            double new_X = pos.x;
-            double new_Y = pos.y;
-            if (key.equals("WA")) {
-                new_Y -= currentSpeed;
-                new_X -= currentSpeed;
-            }
-            if (key.equals("WD")) {
-                new_Y -= currentSpeed;
-                new_X += currentSpeed;
-            }
-            if (key.equals("SA")) {
-                new_Y += currentSpeed;
-                new_X -= currentSpeed;
-            }
-            if (key.equals("SD")) {
-                new_Y += currentSpeed;
-                new_X += currentSpeed;
-            }
-            if (key.equals("W")) {
-                new_Y -= currentSpeed;
-            }
-            if (key.equals("A")) {
-                new_X -= currentSpeed;
-            }
-            if (key.equals("S")) {
-                new_Y += currentSpeed;
-            }
-            if (key.equals("D")) {
-                new_X += currentSpeed;
-            }
-            if (((0 < new_X) && (new_X < Window.getWidth())) && ((0 < new_Y) && (new_Y < Window.getHeight()))) {
-                if (!this.hisokaAbility) {
-                    this.pos = new Point(new_X, new_Y);
+                if (this.speedUp) {
+                    currentSpeed = 2 * this.speed;
+                } else if (this.speedDown) {
+                    currentSpeed = 0.5 * this.speed;
+                }
+                if (this.gojoAbility) {
+                    currentSpeed = 0.5 * this.speed;
+                }
+                double new_X = pos.x;
+                double new_Y = pos.y;
+                if (key.equals("WA")) {
+                    new_Y -= currentSpeed;
+                    new_X -= currentSpeed;
+                }
+                if (key.equals("WD")) {
+                    new_Y -= currentSpeed;
+                    new_X += currentSpeed;
+                }
+                if (key.equals("SA")) {
+                    new_Y += currentSpeed;
+                    new_X -= currentSpeed;
+                }
+                if (key.equals("SD")) {
+                    new_Y += currentSpeed;
+                    new_X += currentSpeed;
+                }
+                if (key.equals("W")) {
+                    new_Y -= currentSpeed;
+                }
+                if (key.equals("A")) {
+                    new_X -= currentSpeed;
+                }
+                if (key.equals("S")) {
+                    new_Y += currentSpeed;
+                }
+                if (key.equals("D")) {
+                    new_X += currentSpeed;
+                }
+                if (((0 < new_X) && (new_X < Window.getWidth())) && ((0 < new_Y) && (new_Y < Window.getHeight()))) {
+                    if (!this.hisokaAbility) {
+                        this.pos = new Point(new_X, new_Y);
+                    }
                 }
             }
         }
@@ -203,6 +208,7 @@ public class CharacterChizuru extends Character{
         this.gojoAbility = false;
         this.hisokaAbility = false;
         this.jotaroAbility = false;
+        this.stunTime = 0;
     }
     public void playLine() {
         this.music.playMusic(String.format("music/%s.wav", this.name));
@@ -291,4 +297,5 @@ public class CharacterChizuru extends Character{
     public void setJotaroAbility(boolean bool) { this.jotaroAbility = bool;}
     public void setYugiAbility(boolean bool) { this.yugiAbility = bool;}
     public boolean isMinimised() {return this.minimised;}
+    public void gotStunned() {stunTime = 2*frames;}
 }

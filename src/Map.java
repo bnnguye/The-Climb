@@ -11,8 +11,8 @@ public abstract class Map {
     Image map;
     Point pos;
     ArrayList<Tile> tiles;
-    int height;
-    int currentHeight;
+    double height;
+    double currentHeight;
     boolean jotaroAbility = false;
 
     public void draw() {
@@ -42,11 +42,11 @@ public abstract class Map {
         ArrayList<Tile> visibleTiles = new ArrayList<>();
         return visibleTiles;
     }
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
-    public int getCurrentHeight() {
+    public double getCurrentHeight() {
         return currentHeight;
     }
 

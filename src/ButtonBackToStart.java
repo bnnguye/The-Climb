@@ -19,5 +19,5 @@ public class ButtonBackToStart extends Button {
         }
     }
 
-    public void playAction() { SettingsSingleton.getInstance().setGameStateString("Menu"); if (SettingsSingleton.getInstance().getLevel() == 99) {SettingsSingleton.getInstance().setGameState(0);}}
+    public void playAction() { SettingsSingleton.getInstance().setGameStateString("Menu");}
 }

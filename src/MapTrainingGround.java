@@ -5,19 +5,16 @@ import bagel.util.Point;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Scanner;
 
-
 public class MapTrainingGround extends Map {
-    Date date=java.util.Calendar.getInstance().getTime();
     int level = 0;
     String name = "Training Grounds";
     Image mapPeek = new Image(String.format("res/mapPeeks/%d.png", this.level));
     Point pos;
     ArrayList<Tile> tiles = new ArrayList<>();
-    int height = 0;
-    int currentHeight = 0;
+    double height = 0;
+    double currentHeight = 0;
     boolean jotaroAbility = false;
 
     public Tile tileChooser(String line, Point point) {
@@ -73,7 +70,7 @@ public class MapTrainingGround extends Map {
 
     public void updateTiles(double shift) {
         if (!this.jotaroAbility) {
-            currentHeight ++;
+            currentHeight += shift;
         }
         ArrayList<Tile>tilesToRemove = new ArrayList<>();
         if (!this.jotaroAbility) {
@@ -91,14 +88,14 @@ public class MapTrainingGround extends Map {
     }
 
     public boolean hasFinished() {
-        return this.currentHeight == this.height;
+        return this.currentHeight >= this.height;
     }
 
     public void generateMap() {
         tiles.clear();
         int currentBlocksInRow = 0;
         int currentRow = 0;
-        this.height = -1000;
+        this.height = -Window.getHeight();
         this.currentHeight = 0;
         try {
             Scanner scanner = new Scanner(new File("res/mapData/TrainingGround.txt"));
@@ -128,11 +125,11 @@ public class MapTrainingGround extends Map {
         }
         return visibleTiles;
     }
-    public int getHeight() {
+    public double getHeight() {
         return this.height;
     }
 
-    public int getCurrentHeight() {
+    public double getCurrentHeight() {
         return this.currentHeight;
     }
     public void setJotaroAbility(boolean bool) { this.jotaroAbility = bool;}

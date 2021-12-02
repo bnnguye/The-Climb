@@ -10,6 +10,7 @@ public class SettingsSingleton {
     private static String gameStateString = "";
     private static int mapNo;
     private static Player winner;
+    private double time = 0;
 
     private SettingsSingleton() {
         buttons = new ArrayList<>();
@@ -44,5 +45,7 @@ public class SettingsSingleton {
     public void setGameStateString(String string) { gameStateString = string;}
     public void setWinner(Player id) { winner = id;}
     public Player getWinner() { return winner;}
+    public double getTime() {return time; }
+    public void updateTime() {time++;}
 
 }
