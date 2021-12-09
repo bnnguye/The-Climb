@@ -49,7 +49,7 @@ public class TileBasicTop extends Tile {
     public void draw() {
         this.image.drawFromTopLeft(this.pos.x, this.pos.y);
         for (CollisionBlock block: this.collisionBlocks) {
-            block.updatePos(this.pos);
+            block.updatePos(new Point(this.pos.x - 100, this.pos.y));
             block.draw();
         }
     }

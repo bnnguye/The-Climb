@@ -7,6 +7,7 @@ import bagel.util.Point;
 import bagel.util.Rectangle;
 
 import java.io.*;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -110,6 +111,9 @@ public class Game extends AbstractGame {
     double timeToSaveStats = 60 * frames;
     int currentTimeToSaveStats = 0;
 
+    //Computer variables
+    private ArrayList<Point> route;
+
 
     //Story variables
     private boolean playingDialogue = false;
@@ -172,6 +176,7 @@ public class Game extends AbstractGame {
         allCharacters = new ArrayList<>();
         sideCharacters= new ArrayList<>();
         allSideCharacters = new ArrayList<>();
+        route = new ArrayList<>();
 
         // initialize characters
         Chizuru = new CharacterChizuru();
@@ -309,7 +314,7 @@ public class Game extends AbstractGame {
             }
         }
         if (SettingsSingleton.getInstance().getGameState() == 0) {
-            currentMusic = "music/Silence.wav";
+            currentMusic = "music/Game Main Menu.wav";
             saveStatsChecker();
             if (!SettingsSingleton.getInstance().getGameStateString().equals("Main Menu")) {
                 buttons.clear();
@@ -685,9 +690,9 @@ public class Game extends AbstractGame {
                         if(!playingAnimation) {
                             displayCharacterStats(players);
                             if (SettingsSingleton.getInstance().getLevel() == 0) {
-                                map.updateTiles(0.4);
+                                map.updateTiles(0.5);
                             } else {
-                                map.updateTiles(0.8);
+                                map.updateTiles(1);
                             }
                             spawnObstacles();
                             spawnPowerUps();
@@ -735,6 +740,11 @@ public class Game extends AbstractGame {
             else {
                 if (!SettingsSingleton.getInstance().getGameStateString().equals("Story")) {
                     SettingsSingleton.getInstance().setGameStateString("Story");
+                    setPlayersPosition();
+                    map = mapToTransitionTo;
+                    if (map != null) {
+                        map.generateMap();
+                    }
                 }
                 if (map != null) {
                     render();
@@ -852,6 +862,7 @@ public class Game extends AbstractGame {
                         }
                         else if (currentStory == 3) {
                             currentMusic = "music/Dio.wav";
+                            dark = true;
                             if (lastStory != currentStory) {
                                 setPlayersPosition();
                                 lastStory = currentStory;
@@ -893,6 +904,7 @@ public class Game extends AbstractGame {
                     else if (playingScene){
                         currentMode = "Scene";
                         currentDialogue = currentScene;
+                        map = null;
 
                         if(currentScene == 0) {
                             if (lastScene != currentScene) {
@@ -1118,6 +1130,15 @@ public class Game extends AbstractGame {
                 else if (SettingsSingleton.getInstance().getGameStateString().equals("Menu")) {
                     failed = false;
                     SettingsSingleton.getInstance().setGameState(0);
+                    for (Player player : players) {
+                        player.getCharacter().resetTimer();
+                        if (player.isDead()) {
+                            player.setDead();
+                        }
+                    }
+                    setPlayersPosition();
+                    powerUps.removeAll(powerUps);
+                    obstacles.removeAll(obstacles);
                 }
             }
             else {
@@ -2046,7 +2067,6 @@ public class Game extends AbstractGame {
                         }
                         else {
                             if (obstacle.getName().equals("StunBall")) {
-                                System.out.println("Stunned");
                                 player.getCharacter().gotStunned();
                             }
                             else {
@@ -2297,5 +2317,49 @@ public class Game extends AbstractGame {
             return true;
         }
         return false;
+    }
+
+    public void playIntro() {
+
+    }
+
+    public void createSafeRoute() {
+        Map mapClone;
+        ArrayList<Obstacle> obstaclesOnScreen = (ArrayList<Obstacle>) obstacles.clone();
+        //ArrayList<ArrayList<Node>> allCombinations = createTree();
+
+        //for ()
+        for (Obstacle obstacle: obstaclesOnScreen) {
+
+        }
+    }
+
+    public Node createTree() {
+        HeadNode head = new HeadNode();
+        int height = 5;
+
+        for (int i = 0; i < height; i++) {
+            //Node newNode = new Node()
+            //head.getRootNodes().get(i);
+        }
+        return null;
+    }
+
+    public void traverseTree(Node node) {
+
+    }
+
+    public void updateSafeRoute() {
+
+    }
+
+    public int recursiveFunction(int num) {
+        if (num > 5) {
+            return num;
+        }
+        else {
+            num++;
+            return recursiveFunction(num);
+        }
     }
 }

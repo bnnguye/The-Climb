@@ -74,7 +74,7 @@ public class MapCustom extends Map {
         if (settingsSingleton.getGameState() == 9) {
             for (Tile tile: tiles) {
                 for (CollisionBlock block: tile.getCollisionBlocks()) {
-                    block.updatePos(new Point (tile.getPos().x, tile.getPos().y + shift));
+                    block.updatePos(new Point (tile.getPos().x - 10, tile.getPos().y + shift));
                 }
                 tile.setPos(new Point(tile.getPos().x, tile.getPos().y + shift));
             }

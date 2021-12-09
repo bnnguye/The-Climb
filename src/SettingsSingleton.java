@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 public class SettingsSingleton {
+    private final double frames = 144;
     private static SettingsSingleton single_instance = null;
     private ArrayList<Button> buttons;
     private static int gameState = 0;
@@ -46,6 +47,6 @@ public class SettingsSingleton {
     public void setWinner(Player id) { winner = id;}
     public Player getWinner() { return winner;}
     public double getTime() {return time; }
-    public void updateTime() {time++;}
+    public void updateTime() {time++; if (time % frames == 0) { System.out.println(time/frames);}}
 
 }
