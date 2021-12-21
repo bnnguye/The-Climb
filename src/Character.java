@@ -8,6 +8,7 @@ abstract class Character extends Object {
 
     Player player;
     String name;
+    String soundPath;
     Image icon;
     Point iconPos;
     Image selected;
@@ -82,7 +83,8 @@ abstract class Character extends Object {
     public void resetTimer() {
     }
 
-    public void playLine() {
+    public String playLine() {
+        return null;
     }
 
     public Image getSelected() {

@@ -4,4 +4,3 @@ BasicTop,BasicLeft,BasicTop,Basic
 BasicLeft,Basic,BasicTop,BasicLeft
 Basic,BasicTop,BasicLeft,Basic
 Ice,Ice,Ice,Ice
-Basic,Basic,Basic,Basic

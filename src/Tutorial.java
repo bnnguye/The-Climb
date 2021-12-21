@@ -170,15 +170,6 @@ public class Tutorial extends Character{
         this.shield = false;
     }
 
-    public void playLine() {
-        this.music.playMusic(String.format("music/%s.wav", this.name));
-        this.music.played = true;
-    }
-    public void stopMusic() {
-        if (this.music.played) {
-            this.music.stopMusic();
-        }
-    }
     public Image getSelected() { return this.selected;}
     public Point getIconPos() {return this.iconPos;}
     public void setIconPos(Point point) { this.iconPos = point;}

@@ -10,14 +10,14 @@ public class CharacterChizuru extends Character{
     private final double frames = 144;
     Player player;
     String name = "Chizuru";
-    Image icon = new Image(String.format("res/icons/%s.png", this.name));
+    String soundPath = String.format("music/%s.wav", this.name);
     Point iconPos;
-    Image image;
-    Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
     Point pos;
+    Image image;
+    Image icon = new Image(String.format("res/icons/%s.png", this.name));
+    Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
     int[] stats = new int[2];
 
-    Music music = new Music();
     int timer = 120;
     final double speed = 2;
 
@@ -35,6 +35,7 @@ public class CharacterChizuru extends Character{
     boolean jotaroAbility = false;
     boolean yugiAbility = false;
     private double stunTime = 0;
+
 
     public Image getIcon() { return this.icon;}
     public Image getImage() { return this.image;}
@@ -185,7 +186,6 @@ public class CharacterChizuru extends Character{
         else if (powerUp.getName().equals("SpeedUp")) {
             this.speedUp = true;
             this.speedUpTimer = 420;
-            music.playMusic("music/SpeedUp.wav");
         }
         else if (powerUp.getName().equals("SpeedDown")) {
             this.speedDown = true;
@@ -208,17 +208,11 @@ public class CharacterChizuru extends Character{
         this.gojoAbility = false;
         this.hisokaAbility = false;
         this.jotaroAbility = false;
-        this.stunTime = 0;
     }
-    public void playLine() {
-        this.music.playMusic(String.format("music/%s.wav", this.name));
-        this.music.played = true;
+    public String playLine() {
+        return this. soundPath;
     }
-    public void stopMusic() {
-        if (this.music.played) {
-            this.music.stopMusic();
-        }
-    }
+
     public Image getSelected() { return this.selected;}
     public Point getIconPos() {return this.iconPos;}
     public void setIconPos(Point point) { this.iconPos = point;}

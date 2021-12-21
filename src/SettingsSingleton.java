@@ -4,9 +4,8 @@ public class SettingsSingleton {
     private final double frames = 144;
     private static SettingsSingleton single_instance = null;
     private ArrayList<Button> buttons;
-    private static int gameState = 0;
+    private static int gameState = -1;
     private static int level;
-    private static int difficulty;
     private static int players = 0;
     private static String gameStateString = "";
     private static int mapNo;
@@ -35,8 +34,6 @@ public class SettingsSingleton {
     public void setMapNo(int num) { mapNo = num;}
     public int getLevel() {return level;}
     public int getMapNo() {return mapNo;}
-    public int getDifficulty () {return difficulty;}
-    public void setDifficulty(int num) {difficulty = num;}
 
     public void setPlayers(int players) {
         SettingsSingleton.players = players;
@@ -47,6 +44,7 @@ public class SettingsSingleton {
     public void setWinner(Player id) { winner = id;}
     public Player getWinner() { return winner;}
     public double getTime() {return time; }
-    public void updateTime() {time++; if (time % frames == 0) { System.out.println(time/frames);}}
+    public void updateTime() {time++;}
+    public double getFrames() {return frames;}
 
 }

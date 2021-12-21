@@ -44,6 +44,7 @@ public class Game extends AbstractGame {
     private final Font introFont = new Font("res/fonts/Storytime.ttf", 80);
     private final DrawOptions DO;
 
+    private double intro = 0;
 
     private ArrayList<Button> buttons;
     private ArrayList<Character> characters;
@@ -270,8 +271,8 @@ public class Game extends AbstractGame {
         bottomRectangle = new Rectangle(0, Window.getHeight() - 20, Window.getWidth(), 20);
         topRectangle = new Rectangle(0, 0, Window.getWidth(), 20);
         menuBackground = new Image("res/menu/MainMenu.PNG");
-        currentMusic = "music/Game Main Menu.wav";
         menuTitle = "";
+        currentMusic = "music/Silence.wav";
         getGameStats();
         loadStory();
         if (currentStory >= currentScene) {
@@ -291,29 +292,32 @@ public class Game extends AbstractGame {
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
         SettingsSingleton.getInstance().updateTime();
 
-        if (menuBackground != null) {
-            menuBackground.drawFromTopLeft(0, 0);
-        }
-        Drawing.drawRectangle(0, 0, Window.getWidth(), 100, black);
-        Drawing.drawRectangle(0, Window.getHeight() - 85, Window.getWidth(), 85, black);
+        if (SettingsSingleton.getInstance().getGameState() > -1) {
+            if (menuBackground != null) {
+                menuBackground.drawFromTopLeft(0, 0);
+            }
 
-        if (menuTitle != null) {
-            titleFont.drawString(menuTitle, 0, 75);
-        }
-
-
-        if (SettingsSingleton.getInstance().getButtons().size() > 0 ) {
-            for (Button button: SettingsSingleton.getInstance().getButtons()) {
-                button.toggleHover(input.getMousePosition());
-                if (input.wasPressed(MouseButtons.LEFT)) {
-                    if (button.isHovering()) {
-                        playSound("music/Click.wav");
-                        button.playAction();
+            if (menuTitle != null) {
+                titleFont.drawString(menuTitle, 0, 65, DO.setBlendColour(black));
+            }
+            if (SettingsSingleton.getInstance().getButtons().size() > 0 ) {
+                for (Button button: SettingsSingleton.getInstance().getButtons()) {
+                    button.toggleHover(input.getMousePosition());
+                    if (input.wasPressed(MouseButtons.LEFT)) {
+                        if (button.isHovering()) {
+                            playSound("music/Click.wav");
+                            button.playAction();
+                        }
                     }
                 }
             }
         }
-        if (SettingsSingleton.getInstance().getGameState() == 0) {
+
+
+        if (SettingsSingleton.getInstance().getGameState() == -1) {
+            playIntro();
+        }
+        else if (SettingsSingleton.getInstance().getGameState() == 0) {
             currentMusic = "music/Game Main Menu.wav";
             saveStatsChecker();
             if (!SettingsSingleton.getInstance().getGameStateString().equals("Main Menu")) {
@@ -535,7 +539,7 @@ public class Game extends AbstractGame {
         else if (SettingsSingleton.getInstance().getGameState() == 5) { // Map
             if (!SettingsSingleton.getInstance().getGameStateString().equals("MAP")) {
                 menuTitle = "Which Climb?";
-                menuBackground = new Image("res/mapMenu.jpg");
+                menuBackground = new Image("res/menu/mapMenu.png");
                 SettingsSingleton.getInstance().setGameStateString("MAP");
             }
             spacer = 400;
@@ -627,16 +631,9 @@ public class Game extends AbstractGame {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
             if (SettingsSingleton.getInstance().getLevel() < 99) {
                 if (!SettingsSingleton.getInstance().getGameStateString().equals("Game")) {
-                    int playerSize = players.size() + 1;
-                    for (Player player : players) {
-                        double spawnSpacer = Window.getWidth() / playerSize;
-                        Point spawnPoint = new Point(spawnSpacer, Window.getHeight() - 100);
-                        player.getCharacter().setPosition(spawnPoint);
-                        playerSize -= 1;
-                    }
-                    //int trackNo = (int) Math.round(Math.random()*2 - 0.5);
-                    //currentMusic = String.format("music/Fight%d.wav", trackNo);
+                    setPlayersPosition();
                     currentMusic = String.format("music/Fight%d.wav", SettingsSingleton.getInstance().getMapNo());
+                    resetMusic();
                     playSound("music/Start.wav");
                     SettingsSingleton.getInstance().setGameStateString("Game");
                 }
@@ -1142,7 +1139,7 @@ public class Game extends AbstractGame {
                 }
             }
             else {
-                currentMusic = "music/Game Main Menu.wav";
+                currentMusic = "music/Fail.wav";
                 countDown = 0;
                 currentFrame = 0;
                 for (Player player: players) {
@@ -1171,6 +1168,7 @@ public class Game extends AbstractGame {
                         player.getCharacter().resetTimer();
                         if (player.getCharacter() != null) {
                             if (player.getCharacter().getName().equals(SettingsSingleton.getInstance().getWinner().getCharacter().getName())) {
+                                playSound(player.getCharacter().playLine());
                                 player.getCharacter().updateStats(true, true);
                                 player.recordWin();
                             }
@@ -1194,7 +1192,6 @@ public class Game extends AbstractGame {
                         resetMusic();
                         for (SideCharacter character: sideCharacters) {
                             character.reset();
-                            character.stopMusic();
                         }
                         for (Character character: characters) {
                             character.stopMusic();
@@ -1365,8 +1362,8 @@ public class Game extends AbstractGame {
         }
         if ((SettingsSingleton.getInstance().getGameState() > 0) && (SettingsSingleton.getInstance().getGameState() < 6)) {
             Image back = new Image("res/BackArrow.PNG");
-            back.draw(Window.getWidth() - back.getWidth(), back.getHeight()*2);
-            if (back.getBoundingBoxAt(new Point(Window.getWidth() - back.getWidth(), back.getHeight()*2)).intersects(input.getMousePosition())) {
+            back.draw(Window.getWidth() - back.getWidth(), back.getHeight());
+            if (back.getBoundingBoxAt(new Point(Window.getWidth() - back.getWidth(), back.getHeight())).intersects(input.getMousePosition())) {
                 if (input.wasPressed(MouseButtons.LEFT)) {
                     if (SettingsSingleton.getInstance().getGameState() == 3) {
                         players.removeAll(players);
@@ -1961,7 +1958,7 @@ public class Game extends AbstractGame {
             }
             if (pickable) {
                 player.setCharacter(character);
-                character.playLine();
+                playSound(character.playLine());
             }
         }
         else {
@@ -1983,7 +1980,7 @@ public class Game extends AbstractGame {
             }
             if (pickable) {
                 player.setSideCharacter(character);
-                character.playLine();
+                playSound(character.playLine());
             }
         }
         else {
@@ -2183,7 +2180,7 @@ public class Game extends AbstractGame {
             buttons.clear();
             buttons.add(new ButtonRetry("Continue?", new Rectangle(new Point(0, Window.getHeight() / 2), Window.getWidth(), 160)));
             buttons.add(new ButtonBackToStart("Exit", new Rectangle(new Point(0, Window.getHeight() / 1.5), Window.getWidth(), 160)));
-            currentMusic = "music/Game Main Menu.wav";
+            currentMusic = "music/Fail.wav";
         }
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.7));
         victoryFont.drawString("YOU FAILED THE CLIMB!", 30, 110);
@@ -2253,11 +2250,17 @@ public class Game extends AbstractGame {
         else if (line.equals("IceTop")) {
             tile = new TileIceTop(point);
         }
+        else if (line.equals("IceLeft")) {
+            tile = new TileIceLeft(point);
+        }
         else if (line.equals("Slow")) {
             tile = new TileSlow(point);
         }
         else if (line.equals("SlowLeft")) {
             tile = new TileSlowLeft(point);
+        }
+        else if (line.equals("SlowTop")) {
+            tile = new TileSlowTop(point);
         }
         else if (line.equals("BasicSad")) {
             tile = new TileBasicSad(point);
@@ -2276,7 +2279,7 @@ public class Game extends AbstractGame {
     public void showDisplayStrings() {
         int i = 1;
         for (StringDisplay stringDisplay: stringDisplays) {
-            playerFont.drawString(stringDisplay.getName(), 0, 60*i);
+            playerFont.drawString(stringDisplay.getName(), Window.getWidth() - playerFont.getWidth(stringDisplay.getName()), 60*i);
             i++;
         }
     }
@@ -2320,46 +2323,17 @@ public class Game extends AbstractGame {
     }
 
     public void playIntro() {
-
-    }
-
-    public void createSafeRoute() {
-        Map mapClone;
-        ArrayList<Obstacle> obstaclesOnScreen = (ArrayList<Obstacle>) obstacles.clone();
-        //ArrayList<ArrayList<Node>> allCombinations = createTree();
-
-        //for ()
-        for (Obstacle obstacle: obstaclesOnScreen) {
-
+        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1, 1, 1, intro/(2*frames)));
+        intro++;
+        if (intro >= 2*frames) {
+            introFont.drawString("Made by Bill Nguyen", Window.getWidth()/2 - introFont.getWidth("Made by Bill Nguyen")/2, Window.getHeight()/2, DO.setBlendColour(new Colour(0,0,0,(intro - 2*frames)/(1*frames))));
+            if (intro == 2*frames) {
+                soundEffectMusic.playMusic("music/Intro.wav");
+            }
+        }
+        if (intro >= 5*frames) {
+            SettingsSingleton.getInstance().setGameState(0);
         }
     }
 
-    public Node createTree() {
-        HeadNode head = new HeadNode();
-        int height = 5;
-
-        for (int i = 0; i < height; i++) {
-            //Node newNode = new Node()
-            //head.getRootNodes().get(i);
-        }
-        return null;
-    }
-
-    public void traverseTree(Node node) {
-
-    }
-
-    public void updateSafeRoute() {
-
-    }
-
-    public int recursiveFunction(int num) {
-        if (num > 5) {
-            return num;
-        }
-        else {
-            num++;
-            return recursiveFunction(num);
-        }
-    }
 }

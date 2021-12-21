@@ -8,12 +8,12 @@ import java.util.ArrayList;
 public class SideHisoka extends SideCharacter{
     private final int frames = 144;
     String name = "Hisoka";
+    String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
     boolean activating = false;
-    boolean animating = false;
-    int timer;
-    Music music = new Music();
+    int timer = 0;
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
+
     boolean shoot = false;
     ArrayList<BungeeGum> bungeeGums;
 
@@ -26,11 +26,10 @@ public class SideHisoka extends SideCharacter{
     public Point getIconPos() {return this.iconPos;}
     public Image getSelected() {return this.selected;}
     public boolean isActivating() {return this.activating;}
+    public String playLine() {return this.soundPath;}
 
     public void activateAbility(Player user,ArrayList<Player> players, ArrayList<Obstacle> obstacles) {
         if(!this.activating) {
-            this.music.playMusic("music/Hisoka.wav");
-            this.music.played = true;
             this.activating = true;
             this.timer = 10 * frames;
             bungeeGums = new ArrayList<>();
@@ -56,9 +55,6 @@ public class SideHisoka extends SideCharacter{
             this.animating = false;
         }
         this.timer--;
-        if (this.timer <= 0) {
-            this.music.played = false;
-        }
         if (timer < 8*frames) {
             if (bungeeGums.size() > 0) {
                 ArrayList<BungeeGum> bgToRemove = new ArrayList<>();
@@ -85,25 +81,18 @@ public class SideHisoka extends SideCharacter{
                 bungeeGums.removeAll(bgToRemove);
             }
             else {
-                stopMusic();
                 this.activating = false;
             }
         }
     }
 
     public void reset() {
-        stopMusic();
         this.activating = false;
         this.animating = false;
         this.timer = 0;
         this.shoot = false;
     }
 
-    public void stopMusic() {
-        if (this.music.played) {
-            this.music.stopMusic();
-        }
-    }
     public boolean isAnimating() {
         return this.animating;
     }

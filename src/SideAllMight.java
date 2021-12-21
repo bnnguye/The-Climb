@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class SideAllMight extends SideCharacter{
     private final int frames = 144;
     String name = "AllMight";
+    String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
     boolean activating = false;
     boolean animating = false;
@@ -23,6 +24,7 @@ public class SideAllMight extends SideCharacter{
     public Point getIconPos() {return this.iconPos;}
     public Image getSelected() {return this.selected;}
     public boolean isActivating() {return this.activating;}
+    public String playLine() {return this.soundPath;}
 
     public void activateAbility(Player user,ArrayList<Player> players, ArrayList<Obstacle> obstacles) {
         if(!this.activating) {

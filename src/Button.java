@@ -4,7 +4,7 @@ import bagel.util.Colour;
 import bagel.util.Rectangle;
 import bagel.util.Point;
 
-public abstract class Button {
+public abstract class   Button {
 
     private final int FONT_SIZE = 160;
     private String name;

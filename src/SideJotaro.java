@@ -10,11 +10,12 @@ import java.util.ArrayList;
 public class SideJotaro extends SideCharacter{
     private final int frames = 144;
     String name = "Jotaro";
+    String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
     boolean activating = false;
-    int timer;
-    Music music = new Music();
+    int timer = 0;
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
+
     int shakeTimer;
     ArrayList<PowerUp> powerUps;
     Map map;
@@ -22,6 +23,18 @@ public class SideJotaro extends SideCharacter{
     public String getName() {
         return this.name;
     }
+    public Image getIcon() {return this.icon;}
+    public void setIconPos(Point point) {this.iconPos = point;}
+    public Point getIconPos() {return this.iconPos;}
+    public Image getSelected() {return this.selected;}
+    public boolean isActivating() {return this.activating;}
+    public void reset() {
+        this.activating = false;
+        this.animating = false;
+        this.timer = 0;
+        shakeTimer = 500;
+    }
+    public String playLine() {return this.soundPath;}
 
     public void activateAbility(Player user,ArrayList<Player> players, ArrayList<Obstacle> obstacles) {
 
@@ -29,8 +42,6 @@ public class SideJotaro extends SideCharacter{
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (!this.activating) {
             timer = 5*frames;
-            music.playMusic("music/Jotaro.wav");
-            music.played = true;
             this.activating = true;
         }
         else {
@@ -70,29 +81,11 @@ public class SideJotaro extends SideCharacter{
             }
             this.map.setJotaroAbility(false);
             this.activating = false;
-            music.played = false;
-            stopMusic();
         }
     }
 
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
-    public boolean isActivating() {return this.activating;}
-    public void reset() {
-        this.activating = false;
-        this.animating = false;
-        stopMusic();
-        this.timer = 0;
-        shakeTimer = 500;
-    }
 
-    public void stopMusic() {
-        if (this.music.played) {
-            this.music.stopMusic();
-        }
-    }
+
     public boolean isAnimating() {
         return this.animating;
     }

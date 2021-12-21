@@ -10,10 +10,10 @@ import java.util.ArrayList;
 public class SideZoro extends SideCharacter{
     private final int frames = 144;
     String name = "Zoro";
+    String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/Zoro/Icon.PNG", this.name));
     boolean activating = false;
     int timer;
-    Music music = new Music();
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
     int shakeTimer;
     Map map;
@@ -22,6 +22,18 @@ public class SideZoro extends SideCharacter{
     public String getName() {
         return this.name;
     }
+    public Image getIcon() {return this.icon;}
+    public void setIconPos(Point point) {this.iconPos = point;}
+    public Point getIconPos() {return this.iconPos;}
+    public Image getSelected() {return this.selected;}
+    public boolean isActivating() {return this.activating;}
+    public void reset() {
+        this.activating = false;
+        this.animating = false;
+        this.timer = 0;
+        shakeTimer = 500;
+    }
+    public String playLine() {return this.soundPath;}
 
     public void activateAbility(Player user,ArrayList<Player> players, ArrayList<Obstacle> obstacles) {
         ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
@@ -33,8 +45,6 @@ public class SideZoro extends SideCharacter{
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (!this.activating) {
             timer = 5*frames;
-            music.playMusic("music/Zoro.wav");
-            music.played = true;
             this.activating = true;
             shakeTimer = 3*frames;
         }
@@ -157,30 +167,10 @@ public class SideZoro extends SideCharacter{
         }
         if (timer <= 0) {
             this.activating = false;
-            music.played = false;
-            stopMusic();
             shakeTimer = 500;
         }
     }
 
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
-    public boolean isActivating() {return this.activating;}
-    public void reset() {
-        this.activating = false;
-        this.animating = false;
-        stopMusic();
-        this.timer = 0;
-        shakeTimer = 500;
-    }
-
-    public void stopMusic() {
-        if (this.music.played) {
-            this.music.stopMusic();
-        }
-    }
 
     public boolean isAnimating() {
         return this.animating;
