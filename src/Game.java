@@ -5,6 +5,7 @@ import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
 import bagel.util.Rectangle;
+import org.lwjgl.system.CallbackI;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -1928,18 +1929,15 @@ public class Game extends AbstractGame {
     public void displayCharacterStats(ArrayList<Player> players) {
         int playerIndex = 0;
         for (Player player: players) {
-            Image picture;
+            Image picture = new Image(String.format("res/InGame/%s.png", player.getCharacter().getName()));
             Colour border = new Colour(0, 0, 0, 0.3);
-            if(player.getCharacter().isMinimised()) {
-                picture = new Image(String.format("res/InGame/%s_Mini.png", player.getCharacter().getName()));
-                Drawing.drawRectangle(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight(), 200, picture.getHeight(), border);
+            Drawing.drawRectangle(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight(), 200, picture.getHeight(), border);
+            if (player.getCharacter().isMinimised()) {
+                picture.drawFromTopLeft(playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight(), new DrawOptions().setScale(0.5, 0.5));
             }
             else {
-                picture = new Image(String.format("res/InGame/%s.png", player.getCharacter().getName()));
-                Drawing.drawRectangle(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight(), 200, picture.getHeight(), border);
+                picture.drawFromTopLeft(playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight());
             }
-            picture.drawFromTopLeft(playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight());
-
 
             if (player.getCharacter().hasShield()) {
                 Image shield = new Image("res/InGame/Shield_Selected.png");
@@ -2008,10 +2006,10 @@ public class Game extends AbstractGame {
 
     public void drawCurrentHeight() {
         if (java.time.LocalTime.now().getHour() > 18) {
-            gameFont.drawString(String.format("%4.0f/%4.0fm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, DO.setBlendColour(new Colour(1,1,1)));
+            gameFont.drawString(String.format("%4.0f/%4.0fm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, new DrawOptions().setBlendColour(new Colour(1,1,1)));
         }
         else {
-            gameFont.drawString(String.format("%4.0f/%4.0fm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, DO.setBlendColour(new Colour(0, 0, 0)));
+            gameFont.drawString(String.format("%4.0f/%4.0fm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, new DrawOptions().setBlendColour(new Colour(0, 0, 0)));
         }
     }
 

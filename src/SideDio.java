@@ -42,8 +42,14 @@ public class SideDio extends SideCharacter{
         if (!this.activating) {
             timer = 5*frames;
             this.activating = true;
+            for (Player player: players) {
+                if (player.getId() != user.getId()) {
+                    player.getCharacter().setJotaroAbility(true);
+                }
+            }
         }
         else {
+            user.getCharacter().setJotaroAbility(false);
             if (timer > 3*frames) {
                 this.animating = true;
                 Image noblePhantasm = new Image("res/charactersS/Dio/NoblePhantasm.png");
@@ -56,11 +62,6 @@ public class SideDio extends SideCharacter{
                 }
                 for(Obstacle obstacle: obstacles) {
                     obstacle.setJotaroAbility(true);
-                }
-                for (Player player: players) {
-                    if (player.getId() != user.getId()) {
-                        player.getCharacter().setJotaroAbility(true);
-                    }
                 }
                 map.setJotaroAbility(true);
             }

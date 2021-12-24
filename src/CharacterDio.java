@@ -1,3 +1,4 @@
+import bagel.DrawOptions;
 import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
@@ -10,7 +11,7 @@ public class CharacterDio extends Character{
     private final double frames = 144;
     Player player;
     String name = "Dio";
-    String soundPath = String.format("music/% World.wav", this.name);
+    String soundPath = String.format("music/%s World.wav", this.name);
     Point iconPos;
     Point pos;
     Image image;
@@ -123,34 +124,30 @@ public class CharacterDio extends Character{
                 this.speedDown = false;
             }
         }
-        if (!this.minimised) {
+        picture = new Image(String.format("res/characters/%s/%s_Left.png", this.name, this.name));
+        if (this.timer < 60) {
             picture = new Image(String.format("res/characters/%s/%s_Left.png", this.name, this.name));
-            if (this.timer < 60) {
-                picture = new Image(String.format("res/characters/%s/%s_Left.png", this.name, this.name));
-            }
-            else if (this.timer > 60) {
-                picture  = new Image(String.format("res/characters/%s/%s_Right.png", this.name, this.name));
-            }
         }
-        else {
-            this.minimisedTimer--;
-            picture = new Image(String.format("res/characters/%s/%s_Left_Mini.png", this.name, this.name));
-            if (this.timer < 60) {
-                picture = new Image(String.format("res/characters/%s/%s_Left_Mini.png", this.name, this.name));
-            }
-            else if (this.timer > 60) {
-                picture  = new Image(String.format("res/characters/%s/%s_Right_Mini.png", this.name, this.name));
-            }
+        else if (this.timer > 60) {
+            picture  = new Image(String.format("res/characters/%s/%s_Right.png", this.name, this.name));
         }
         if (minimisedTimer < 0 ){
             minimised = false;
+        }
+        else {
+            minimisedTimer--;
         }
         if (this.timer <= 0) {
             this.timer = 120;
         }
         this.timer --;
         this.image = picture;
-        picture.draw(this.pos.x, this.pos.y);
+        if (minimised) {
+            picture.draw(this.pos.x, this.pos.y, new DrawOptions().setScale(0.5, 0.5));
+        }
+        else {
+            picture.draw(this.pos.x, this.pos.y);
+        }
         if (this.shield) {
             Image bubble = new Image("res/bubble.png");
             bubble.draw(this.pos.x, this.pos.y);

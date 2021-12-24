@@ -39,38 +39,42 @@ public class SidePuck extends SideCharacter{
             shards = new ArrayList<>();
             shardsToRemove = new ArrayList<>();
         }
-
-        if (timer > 3*frames) {
-            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
-            Image noblePhantasm = new Image(String.format("res/charactersS/%s/NoblePhantasm.png", this.name));
-            noblePhantasm.drawFromTopLeft(0,0);
-            this.animating = true;
-        }
         else {
-            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 1, 0.5));
-            this.animating = false;
-            for (Player player: players) {
-                if (!player.getSideCharacter().getName().equals("Puck")) {
-                    player.getCharacter().onSlow();
-                }
-
-                if (shards.size() > 0) {
-                    for (Shard shard: shards) {
-                        shard.draw();
-                        if (shard.getImage().getBoundingBoxAt(shard.getPos()).intersects(player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()))) {
-                            player.setDead();
-                        }
-                        shard.move();
-                        if (shard.getPos().y > Window.getHeight()) {
-                            shardsToRemove.add(shard);
-                        }
-                    }
-                    shards.removeAll(shardsToRemove);
-                }
+            if (timer > 3*frames) {
+                Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
+                Image noblePhantasm = new Image(String.format("res/charactersS/%s/NoblePhantasm.png", this.name));
+                noblePhantasm.drawFromTopLeft(0,0);
+                this.animating = true;
             }
-            spawnShards();
+            else {
+                Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 1, 0.5));
+                this.animating = false;
+                for (Player player: players) {
+                    if (!player.getSideCharacter().getName().equals("Puck")) {
+                        player.getCharacter().onSlow();
+                    }
+
+                    if (shards.size() > 0) {
+                        for (Shard shard: shards) {
+                            shard.draw();
+                            if (shard.getImage().getBoundingBoxAt(shard.getPos()).intersects(player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()))) {
+                                player.setDead();
+                            }
+                            shard.move();
+                            if (shard.getPos().y > Window.getHeight()) {
+                                shardsToRemove.add(shard);
+                            }
+                        }
+                        shards.removeAll(shardsToRemove);
+                    }
+                }
+                spawnShards();
+            }
+            this.timer--;
+            if (timer < 0) {
+                this.activating = false;
+            }
         }
-        this.timer--;
     }
 
     public void reset() {

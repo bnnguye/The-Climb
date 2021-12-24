@@ -1,7 +1,7 @@
 Game
-Amount of times the game has been opened: 571
+Amount of times the game has been opened: 575
 Amount of games played in Easy Mode: 13
-Amount of games played in Hard Mode: 2136
+Amount of games played in Hard Mode: 2143
 Amount of games played in Story Mode: 98
 Unknown
 Played: 0
@@ -31,20 +31,20 @@ Ruka
 Played: 65
 Won: 15
 Aki
-Played: 36
-Won: 11
+Played: 39
+Won: 13
 Tutorial
 Played: 0
 Won: 0
 Chika
-Played: 81
-Won: 11
+Played: 85
+Won: 13
 Emilia
-Played: 76
-Won: 12
+Played: 80
+Won: 14
 Asuna
-Played: 0
-Won: 0
+Played: 3
+Won: 1
 Dio
 Played: 0
 Won: 0

@@ -92,6 +92,7 @@ public class MapUpsideDownCups extends Map {
     }
 
     public void generateMap() {
+        jotaroAbility = false;
         tiles.clear();
         int currentBlocksInRow = 0;
         int currentRow = 0;
