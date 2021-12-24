@@ -16,7 +16,6 @@ public class SideZoro extends SideCharacter{
     int timer;
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
     int shakeTimer;
-    Map map;
 
 
     public String getName() {
@@ -35,7 +34,7 @@ public class SideZoro extends SideCharacter{
     }
     public String playLine() {return this.soundPath;}
 
-    public void activateAbility(Player user,ArrayList<Player> players, ArrayList<Obstacle> obstacles) {
+    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
         Image slashLeft = new Image("res/charactersS/Zoro/SlashLeft.png");
         Image slashMiddle = new Image("res/charactersS/Zoro/SlashMiddle.png");
@@ -54,7 +53,7 @@ public class SideZoro extends SideCharacter{
                 display.drawFromTopLeft(0,0);
             }
             else {
-                shakeImage(this.map);
+                shakeImage(map);
                 this.animating = false;
                 slashLeft.drawFromTopLeft(0, -200);
                 slashMiddle.drawFromTopLeft(0, Window.getHeight()/2 - 100);
@@ -198,6 +197,5 @@ public class SideZoro extends SideCharacter{
         }
         shakeTimer --;
     }
-
-    public void setMap(Map map) {this.map = map;}
+    
 }

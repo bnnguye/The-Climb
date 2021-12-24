@@ -28,7 +28,7 @@ public abstract class SideCharacter {
     public boolean isActivating() {return activating;}
     public void reset() {}
 
-    public void activateAbility(Player player, ArrayList<Player> players, ArrayList<Obstacle> obstacles) {}
+    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {}
 
     public void setMap(Map map){}
     public void setPowerUps(ArrayList<PowerUp> powerUps) {}

@@ -7,7 +7,6 @@ import bagel.util.Point;
 import bagel.util.Rectangle;
 
 import java.io.*;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -81,6 +80,9 @@ public class Game extends AbstractGame {
     SideCharacter Jotaro;
     SideCharacter Itachi;
     SideCharacter Yugi;
+    SideCharacter Puck;
+    SideCharacter DioS;
+    SideCharacter Yuu;
 
     private double spacer = 300;
     private String currentMusic;
@@ -91,6 +93,7 @@ public class Game extends AbstractGame {
     Rectangle bottomRectangle;
     Rectangle topRectangle;
 
+    // custom map variables
     private ArrayList<Map> playableMaps;
     Map map;
     ArrayList<Tile> allTiles;
@@ -158,15 +161,12 @@ public class Game extends AbstractGame {
     Colour red = new Colour(1, 0.3, 0.3);
     Colour darken = new Colour(0, 0, 0, 0.85);
 
-    private int frame = 0;
-
-
     public static void main(String[] args) {
         new Game().run();
     }
 
     public Game()   {
-        super(1920, 1080);
+        super(1920, 1080, "The Climb");
 
         settingsSingleton = SettingsSingleton.getInstance();
         DO = new DrawOptions();
@@ -226,14 +226,20 @@ public class Game extends AbstractGame {
         Jotaro = new SideJotaro();
         Itachi = new SideItachi();
         Yugi = new SideYugi();
+        Puck = new SidePuck();
+        DioS = new SideDio();
+        Yuu = new SideYuu();
         sideCharacters.add(Zoro);
         sideCharacters.add(Gojo);
         sideCharacters.add(AllMight);
         sideCharacters.add(Lelouch);
         sideCharacters.add(Hisoka);
         sideCharacters.add(Jotaro);
+        sideCharacters.add(DioS);
         sideCharacters.add(Itachi);
         sideCharacters.add(Yugi);
+        sideCharacters.add(Puck);
+        sideCharacters.add(Yuu);
         checkAchievements();
         buttons = new ArrayList<>();
         obstacles = new ArrayList<>();
@@ -295,6 +301,9 @@ public class Game extends AbstractGame {
         if (SettingsSingleton.getInstance().getGameState() > -1) {
             if (menuBackground != null) {
                 menuBackground.drawFromTopLeft(0, 0);
+            }
+            else {
+                drawMapBackground();
             }
 
             if (menuTitle != null) {
@@ -485,7 +494,7 @@ public class Game extends AbstractGame {
                 }
             }
             // draw filler for locked characters
-            for (int i = sideCharacters.size(); i < 10; i++) {
+            for (int i = sideCharacters.size(); i < 12; i++) {
                 locked.draw(200 + spacer * currentIcon, -50 + spacer * row);
                 currentIcon++;
                 if (currentIcon >= 5) {
@@ -539,7 +548,7 @@ public class Game extends AbstractGame {
         else if (SettingsSingleton.getInstance().getGameState() == 5) { // Map
             if (!SettingsSingleton.getInstance().getGameStateString().equals("MAP")) {
                 menuTitle = "Which Climb?";
-                menuBackground = new Image("res/menu/mapMenu.png");
+                menuBackground = null;
                 SettingsSingleton.getInstance().setGameStateString("MAP");
             }
             spacer = 400;
@@ -568,7 +577,8 @@ public class Game extends AbstractGame {
                 }
             }
             for (Player player : players) {
-                player.getCursor().drawFromTopLeft(player.getPos().x, player.getPos().y);
+                player.getCharacter().setPosition(player.getPos());
+                player.getCharacter().draw();
                 player.setPos(input);
                 row = 1;
                 currentIcon = 2;
@@ -654,23 +664,24 @@ public class Game extends AbstractGame {
                     countdownFont.drawString(String.format("%s", string), Window.getWidth() / 2 - 125, Window.getHeight() / 2);
                     currentFrame++;
                 } else {
-                    prepareSideCharacters();
                     playingAnimation = false;
                     boolean characterMusic = false;
                     for (Player player : players) {
                         if (player.getSideCharacter().getName().equals("Yugi")) {
-                            player.getSideCharacter().activateAbility(player, players, obstacles);
+                            player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
                         }
                         if (input.wasPressed(player.getKey())) {
                             if (player.getCharacter().hasNoblePhantasm()) {
                                 if (!player.getSideCharacter().isActivating()) {
+                                    playSound(String.format("music/%s.wav", player.getSideCharacter().getName()));
                                     player.getCharacter().useNoblePhantasm();
                                 }
-                                player.getSideCharacter().activateAbility(player, players, obstacles);
+                                player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
                             }
                         }
                         if (player.getSideCharacter().isActivating()) {
-                            player.getSideCharacter().activateAbility(player, players, obstacles);
+                            currentMusic = "music/Silence.wav";
+                            player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
                             if(player.getSideCharacter().isAnimating()) {
                                 playingAnimation = true;
                                 if (player.getSideCharacter().getName().equals("Itachi")) {
@@ -2166,14 +2177,6 @@ public class Game extends AbstractGame {
         }
     }
 
-    public void prepareSideCharacters() {
-        Zoro.setMap(map);
-        Jotaro.setPowerUps(powerUps);
-        Jotaro.setMap(map);
-        Itachi.setPowerUps(powerUps);
-        Yugi.setMap(map);
-    }
-
     public void displayFailScreen() {
         if (failed) {
             failed = false;
@@ -2333,6 +2336,31 @@ public class Game extends AbstractGame {
         }
         if (intro >= 5*frames) {
             SettingsSingleton.getInstance().setGameState(0);
+        }
+    }
+
+    public void drawMapBackground() {
+        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1, 1, 1, 1));
+        ArrayList<Image> tileBackground = new ArrayList<>();
+        if ((java.time.LocalTime.now().getHour() > 18) || (java.time.LocalTime.now().getHour() < 4)) {
+            for (int i = 0; i < 16; i++) {
+                tileBackground.add(new Image("res/Tiles/BasicTileNight.png"));
+            }
+        } else {
+            for (int i = 0; i < 16; i++) {
+                tileBackground.add(new Image("res/Tiles/BasicTile.png"));
+            }
+        }
+
+        int amountInRow = 0;
+        int rows = 1;
+        for (Image image: tileBackground) {
+            image.drawFromTopLeft(amountInRow * image.getWidth(), Window.getHeight() - (rows * image.getHeight()));
+            amountInRow++;
+            if (amountInRow > 4) {
+                amountInRow = 0;
+                rows++;
+            }
         }
     }
 

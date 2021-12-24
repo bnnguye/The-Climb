@@ -10,7 +10,7 @@ public class CharacterDio extends Character{
     private final double frames = 144;
     Player player;
     String name = "Dio";
-    String soundPath = String.format("music/%s.wav", this.name);
+    String soundPath = String.format("music/% World.wav", this.name);
     Point iconPos;
     Point pos;
     Image image;

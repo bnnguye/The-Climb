@@ -18,7 +18,6 @@ public class SideJotaro extends SideCharacter{
 
     int shakeTimer;
     ArrayList<PowerUp> powerUps;
-    Map map;
 
     public String getName() {
         return this.name;
@@ -36,8 +35,7 @@ public class SideJotaro extends SideCharacter{
     }
     public String playLine() {return this.soundPath;}
 
-    public void activateAbility(Player user,ArrayList<Player> players, ArrayList<Obstacle> obstacles) {
-
+    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         Colour darken = new Colour(0, 0, 0.2, 0.5);
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (!this.activating) {
@@ -63,7 +61,7 @@ public class SideJotaro extends SideCharacter{
                         player.getCharacter().setJotaroAbility(true);
                     }
                 }
-                this.map.setJotaroAbility(true);
+                map.setJotaroAbility(true);
             }
             timer--;
         }
@@ -79,7 +77,7 @@ public class SideJotaro extends SideCharacter{
                     player.getCharacter().setJotaroAbility(false);
                 }
             }
-            this.map.setJotaroAbility(false);
+            map.setJotaroAbility(false);
             this.activating = false;
         }
     }
@@ -90,6 +88,5 @@ public class SideJotaro extends SideCharacter{
         return this.animating;
     }
     public void setPowerUps(ArrayList<PowerUp> powerUps) {this.powerUps = powerUps;}
-    public void setMap(Map map) {this.map = map;}
 
 }

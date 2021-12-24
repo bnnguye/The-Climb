@@ -18,7 +18,6 @@ public class SideYugi extends SideCharacter{
     Music music = new Music();
     Music musicEnd = new Music();
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
-    Map map;
     ArrayList<ExodiaPiece> exodiaPieces;
 
 
@@ -33,17 +32,17 @@ public class SideYugi extends SideCharacter{
     public boolean isActivating() {return this.activating;}
     public String playLine() {return this.soundPath;}
 
-    public void activateAbility(Player user,ArrayList<Player> players, ArrayList<Obstacle> obstacles) {
+    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
             this.music.playMusic("music/Yugi.wav");
             this.music.played = true;
             this.activating = true;
             exodiaPieces = new ArrayList<>();
-            exodiaPieces.add(new ExodiaPiece("Head",new Point(Math.random()*Window.getWidth(), - Window.getHeight() - this.map.getCurrentHeight() - Math.random()*(this.map.getHeight() - this.map.getCurrentHeight()))));
-            exodiaPieces.add(new ExodiaPiece("LeftArm", new Point(Math.random()*Window.getWidth(), - Window.getHeight() - this.map.getCurrentHeight() - Math.random()*(this.map.getHeight() - this.map.getCurrentHeight()))));
-            exodiaPieces.add(new ExodiaPiece("RightArm", new Point(Math.random()*Window.getWidth(), - Window.getHeight() - this.map.getCurrentHeight() - Math.random()*(this.map.getHeight() - this.map.getCurrentHeight()))));
-            exodiaPieces.add(new ExodiaPiece("LeftLeg", new Point(Math.random()*Window.getWidth(), - Window.getHeight() - this.map.getCurrentHeight() - Math.random()*(this.map.getHeight() - this.map.getCurrentHeight()))));
-            exodiaPieces.add(new ExodiaPiece("RightLeg", new Point(Math.random()*Window.getWidth(), - Window.getHeight() - this.map.getCurrentHeight() - Math.random()*(this.map.getHeight() - this.map.getCurrentHeight()))));
+            exodiaPieces.add(new ExodiaPiece("Head",new Point(Math.random()*Window.getWidth(), - Window.getHeight() - map.getCurrentHeight() - Math.random()*(map.getHeight() - map.getCurrentHeight()))));
+            exodiaPieces.add(new ExodiaPiece("LeftArm", new Point(Math.random()*Window.getWidth(), - Window.getHeight() - map.getCurrentHeight() - Math.random()*(map.getHeight() - map.getCurrentHeight()))));
+            exodiaPieces.add(new ExodiaPiece("RightArm", new Point(Math.random()*Window.getWidth(), - Window.getHeight() - map.getCurrentHeight() - Math.random()*(map.getHeight() - map.getCurrentHeight()))));
+            exodiaPieces.add(new ExodiaPiece("LeftLeg", new Point(Math.random()*Window.getWidth(), - Window.getHeight() - map.getCurrentHeight() - Math.random()*(map.getHeight() - map.getCurrentHeight()))));
+            exodiaPieces.add(new ExodiaPiece("RightLeg", new Point(Math.random()*Window.getWidth(), - Window.getHeight() - map.getCurrentHeight() - Math.random()*(map.getHeight() - map.getCurrentHeight()))));
         }
         else {
             ArrayList<ExodiaPiece> exodiaPiecesToRemove = new ArrayList<>();
@@ -62,7 +61,7 @@ public class SideYugi extends SideCharacter{
                     }
                 }
                 if (exodiaPiece.getPos().y > Window.getHeight()) {
-                    exodiaPiece.setPos(new Point(exodiaPiece.getPos().x, - Window.getHeight() - this.map.getCurrentHeight() - Math.random()*(this.map.getHeight() - this.map.getCurrentHeight())));
+                    exodiaPiece.setPos(new Point(exodiaPiece.getPos().x, - Window.getHeight() - map.getCurrentHeight() - Math.random()*(map.getHeight() - map.getCurrentHeight())));
                 }
             }
             exodiaPieces.removeAll(exodiaPiecesToRemove);
@@ -139,9 +138,6 @@ public class SideYugi extends SideCharacter{
     public boolean isAnimating() {
         return this.animating;
     }
-
-
-    public void setMap(Map map) {this.map = map;}
 
 
 }

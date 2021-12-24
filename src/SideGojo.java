@@ -40,7 +40,7 @@ public class SideGojo extends SideCharacter{
     public String playLine() {return this.soundPath;}
 
 
-    public void activateAbility(Player user,ArrayList<Player> players, ArrayList<Obstacle> obstacles) {
+    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
             this.activating = true;
             this.timer = 8 * frames;

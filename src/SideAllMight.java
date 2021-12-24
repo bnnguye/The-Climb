@@ -26,7 +26,7 @@ public class SideAllMight extends SideCharacter{
     public boolean isActivating() {return this.activating;}
     public String playLine() {return this.soundPath;}
 
-    public void activateAbility(Player user,ArrayList<Player> players, ArrayList<Obstacle> obstacles) {
+    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
             this.music.playMusic("music/AllMight.wav");
             this.music.played = true;

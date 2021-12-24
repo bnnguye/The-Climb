@@ -30,7 +30,7 @@ public class SideLelouch extends SideCharacter{
     public boolean isActivating() {return this.activating;}
     public String playLine() {return this.soundPath;}
 
-    public void activateAbility(Player user,ArrayList<Player> players, ArrayList<Obstacle> obstacles) {
+    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
             this.activating = true;
             this.timer = 6 * frames;
