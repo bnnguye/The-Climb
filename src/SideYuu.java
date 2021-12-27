@@ -79,6 +79,9 @@ public class SideYuu extends SideCharacter{
         if (player.getSideCharacter().getName().equals("Dio")) {
             playerCharacter = new SideDio();
         }
+        else if (player.getSideCharacter().getName().equals("AllMight")) {
+            playerCharacter = new SideAllMight();
+        }
         else if (player.getSideCharacter().getName().equals("Gojo")) {
             playerCharacter = new SideGojo();
         }
@@ -104,6 +107,5 @@ public class SideYuu extends SideCharacter{
             playerCharacter = new SideZoro();
         }
         user.setSideCharacter(playerCharacter);
-        player.setSideCharacter(new SideYuu());
     }
 }

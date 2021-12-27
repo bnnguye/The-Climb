@@ -5,7 +5,6 @@ import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
 import bagel.util.Rectangle;
-import org.lwjgl.system.CallbackI;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ public class Game extends AbstractGame {
     private final int MAX_DIALOGUE_LIMIT = Window.getWidth()/(DIALOGUE_FONT_SIZE - 10);
 
     private static SettingsSingleton settingsSingleton;
+    private static GameSettingsSingleton gameSettingsSingleton;
 
     // Stat variable
     int[] statTracker = new int[4];
@@ -170,6 +170,7 @@ public class Game extends AbstractGame {
         super(1920, 1080, "The Climb");
 
         settingsSingleton = SettingsSingleton.getInstance();
+        gameSettingsSingleton = GameSettingsSingleton.getInstance();
         DO = new DrawOptions();
         stringDisplays = new ArrayList<>();
         players = new ArrayList<>();
@@ -310,8 +311,8 @@ public class Game extends AbstractGame {
             if (menuTitle != null) {
                 titleFont.drawString(menuTitle, 0, 65, DO.setBlendColour(black));
             }
-            if (SettingsSingleton.getInstance().getButtons().size() > 0 ) {
-                for (Button button: SettingsSingleton.getInstance().getButtons()) {
+            if (buttons.size() > 0 ) {
+                for (Button button: buttons) {
                     button.toggleHover(input.getMousePosition());
                     if (input.wasPressed(MouseButtons.LEFT)) {
                         if (button.isHovering()) {
@@ -335,28 +336,22 @@ public class Game extends AbstractGame {
                 buttons.add(new ButtonPlay("PLAY", new Rectangle(new Point(0, 440), Window.getWidth(), 160)));
                 buttons.add(new ButtonCreateMap("CREATE MAP", new Rectangle(new Point(0, 600), Window.getWidth(), 160)));
                 buttons.add(new ButtonExit("EXIT", new Rectangle(new Point(0, 760), Window.getWidth(), 160)));
-                settingsSingleton.setButtons(buttons);
                 SettingsSingleton.getInstance().setGameStateString("Main Menu");
                 menuBackground = new Image("res/menu/MainMenu.PNG");
                 menuTitle = "THE CLIMB";
             }
-            drawButtons();
         }
         else if (SettingsSingleton.getInstance().getGameState() == 1) {
             if (!SettingsSingleton.getInstance().getGameStateString().equals("Level")) {
                 Button storyButton = new ButtonStory("STORY", new Rectangle(0, Window.getHeight()/2.5 - 160, Window.getWidth(), 160));
-                Button fastButton = new ButtonEasyDifficulty("EASY", new Rectangle(0, Window.getHeight() / 2.5 , Window.getWidth(), 160));
-                Button fasterButton = new ButtonHardDifficulty("HARD",new Rectangle(0, Window.getHeight() / 2.5 + 160, Window.getWidth(), 160));
+                Button versusButton = new ButtonVersus("VS",new Rectangle(0, Window.getHeight() / 2.5 + 160, Window.getWidth(), 160));
                 buttons.clear();
                 buttons.add(storyButton);
-                buttons.add(fastButton);
-                buttons.add(fasterButton);
-                settingsSingleton.setButtons(buttons);
+                buttons.add(versusButton);
                 SettingsSingleton.getInstance().setGameStateString("Level");
                 menuBackground = new Image("res/menu/levelMenu.PNG");
-                menuTitle = "SELECT LEVEL";
+                menuTitle = "SELECT GAME MODE";
             }
-            drawButtons();
         }
         else if (SettingsSingleton.getInstance().getGameState() == 2) {
             if (!SettingsSingleton.getInstance().getGameStateString().equals("Players")) {
@@ -367,7 +362,6 @@ public class Game extends AbstractGame {
                 buttons.add(twoPlayerButton);
                 buttons.add(threePlayerButton);
                 buttons.add(fourPlayerButton);
-                settingsSingleton.setButtons(buttons);
                 SettingsSingleton.getInstance().setGameStateString("Players");
                 menuBackground = new Image("res/menu/playerMenu.PNG");
                 menuTitle = "PLAYERS";
@@ -376,14 +370,13 @@ public class Game extends AbstractGame {
                 Image playerArt = new Image(String.format("res/menu/%dPlayers.PNG", SettingsSingleton.getInstance().getPlayers()));
                 playerArt.draw(Window.getWidth()/2, Window.getHeight()/2);
             }
-            drawButtons();
         }
         else if (SettingsSingleton.getInstance().getGameState() == 3) {
             if (!SettingsSingleton.getInstance().getGameStateString().equals("Character")) {
                 spacer = 300;
                 buttons.clear();
+                buttons.add(new ButtonGameSettings("Settings", new Rectangle(0, 100 , Window.getWidth(), 100)));
                 players.clear();
-                settingsSingleton.setButtons(buttons);
                 SettingsSingleton.getInstance().setGameStateString("Character");
                 players.add(new PlayerOne());
                 players.add(new PlayerTwo());
@@ -403,30 +396,30 @@ public class Game extends AbstractGame {
             int currentIcon = 1;
             Image locked = new Image("res/icons/Unknown.png");
             for (Character character: characters) {
-                character.getIcon().draw(200 + spacer * currentIcon, -50 + spacer * row);
-                character.setIconPos(new Point(200 + spacer * currentIcon, -50 + spacer * row));
+                character.getIcon().drawFromTopLeft(-240 +spacer * currentIcon, -200 + spacer * row);
+                character.setIconPos(new Point(-240 +spacer * currentIcon + character.getIcon().getWidth()/2, -200 + spacer * row + character.getIcon().getHeight()/2));
                 currentIcon++;
-                if (currentIcon >= 5) {
+                if (currentIcon >= 7) {
                     currentIcon = 1;
                     row++;
                 }
             }
             // draw filler for locked characters
             for (int i = characters.size(); i < 12; i++) {
-                locked.draw(200 + spacer * currentIcon, -50 + spacer * row);
+                locked.drawFromTopLeft(-240 + spacer * currentIcon, -200 + spacer * row);
                 currentIcon++;
-                if (currentIcon >= 5) {
+                if (currentIcon >= 7) {
                     currentIcon = 1;
                     row++;
                 }
             }
             drawBorders();
             // react to player movement relative to character icons
-            for (Character character: characters) {
-                for (Player player: players) {
+            for (Player player: players) {
+                for (Character character: characters) {
                     Image border = new Image("res/Selected/Selected.png");
                     if (player.getCharacter() == null) {
-                        if (character.getIcon().getBoundingBoxAt(new Point(character.getIconPos().x - 25, character.getIconPos().y)).intersects(player.getPos())) {
+                        if (character.getIcon().getBoundingBoxAt(character.getIconPos()).intersects(player.getPos())) {
                             character.getSelected().draw(250 + border.getWidth()*1.5*(player.getId()-1), Window.getHeight() - 100);
                             playerFont.drawString(String.format("P%d: %s", player.getId(), character.getName()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight());
                         }
@@ -459,7 +452,7 @@ public class Game extends AbstractGame {
             }
             if (picked) {
                 if (waitTimer < 0) {
-                    if(SettingsSingleton.getInstance().getLevel() == 99) {
+                    if(SettingsSingleton.getInstance().getGameMode() == 99) {
                         SettingsSingleton.getInstance().setGameState(6);
                     }
                     else {
@@ -640,8 +633,9 @@ public class Game extends AbstractGame {
         }
         else if (SettingsSingleton.getInstance().getGameState() == 6) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
-            if (SettingsSingleton.getInstance().getLevel() < 99) {
+            if (SettingsSingleton.getInstance().getGameMode() == 0) {
                 if (!SettingsSingleton.getInstance().getGameStateString().equals("Game")) {
+                    buttons.clear();
                     setPlayersPosition();
                     currentMusic = String.format("music/Fight%d.wav", SettingsSingleton.getInstance().getMapNo());
                     resetMusic();
@@ -698,11 +692,7 @@ public class Game extends AbstractGame {
                     if(!map.hasFinished()) {
                         if(!playingAnimation) {
                             displayCharacterStats(players);
-                            if (SettingsSingleton.getInstance().getLevel() == 0) {
-                                map.updateTiles(0.5);
-                            } else {
-                                map.updateTiles(1);
-                            }
+                            map.updateTiles(GameSettingsSingleton.getInstance().getMapSpeed());
                             spawnObstacles();
                             spawnPowerUps();
                         }
@@ -748,6 +738,7 @@ public class Game extends AbstractGame {
             }
             else {
                 if (!SettingsSingleton.getInstance().getGameStateString().equals("Story")) {
+                    buttons.clear();
                     SettingsSingleton.getInstance().setGameStateString("Story");
                     setPlayersPosition();
                     map = mapToTransitionTo;
@@ -995,7 +986,7 @@ public class Game extends AbstractGame {
                                 lastScene = currentScene;
                                 playingDialogue = true;
                                 endDialogue = false;
-                                currentMusic = "music/Dio.wav";
+                                currentMusic = Dio.playLine();
                             }
                             if (endDialogue) {
                                 startTransition();
@@ -1119,7 +1110,7 @@ public class Game extends AbstractGame {
         }
         else if (SettingsSingleton.getInstance().getGameState() == 7) {
             render();
-            if (SettingsSingleton.getInstance().getLevel() == 99) {
+            if (SettingsSingleton.getInstance().getGameMode() == 99) {
                 displayFailScreen();
                 if (SettingsSingleton.getInstance().getGameStateString().equals("Continue")) {
                     changeMainMusic(currentMusic);
@@ -1189,7 +1180,7 @@ public class Game extends AbstractGame {
                             }
                         }
                     }
-                    statTracker[SettingsSingleton.getInstance().getLevel() + 1] = statTracker[SettingsSingleton.getInstance().getLevel() + 1] + 1;
+                    statTracker[SettingsSingleton.getInstance().getGameMode() + 1] = statTracker[SettingsSingleton.getInstance().getGameMode() + 1] + 1;
                     SettingsSingleton.getInstance().getWinner().getCharacter().playLine();
                     winnerPlayed = true;
                     buttons.clear();
@@ -1198,7 +1189,6 @@ public class Game extends AbstractGame {
                     buttons.add(backToStartButton);
                     buttons.add(retryButton);
                 }
-                drawButtons();
                 if (input.wasPressed(MouseButtons.LEFT)) {
                     if((SettingsSingleton.getInstance().getGameStateString().equals("Retry")) || (SettingsSingleton.getInstance().getGameStateString().equals("Menu"))) {
                         resetMusic();
@@ -1372,6 +1362,13 @@ public class Game extends AbstractGame {
                 }
             }
         }
+        else if (SettingsSingleton.getInstance().getGameState() == 10) {
+            if (!SettingsSingleton.getInstance().getGameStateString().equals("Game Settings")) {
+                SettingsSingleton.getInstance().setGameStateString("Game Settings");
+                buttons.clear();
+                buttons.add(new ButtonGameSettings("Settings", new Rectangle(0, 100 , Window.getWidth(), 100)));
+            }
+        }
         if ((SettingsSingleton.getInstance().getGameState() > 0) && (SettingsSingleton.getInstance().getGameState() < 6)) {
             Image back = new Image("res/BackArrow.PNG");
             back.draw(Window.getWidth() - back.getWidth(), back.getHeight());
@@ -1390,6 +1387,7 @@ public class Game extends AbstractGame {
                 }
             }
         }
+        drawButtons();
         showDisplayStrings();
     }
 
@@ -1446,9 +1444,9 @@ public class Game extends AbstractGame {
     }
 
 
-    public static void drawButtons() {
-        if (SettingsSingleton.getInstance().getButtons().size() > 0) {
-            for (Button button: SettingsSingleton.getInstance().getButtons()) {
+    public void drawButtons() {
+        if (buttons.size() > 0) {
+            for (Button button: buttons) {
                 button.draw();
             }
         }
@@ -1888,7 +1886,6 @@ public class Game extends AbstractGame {
         }
     }
 
-
     public void getGameStats() {
         int num;
         try {
@@ -2120,35 +2117,14 @@ public class Game extends AbstractGame {
     }
 
     public void spawnObstacles() {
-        if (SettingsSingleton.getInstance().getLevel() == 99) {
-            if (currentStory == 3) {
-                if (Math.random() > 0.96) {
-                    if (Math.random() > 0.7) {
-                        obstacles.add(new Balloon());
-                    } else if (Math.random() > 0.5) {
-                        obstacles.add(new Ball());
-                    } else {
-                        obstacles.add(new StunBall());
-                    }
-                }
-            }
-        }
-        else if (SettingsSingleton.getInstance().getLevel() == 0) {
-            if (Math.random() > 0.98) {
+        if (GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().isRocks()) {
+            if (Math.random() > GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().getFrequency()) {
                 obstacles.add(new Ball());
             }
-        } else if (SettingsSingleton.getInstance().getLevel() == 1) {
-            if (Math.random() > 0.96) {
-                if (Math.random() > 0.8) {
-                    obstacles.add(new Balloon());
-                } else {
-                    obstacles.add(new Ball());
-                }
-            }
         }
-        else {
-            if (Math.random() > 0.98) {
-                obstacles.add(new Ball());
+        if (GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().isBalls()) {
+            if (Math.random() > GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().getFrequency() + 0.02) {
+                obstacles.add(new Balloon());
             }
         }
     }
@@ -2185,7 +2161,6 @@ public class Game extends AbstractGame {
         }
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.7));
         victoryFont.drawString("YOU FAILED THE CLIMB!", 30, 110);
-        drawButtons();
     }
 
     public void updateObjects() {

@@ -15,7 +15,7 @@ public class ButtonRetry extends Button {
     }
 
     public void playAction() {
-        if (SettingsSingleton.getInstance().getLevel() < 99) {
+        if (SettingsSingleton.getInstance().getGameMode() < 99) {
             SettingsSingleton.getInstance().setGameStateString("Retry");
         }
         else {

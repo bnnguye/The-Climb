@@ -1,20 +1,13 @@
-import java.util.ArrayList;
-
 public class SettingsSingleton {
     private final double frames = 144;
     private static SettingsSingleton single_instance = null;
-    private ArrayList<Button> buttons;
-    private static int gameState = -1;
-    private static int level;
+    private static int gameState = 0;
+    private static int gameMode = 0;
     private static int players = 0;
     private static String gameStateString = "";
     private static int mapNo;
     private static Player winner;
     private double time = 0;
-
-    private SettingsSingleton() {
-        buttons = new ArrayList<>();
-    }
 
     public synchronized static SettingsSingleton getInstance() {
         if (single_instance == null) {
@@ -24,15 +17,11 @@ public class SettingsSingleton {
         return single_instance;
     }
 
-    public void setButtons(ArrayList<Button> buttons) {
-        this.buttons = buttons;
-    }
-    public ArrayList<Button> getButtons() {return buttons;}
     public int getGameState() { return gameState;}
     public void setGameState(int num) { gameState = num;}
-    public void setLevel(int num) {level = num;}
+    public void setGameMode(int num) {gameMode = num;}
     public void setMapNo(int num) { mapNo = num;}
-    public int getLevel() {return level;}
+    public int getGameMode() {return gameMode;}
     public int getMapNo() {return mapNo;}
 
     public void setPlayers(int players) {

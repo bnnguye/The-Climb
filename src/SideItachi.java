@@ -37,10 +37,6 @@ public class SideItachi extends SideCharacter{
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         this.user = user;
-        Colour red = new Colour(0.7, 0, 0, 0.5);
-        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), red);
-        Colour darken = new Colour(0, 0, 0, 0.5);
-        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (!this.activating) {
             timer = 8*frames;
             this.activating = true;
@@ -73,6 +69,10 @@ public class SideItachi extends SideCharacter{
             }
             timer--;
         }
+        Colour red = new Colour(0.7, 0, 0, 0.5);
+        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), red);
+        Colour darken = new Colour(0, 0, 0, 0.5);
+        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (timer <= 0) {
             this.activating = false;
         }
