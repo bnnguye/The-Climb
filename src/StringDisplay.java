@@ -3,7 +3,7 @@ public class StringDisplay {
     private String name;
     private int time;
 
-    final int frames = 144;
+    final double frames = SettingsSingleton.getInstance().getFrames();
 
     public StringDisplay(String name, int time) {
         this.time = time*144;

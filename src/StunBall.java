@@ -9,7 +9,7 @@ public class StunBall extends Obstacle{
     double speed = 3;
     boolean gojoAbility = false;
     boolean jotaroAbility = false;
-    private final double frames = 144;
+    private final double frames = SettingsSingleton.getInstance().getFrames();
     double time = 2*frames;
 
     public StunBall() {

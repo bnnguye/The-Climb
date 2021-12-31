@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class CharacterAki extends Character{
-    private final double frames = 144;
+    private final double frames = SettingsSingleton.getInstance().getFrames();
     Player player;
     String name = "Aki";
     String soundPath = String.format("music/%s.wav", this.name);
@@ -29,7 +29,7 @@ public class CharacterAki extends Character{
     int speedUpTimer = 0;
     boolean minimised = false;
     int minimisedTimer = 0;
-    boolean noblePhantasm = true;
+    boolean noblePhantasm = false;
     boolean gojoAbility = false;
     boolean hisokaAbility = false;
     private int hisokaTimer = 0;

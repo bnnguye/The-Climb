@@ -2,7 +2,17 @@ public class ObstaclesSettingsSingleton {
 
     private static ObstaclesSettingsSingleton single_instance = null;
 
-    private double frequency = 0.95;
+    private double rockFrequency = 0.95;
+
+    public double getRockFrequency() {
+        return rockFrequency;
+    }
+
+    public double getBallFrequency() {
+        return ballFrequency;
+    }
+
+    private double ballFrequency = 0.98;
     private boolean rocks = true;
     private boolean balls = true;
 
@@ -15,8 +25,11 @@ public class ObstaclesSettingsSingleton {
         return single_instance;
     }
 
-    public void changeFrequency(double frequency) {
-        this.frequency = frequency;
+    public void changeRockFrequency(double frequency) {
+        this.rockFrequency = frequency;
+    }
+    public void changeBallFrequency(double frequency) {
+        this.ballFrequency = frequency;
     }
 
     public void applySettings(boolean rocks, boolean balls) {
@@ -26,5 +39,4 @@ public class ObstaclesSettingsSingleton {
 
     public boolean isRocks() {return this.rocks;}
     public boolean isBalls() {return this.balls;}
-    public double getFrequency() {return this.frequency;}
 }

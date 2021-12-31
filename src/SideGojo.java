@@ -8,12 +8,12 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideGojo extends SideCharacter{
-    private final int frames = 144;
+    private final double frames = SettingsSingleton.getInstance().getFrames();
     String name = "Gojo";
     String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
     boolean activating = false;
-    int timer = 0;
+    double timer;
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
 
     int radius = 0;

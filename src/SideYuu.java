@@ -7,13 +7,13 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideYuu extends SideCharacter{
-    private final int frames = 144;
+    private final double frames = SettingsSingleton.getInstance().getFrames();
     String name = "Yuu";
     String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
     boolean activating = false;
     boolean animating = false;
-    int timer;
+    double timer;
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
 
     public String getName() {
@@ -55,8 +55,7 @@ public class SideYuu extends SideCharacter{
                     }
                 }
             }
-            replaceSideCharacter(user, closest);
-            user.getSideCharacter().activateAbility(user, players, obstacles, powerUps, map);
+            useSideCharacter(user, closest).activateAbility(user, players, obstacles, powerUps, map);
             closest.getCharacter().useNoblePhantasm();
             this.activating = false;
         }
@@ -74,7 +73,7 @@ public class SideYuu extends SideCharacter{
         return this.animating;
     }
 
-    public void replaceSideCharacter(Player user, Player player) {
+    public SideCharacter useSideCharacter(Player user, Player player) {
         SideCharacter playerCharacter = null;
         if (player.getSideCharacter().getName().equals("Dio")) {
             playerCharacter = new SideDio();
@@ -106,6 +105,6 @@ public class SideYuu extends SideCharacter{
         else if (player.getSideCharacter().getName().equals("Zoro")) {
             playerCharacter = new SideZoro();
         }
-        user.setSideCharacter(playerCharacter);
+        return playerCharacter;
     }
 }

@@ -5,6 +5,8 @@ import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
 import bagel.util.Rectangle;
+import javafx.scene.layout.RowConstraints;
+import org.lwjgl.system.CallbackI;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -19,13 +21,13 @@ public class Game extends AbstractGame {
     private final int DIALOGUE_FONT_SIZE = 30 ;
     private final int MAX_DIALOGUE_LIMIT = Window.getWidth()/(DIALOGUE_FONT_SIZE - 10);
 
-    private static SettingsSingleton settingsSingleton;
-    private static GameSettingsSingleton gameSettingsSingleton;
+    private static SettingsSingleton settingsSingleton = new SettingsSingleton();
+    private static GameSettingsSingleton gameSettingsSingleton = new GameSettingsSingleton();
 
     // Stat variable
     int[] statTracker = new int[4];
 
-    private final double frames = 144;
+    private final double frames = settingsSingleton.getFrames();
     private int countDown = 0;
     private int waitTimer = 840;
     private int winnerTimer = 0;
@@ -162,6 +164,11 @@ public class Game extends AbstractGame {
     Colour red = new Colour(1, 0.3, 0.3);
     Colour darken = new Colour(0, 0, 0, 0.85);
 
+    // Game Settings variables
+    ArrayList<PowerUp> allPowerUps;
+    ArrayList<Obstacle> allObstacles;
+    String pageType;
+
     public static void main(String[] args) {
         new Game().run();
     }
@@ -169,8 +176,6 @@ public class Game extends AbstractGame {
     public Game()   {
         super(1920, 1080, "The Climb");
 
-        settingsSingleton = SettingsSingleton.getInstance();
-        gameSettingsSingleton = GameSettingsSingleton.getInstance();
         DO = new DrawOptions();
         stringDisplays = new ArrayList<>();
         players = new ArrayList<>();
@@ -180,6 +185,8 @@ public class Game extends AbstractGame {
         sideCharacters= new ArrayList<>();
         allSideCharacters = new ArrayList<>();
         route = new ArrayList<>();
+        allPowerUps = new ArrayList<>();
+        allObstacles = new ArrayList<>();
 
         // initialize characters
         Chizuru = new CharacterChizuru();
@@ -1366,8 +1373,41 @@ public class Game extends AbstractGame {
             if (!SettingsSingleton.getInstance().getGameStateString().equals("Game Settings")) {
                 SettingsSingleton.getInstance().setGameStateString("Game Settings");
                 buttons.clear();
-                buttons.add(new ButtonGameSettings("Settings", new Rectangle(0, 100 , Window.getWidth(), 100)));
+                buttons.add(new ButtonLeftArrow("", new Rectangle(new Point(Window.getWidth() - 350, 100), 100, 100)));
+                buttons.add(new ButtonRightArrow("", new Rectangle(new Point(Window.getWidth() - 200, 100), 100, 100)));
+                allPowerUps.add(new SpeedDown());
+                allPowerUps.add(new SpeedUp());
+                allPowerUps.add(new Minimiser());
+                allPowerUps.add(new Shield());
+                allObstacles.add(new Balloon());
+                allObstacles.add(new Ball());
+                pageType = "PowerUps";
             }
+            int index = 0;
+            if (pageType.equals("PowerUps")) {
+                for (int i = 0; i < allPowerUps.size(); i++) {
+                    allPowerUps.get(i).getImage().drawFromTopLeft(100, 300 + index*100);
+                    //Drawing.drawRectangle(100 + allPowerUps.get(i).getImage().getWidth()*2, 300 + index*100, gameSettingsSingleton.getInstance().getPowerUpsSettingsSingleton().getFrequency()*500, allPowerUps.get(i).getImage().getHeight(), new Colour(0, 0, 0));
+                    Drawing.drawRectangle(100 + allPowerUps.get(i).getImage().getWidth()*2, 300 + index*100, 500, allPowerUps.get(i).getImage().getHeight(), new Colour(0, 0, 0, 0.5));
+                    index++;
+                }
+            }
+            else if (pageType.equals("Obstacles")) {
+                for (int j = 0; j < allObstacles.size(); j++) {
+                    allObstacles.get(j).getImage().drawFromTopLeft(100, 300 + index*100);
+                    //Drawing.drawRectangle(100 + allPowerUps.get(j).getImage().getWidth()*2, 300 + index*100, gameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getFrequency()*500, allPowerUps.get(j).getImage().getHeight(), new Colour(0, 0, 0));
+                    Drawing.drawRectangle(100 + allPowerUps.get(j).getImage().getWidth()*2, 300 + index*100, 500, allPowerUps.get(j).getImage().getHeight(), new Colour(0, 0, 0, 0.5));
+                    index++;
+                }
+            }
+            if (GameSettingsSingleton.getInstance().getPage() == 0) {
+                pageType = "PowerUps";
+            }
+            else if (GameSettingsSingleton.getInstance().getPage() == 1) {
+                pageType = "Obstacles";
+            }
+            System.out.println(GameSettingsSingleton.getInstance().getPage());
+            menuTitle = pageType;
         }
         if ((SettingsSingleton.getInstance().getGameState() > 0) && (SettingsSingleton.getInstance().getGameState() < 6)) {
             Image back = new Image("res/BackArrow.PNG");
@@ -2118,12 +2158,12 @@ public class Game extends AbstractGame {
 
     public void spawnObstacles() {
         if (GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().isRocks()) {
-            if (Math.random() > GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().getFrequency()) {
+            if (Math.random() > GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().getRockFrequency()) {
                 obstacles.add(new Ball());
             }
         }
         if (GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().isBalls()) {
-            if (Math.random() > GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().getFrequency() + 0.02) {
+            if (Math.random() > GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().getBallFrequency()) {
                 obstacles.add(new Balloon());
             }
         }

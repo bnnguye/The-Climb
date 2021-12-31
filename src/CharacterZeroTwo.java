@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class CharacterZeroTwo extends Character{
-    private final double frames = 144;
+    private final double frames = SettingsSingleton.getInstance().getFrames();
     Player player;
     String name = "02";
     String soundPath = String.format("music/%s.wav", this.name);

@@ -3,7 +3,32 @@ public class PowerUpsSettingsSingleton {
     private static PowerUpsSettingsSingleton single_instance = null;
 
 
-    private double frequency = 0.95;
+    private double speedUpFrequency = 0.95;
+    private double speedDownFrequency = 0.95;
+    private double minimiserFrequency = 0.95;
+    private double shieldFrequency = 0.95;
+
+    public double getSpeedUpFrequency() {
+        return speedUpFrequency;
+    }
+
+    public double getSpeedDownFrequency() {
+        return speedDownFrequency;
+    }
+
+    public double getMinimiserFrequency() {
+        return minimiserFrequency;
+    }
+
+    public double getShieldFrequency() {
+        return shieldFrequency;
+    }
+
+    public double getNoblePhantasmFrequency() {
+        return noblePhantasmFrequency;
+    }
+
+    private double noblePhantasmFrequency = 0.95;
     private boolean speedUp = true;
     private boolean speedDown = true;
     private boolean minimiser = true;
@@ -49,9 +74,28 @@ public class PowerUpsSettingsSingleton {
         this.noblePhantasm = noblePhantasm;
     }
 
-    public void changeFrequency(double frequency) {
-        this.frequency = frequency;
+    public void changeFrequency(double speedUp, double speedDown, double minimiser, double shield, double noblePhantasm) {
+        this.speedUpFrequency = speedUp;
+        if (speedUp <= 0) {
+            this.speedUp = false;
+        }
+        this.speedDownFrequency = speedDown;
+        if (speedDown <= 0) {
+            this.speedDown = false;
+        }
+        this.minimiserFrequency = minimiser;
+        if (minimiser <= 0) {
+            this.minimiser = false;
+        }
+        this.shieldFrequency = shield;
+        if (shield <= 0) {
+            this.shield = false;
+        }
+        this.noblePhantasmFrequency = noblePhantasm;
+        if (noblePhantasm <= 0) {
+            this.noblePhantasm = false;
+        }
+
     }
 
-    public double getFrequency() {return frequency;}
 }

@@ -1,7 +1,8 @@
 public class GameSettingsSingleton {
 
-    private ObstaclesSettingsSingleton obstaclesSettingsSingleton = getObstaclesSettingsSingleton();
-    private PowerUpsSettingsSingleton powerUpsSettingsSingleton = getPowerUpsSettingsSingleton();
+    private ObstaclesSettingsSingleton obstaclesSettingsSingleton = new ObstaclesSettingsSingleton();
+    private PowerUpsSettingsSingleton powerUpsSettingsSingleton = new PowerUpsSettingsSingleton();
+    private int page = 0;
 
     public double getMapSpeed() {
         return mapSpeed;
@@ -25,5 +26,7 @@ public class GameSettingsSingleton {
 
     public ObstaclesSettingsSingleton getObstaclesSettingsSingleton() {return obstaclesSettingsSingleton;}
     public PowerUpsSettingsSingleton getPowerUpsSettingsSingleton() {return powerUpsSettingsSingleton;}
+    public int getPage() {return page;}
+    public void setPage(int num) {page = num;}
 
 }

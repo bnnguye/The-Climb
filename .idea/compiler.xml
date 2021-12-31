@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8">
-      <module name="bagel" target="" />
+      <module name="bagel" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>
