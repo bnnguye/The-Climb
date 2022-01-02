@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 public class SidePuck extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getFrames();
-    String name = "Puck";
-    String soundPath = String.format("music/%s.wav", this.name);
+    private String name = "Puck";
+    private String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
     boolean activating = false;
     boolean animating = false;
@@ -19,7 +19,7 @@ public class SidePuck extends SideCharacter{
 
     ArrayList<Shard> shards;
     ArrayList<Shard> shardsToRemove;
-
+    private Point iconPos;
 
 
     public String getName() {

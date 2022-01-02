@@ -1,6 +1,6 @@
 Game
-Amount of times the game has been opened: 587
-Amount of games played in Easy Mode: 33
+Amount of times the game has been opened: 604
+Amount of games played in Easy Mode: 93
 Amount of games played in Hard Mode: 2168
 Amount of games played in Story Mode: 98
 Unknown
@@ -10,20 +10,20 @@ Sakuta
 Played: 0
 Won: 0
 Chizuru
-Played: 679
-Won: 13
+Played: 688
+Won: 18
 02
-Played: 58
-Won: 15
+Played: 73
+Won: 22
 Miku
-Played: 313
-Won: 10
+Played: 321
+Won: 13
 Mai
-Played: 171
-Won: 9
+Played: 177
+Won: 15
 Nino
-Played: 1437
-Won: 9
+Played: 1457
+Won: 22
 Futaba
 Played: 34
 Won: 16
@@ -31,20 +31,20 @@ Ruka
 Played: 88
 Won: 20
 Aki
-Played: 46
-Won: 14
+Played: 51
+Won: 17
 Tutorial
 Played: 0
 Won: 0
 Chika
-Played: 85
-Won: 13
+Played: 113
+Won: 21
 Emilia
-Played: 81
-Won: 15
+Played: 101
+Won: 27
 Asuna
-Played: 12
-Won: 9
+Played: 16
+Won: 13
 Dio
 Played: 0
 Won: 0

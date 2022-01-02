@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 public abstract class Map {
     int level;
-    String name;
+    private String name;
     Image mapPeek;
     Image map;
-    Point pos;
+    private Point pos;
     ArrayList<Tile> tiles;
     double height;
     double currentHeight;

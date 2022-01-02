@@ -3,10 +3,10 @@ import bagel.Window;
 import bagel.util.Point;
 
 public abstract class PowerUp {
-    String name;
+    private String name;
     Image image;
-    Point pos;
-    double speed = 4;
+    private Point pos;
+    double speed = 4 * GameSettingsSingleton.getInstance().getMapSpeed();
 
 
     public PowerUp() {

@@ -1,19 +1,9 @@
 public class GameSettingsSingleton {
 
-    private ObstaclesSettingsSingleton obstaclesSettingsSingleton = new ObstaclesSettingsSingleton();
-    private PowerUpsSettingsSingleton powerUpsSettingsSingleton = new PowerUpsSettingsSingleton();
+    private ObstaclesSettingsSingleton obstaclesSettingsSingleton = ObstaclesSettingsSingleton.getInstance();
+    private PowerUpsSettingsSingleton powerUpsSettingsSingleton = PowerUpsSettingsSingleton.getInstance();
     private int page = 0;
-
-    public double getMapSpeed() {
-        return mapSpeed;
-    }
-
-    public void setMapSpeed(double mapSpeed) {
-        this.mapSpeed = mapSpeed;
-    }
-
     private double mapSpeed = 1;
-
     private static GameSettingsSingleton single_instance = null;
 
     public synchronized static GameSettingsSingleton getInstance() {
@@ -24,8 +14,14 @@ public class GameSettingsSingleton {
         return single_instance;
     }
 
-    public ObstaclesSettingsSingleton getObstaclesSettingsSingleton() {return obstaclesSettingsSingleton;}
-    public PowerUpsSettingsSingleton getPowerUpsSettingsSingleton() {return powerUpsSettingsSingleton;}
+    public double getMapSpeed() {
+        return mapSpeed;
+    }
+    public void setMapSpeed(double mapSpeed) {
+        this.mapSpeed = mapSpeed;
+    }
+    public ObstaclesSettingsSingleton getObstaclesSettingsSingleton() {return obstaclesSettingsSingleton.getInstance();}
+    public PowerUpsSettingsSingleton getPowerUpsSettingsSingleton() {return powerUpsSettingsSingleton.getInstance();}
     public int getPage() {return page;}
     public void setPage(int num) {page = num;}
 

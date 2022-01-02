@@ -2,9 +2,9 @@ import bagel.Image;
 import bagel.util.Point;
 
 public class ExodiaPiece {
-    String name;
+    private String name;
     Image image;
-    Point pos;
+    private Point pos;
     double speed = 2;
 
     public ExodiaPiece(String name, Point pos) {

@@ -7,18 +7,18 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Unknown extends Character{
-    Player player;
-    String name = "Unknown";
+    private Player player;
+    private String name = "Unknown";
     Image icon = new Image(String.format("res/icons/Unknown.png"));
-    Point iconPos;
+    private Point iconPos;
     Image image;
     Image selected = new Image(String.format("res/Selected/Unknown_Selected.png"));
-    Point pos;
+    private Point pos;
     int[] stats = new int[2];
 
     Music music = new Music();
     int timer = 120;
-    final double speed = 2;
+   final double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     boolean shield = false;
     boolean bullet = false;

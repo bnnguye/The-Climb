@@ -7,18 +7,18 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Sakuta extends Character{
-    Player player;
-    String name = "Sakuta";
+    private Player player;
+    private String name = "Sakuta";
     Image icon = new Image(String.format("res/icons/%s.png", this.name));
-    Point iconPos;
+    private Point iconPos;
     Image image;
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
-    Point pos;
+    private Point pos;
     int[] stats = new int[2];
 
     Music music = new Music();
     int timer = 120;
-    final double speed = 2;
+   final double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     boolean shield = false;
     boolean bullet = false;

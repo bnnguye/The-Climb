@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 public class SideLelouch extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getFrames();
-    String name = "Lelouch";
-    String soundPath = String.format("music/%s.wav", this.name);
+    private String name = "Lelouch";
+    private String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
     boolean activating = false;
     boolean animating = false;
@@ -18,6 +18,7 @@ public class SideLelouch extends SideCharacter{
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
 
     boolean shoot = false;
+    private Point iconPos;
 
 
     public String getName() {

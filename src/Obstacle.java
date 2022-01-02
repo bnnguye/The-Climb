@@ -5,7 +5,7 @@ import bagel.util.Point;
 public abstract class Obstacle {
     private String name = "";
     Image image;
-    Point pos;
+    private Point pos;
     double speed;
     boolean gojoAbility = false;
     boolean jotaroAbility = false;

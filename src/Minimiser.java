@@ -3,8 +3,8 @@ import bagel.Window;
 import bagel.util.Point;
 
 public class Minimiser extends PowerUp{
-    String name = "Minimiser";
-    Point pos;
+    private String name = "Minimiser";
+    private Point pos;
     Image image = new Image("res/PowerUp/Minimiser.png");
     boolean jotaroAbility = false;
 

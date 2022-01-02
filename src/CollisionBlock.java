@@ -7,7 +7,7 @@ import bagel.util.Rectangle;
 
 public class CollisionBlock {
     Rectangle rectangle;
-    Point pos;
+    private Point pos;
     double width;
     double height;
     Colour color = new Colour(1, 0.3, 0.3);

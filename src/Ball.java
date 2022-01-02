@@ -4,11 +4,11 @@ import bagel.util.Point;
 
 public class Ball extends Obstacle {
     private String name = "Ball";
-    Image image = new Image("res/obstacles/rock.png");
-    Point pos;
-    double speed = 4;
-    boolean gojoAbility = false;
-    boolean jotaroAbility = false;
+    private Image image = new Image("res/obstacles/bowlingball.png");
+    private Point pos;
+    private double speed = 6 + GameSettingsSingleton.getInstance().getMapSpeed();;
+    private boolean gojoAbility = false;
+    private boolean jotaroAbility = false;
 
     public Ball() {
         this.pos = new Point(Window.getWidth() * Math.random(), -200);
@@ -34,3 +34,4 @@ public class Ball extends Obstacle {
     public void setJotaroAbility(boolean bool) {jotaroAbility = bool;}
     public String getName() {return this.name;}
 }
+

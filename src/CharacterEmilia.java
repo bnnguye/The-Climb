@@ -9,18 +9,18 @@ import java.util.Scanner;
 
 public class CharacterEmilia extends Character{
     private final double frames = SettingsSingleton.getInstance().getFrames();
-    Player player;
-    String name = "Emilia";
-    String soundPath = String.format("music/%s.wav", this.name);
-    Point iconPos;
-    Point pos;
+    private Player player;
+    private String name = "Emilia";
+    private String soundPath = String.format("music/%s.wav", this.name);
+    private Point iconPos;
+    private Point pos;
     Image image;
     Image icon = new Image(String.format("res/icons/%s.png", this.name));
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
     int[] stats = new int[2];
 
     int timer = 120;
-    final double speed = 2;
+   final double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     boolean shield = false;
     boolean speedUp = false;

@@ -6,9 +6,9 @@ import java.util.ArrayList;
 public class TileBasicLeft extends Tile {
 
     ArrayList<CollisionBlock> collisionBlocks = new ArrayList<>();
-    Point pos;
+    private Point pos;
     Image image = new Image("res/Tiles/BasicTile.png");
-    String name = "BasicLeft";
+    private String name = "BasicLeft";
     String type = "Basic";
 
     TileBasicLeft(Point point) {

@@ -5,11 +5,11 @@ import java.util.ArrayList;
 
 public class TileBasicTop extends Tile {
 
-    String name = "BasicTop";
+    private String name = "BasicTop";
     String type = "Basic";
     ArrayList<CollisionBlock> collisionBlocks = new ArrayList<>();
     Image image = new Image("res/Tiles/BasicTile.png");
-    Point pos;
+    private Point pos;
 
     TileBasicTop(Point point) {
         super(point);

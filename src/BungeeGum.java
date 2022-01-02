@@ -2,10 +2,10 @@ import bagel.Image;
 import bagel.util.Point;
 
 public class BungeeGum {
-    String direction;
-    Point pos;
-    private final double speed = 5;
-    Image image = new Image("res/charactersS/Hisoka/BungeeGum.png");
+    private String direction;
+    private Point pos;
+    private final double speed = 5* GameSettingsSingleton.getInstance().getMapSpeed();;
+    private Image image = new Image("res/charactersS/Hisoka/BungeeGum.png");
     private boolean jotaroAbility = false;
 
     public BungeeGum(Point point, String direction) {

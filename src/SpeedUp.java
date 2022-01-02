@@ -3,8 +3,8 @@ import bagel.Window;
 import bagel.util.Point;
 
 public class SpeedUp extends PowerUp{
-    String name = "SpeedUp";
-    Point pos;
+    private String name = "SpeedUp";
+    private Point pos;
     Image image = new Image("res/PowerUp/SpeedUp.png");
     boolean jotaroAbility = false;
 

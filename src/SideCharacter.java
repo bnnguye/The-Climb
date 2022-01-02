@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 public abstract class SideCharacter {
     private final double frames = SettingsSingleton.getInstance().getFrames();
-    String name;
-    String soundPath;
+    private String name;
+    private String soundPath;
     Image icon;
-    Point iconPos;
+    private Point iconPos;
     boolean activating;
     boolean animating;
     Image selected;

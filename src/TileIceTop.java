@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 public class TileIceTop extends Tile {
 
-    String name = "IceTop";
+    private String name = "IceTop";
     String type = "Ice";
     ArrayList<CollisionBlock> collisionBlocks = new ArrayList<>();
-    Point pos;
+    private Point pos;
     Image image = new Image("res/Tiles/BasicTile.png");
 
     TileIceTop(Point point) {

@@ -4,8 +4,8 @@ import bagel.util.Point;
 
 public class Shard {
 
-    Point pos;
-    private final double speed = 3;
+    private Point pos;
+    private final double speed = 3* GameSettingsSingleton.getInstance().getMapSpeed();;
 
     public Image getImage() {
         return image;

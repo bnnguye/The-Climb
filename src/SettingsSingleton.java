@@ -2,6 +2,7 @@ public class SettingsSingleton {
     private final double frames = 144;
     private static SettingsSingleton single_instance = null;
     private static int gameState = -1;
+    private static int lastGameState = 0;
     private static int gameMode = 0;
     private static int players = 0;
     private static String gameStateString = "";
@@ -18,7 +19,7 @@ public class SettingsSingleton {
     }
 
     public int getGameState() { return gameState;}
-    public void setGameState(int num) { gameState = num;}
+    public void setGameState(int num) { lastGameState = gameState; gameState = num;}
     public void setGameMode(int num) {gameMode = num;}
     public void setMapNo(int num) { mapNo = num;}
     public int getGameMode() {return gameMode;}
@@ -35,4 +36,5 @@ public class SettingsSingleton {
     public double getTime() {return time; }
     public void updateTime() {time++;}
     public double getFrames() {return frames;}
+    public int getLastGameState() {return lastGameState;}
 }

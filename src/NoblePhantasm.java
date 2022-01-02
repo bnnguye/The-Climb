@@ -3,8 +3,8 @@ import bagel.Window;
 import bagel.util.Point;
 
 public class NoblePhantasm extends PowerUp {
-    String name = "NoblePhantasm";
-    Point pos;
+    private String name = "NoblePhantasm";
+    private Point pos;
     Image image = new Image("res/PowerUp/NoblePhantasm.png");
     boolean jotaroAbility = false;
 

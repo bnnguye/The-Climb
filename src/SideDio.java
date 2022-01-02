@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 public class SideDio extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getFrames();
-    String name = "Dio";
-    String soundPath = String.format("music/%s.wav", this.name);
+    private String name = "Dio";
+    private String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
@@ -18,6 +18,7 @@ public class SideDio extends SideCharacter{
 
     int shakeTimer;
     ArrayList<PowerUp> powerUps;
+    private Point iconPos;
 
     public String getName() {
         return this.name;

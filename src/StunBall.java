@@ -5,7 +5,7 @@ import bagel.util.Point;
 public class StunBall extends Obstacle{
     private String name = "StunBall";
     Image image = new Image("res/obstacles/stunball.png");
-    Point pos;
+    private Point pos;
     double speed = 3;
     boolean gojoAbility = false;
     boolean jotaroAbility = false;

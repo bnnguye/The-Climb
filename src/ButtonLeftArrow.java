@@ -4,7 +4,7 @@ import bagel.util.Point;
 import bagel.util.Rectangle;
 
 public class ButtonLeftArrow extends Button {
-    GameSettingsSingleton gameSettingsSingleton = new GameSettingsSingleton();
+    GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
     Image image = new Image("res/LeftArrow.png");
     Point position;
 
@@ -22,6 +22,7 @@ public class ButtonLeftArrow extends Button {
 
     public void playAction() {
         if (gameSettingsSingleton.getInstance().getPage() > 0) {
+            System.out.println("fax");
             gameSettingsSingleton.getInstance().setPage(gameSettingsSingleton.getInstance().getPage() - 1);
         }
     }

@@ -15,9 +15,9 @@ public abstract class   Button {
     private Rectangle box;
     private DrawOptions DO = new DrawOptions();
     private Font font = new Font("res/fonts/DejaVuSans-Bold.ttf", FONT_SIZE);
-    Colour black = new Colour(0, 0, 0);
+    private Colour black = new Colour(0, 0, 0);
     Colour blackTranslucent = new Colour(0, 0, 0, 0.5);
-    Music music = new Music();
+    private Music music = new Music();
     private Image image = null;
 
     public Button(String name, Rectangle rectangle) {

@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 public class TileSlow extends Tile {
 
-    String name = "Slow";
+    private String name = "Slow";
     String type = "Slow";
     ArrayList<CollisionBlock> collisionBlocks = new ArrayList<>();
-    Point pos;
+    private Point pos;
     Image image = new Image("res/Tiles/BasicTile.png");
 
     TileSlow(Point point) {

@@ -9,9 +9,9 @@ import java.util.Scanner;
 
 public class MapGreedIsland extends Map {
     int level = 3;
-    String name = "Greed Island";
+    private String name = "Greed Island";
     Image mapPeek = new Image(String.format("res/mapPeeks/%d.png", this.level));
-    Point pos;
+    private Point pos;
     ArrayList<Tile> tiles = new ArrayList<>();
     double height = 0;
     double currentHeight = 0;

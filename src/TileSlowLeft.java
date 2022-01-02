@@ -6,9 +6,9 @@ import java.util.ArrayList;
 public class TileSlowLeft extends Tile {
 
     ArrayList<CollisionBlock> collisionBlocks = new ArrayList<>();
-    Point pos;
+    private Point pos;
     Image image = new Image("res/Tiles/BasicTile.png");
-    String name = "SlowLeft";
+    private String name = "SlowLeft";
     String type = "Slow";
 
     TileSlowLeft(Point point) {

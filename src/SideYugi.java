@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 public class SideYugi extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getFrames();
-    String name = "Yugi";
-    String soundPath = String.format("music/%s.wav", this.name);
+    private String name = "Yugi";
+    private String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/Yugi/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
@@ -19,6 +19,7 @@ public class SideYugi extends SideCharacter{
     Music musicEnd = new Music();
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
     ArrayList<ExodiaPiece> exodiaPieces;
+    private Point iconPos;
 
 
     public String getName() {

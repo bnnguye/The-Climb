@@ -4,11 +4,11 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public abstract class Tile {
-    String name= "";
+    private String name= "";
     String type = "";
     ArrayList<CollisionBlock> collisionBlocks;
     Image image;
-    Point pos;
+    private Point pos;
 
     Tile(Point point) {
         pos = point;

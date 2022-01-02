@@ -9,9 +9,9 @@ import java.util.Scanner;
 
 public class MapTrainingGround2 extends Map {
     int level = 0;
-    String name = "Training Grounds 2";
+    private String name = "Training Grounds 2";
     Image mapPeek = new Image(String.format("res/mapPeeks/%d.png", this.level));
-    Point pos;
+    private Point pos;
     ArrayList<Tile> tiles = new ArrayList<>();
     double height = 0;
     double currentHeight = 0;

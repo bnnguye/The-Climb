@@ -3,8 +3,8 @@ import bagel.Window;
 import bagel.util.Point;
 
 public class Shield extends PowerUp {
-    String name = "Shield";
-    Point pos;
+    private String name = "Shield";
+    private Point pos;
     Image image = new Image("res/PowerUp/Shield.png");
     boolean jotaroAbility = false;
 

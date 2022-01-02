@@ -5,12 +5,12 @@ import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
 import bagel.util.Rectangle;
-import javafx.scene.layout.RowConstraints;
-import org.lwjgl.system.CallbackI;
+import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Set;
 
 
 /** "The Climb" - A game created by Bill Nguyen **/
@@ -21,8 +21,8 @@ public class Game extends AbstractGame {
     private final int DIALOGUE_FONT_SIZE = 30 ;
     private final int MAX_DIALOGUE_LIMIT = Window.getWidth()/(DIALOGUE_FONT_SIZE - 10);
 
-    private static SettingsSingleton settingsSingleton = new SettingsSingleton();
-    private static GameSettingsSingleton gameSettingsSingleton = new GameSettingsSingleton();
+    private static SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
+    private static GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
 
     // Stat variable
     int[] statTracker = new int[4];
@@ -281,6 +281,14 @@ public class Game extends AbstractGame {
         allTiles.add(new TileSlowLeft(new Point(0,0)));
         allTiles.add(new TileSlowTop(new Point(0,0)));
 
+        allPowerUps.add(new SpeedDown());
+        allPowerUps.add(new SpeedUp());
+        allPowerUps.add(new Minimiser());
+        allPowerUps.add(new Shield());
+        allPowerUps.add(new NoblePhantasm());
+        allObstacles.add(new Ball());
+        allObstacles.add(new Rock());
+
 
 
         bottomRectangle = new Rectangle(0, Window.getHeight() - 20, Window.getWidth(), 20);
@@ -305,9 +313,9 @@ public class Game extends AbstractGame {
         updateDisplayStrings();
         updateSounds();
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
-        SettingsSingleton.getInstance().updateTime();
+        settingsSingleton.updateTime();
 
-        if (SettingsSingleton.getInstance().getGameState() > -1) {
+        if (settingsSingleton.getGameState() > -1) {
             if (menuBackground != null) {
                 menuBackground.drawFromTopLeft(0, 0);
             }
@@ -332,36 +340,36 @@ public class Game extends AbstractGame {
         }
 
 
-        if (SettingsSingleton.getInstance().getGameState() == -1) {
+        if (settingsSingleton.getGameState() == -1) {
             playIntro();
         }
-        else if (SettingsSingleton.getInstance().getGameState() == 0) {
+        else if (settingsSingleton.getGameState() == 0) {
             currentMusic = "music/Game Main Menu.wav";
             saveStatsChecker();
-            if (!SettingsSingleton.getInstance().getGameStateString().equals("Main Menu")) {
+            if (!settingsSingleton.getGameStateString().equals("Main Menu")) {
                 buttons.clear();
                 buttons.add(new ButtonPlay("PLAY", new Rectangle(new Point(0, 440), Window.getWidth(), 160)));
                 buttons.add(new ButtonCreateMap("CREATE MAP", new Rectangle(new Point(0, 600), Window.getWidth(), 160)));
                 buttons.add(new ButtonExit("EXIT", new Rectangle(new Point(0, 760), Window.getWidth(), 160)));
-                SettingsSingleton.getInstance().setGameStateString("Main Menu");
+                settingsSingleton.setGameStateString("Main Menu");
                 menuBackground = new Image("res/menu/MainMenu.PNG");
                 menuTitle = "THE CLIMB";
             }
         }
-        else if (SettingsSingleton.getInstance().getGameState() == 1) {
-            if (!SettingsSingleton.getInstance().getGameStateString().equals("Level")) {
+        else if (settingsSingleton.getGameState() == 1) {
+            if (!settingsSingleton.getGameStateString().equals("Level")) {
                 Button storyButton = new ButtonStory("STORY", new Rectangle(0, Window.getHeight()/2.5 - 160, Window.getWidth(), 160));
                 Button versusButton = new ButtonVersus("VS",new Rectangle(0, Window.getHeight() / 2.5 + 160, Window.getWidth(), 160));
                 buttons.clear();
                 buttons.add(storyButton);
                 buttons.add(versusButton);
-                SettingsSingleton.getInstance().setGameStateString("Level");
+                settingsSingleton.setGameStateString("Level");
                 menuBackground = new Image("res/menu/levelMenu.PNG");
                 menuTitle = "SELECT GAME MODE";
             }
         }
-        else if (SettingsSingleton.getInstance().getGameState() == 2) {
-            if (!SettingsSingleton.getInstance().getGameStateString().equals("Players")) {
+        else if (settingsSingleton.getGameState() == 2) {
+            if (!settingsSingleton.getGameStateString().equals("Players")) {
                 buttons.clear();
                 Button twoPlayerButton = new ButtonTwoPlayer("2", new Rectangle(0, Window.getHeight() / 2 - 160, Window.getWidth(), 160));
                 Button threePlayerButton = new ButtonThreePlayer("3", new Rectangle(0, Window.getHeight() / 2, Window.getWidth(), 160));
@@ -369,28 +377,28 @@ public class Game extends AbstractGame {
                 buttons.add(twoPlayerButton);
                 buttons.add(threePlayerButton);
                 buttons.add(fourPlayerButton);
-                SettingsSingleton.getInstance().setGameStateString("Players");
+                settingsSingleton.setGameStateString("Players");
                 menuBackground = new Image("res/menu/playerMenu.PNG");
                 menuTitle = "PLAYERS";
             }
-            if (SettingsSingleton.getInstance().getPlayers() != 0) {
-                Image playerArt = new Image(String.format("res/menu/%dPlayers.PNG", SettingsSingleton.getInstance().getPlayers()));
+            if (settingsSingleton.getPlayers() != 0) {
+                Image playerArt = new Image(String.format("res/menu/%dPlayers.PNG", settingsSingleton.getPlayers()));
                 playerArt.draw(Window.getWidth()/2, Window.getHeight()/2);
             }
         }
-        else if (SettingsSingleton.getInstance().getGameState() == 3) {
-            if (!SettingsSingleton.getInstance().getGameStateString().equals("Character")) {
+        else if (settingsSingleton.getGameState() == 3) {
+            if (!settingsSingleton.getGameStateString().equals("Character")) {
                 spacer = 300;
                 buttons.clear();
-                buttons.add(new ButtonGameSettings("Settings", new Rectangle(0, 100 , Window.getWidth(), 100)));
+                buttons.add(new ButtonGameSettings("Settings", new Rectangle(Window.getWidth()/2, 0 , titleFont.getWidth("Settings"), 100)));
                 players.clear();
-                SettingsSingleton.getInstance().setGameStateString("Character");
+                settingsSingleton.setGameStateString("Character");
                 players.add(new PlayerOne());
                 players.add(new PlayerTwo());
-                if (SettingsSingleton.getInstance().getPlayers() == 3) {
+                if (settingsSingleton.getPlayers() == 3) {
                     players.add(new PlayerThree());
                 }
-                if (SettingsSingleton.getInstance().getPlayers() == 4) {
+                if (settingsSingleton.getPlayers() == 4) {
                     players.add(new PlayerThree());
                     players.add(new PlayerFour());
                 }
@@ -426,7 +434,8 @@ public class Game extends AbstractGame {
                 for (Character character: characters) {
                     Image border = new Image("res/Selected/Selected.png");
                     if (player.getCharacter() == null) {
-                        if (character.getIcon().getBoundingBoxAt(character.getIconPos()).intersects(player.getPos())) {
+                        Rectangle iconRectangle = new Rectangle(character.getIconPos().x - 165, character.getIconPos().y - 150, 299, 299);
+                        if (iconRectangle.intersects(player.getPos())) {
                             character.getSelected().draw(250 + border.getWidth()*1.5*(player.getId()-1), Window.getHeight() - 100);
                             playerFont.drawString(String.format("P%d: %s", player.getId(), character.getName()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight());
                         }
@@ -459,11 +468,11 @@ public class Game extends AbstractGame {
             }
             if (picked) {
                 if (waitTimer < 0) {
-                    if(SettingsSingleton.getInstance().getGameMode() == 99) {
-                        SettingsSingleton.getInstance().setGameState(6);
+                    if(settingsSingleton.getGameMode() == 99) {
+                        settingsSingleton.setGameState(6);
                     }
                     else {
-                        SettingsSingleton.getInstance().setGameState(4);
+                        settingsSingleton.setGameState(4);
                     }
                 }
                 else {
@@ -475,11 +484,11 @@ public class Game extends AbstractGame {
             }
 
         }
-        else if (SettingsSingleton.getInstance().getGameState() == 4) { // Comrades
-            if (!SettingsSingleton.getInstance().getGameStateString().equals("Comrade")) {
+        else if (settingsSingleton.getGameState() == 4) { // Comrades
+            if (!settingsSingleton.getGameStateString().equals("Comrade")) {
                 menuTitle = "CHOOSE HUSBANDO";
                 menuBackground = new Image("res/menu/mapMenu.png");
-                SettingsSingleton.getInstance().setGameStateString("Comrade");
+                settingsSingleton.setGameStateString("Comrade");
             }
             spacer = 300;
             int row = 1;
@@ -539,18 +548,18 @@ public class Game extends AbstractGame {
             }
             if (picked) {
                 if (waitTimer < 0) {
-                    SettingsSingleton.getInstance().setGameState(5);
+                    settingsSingleton.setGameState(5);
                 }
                 else {
                     waitTimer--;
                 }
             }
         }
-        else if (SettingsSingleton.getInstance().getGameState() == 5) { // Map
-            if (!SettingsSingleton.getInstance().getGameStateString().equals("MAP")) {
+        else if (settingsSingleton.getGameState() == 5) { // Map
+            if (!settingsSingleton.getGameStateString().equals("MAP")) {
                 menuTitle = "Which Climb?";
                 menuBackground = null;
-                SettingsSingleton.getInstance().setGameStateString("MAP");
+                settingsSingleton.setGameStateString("MAP");
             }
             spacer = 400;
             int row = 1;
@@ -624,9 +633,9 @@ public class Game extends AbstractGame {
                 int playerMap = (int) Math.round(Math.random()*(players.size()-1)) + 1;
                 for (Player player: players) {
                     if (player.getId() == playerMap) {
-                        SettingsSingleton.getInstance().setMapNo(player.getMapChosen().getLevel());
+                        settingsSingleton.setMapNo(player.getMapChosen().getLevel());
                         for (Map mapChosen: playableMaps) {
-                            if (mapChosen.getLevel() == SettingsSingleton.getInstance().getMapNo()) {
+                            if (mapChosen.getLevel() == settingsSingleton.getMapNo()) {
                                 map = mapChosen;
                                 map.generateMap();
                                 break;
@@ -635,19 +644,19 @@ public class Game extends AbstractGame {
                         break;
                     }
                 }
-                SettingsSingleton.getInstance().setGameState(6);
+                settingsSingleton.setGameState(6);
             }
         }
-        else if (SettingsSingleton.getInstance().getGameState() == 6) {
+        else if (settingsSingleton.getGameState() == 6) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
-            if (SettingsSingleton.getInstance().getGameMode() == 0) {
-                if (!SettingsSingleton.getInstance().getGameStateString().equals("Game")) {
+            if (settingsSingleton.getGameMode() == 0) {
+                if (!settingsSingleton.getGameStateString().equals("Game")) {
                     buttons.clear();
                     setPlayersPosition();
-                    currentMusic = String.format("music/Fight%d.wav", SettingsSingleton.getInstance().getMapNo());
+                    currentMusic = String.format("music/Fight%d.wav", settingsSingleton.getMapNo());
                     resetMusic();
                     playSound("music/Start.wav");
-                    SettingsSingleton.getInstance().setGameStateString("Game");
+                    settingsSingleton.setGameStateString("Game");
                 }
                 startCountdown();
                 render();
@@ -694,12 +703,12 @@ public class Game extends AbstractGame {
                         }
                     }
                     if (!characterMusic) {
-                        currentMusic = String.format("music/Fight%d.wav", SettingsSingleton.getInstance().getMapNo());
+                        currentMusic = String.format("music/Fight%d.wav", settingsSingleton.getMapNo());
                     }
                     if(!map.hasFinished()) {
                         if(!playingAnimation) {
                             displayCharacterStats(players);
-                            map.updateTiles(GameSettingsSingleton.getInstance().getMapSpeed());
+                            map.updateTiles(gameSettingsSingleton.getMapSpeed());
                             spawnObstacles();
                             spawnPowerUps();
                         }
@@ -710,9 +719,9 @@ public class Game extends AbstractGame {
                         }
                         for (Player player : players) {
                             if (player.getCharacter().getPos().distanceTo(new Point(player.getCharacter().getPos().x, 0)) < 10) {
-                                SettingsSingleton.getInstance().setGameState(7);
-                                SettingsSingleton.getInstance().setWinner(player);
-                                SettingsSingleton.getInstance().setGameStateString("Win");
+                                settingsSingleton.setGameState(7);
+                                settingsSingleton.setWinner(player);
+                                settingsSingleton.setGameStateString("Win");
                                 break;
                             }
                         }
@@ -722,19 +731,19 @@ public class Game extends AbstractGame {
                     checkCollisionPowerUps();
                     checkCollisionObstacles();
                     checkCollisionTiles();
-                    if (!SettingsSingleton.getInstance().getGameStateString().equals("Win")) {
+                    if (!settingsSingleton.getGameStateString().equals("Win")) {
                         int deathCounter = 0;
                         for (Player player : players) {
                             if (player.isDead()) {
                                 deathCounter++;
                             }
                         }
-                        if (SettingsSingleton.getInstance().getPlayers() - deathCounter < 2) {
-                            SettingsSingleton.getInstance().setGameStateString("Lose");
-                            SettingsSingleton.getInstance().setGameState(7);
+                        if (settingsSingleton.getPlayers() - deathCounter < 2) {
+                            settingsSingleton.setGameStateString("Lose");
+                            settingsSingleton.setGameState(7);
                             for (Player player : players) {
                                 if (!player.isDead()) {
-                                    SettingsSingleton.getInstance().setWinner(player);
+                                    settingsSingleton.setWinner(player);
                                     break;
                                 }
                             }
@@ -744,9 +753,9 @@ public class Game extends AbstractGame {
                 }
             }
             else {
-                if (!SettingsSingleton.getInstance().getGameStateString().equals("Story")) {
+                if (!settingsSingleton.getGameStateString().equals("Story")) {
                     buttons.clear();
-                    SettingsSingleton.getInstance().setGameStateString("Story");
+                    settingsSingleton.setGameStateString("Story");
                     setPlayersPosition();
                     map = mapToTransitionTo;
                     if (map != null) {
@@ -811,7 +820,7 @@ public class Game extends AbstractGame {
                                 checkCollisionTiles();
                                 for (Player player: players) {
                                     if (player.isDead()) {
-                                        SettingsSingleton.getInstance().setGameState(7);
+                                        settingsSingleton.setGameState(7);
                                         failed = true;
                                     }
                                 }
@@ -846,7 +855,7 @@ public class Game extends AbstractGame {
                                 updateObjects();
                                 for (Player player: players) {
                                     if (player.isDead()) {
-                                        SettingsSingleton.getInstance().setGameState(7);
+                                        settingsSingleton.setGameState(7);
                                         failed = true;
                                     }
                                 }
@@ -886,7 +895,7 @@ public class Game extends AbstractGame {
                                 updateObjects();
                                 for (Player player: players) {
                                     if (player.isDead()) {
-                                        SettingsSingleton.getInstance().setGameState(7);
+                                        settingsSingleton.setGameState(7);
                                         failed = true;
                                     }
                                 }
@@ -1115,14 +1124,14 @@ public class Game extends AbstractGame {
             }
 
         }
-        else if (SettingsSingleton.getInstance().getGameState() == 7) {
+        else if (settingsSingleton.getGameState() == 7) {
             render();
-            if (SettingsSingleton.getInstance().getGameMode() == 99) {
+            if (settingsSingleton.getGameMode() == 99) {
                 displayFailScreen();
-                if (SettingsSingleton.getInstance().getGameStateString().equals("Continue")) {
+                if (settingsSingleton.getGameStateString().equals("Continue")) {
                     changeMainMusic(currentMusic);
                     buttons.clear();
-                    SettingsSingleton.getInstance().setGameState(6);
+                    settingsSingleton.setGameState(6);
                     map.generateMap();
                     for (Player player : players) {
                         player.getCharacter().resetTimer();
@@ -1134,9 +1143,9 @@ public class Game extends AbstractGame {
                     powerUps.removeAll(powerUps);
                     obstacles.removeAll(obstacles);
                 }
-                else if (SettingsSingleton.getInstance().getGameStateString().equals("Menu")) {
+                else if (settingsSingleton.getGameStateString().equals("Menu")) {
                     failed = false;
-                    SettingsSingleton.getInstance().setGameState(0);
+                    settingsSingleton.setGameState(0);
                     for (Player player : players) {
                         player.getCharacter().resetTimer();
                         if (player.isDead()) {
@@ -1155,7 +1164,7 @@ public class Game extends AbstractGame {
                 for (Player player: players) {
                     player.getCharacter().resetTimer();
                     if (!player.isDead()) {
-                        if (SettingsSingleton.getInstance().getWinner().getId() == player.getId()) {
+                        if (settingsSingleton.getWinner().getId() == player.getId()) {
                             Image winner = new Image(String.format("res/Renders/%s.png", player.getCharacter().getName()));
                             Image comrade = new Image(String.format("res/Renders/%s.png", player.getSideCharacter().getName()));
                             if (winnerTimer < winner.getWidth() + comrade.getWidth()/2) {
@@ -1165,19 +1174,19 @@ public class Game extends AbstractGame {
                             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), transparent);
                             winner.draw(Window.getWidth() - winnerTimer, Window.getHeight()/2 +200);
                             comrade.draw(Window.getWidth() - winnerTimer + winner.getWidth(), Window.getHeight()/2 + 200);
-                            victoryFont.drawString(String.format("Player %d: %s is victorious!", SettingsSingleton.getInstance().getWinner().getId(), SettingsSingleton.getInstance().getWinner().getCharacter().getName()), 16, 100);
+                            victoryFont.drawString(String.format("Player %d: %s is victorious!", settingsSingleton.getWinner().getId(), settingsSingleton.getWinner().getCharacter().getName()), 16, 100);
                         }
                     }
                 }
-                if (SettingsSingleton.getInstance().getGameStateString().equals("Win")) {
+                if (settingsSingleton.getGameStateString().equals("Win")) {
                     playSound("music/Congratulations.wav");
-                    SettingsSingleton.getInstance().setGameStateString("Congratulations");
+                    settingsSingleton.setGameStateString("Congratulations");
                 }
                 if (!winnerPlayed) {
                     for (Player player: players) {
                         player.getCharacter().resetTimer();
                         if (player.getCharacter() != null) {
-                            if (player.getCharacter().getName().equals(SettingsSingleton.getInstance().getWinner().getCharacter().getName())) {
+                            if (player.getCharacter().getName().equals(settingsSingleton.getWinner().getCharacter().getName())) {
                                 playSound(player.getCharacter().playLine());
                                 player.getCharacter().updateStats(true, true);
                                 player.recordWin();
@@ -1187,8 +1196,8 @@ public class Game extends AbstractGame {
                             }
                         }
                     }
-                    statTracker[SettingsSingleton.getInstance().getGameMode() + 1] = statTracker[SettingsSingleton.getInstance().getGameMode() + 1] + 1;
-                    SettingsSingleton.getInstance().getWinner().getCharacter().playLine();
+                    statTracker[settingsSingleton.getGameMode() + 1] = statTracker[settingsSingleton.getGameMode() + 1] + 1;
+                    settingsSingleton.getWinner().getCharacter().playLine();
                     winnerPlayed = true;
                     buttons.clear();
                     Button backToStartButton = new ButtonBackToStart("Main Menu",new Rectangle(new Point(0, Window.getHeight() / 1.5 + 160), Window.getWidth(), 160));
@@ -1197,7 +1206,7 @@ public class Game extends AbstractGame {
                     buttons.add(retryButton);
                 }
                 if (input.wasPressed(MouseButtons.LEFT)) {
-                    if((SettingsSingleton.getInstance().getGameStateString().equals("Retry")) || (SettingsSingleton.getInstance().getGameStateString().equals("Menu"))) {
+                    if((settingsSingleton.getGameStateString().equals("Retry")) || (settingsSingleton.getGameStateString().equals("Menu"))) {
                         resetMusic();
                         for (SideCharacter character: sideCharacters) {
                             character.reset();
@@ -1205,7 +1214,7 @@ public class Game extends AbstractGame {
                         for (Character character: characters) {
                             character.stopMusic();
                         }
-                        if (SettingsSingleton.getInstance().getGameStateString().equals("Retry")) {
+                        if (settingsSingleton.getGameStateString().equals("Retry")) {
                             for (Player player: players) {
                                 player.getCharacter().resetTimer();
                                 player.getSideCharacter().reset();
@@ -1214,18 +1223,18 @@ public class Game extends AbstractGame {
                                 }
                             }
                             map.generateMap();
-                            SettingsSingleton.getInstance().setGameState(6);
+                            settingsSingleton.setGameState(6);
                             buttons.clear();
                         }
-                        else if (SettingsSingleton.getInstance().getGameStateString().equals("Menu")) {
+                        else if (settingsSingleton.getGameStateString().equals("Menu")) {
                             map = null;
                             unlocked = checkAchievementsInGame();
                             if (unlocked != null) {
-                                SettingsSingleton.getInstance().setGameState(8);
+                                settingsSingleton.setGameState(8);
                                 saveStats();
                             }
                             else {
-                                SettingsSingleton.getInstance().setGameState(0);
+                                settingsSingleton.setGameState(0);
                             }
                             players.clear();
                             buttons.clear();
@@ -1245,11 +1254,11 @@ public class Game extends AbstractGame {
                 }
             }
         }
-        else if (SettingsSingleton.getInstance().getGameState() == 8) {
-            if (!SettingsSingleton.getInstance().getGameStateString().equals("Unlocked")) {
+        else if (settingsSingleton.getGameState() == 8) {
+            if (!settingsSingleton.getGameStateString().equals("Unlocked")) {
                 resetMusic();
                 currentMusic = "music/Who.wav";
-                SettingsSingleton.getInstance().setGameStateString("Unlocked");
+                settingsSingleton.setGameStateString("Unlocked");
             }
             Colour black = new Colour(0, 0, 0, (float) (mainMusic.clip.getFrameLength() - mainMusic.clip.getFramePosition())/ (float) mainMusic.clip.getFrameLength());
             Image background = new Image(String.format("res/background/%s.png", unlocked.getName()));
@@ -1266,15 +1275,15 @@ public class Game extends AbstractGame {
                 unlockedImage.draw(Window.getWidth()/2, Window.getHeight()/2 + 300);
                 if (input.wasPressed(MouseButtons.LEFT)) {
                     resetMusic();
-                    SettingsSingleton.getInstance().setGameState(0);
+                    settingsSingleton.setGameState(0);
                 }
             }
             else {
                 Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
             }
         }
-        else if (SettingsSingleton.getInstance().getGameState() == 9) {
-            if (!SettingsSingleton.getInstance().getGameStateString().equals("Create Your Own Map")) {
+        else if (settingsSingleton.getGameState() == 9) {
+            if (!settingsSingleton.getGameStateString().equals("Create Your Own Map")) {
                 map = new MapCustom();
                 map.generateMap();
                 customMapTiles.removeAll(customMapTiles);
@@ -1282,7 +1291,7 @@ public class Game extends AbstractGame {
                     customMapTiles.add(tile);
                 }
                 buttons.clear();
-                SettingsSingleton.getInstance().setGameStateString("Create Your Own Map");
+                settingsSingleton.setGameStateString("Create Your Own Map");
                 menuBackground = null;
                 menuTitle = null;
             }
@@ -1309,7 +1318,7 @@ public class Game extends AbstractGame {
                     else {
                         addDisplayString("Success: Map saved.", 5);
                         saveCustomMap();
-                        SettingsSingleton.getInstance().setGameState(0);
+                        settingsSingleton.setGameState(0);
                     }
                 }
                 if (input.wasPressed(Keys.A)) {
@@ -1321,7 +1330,7 @@ public class Game extends AbstractGame {
                     }
                 }
                 if (input.wasPressed(Keys.ESCAPE)) {
-                    SettingsSingleton.getInstance().setGameState(0);
+                    settingsSingleton.setGameState(0);
                 }
             }
             else {
@@ -1369,61 +1378,116 @@ public class Game extends AbstractGame {
                 }
             }
         }
-        else if (SettingsSingleton.getInstance().getGameState() == 10) {
-            if (!SettingsSingleton.getInstance().getGameStateString().equals("Game Settings")) {
-                SettingsSingleton.getInstance().setGameStateString("Game Settings");
+        else if (settingsSingleton.getGameState() == 10) {
+            if (!settingsSingleton.getGameStateString().equals("Game Settings")) {
+                settingsSingleton.setGameStateString("Game Settings");
                 buttons.clear();
                 buttons.add(new ButtonLeftArrow("", new Rectangle(new Point(Window.getWidth() - 350, 100), 100, 100)));
                 buttons.add(new ButtonRightArrow("", new Rectangle(new Point(Window.getWidth() - 200, 100), 100, 100)));
-                allPowerUps.add(new SpeedDown());
-                allPowerUps.add(new SpeedUp());
-                allPowerUps.add(new Minimiser());
-                allPowerUps.add(new Shield());
-                allObstacles.add(new Balloon());
-                allObstacles.add(new Ball());
                 pageType = "PowerUps";
             }
             int index = 0;
-            if (pageType.equals("PowerUps")) {
+            double minimumFrequency = 0.98;
+            if (pageType.equals("General")) {
+                titleFont.drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + index*100);
+                Image leftButton = new Image("res/LeftArrow.png");
+                Image rightButton = new Image("res/RightArrow.png");
+                leftButton.drawFromTopLeft(titleFont.getWidth("Map Speed: 1000") + 50, 175 + index*100, new DrawOptions().setScale(0.3,0.3));
+                rightButton.drawFromTopLeft(titleFont.getWidth("Map Speed: 1000") + 50 + rightButton.getWidth()*0.5, 175 + index*100, new DrawOptions().setScale(0.3, 0.3));
+                Rectangle leftButtonRectangle = new Rectangle(new Point(titleFont.getWidth("Map Speed: 1000") + 60 + leftButton.getWidth()*0.3, 175 + index*100 + rightButton.getHeight()*0.35), leftButton.getWidth()*0.3, leftButton.getHeight()*0.3);
+                Rectangle rightButtonRectangle = new Rectangle(new Point(titleFont.getWidth("Map Speed: 1000") + 60 + rightButton.getWidth()*0.3 + rightButton.getWidth()*0.5, 175 + index*100 + rightButton.getHeight()*0.35), leftButton.getWidth()*0.3, leftButton.getHeight()*0.3);
+                if (input.wasPressed(MouseButtons.LEFT)) {
+                    if (leftButtonRectangle.intersects(input.getMousePosition())) {
+                        if (gameSettingsSingleton.getMapSpeed() > 1) {
+                            gameSettingsSingleton.setMapSpeed(gameSettingsSingleton.getMapSpeed() - 0.1);
+                        }
+                    }
+                    else if (rightButtonRectangle.intersects(input.getMousePosition())) {
+                        if (gameSettingsSingleton.getMapSpeed() < 3) {
+                            gameSettingsSingleton.setMapSpeed(gameSettingsSingleton.getMapSpeed() + 0.1);
+                        }
+                    }
+                }
+            }
+            else if (pageType.equals("PowerUps")) {
                 for (int i = 0; i < allPowerUps.size(); i++) {
-                    allPowerUps.get(i).getImage().drawFromTopLeft(100, 300 + index*100);
-                    //Drawing.drawRectangle(100 + allPowerUps.get(i).getImage().getWidth()*2, 300 + index*100, gameSettingsSingleton.getInstance().getPowerUpsSettingsSingleton().getFrequency()*500, allPowerUps.get(i).getImage().getHeight(), new Colour(0, 0, 0));
-                    Drawing.drawRectangle(100 + allPowerUps.get(i).getImage().getWidth()*2, 300 + index*100, 500, allPowerUps.get(i).getImage().getHeight(), new Colour(0, 0, 0, 0.5));
+                    PowerUp currentPowerUp = allPowerUps.get(i);
+                    Image currentImage = currentPowerUp.getImage();
+                    double currentFrequency = 500 - (gameSettingsSingleton.getInstance().getPowerUpsSettingsSingleton().getFrequency(currentPowerUp.getName()) - minimumFrequency)*500/(1 - minimumFrequency);
+                    Rectangle maxRectangle = new Rectangle(100 + currentImage.getWidth()*2, 300 + index*100, 500, currentImage.getHeight());
+                    currentImage.drawFromTopLeft(100, 300 + index*100);
+                    if ((input.wasPressed(MouseButtons.LEFT)) && (currentImage.getBoundingBoxAt(new Point(100 + currentImage.getWidth()/2, currentImage.getHeight()/2 + 300 + index*100)).intersects(input.getMousePosition()))) {
+                        gameSettingsSingleton.getPowerUpsSettingsSingleton().toggle(currentPowerUp.getName());
+                    }
+                    else if ((input.isDown(MouseButtons.LEFT)) && (maxRectangle.intersects(input.getMousePosition()))) {
+                        double position = input.getMouseX() - maxRectangle.left();
+                        gameSettingsSingleton.getPowerUpsSettingsSingleton().changeFrequency(currentPowerUp.getName(), 1 - (1 - minimumFrequency)*(position/(maxRectangle.right() - maxRectangle.left())));
+
+                    }
+                    if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(currentPowerUp.getName())) {
+                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + index*100, 500, currentImage.getHeight(), new Colour(0, 0, 0, 0.5));
+                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + index*100, currentFrequency, currentImage.getHeight(), new Colour(0, 0, 0));
+                    }
                     index++;
                 }
             }
             else if (pageType.equals("Obstacles")) {
                 for (int j = 0; j < allObstacles.size(); j++) {
-                    allObstacles.get(j).getImage().drawFromTopLeft(100, 300 + index*100);
-                    //Drawing.drawRectangle(100 + allPowerUps.get(j).getImage().getWidth()*2, 300 + index*100, gameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getFrequency()*500, allPowerUps.get(j).getImage().getHeight(), new Colour(0, 0, 0));
-                    Drawing.drawRectangle(100 + allPowerUps.get(j).getImage().getWidth()*2, 300 + index*100, 500, allPowerUps.get(j).getImage().getHeight(), new Colour(0, 0, 0, 0.5));
+                    Obstacle currentObstacle = allObstacles.get(j);
+                    Image currentImage = currentObstacle.getImage();
+                    double currentFrequency = 500 - (gameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getFrequency(currentObstacle.getName()) - minimumFrequency)*500/(1 - minimumFrequency);
+                    Rectangle maxRectangle = new Rectangle(100 + currentImage.getWidth()*2, 300 + index*100, 500, currentImage.getHeight());
+                    currentImage.drawFromTopLeft(100, 300 + index*100);
+                    if ((input.wasPressed(MouseButtons.LEFT)) && (currentImage.getBoundingBoxAt(new Point(100 + currentImage.getWidth()/2, currentImage.getHeight()/2 + 300 + index*100)).intersects(input.getMousePosition()))) {
+                        gameSettingsSingleton.getObstaclesSettingsSingleton().toggle(currentObstacle.getName());
+                    }
+                    else if ((input.isDown(MouseButtons.LEFT)) && (maxRectangle.intersects(input.getMousePosition()))) {
+                        double position = input.getMouseX() - maxRectangle.left();
+                        gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency(currentObstacle.getName(), 1 - (1 - minimumFrequency)*(position/(maxRectangle.right() - maxRectangle.left())));
+
+                    }
+                    if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(currentObstacle.getName())) {
+                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + index*100, 500, currentImage.getHeight(), new Colour(0, 0, 0, 0.5));
+                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + index*100, currentFrequency, currentImage.getHeight(), new Colour(0, 0, 0));
+                    }
                     index++;
                 }
             }
-            if (GameSettingsSingleton.getInstance().getPage() == 0) {
+            if (gameSettingsSingleton.getPage() == 0) {
+                pageType = "General";
+            }
+            else if (gameSettingsSingleton.getPage() == 1) {
                 pageType = "PowerUps";
             }
-            else if (GameSettingsSingleton.getInstance().getPage() == 1) {
+            else if (gameSettingsSingleton.getPage() == 2) {
                 pageType = "Obstacles";
             }
-            System.out.println(GameSettingsSingleton.getInstance().getPage());
             menuTitle = pageType;
         }
-        if ((SettingsSingleton.getInstance().getGameState() > 0) && (SettingsSingleton.getInstance().getGameState() < 6)) {
+        if (((settingsSingleton.getGameState() > 0) && (settingsSingleton.getGameState() < 6)) || (settingsSingleton.getGameState() == 10)) {
             Image back = new Image("res/BackArrow.PNG");
             back.draw(Window.getWidth() - back.getWidth(), back.getHeight());
             if (back.getBoundingBoxAt(new Point(Window.getWidth() - back.getWidth(), back.getHeight())).intersects(input.getMousePosition())) {
                 if (input.wasPressed(MouseButtons.LEFT)) {
-                    if (SettingsSingleton.getInstance().getGameState() == 3) {
+                    if (settingsSingleton.getGameState() == 3) {
                         players.removeAll(players);
+                        settingsSingleton.setGameState(settingsSingleton.getGameState() - 1);
                     }
-                    if (SettingsSingleton.getInstance().getGameState() == 5) {
+                    else if (settingsSingleton.getGameState() == 5) {
                         for (Player player: players) {
                             player.setMapChosen(null);
                             player.setSideCharacter(null);
+                            settingsSingleton.setGameState(settingsSingleton.getGameState() - 1);
                         }
                     }
-                    SettingsSingleton.getInstance().setGameState(SettingsSingleton.getInstance().getGameState() - 1);
+                    else if (settingsSingleton.getGameState() == 10) {
+                        if (back.getBoundingBoxAt(new Point(Window.getWidth() - back.getWidth(), back.getHeight())).intersects(input.getMousePosition())) {
+                            settingsSingleton.setGameState(settingsSingleton.getLastGameState());
+                        }
+                    }
+                    else {
+                        settingsSingleton.setGameState(settingsSingleton.getGameState() - 1);
+                    }
                 }
             }
         }
@@ -1522,10 +1586,10 @@ public class Game extends AbstractGame {
         }
         P1.draw(250, Window.getHeight() - 115);
         P2.draw(250 + P1.getWidth()*1.5, Window.getHeight() - 115);
-        if(SettingsSingleton.getInstance().getPlayers() == 3) {
+        if(settingsSingleton.getPlayers() == 3) {
             P3.draw(250 + P1.getWidth()*3, Window.getHeight() - 115);
         }
-        if (SettingsSingleton.getInstance().getPlayers() == 4) {
+        if (settingsSingleton.getPlayers() == 4) {
             P3.draw(250 + P1.getWidth()*3, Window.getHeight() - 115);
             P4.draw(250 + P1.getWidth()*4.5, Window.getHeight() - 115);
         }
@@ -2140,31 +2204,53 @@ public class Game extends AbstractGame {
     }
 
     public void spawnPowerUps() {
-        if (Math.random() < 0.006) {
-            double powerUpNumber = Math.random();
-            if (powerUpNumber <= 0.22) {
-                powerUps.add(new SpeedUp());
-            } else if ((powerUpNumber > 0.22) && (powerUpNumber < 0.44)) {
-                powerUps.add(new Shield());
-            } else if ((powerUpNumber >= 0.44) && (powerUpNumber < 0.66)) {
-                powerUps.add(new Minimiser());
-            } else if ((powerUpNumber >= 0.66) && (powerUpNumber < 0.88)) {
-                powerUps.add(new SpeedDown());
-            } else {
-                powerUps.add(new NoblePhantasm());
+        double spawnNo = Math.random()*5;;
+        if (spawnNo < 1) {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpeedUp")) {
+                if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedUp")) {
+                    powerUps.add(new SpeedUp());
+                }
+            }
+        }
+        else if (spawnNo < 2) {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpeedDown")) {
+                if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedDown")) {
+                    powerUps.add(new SpeedDown());
+                }
+            }
+        }
+        else if (spawnNo < 3) {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Minimiser")) {
+                if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Minimiser")) {
+                    powerUps.add(new Minimiser());
+                }
+            }
+        }
+        else if (spawnNo < 4) {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Shield")) {
+                if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Shield")) {
+                    powerUps.add(new Shield());
+                }
+            }
+        }
+        else {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("NoblePhantasm")) {
+                if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("NoblePhantasm")) {
+                    powerUps.add(new NoblePhantasm());
+                }
             }
         }
     }
 
     public void spawnObstacles() {
-        if (GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().isRocks()) {
-            if (Math.random() > GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().getRockFrequency()) {
-                obstacles.add(new Ball());
+        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isRocks()) {
+            if (Math.random() > gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getRockFrequency()) {
+                obstacles.add(new Rock());
             }
         }
-        if (GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().isBalls()) {
-            if (Math.random() > GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getInstance().getBallFrequency()) {
-                obstacles.add(new Balloon());
+        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isBalls()) {
+            if (Math.random() > gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getBallFrequency()) {
+                obstacles.add(new Ball());
             }
         }
     }
@@ -2348,7 +2434,7 @@ public class Game extends AbstractGame {
             }
         }
         if (intro >= 5*frames) {
-            SettingsSingleton.getInstance().setGameState(0);
+            settingsSingleton.setGameState(0);
         }
     }
 

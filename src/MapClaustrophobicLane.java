@@ -9,9 +9,9 @@ import java.util.Scanner;
 
 public class MapClaustrophobicLane extends Map {
     int level = 5;
-    String name = "Claustrophobic Lane";
+    private String name = "Claustrophobic Lane";
     Image mapPeek = new Image(String.format("res/mapPeeks/%d.png", this.level));
-    Point pos;
+    private Point pos;
     ArrayList<Tile> tiles = new ArrayList<>();
     double height = 0;
     double currentHeight = 0;

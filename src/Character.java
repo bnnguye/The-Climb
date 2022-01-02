@@ -6,33 +6,28 @@ import java.util.ArrayList;
 
 abstract class Character extends Object {
 
-    Player player;
-    String name;
-    String soundPath;
-    Image icon;
-    Point iconPos;
-    Image selected;
-    Image image;
-    Point pos;
-    int[] stats;
-    Music music = new Music();
-    int timer = 120;
-    final double speed = 2;
+    private Player player;
+    private String name;
+    private String soundPath;
+    private Image icon;
+    private Point iconPos;
+    private Image selected;
+    private Image image;
+    private Point pos;
+    private int[] stats;
 
-    boolean shield = false;
-    boolean bullet = false;
-    int ammo = 0;
-    boolean speedUp = false;
-    boolean speedDown = false;
-    int speedDownTimer = 0;
-    int speedUpTimer = 0;
-    boolean minimised = false;
-    int minimisedTimer = 0;
-    boolean noblePhantasm = false;
-    boolean gojoAbility = false;
-    boolean hisokaAbility = false;
-    boolean jotaroAbility = false;
-    boolean yugiAbility = false;
+    private boolean shield = false;
+    private boolean speedUp = false;
+    private boolean speedDown = false;
+    private int speedDownTimer = 0;
+    private int speedUpTimer = 0;
+    private boolean minimised = false;
+    private int minimisedTimer = 0;
+    private boolean noblePhantasm = false;
+    private boolean gojoAbility = false;
+    private boolean hisokaAbility = false;
+    private boolean jotaroAbility = false;
+    private boolean yugiAbility = false;
     private double stunTime = 0;
 
     public Image getIcon() {

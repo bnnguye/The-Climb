@@ -9,9 +9,9 @@ import java.util.Scanner;
 
 public class MapCustom extends Map {
     int level = 7;
-    String name = "Spooky Spikes";
+    private String name = "Spooky Spikes";
     Image mapPeek = new Image(String.format("res/mapPeeks/%d.png", this.level));
-    Point pos;
+    private Point pos;
     ArrayList<Tile> tiles = new ArrayList<>();
     double height = 0;
     double currentHeight = 0;

@@ -5,7 +5,7 @@ import bagel.util.Rectangle;
 
 public class ButtonGameSettings extends Button {
 
-    private Font font = new Font("res/fonts/DejaVuSans-Bold.ttf", 50);
+    private Font font = new Font("res/fonts/DejaVuSans-Bold.ttf", 70);
     private Rectangle rectangle;
 
     public ButtonGameSettings(String name, Rectangle rectangle) {
@@ -17,5 +17,5 @@ public class ButtonGameSettings extends Button {
         SettingsSingleton.getInstance().setGameState(10);
     }
 
-    public void draw() { font.drawString("SETTINGS", this.rectangle.topLeft().x, this.rectangle.topLeft().y , new DrawOptions().setBlendColour(new Colour(1, 1, 1, 1))); }
+    public void draw() { font.drawString("SETTINGS", this.rectangle.left(), this.rectangle.top() + 70 , new DrawOptions().setBlendColour(new Colour(0, 0, 0))); }
 }

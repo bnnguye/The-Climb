@@ -5,14 +5,15 @@ import java.util.ArrayList;
 
 public class SideAllMight extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getFrames();
-    String name = "AllMight";
-    String soundPath = String.format("music/%s.wav", this.name);
+    private String name = "AllMight";
+    private String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
     boolean activating = false;
     boolean animating = false;
     double timer;
     Music music = new Music();
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
+    private Point iconPos;
 
 
     public String getName() {

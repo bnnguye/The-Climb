@@ -9,13 +9,14 @@ import java.util.ArrayList;
 
 public class SideZoro extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getFrames();
-    String name = "Zoro";
-    String soundPath = String.format("music/%s.wav", this.name);
+    private String name = "Zoro";
+    private String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/Zoro/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
     double shakeTimer;
+    private Point iconPos;
 
 
     public String getName() {

@@ -3,58 +3,74 @@ public class PowerUpsSettingsSingleton {
     private static PowerUpsSettingsSingleton single_instance = null;
 
 
-    private double speedUpFrequency = 0.95;
-    private double speedDownFrequency = 0.95;
-    private double minimiserFrequency = 0.95;
-    private double shieldFrequency = 0.95;
+    private double speedUpFrequency = 0.99;
+    private double speedDownFrequency = 0.99;
+    private double minimiserFrequency = 0.99;
+    private double shieldFrequency = 0.99;
+    private double noblePhantasmFrequency = 0.995;
 
-    public double getSpeedUpFrequency() {
-        return speedUpFrequency;
-    }
-
-    public double getSpeedDownFrequency() {
-        return speedDownFrequency;
-    }
-
-    public double getMinimiserFrequency() {
-        return minimiserFrequency;
-    }
-
-    public double getShieldFrequency() {
-        return shieldFrequency;
-    }
-
-    public double getNoblePhantasmFrequency() {
-        return noblePhantasmFrequency;
-    }
-
-    private double noblePhantasmFrequency = 0.95;
     private boolean speedUp = true;
     private boolean speedDown = true;
     private boolean minimiser = true;
     private boolean shield = true;
-
-    public boolean isSpeedUp() {
-        return speedUp;
-    }
-
-    public boolean isSpeedDown() {
-        return speedDown;
-    }
-
-    public boolean isMinimiser() {
-        return minimiser;
-    }
-
-    public boolean isShield() {
-        return shield;
-    }
-
-    public boolean isNoblePhantasm() {
-        return noblePhantasm;
-    }
-
     private boolean noblePhantasm = true;
+
+
+    public double getFrequency(String string) {
+        if (string.equals("SpeedUp")) {
+            return this.speedUpFrequency;
+        }
+        else if (string.equals("SpeedDown")) {
+            return this.speedDownFrequency;
+        }
+        else if (string.equals("Shield")) {
+            return this.shieldFrequency;
+        }
+        else if (string.equals("Minimiser")) {
+            return this.minimiserFrequency;
+        }
+        else if (string.equals("NoblePhantasm")) {
+            return this.noblePhantasmFrequency;
+        }
+        return 0;
+    }
+
+    public boolean isPowerUp(String string) {
+        if (string.equals("SpeedUp")) {
+            return this.speedUp;
+        }
+        else if (string.equals("SpeedDown")) {
+            return this.speedDown;
+        }
+        else if (string.equals("Minimiser")) {
+            return this.minimiser;
+        }
+        else if (string.equals("Shield")) {
+            return this.shield;
+        }
+        else if (string.equals("NoblePhantasm")) {
+            return this.noblePhantasm;
+        }
+        return false;
+    }
+
+    public void changeFrequency(String powerUp, double frequency) {
+        if (powerUp.equals("SpeedUp")) {
+            speedUpFrequency = frequency;
+        }
+        else if (powerUp.equals("SpeedDown")) {
+            speedDownFrequency = frequency;
+        }
+        else if (powerUp.equals("Minimiser")) {
+            minimiserFrequency = frequency;
+        }
+        else if (powerUp.equals("Shield")) {
+            shieldFrequency = frequency;
+        }
+        else if (powerUp.equals("NoblePhantasm")) {
+            noblePhantasmFrequency = frequency;
+        }
+    }
 
 
 
@@ -72,6 +88,24 @@ public class PowerUpsSettingsSingleton {
         this.minimiser = minimiser;
         this.shield = shield;
         this.noblePhantasm = noblePhantasm;
+    }
+
+    public void toggle(String powerUp) {
+        if (powerUp.equals("SpeedUp")) {
+            speedUp = !speedUp;
+        }
+        else if (powerUp.equals("SpeedDown")) {
+            speedDown = !speedDown;
+        }
+        else if (powerUp.equals("Minimiser")) {
+            minimiser = !minimiser;
+        }
+        else if (powerUp.equals("Shield")) {
+            shield = !shield;
+        }
+        else if (powerUp.equals("NoblePhantasm")) {
+            noblePhantasm = !noblePhantasm;
+        }
     }
 
     public void changeFrequency(double speedUp, double speedDown, double minimiser, double shield, double noblePhantasm) {

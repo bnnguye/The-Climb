@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class SideHisoka extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getFrames();
-    String name = "Hisoka";
-    String soundPath = String.format("music/%s.wav", this.name);
+    private String name = "Hisoka";
+    private String soundPath = String.format("music/%s.wav", this.name);
     Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
@@ -16,6 +16,7 @@ public class SideHisoka extends SideCharacter{
 
     boolean shoot = false;
     ArrayList<BungeeGum> bungeeGums;
+    private Point iconPos;
 
 
     public String getName() {

@@ -9,9 +9,9 @@ import java.util.Scanner;
 
 public class MapMansion extends Map {
     int level = 4;
-    String name = "Roswaal's Mansion";
+    private String name = "Roswaal's Mansion";
     Image mapPeek = new Image(String.format("res/mapPeeks/%d.png", this.level));
-    Point pos;
+    private Point pos;
     ArrayList<Tile> tiles = new ArrayList<>();
     double height = 0;
     double currentHeight = 0;

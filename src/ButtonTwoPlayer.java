@@ -35,6 +35,7 @@ public class ButtonTwoPlayer extends Button {
     public void toggleHover(Point point) {
         if (box.intersects(point)) {
             if (!hovering) {
+                Music music = new Music();
                 music.playMusic("music/Hover.wav");
             }
             DO.setBlendColour(black);
