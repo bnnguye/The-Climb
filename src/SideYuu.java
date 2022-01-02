@@ -3,6 +3,7 @@ import bagel.Image;
 import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
+import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,7 @@ public class SideYuu extends SideCharacter{
     double timer;
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
     private Point iconPos;
+    SideCharacter temporarySideCharacter;
 
     public String getName() {
         return this.name;
@@ -38,27 +40,28 @@ public class SideYuu extends SideCharacter{
             noblePhantasm.drawFromTopLeft(0,0);
             this.animating = true;
         }
+        else if (timer == 0) {
+            temporarySideCharacter = getSideCharacter(findClosest(user, players));
+            if (temporarySideCharacter != null) {
+                temporarySideCharacter.activateAbility(user, players, obstacles, powerUps, map);
+            }
+            else {
+                this.activating = false;
+            }
+        }
         else {
-            this.animating = false;
-            Player closest = null;
-            double closestDistance = 0;
-            for (Player player: players) {
-                if (player != user) {
-                    if (closest == null) {
-                        closest = player;
-                        closestDistance = (Math.abs(user.getPos().x - player.getPos().x) + Math.abs(user.getPos().y - player.getPos().y));
-                    }
-                    else {
-                        if ((Math.abs(user.getPos().x - player.getPos().x) + Math.abs(user.getPos().y - player.getPos().y)) < closestDistance) {
-                            closest = player;
-                            closestDistance = (Math.abs(user.getPos().x - player.getPos().x) + Math.abs(user.getPos().y - player.getPos().y));
-                        }
-                    }
+            if (temporarySideCharacter == null) {
+                this.activating = false;
+            }
+            else {
+                temporarySideCharacter.activateAbility(user, players, obstacles, powerUps, map);
+                if (!temporarySideCharacter.isAnimating()) {
+                    this.animating = false;
+                }
+                if (!temporarySideCharacter.isActivating()) {
+                    this.activating = false;
                 }
             }
-            useSideCharacter(user, closest).activateAbility(user, players, obstacles, powerUps, map);
-            closest.getCharacter().useNoblePhantasm();
-            this.activating = false;
         }
         timer--;
     }
@@ -74,7 +77,7 @@ public class SideYuu extends SideCharacter{
         return this.animating;
     }
 
-    public SideCharacter useSideCharacter(Player user, Player player) {
+    public SideCharacter getSideCharacter(Player player) {
         SideCharacter playerCharacter = null;
         if (player.getSideCharacter().getName().equals("Dio")) {
             playerCharacter = new SideDio();
@@ -108,4 +111,24 @@ public class SideYuu extends SideCharacter{
         }
         return playerCharacter;
     }
+
+    public Player findClosest(Player user, ArrayList<Player> players) {
+        Player closest = null;
+        double closestDistance = 0;
+        for (Player player : players) {
+            if (player.getId() != user.getId()) {
+                if (closest == null) {
+                    closest = player;
+                    closestDistance = (Math.abs(user.getPos().x - player.getPos().x) + Math.abs(user.getPos().y - player.getPos().y));
+                } else {
+                    if ((Math.abs(user.getPos().x - player.getPos().x) + Math.abs(user.getPos().y - player.getPos().y)) < closestDistance) {
+                        closest = player;
+                        closestDistance = (Math.abs(user.getPos().x - player.getPos().x) + Math.abs(user.getPos().y - player.getPos().y));
+                    }
+                }
+            }
+        }
+        return closest;
+    }
+
 }

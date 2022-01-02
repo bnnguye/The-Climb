@@ -14,7 +14,7 @@ public class ButtonFourPlayer extends Button {
     private DrawOptions DO = new DrawOptions();
     private Font font = new Font("res/fonts/DejaVuSans-Bold.ttf", FONT_SIZE);
     Colour black = new Colour(0,0,0);
-    Colour blackTranslucent = new Colour(0, 0, 0, 0.5);
+    Colour whiteTranslucent = new Colour(0, 0, 0, 0.5);
 
 
     public ButtonFourPlayer(String name, Rectangle rectangle) {
@@ -22,7 +22,7 @@ public class ButtonFourPlayer extends Button {
         this.name = name;
         this.box = rectangle;
         this.position = rectangle.bottomLeft();
-        DO.setBlendColour(blackTranslucent);
+        DO.setBlendColour(whiteTranslucent);
         if (java.time.LocalTime.now().getHour() > 18) {
             Colour whiteTranslucent = new Colour(1, 1, 1, 0.5);
             DO.setBlendColour(whiteTranslucent);
@@ -45,7 +45,7 @@ public class ButtonFourPlayer extends Button {
             SettingsSingleton.getInstance().setPlayers(4);
         }
         else {
-            DO.setBlendColour(blackTranslucent);
+            DO.setBlendColour(whiteTranslucent);
             hovering = false;
         }
     }

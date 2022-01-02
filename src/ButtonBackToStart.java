@@ -12,7 +12,7 @@ public class ButtonBackToStart extends Button {
     public ButtonBackToStart(String name, Rectangle rectangle) {
         super(name, rectangle);
         this.position = rectangle.bottomLeft();
-        DO.setBlendColour(blackTranslucent);
+        DO.setBlendColour(whiteTranslucent);
         if (java.time.LocalTime.now().getHour() > 18) {
             Colour whiteTranslucent = new Colour(1, 1, 1, 0.5);
             DO.setBlendColour(whiteTranslucent);

@@ -11,7 +11,7 @@ public class ButtonRetry extends Button {
     public ButtonRetry(String name, Rectangle rectangle) {
         super(name, rectangle);
         this.position = rectangle.bottomLeft();
-        DO.setBlendColour(blackTranslucent);
+        DO.setBlendColour(whiteTranslucent);
     }
 
     public void playAction() {

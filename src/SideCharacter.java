@@ -33,4 +33,5 @@ public abstract class SideCharacter {
     public void setMap(Map map){}
     public void setPowerUps(ArrayList<PowerUp> powerUps) {}
     public void setLeft(boolean bool) {}
+
 }

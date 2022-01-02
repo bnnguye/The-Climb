@@ -11,7 +11,7 @@ public class ButtonPlay extends Button {
     public ButtonPlay(String name, Rectangle rectangle) {
         super(name, rectangle);
         this.position = rectangle.bottomLeft();
-        DO.setBlendColour(blackTranslucent);
+        DO.setBlendColour(whiteTranslucent);
     }
 
     public void playAction() { SettingsSingleton.getInstance().setGameState(1);}

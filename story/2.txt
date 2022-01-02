@@ -1,9 +1,10 @@
 Nino: Wow! You're really getting the hang of it now. Let's try it again, but there's one more thing you need to look out for.
 Nino: You see, The Climb wouldn't be the Climb without obstacles of some sort.
 Nino: Luckily, the game creator (cryptogod69/Bill Nguyen/billsun49) thought of this great idea, to put falling objects into the game.
-Nino: There are two types.
+Nino: There are two types*.
 Nino: Rocks fall at a moderate speed, much like if you were to throw a rock upwards, and it fell due to gravity.
-Nino: Then there's bowling balls.
-Nino: Bowling balls fall down much faster, as they are heavier in reality.
-Nino: Dodge these, and you'll be fine.
+Nino: Then there's also Balls.
+Nino: Balls fall down much faster, as they are heavier in reality.
+Nino: PS: As you progress throughout the game, you will encounter more obstacles other than rocks and balls. Be careful. If it looks sketchy, it might kill you :)
+Nino: Anyways dodge these and you'll be fine.
 Nino: Think you're ready? Let's find out!

@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class Game extends AbstractGame {
 
-    private final int FONT_SIZE = 80;
+    private final int FONT_SIZE = 100;
     private final int DIALOGUE_FONT_SIZE = 30 ;
     private final int MAX_DIALOGUE_LIMIT = Window.getWidth()/(DIALOGUE_FONT_SIZE - 10);
 
@@ -288,6 +288,7 @@ public class Game extends AbstractGame {
         allPowerUps.add(new NoblePhantasm());
         allObstacles.add(new Ball());
         allObstacles.add(new Rock());
+        allObstacles.add(new StunBall());
 
 
 
@@ -324,7 +325,12 @@ public class Game extends AbstractGame {
             }
 
             if (menuTitle != null) {
-                titleFont.drawString(menuTitle, 0, 65, DO.setBlendColour(black));
+                if (((settingsSingleton.getGameState() == 2) || (settingsSingleton.getGameState() == 3)) || (settingsSingleton.getGameState() == 10)) {
+                    titleFont.drawString(menuTitle, 20, 100, DO.setBlendColour(black));
+                }
+                else {
+                    titleFont.drawString(menuTitle, 20, 100, DO.setBlendColour(white));
+                }
             }
             if (buttons.size() > 0 ) {
                 for (Button button: buttons) {
@@ -390,7 +396,9 @@ public class Game extends AbstractGame {
             if (!settingsSingleton.getGameStateString().equals("Character")) {
                 spacer = 300;
                 buttons.clear();
-                buttons.add(new ButtonGameSettings("Settings", new Rectangle(Window.getWidth()/2, 0 , titleFont.getWidth("Settings"), 100)));
+                if (settingsSingleton.getGameMode() == 1) {
+                    buttons.add(new ButtonGameSettings("Settings", new Rectangle(Window.getWidth()/2, 0 , titleFont.getWidth("Settings"), 100)));
+                }
                 players.clear();
                 settingsSingleton.setGameStateString("Character");
                 players.add(new PlayerOne());
@@ -468,7 +476,7 @@ public class Game extends AbstractGame {
             }
             if (picked) {
                 if (waitTimer < 0) {
-                    if(settingsSingleton.getGameMode() == 99) {
+                    if(settingsSingleton.getGameMode() == 0) {
                         settingsSingleton.setGameState(6);
                     }
                     else {
@@ -649,7 +657,7 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 6) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
-            if (settingsSingleton.getGameMode() == 0) {
+            if (settingsSingleton.getGameMode() == 1) {
                 if (!settingsSingleton.getGameStateString().equals("Game")) {
                     buttons.clear();
                     setPlayersPosition();
@@ -844,6 +852,9 @@ public class Game extends AbstractGame {
                                 playingDialogue = true;
                                 endDialogue = false;
                                 currentMusic = "music/Fight1.wav";
+                                gameSettingsSingleton.getObstaclesSettingsSingleton().applySettings(true, true, false);
+                                gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency("Rock", 0.99);
+                                gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency("Ball", 0.995);
                             }
 
                             if (endDialogue) {
@@ -877,13 +888,15 @@ public class Game extends AbstractGame {
                             }
                         }
                         else if (currentStory == 3) {
-                            currentMusic = "music/Dio.wav";
+                            currentMusic = Dio.playLine();
                             dark = true;
                             if (lastStory != currentStory) {
                                 setPlayersPosition();
                                 lastStory = currentStory;
                                 playingDialogue = true;
                                 endDialogue = false;
+                                gameSettingsSingleton.getObstaclesSettingsSingleton().applySettings(true, true, true);
+                                gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency("StunBall", 0.995);
                             }
 
                             if (endDialogue) {
@@ -1126,7 +1139,7 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 7) {
             render();
-            if (settingsSingleton.getGameMode() == 99) {
+            if (settingsSingleton.getGameMode() == 0) {
                 displayFailScreen();
                 if (settingsSingleton.getGameStateString().equals("Continue")) {
                     changeMainMusic(currentMusic);
@@ -1410,6 +1423,8 @@ public class Game extends AbstractGame {
                 }
             }
             else if (pageType.equals("PowerUps")) {
+                playerMapFont.drawString("Drag the slider across to increase/decrease the spawn rate!", titleFont.getWidth("SETTINGS") + 60, 40, new DrawOptions().setBlendColour(0,0,0, 0.7));
+                playerMapFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS") + 60, 80, new DrawOptions().setBlendColour(0,0,0, 0.7));
                 for (int i = 0; i < allPowerUps.size(); i++) {
                     PowerUp currentPowerUp = allPowerUps.get(i);
                     Image currentImage = currentPowerUp.getImage();
@@ -1432,6 +1447,8 @@ public class Game extends AbstractGame {
                 }
             }
             else if (pageType.equals("Obstacles")) {
+                playerMapFont.drawString("Drag the slider across to increase/decrease the spawn rate!", titleFont.getWidth("SETTINGS") + 60, 40,new DrawOptions().setBlendColour(0,0,0, 0.7));
+                playerMapFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS") + 60, 80, new DrawOptions().setBlendColour(0,0,0, 0.7));
                 for (int j = 0; j < allObstacles.size(); j++) {
                     Obstacle currentObstacle = allObstacles.get(j);
                     Image currentImage = currentObstacle.getImage();
@@ -2251,6 +2268,11 @@ public class Game extends AbstractGame {
         if (gameSettingsSingleton.getObstaclesSettingsSingleton().isBalls()) {
             if (Math.random() > gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getBallFrequency()) {
                 obstacles.add(new Ball());
+            }
+        }
+        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isStunBalls()) {
+            if (Math.random() > gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getStunBallFrequency()) {
+                obstacles.add(new StunBall());
             }
         }
     }

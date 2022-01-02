@@ -205,6 +205,7 @@ public class CharacterEmilia extends Character{
         this.gojoAbility = false;
         this.hisokaAbility = false;
         this.jotaroAbility = false;
+        this.stunTime = 0;
     }
     public String playLine() {
         return this. soundPath;
