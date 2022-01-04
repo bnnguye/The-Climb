@@ -73,6 +73,7 @@ public class Game extends AbstractGame {
     Character Emilia;
     Character Asuna;
     Character Raphtalia;
+    Character Nothing;
     private ArrayList<SideCharacter> sideCharacters;
     private ArrayList<SideCharacter> allSideCharacters;
     SideCharacter Zoro;
@@ -135,10 +136,10 @@ public class Game extends AbstractGame {
     private Image currentBackground;
     private Point currentBackgroundPoint = new Point(0,0);
     private String dialogueString = "";
-    private Colour dialogueColour = new Colour(77.0/255, 57.0/255, 37.0/255, 0.5);
-    private double dialogueWidth = Window.getWidth()*0.1;
-    private double dialogueLength = Window.getHeight() - 300;
-    private int maxLines = 7;
+    private final Colour dialogueColour = new Colour(77.0/255, 57.0/255, 37.0/255, 0.5);
+    private final double dialogueWidth = Window.getWidth()*0.1;
+    private final double dialogueLength = Window.getHeight() - 300;
+    private final int maxLines = 7;
     private int currentLines = 0;
     private int dialogueIndex = 0;
     private boolean alternate = false;
@@ -209,6 +210,7 @@ public class Game extends AbstractGame {
         characters.add(Mai);
         Sakuta = new Sakuta();
         Unknown = new Unknown();
+        Nothing = new CharacterNothing();
         allCharacters.add(Unknown);
         allCharacters.add(Sakuta);
         allCharacters.add(Chizuru);
@@ -224,6 +226,7 @@ public class Game extends AbstractGame {
         allCharacters.add(Emilia);
         allCharacters.add(Asuna);
         allCharacters.add(Dio);
+        allCharacters.add(Nothing);
         for(Character character: allCharacters) {
             character.setStats();
         }
@@ -1055,7 +1058,7 @@ public class Game extends AbstractGame {
                                 }
                             }
                             Drawing.drawRectangle(dialogueWidth, dialogueLength, Window.getWidth()*0.8, 250, dialogueColour);
-                            dialogueFont.drawString(dialogueString, dialogueWidth + DIALOGUE_FONT_SIZE, dialogueLength + DIALOGUE_FONT_SIZE);
+                            dialogueFont.drawString(dialogueString.replaceAll("Nothing: ", ""), dialogueWidth + DIALOGUE_FONT_SIZE, dialogueLength + DIALOGUE_FONT_SIZE);
                             if (shakeTimer <= 0) {
                                 if (playDialogue(currentDialogue, currentMode).length() - dialogueIndex > 1) {
                                     if (!playNextCharacter) {
@@ -1542,7 +1545,6 @@ public class Game extends AbstractGame {
                 for (Character character: allCharacters) {
                     if (word.endsWith(":")) {
                         if (word.substring(0, word.length()-1).equals(character.getName())) {
-                            //currentLineLength = word.length() + 2;
                             currentLineLength = 0;
                             break;
                         }
