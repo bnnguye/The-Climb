@@ -4,9 +4,8 @@ import java.io.IOException;
 
 public class Music {
     File musicPath;
-    AudioInputStream audioInput;
+    private AudioInputStream audioInput;
     Clip clip;
-    boolean played = false;
 
     void playMusic(String musicLocation) {
         try {
@@ -17,7 +16,6 @@ public class Music {
                 this.clip = AudioSystem.getClip();
                 this.clip.open(audioInput);
                 this.clip.start();
-                played = true;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -25,7 +23,6 @@ public class Music {
     }
     public void stopMusic() {
         if (clip.isActive()) {
-            played = false;
             clip.stop();
         }
     }

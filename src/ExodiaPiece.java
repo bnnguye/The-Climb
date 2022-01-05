@@ -5,7 +5,7 @@ public class ExodiaPiece {
     private String name;
     Image image;
     private Point pos;
-    double speed = 2;
+    double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public ExodiaPiece(String name, Point pos) {
         this.name = name;

@@ -1,17 +1,18 @@
-import bagel.DrawOptions;
 import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
 
-public class Rock extends Obstacle {
-    private String name = "Rock";
-    Image image = new Image("res/obstacles/rock.png");
+public class ObstacleStunBall extends Obstacle{
+    private String name = "StunBall";
+    Image image = new Image("res/obstacles/stunball.png");
     private Point pos;
-    double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();;
+    double speed = 2 + GameSettingsSingleton.getInstance().getMapSpeed();
     boolean gojoAbility = false;
     boolean jotaroAbility = false;
+    private final double frames = SettingsSingleton.getInstance().getFrames();
+    double time = 2*frames;
 
-    public Rock() {
+    public ObstacleStunBall() {
         this.pos = new Point(Window.getWidth() * Math.random(), -200);
     }
 
@@ -33,5 +34,6 @@ public class Rock extends Obstacle {
         this.gojoAbility = bool;
     }
     public void setJotaroAbility(boolean bool) {jotaroAbility = bool;}
+    public double getTime() {return this.time;}
     public String getName() {return this.name;}
 }

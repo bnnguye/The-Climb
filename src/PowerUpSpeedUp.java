@@ -2,13 +2,13 @@ import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
 
-public class NoblePhantasm extends PowerUp {
-    private String name = "NoblePhantasm";
+public class PowerUpSpeedUp extends PowerUp{
+    private String name = "SpeedUp";
     private Point pos;
-    Image image = new Image("res/PowerUp/NoblePhantasm.png");
+    Image image = new Image("res/PowerUp/SpeedUp.png");
     boolean jotaroAbility = false;
 
-    public NoblePhantasm() {
+    public PowerUpSpeedUp() {
         pos = new Point(Window.getWidth() * Math.random(), -200);
     }
 
@@ -21,5 +21,4 @@ public class NoblePhantasm extends PowerUp {
     }
     public String getName() { return this.name;}
     public void setJotaroAbility(boolean bool) {jotaroAbility = bool;}
-
 }

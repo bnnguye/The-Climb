@@ -3,7 +3,6 @@ import bagel.Image;
 import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
-import bagel.util.Rectangle;
 
 import java.util.ArrayList;
 
@@ -17,8 +16,8 @@ public class SidePuck extends SideCharacter{
     double timer;
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
 
-    ArrayList<Shard> shards;
-    ArrayList<Shard> shardsToRemove;
+    ArrayList<ObstacleShard> shards;
+    ArrayList<ObstacleShard> shardsToRemove;
     private Point iconPos;
 
 
@@ -55,14 +54,14 @@ public class SidePuck extends SideCharacter{
                     }
 
                     if (shards.size() > 0) {
-                        for (Shard shard: shards) {
-                            shard.draw();
-                            if (shard.getImage().getBoundingBoxAt(shard.getPos()).intersects(player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()))) {
+                        for (ObstacleShard obstacleShard : shards) {
+                            obstacleShard.draw();
+                            if (obstacleShard.getImage().getBoundingBoxAt(obstacleShard.getPos()).intersects(player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()))) {
                                 player.setDead();
                             }
-                            shard.move();
-                            if (shard.getPos().y > Window.getHeight()) {
-                                shardsToRemove.add(shard);
+                            obstacleShard.move();
+                            if (obstacleShard.getPos().y > Window.getHeight()) {
+                                shardsToRemove.add(obstacleShard);
                             }
                         }
                         shards.removeAll(shardsToRemove);
@@ -90,7 +89,7 @@ public class SidePuck extends SideCharacter{
 
     public void spawnShards() {
         if (Math.random() > 0.97) {
-            shards.add(new Shard());
+            shards.add(new ObstacleShard());
         }
     }
 }

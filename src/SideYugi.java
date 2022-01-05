@@ -19,6 +19,7 @@ public class SideYugi extends SideCharacter{
     Music musicEnd = new Music();
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
     ArrayList<ExodiaPiece> exodiaPieces;
+    ArrayList<ExodiaPiece> exodiaPiecesCollected;
     private Point iconPos;
 
 
@@ -44,15 +45,17 @@ public class SideYugi extends SideCharacter{
             exodiaPieces.add(new ExodiaPiece("RightArm", new Point(Math.random()*Window.getWidth(), - Window.getHeight() - map.getCurrentHeight() - Math.random()*(map.getHeight() - map.getCurrentHeight()))));
             exodiaPieces.add(new ExodiaPiece("LeftLeg", new Point(Math.random()*Window.getWidth(), - Window.getHeight() - map.getCurrentHeight() - Math.random()*(map.getHeight() - map.getCurrentHeight()))));
             exodiaPieces.add(new ExodiaPiece("RightLeg", new Point(Math.random()*Window.getWidth(), - Window.getHeight() - map.getCurrentHeight() - Math.random()*(map.getHeight() - map.getCurrentHeight()))));
+            exodiaPiecesCollected = new ArrayList<>();
         }
         else {
             ArrayList<ExodiaPiece> exodiaPiecesToRemove = new ArrayList<>();
-            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, (5 - exodiaPieces.size())*0.1));
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, (5 - exodiaPieces.size())*0.03));
             for (ExodiaPiece exodiaPiece: exodiaPieces) {
                 exodiaPiece.getImage().draw(exodiaPiece.getPos().x, exodiaPiece.getPos().y);
                 exodiaPiece.move();
                 if (exodiaPiece.getImage().getBoundingBoxAt(exodiaPiece.getPos()).intersects(user.getCharacter().getImage().getBoundingBoxAt(user.getCharacter().getPos()))) {
                     exodiaPiecesToRemove.add(exodiaPiece);
+                    exodiaPiecesCollected.add(exodiaPiece);
                 }
                 for (Player player: players) {
                     if (player.getId() != user.getId()) {
@@ -141,4 +144,5 @@ public class SideYugi extends SideCharacter{
     }
 
 
+    public ArrayList<ExodiaPiece> getExodiaPiecesCollected() {return this.exodiaPiecesCollected;}
 }

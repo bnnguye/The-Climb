@@ -22,7 +22,6 @@ public class ButtonLeftArrow extends Button {
 
     public void playAction() {
         if (gameSettingsSingleton.getInstance().getPage() > 0) {
-            System.out.println("fax");
             gameSettingsSingleton.getInstance().setPage(gameSettingsSingleton.getInstance().getPage() - 1);
         }
     }

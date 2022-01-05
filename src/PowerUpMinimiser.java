@@ -2,13 +2,13 @@ import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
 
-public class Minimiser extends PowerUp{
+public class PowerUpMinimiser extends PowerUp{
     private String name = "Minimiser";
     private Point pos;
     Image image = new Image("res/PowerUp/Minimiser.png");
     boolean jotaroAbility = false;
 
-    public Minimiser() {
+    public PowerUpMinimiser() {
         pos = new Point(Window.getWidth() * Math.random(), -200);
     }
 

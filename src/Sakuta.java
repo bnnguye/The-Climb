@@ -148,9 +148,9 @@ public class Sakuta extends Character{
     public boolean hasShield() { return this.shield;}
 
     public void activateNoblePhantasm() {
-        getPowerUp(new Shield());
-        getPowerUp(new SpeedUp());
-        getPowerUp(new Minimiser());
+        getPowerUp(new PowerUpShield());
+        getPowerUp(new PowerUpSpeedUp());
+        getPowerUp(new PowerUpMinimiser());
     }
 
     public void getPowerUp(PowerUp powerUp){

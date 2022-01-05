@@ -2,7 +2,7 @@ import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
 
-public class Shard {
+public class ObstacleShard {
 
     private Point pos;
     private final double speed = 3* GameSettingsSingleton.getInstance().getMapSpeed();;
@@ -14,7 +14,7 @@ public class Shard {
     Image image = new Image("res/charactersS/Puck/Shard.png");
     private boolean jotaroAbility = false;
 
-    public Shard() {
+    public ObstacleShard() {
         this.pos = new Point(Math.random()* Window.getWidth(), -200);
     }
 

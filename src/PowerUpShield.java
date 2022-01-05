@@ -2,13 +2,13 @@ import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
 
-public class Shield extends PowerUp {
+public class PowerUpShield extends PowerUp {
     private String name = "Shield";
     private Point pos;
     Image image = new Image("res/PowerUp/Shield.png");
     boolean jotaroAbility = false;
 
-    public Shield() {
+    public PowerUpShield() {
         pos = new Point(Window.getWidth() * Math.random(), -200);
     }
 

@@ -2,7 +2,7 @@ import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
 
-public class Ball extends Obstacle {
+public class ObstacleBall extends Obstacle {
     private String name = "Ball";
     private Image image = new Image("res/obstacles/bowlingball.png");
     private Point pos;
@@ -10,7 +10,7 @@ public class Ball extends Obstacle {
     private boolean gojoAbility = false;
     private boolean jotaroAbility = false;
 
-    public Ball() {
+    public ObstacleBall() {
         this.pos = new Point(Window.getWidth() * Math.random(), -200);
     }
 

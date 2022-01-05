@@ -15,7 +15,7 @@ public class SideHisoka extends SideCharacter{
     Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
 
     boolean shoot = false;
-    ArrayList<BungeeGum> bungeeGums;
+    ArrayList<ObstacleBungeeGum> bungeeGums;
     private Point iconPos;
 
 
@@ -34,14 +34,14 @@ public class SideHisoka extends SideCharacter{
             this.activating = true;
             this.timer = 10 * frames;
             bungeeGums = new ArrayList<>();
-            bungeeGums.add(new BungeeGum(user.getCharacter().getPos(), "N"));
-            bungeeGums.add(new BungeeGum(user.getCharacter().getPos(), "S"));
-            bungeeGums.add(new BungeeGum(user.getCharacter().getPos(), "E"));
-            bungeeGums.add(new BungeeGum(user.getCharacter().getPos(), "W"));
-            bungeeGums.add(new BungeeGum(user.getCharacter().getPos(), "NW"));
-            bungeeGums.add(new BungeeGum(user.getCharacter().getPos(), "NE"));
-            bungeeGums.add(new BungeeGum(user.getCharacter().getPos(), "SW"));
-            bungeeGums.add(new BungeeGum(user.getCharacter().getPos(), "SE"));
+            bungeeGums.add(new ObstacleBungeeGum(user.getCharacter().getPos(), "N"));
+            bungeeGums.add(new ObstacleBungeeGum(user.getCharacter().getPos(), "S"));
+            bungeeGums.add(new ObstacleBungeeGum(user.getCharacter().getPos(), "E"));
+            bungeeGums.add(new ObstacleBungeeGum(user.getCharacter().getPos(), "W"));
+            bungeeGums.add(new ObstacleBungeeGum(user.getCharacter().getPos(), "NW"));
+            bungeeGums.add(new ObstacleBungeeGum(user.getCharacter().getPos(), "NE"));
+            bungeeGums.add(new ObstacleBungeeGum(user.getCharacter().getPos(), "SW"));
+            bungeeGums.add(new ObstacleBungeeGum(user.getCharacter().getPos(), "SE"));
         }
 
         if (timer > 8*frames) {
@@ -58,15 +58,15 @@ public class SideHisoka extends SideCharacter{
         this.timer--;
         if (timer < 8*frames) {
             if (bungeeGums.size() > 0) {
-                ArrayList<BungeeGum> bgToRemove = new ArrayList<>();
-                for (BungeeGum bg: bungeeGums) {
+                ArrayList<ObstacleBungeeGum> bgToRemove = new ArrayList<>();
+                for (ObstacleBungeeGum bg: bungeeGums) {
                     bg.draw();
                     bg.move();
                     for(Player player: players) {
                         if (player.getId() != user.getId()) {
                             if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(bg.getPos())) {
                                 if (!player.isDead()) {
-                                    player.getCharacter().setHisokaAbility(true);
+                                    player.getCharacter().setHisokaAbility(4 * frames);
                                     bgToRemove.add(bg);
                                 }
                             }

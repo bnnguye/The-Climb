@@ -5,12 +5,10 @@ import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
 import bagel.util.Rectangle;
-import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Set;
 
 
 /** "The Climb" - A game created by Bill Nguyen **/
@@ -119,10 +117,6 @@ public class Game extends AbstractGame {
     double timeToSaveStats = 60 * frames;
     int currentTimeToSaveStats = 0;
 
-    //Computer variables
-    private ArrayList<Point> route;
-
-
     //Story variables
     private boolean playingDialogue = false;
     private boolean playingStory = false;
@@ -185,7 +179,6 @@ public class Game extends AbstractGame {
         allCharacters = new ArrayList<>();
         sideCharacters= new ArrayList<>();
         allSideCharacters = new ArrayList<>();
-        route = new ArrayList<>();
         allPowerUps = new ArrayList<>();
         allObstacles = new ArrayList<>();
 
@@ -285,13 +278,13 @@ public class Game extends AbstractGame {
         allTiles.add(new TileSlowTop(new Point(0,0)));
 
         allPowerUps.add(new SpeedDown());
-        allPowerUps.add(new SpeedUp());
-        allPowerUps.add(new Minimiser());
-        allPowerUps.add(new Shield());
-        allPowerUps.add(new NoblePhantasm());
-        allObstacles.add(new Ball());
-        allObstacles.add(new Rock());
-        allObstacles.add(new StunBall());
+        allPowerUps.add(new PowerUpSpeedUp());
+        allPowerUps.add(new PowerUpMinimiser());
+        allPowerUps.add(new PowerUpShield());
+        allPowerUps.add(new PowerUpNoblePhantasm());
+        allObstacles.add(new ObstacleBall());
+        allObstacles.add(new ObstacleRock());
+        allObstacles.add(new ObstacleStunBall());
 
 
 
@@ -701,7 +694,7 @@ public class Game extends AbstractGame {
                                 player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
                             }
                         }
-                        if (player.getSideCharacter().isActivating()) {
+                        if ((player.getSideCharacter().isActivating()) && (!player.getSideCharacter().getName().equals("Yugi"))) {
                             currentMusic = "music/Silence.wav";
                             player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
                             if(player.getSideCharacter().isAnimating()) {
@@ -1117,7 +1110,6 @@ public class Game extends AbstractGame {
                                             else {
                                                 keyboardTimer++;
                                             }
-                                            soundEffectMusic.played = true;
                                             if (dialogueIndex < playDialogue(currentDialogue, currentMode).length()) {
                                                 dialogueIndex++;
                                             }
@@ -1226,9 +1218,6 @@ public class Game extends AbstractGame {
                         resetMusic();
                         for (SideCharacter character: sideCharacters) {
                             character.reset();
-                        }
-                        for (Character character: characters) {
-                            character.stopMusic();
                         }
                         if (settingsSingleton.getGameStateString().equals("Retry")) {
                             for (Player player: players) {
@@ -2069,6 +2058,13 @@ public class Game extends AbstractGame {
                     sideCharacter.drawFromTopLeft(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight());
                 }
             }
+            if (player.getSideCharacter().getName().equals("Yugi")) {
+                int index = 0;
+                for (ExodiaPiece exodiaPiece: Yugi.getExodiaPiecesCollected()) {
+                    exodiaPiece.getImage().drawFromTopLeft(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()) + exodiaPiece.getImage().getWidth()*index, Window.getHeight() - picture.getHeight());
+                    index++;
+                }
+            }
             playerIndex++;
         }
     }
@@ -2185,7 +2181,13 @@ public class Game extends AbstractGame {
     public void checkCollisionObstacles() {
         for (Obstacle obstacle: obstacles) {
             for (Player player : players) {
-                if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(obstacle.getImage().getBoundingBoxAt(new Point(obstacle.getPos().x + obstacle.getImage().getWidth()/2, obstacle.getPos().y + obstacle.getImage().getHeight()/2)))) {
+                Image image = player.getCharacter().getImage();
+                Point pos = player.getCharacter().getPos();
+                Rectangle playerImage = new Rectangle(pos, image.getWidth(), image.getHeight());
+                if (player.getCharacter().isMinimised()) {
+                    playerImage = new Rectangle(pos, image.getWidth()/2, image.getHeight()/2);
+                }
+                if (playerImage.intersects(obstacle.getImage().getBoundingBoxAt(new Point(obstacle.getPos().x + obstacle.getImage().getWidth()/2, obstacle.getPos().y + obstacle.getImage().getHeight()/2)))) {
                     if (!player.isDead()) {
                         obstaclesToRemove.add(obstacle);
                         if (player.getCharacter().hasShield()) {
@@ -2227,7 +2229,7 @@ public class Game extends AbstractGame {
         if (spawnNo < 1) {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpeedUp")) {
                 if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedUp")) {
-                    powerUps.add(new SpeedUp());
+                    powerUps.add(new PowerUpSpeedUp());
                 }
             }
         }
@@ -2241,21 +2243,21 @@ public class Game extends AbstractGame {
         else if (spawnNo < 3) {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Minimiser")) {
                 if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Minimiser")) {
-                    powerUps.add(new Minimiser());
+                    powerUps.add(new PowerUpMinimiser());
                 }
             }
         }
         else if (spawnNo < 4) {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Shield")) {
                 if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Shield")) {
-                    powerUps.add(new Shield());
+                    powerUps.add(new PowerUpShield());
                 }
             }
         }
         else {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("NoblePhantasm")) {
                 if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("NoblePhantasm")) {
-                    powerUps.add(new NoblePhantasm());
+                    powerUps.add(new PowerUpNoblePhantasm());
                 }
             }
         }
@@ -2264,17 +2266,17 @@ public class Game extends AbstractGame {
     public void spawnObstacles() {
         if (gameSettingsSingleton.getObstaclesSettingsSingleton().isRocks()) {
             if (Math.random() > gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getRockFrequency()) {
-                obstacles.add(new Rock());
+                obstacles.add(new ObstacleRock());
             }
         }
         if (gameSettingsSingleton.getObstaclesSettingsSingleton().isBalls()) {
             if (Math.random() > gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getBallFrequency()) {
-                obstacles.add(new Ball());
+                obstacles.add(new ObstacleBall());
             }
         }
         if (gameSettingsSingleton.getObstaclesSettingsSingleton().isStunBalls()) {
             if (Math.random() > gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getStunBallFrequency()) {
-                obstacles.add(new StunBall());
+                obstacles.add(new ObstacleStunBall());
             }
         }
     }
