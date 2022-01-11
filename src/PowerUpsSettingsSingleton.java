@@ -4,10 +4,10 @@ public class PowerUpsSettingsSingleton {
 
 
     private double speedUpFrequency = 0.99;
-    private double speedDownFrequency = 0.99;
-    private double minimiserFrequency = 0.99;
+    private double speedDownFrequency = 0.995;
+    private double minimiserFrequency = 0.995;
     private double shieldFrequency = 0.99;
-    private double noblePhantasmFrequency = 0.995;
+    private double noblePhantasmFrequency = 0.997;
 
     private boolean speedUp = true;
     private boolean speedDown = true;

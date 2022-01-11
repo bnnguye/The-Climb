@@ -30,7 +30,6 @@ public class SideAllMight extends SideCharacter{
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
             this.music.playMusic("music/AllMight.wav");
-            this.music.played = true;
             this.activating = true;
             this.timer = 10 * frames;
         }
@@ -47,16 +46,12 @@ public class SideAllMight extends SideCharacter{
         this.timer--;
         if (this.timer <= 0) {
             this.activating = false;
-            this.music.played = false;
         }
     }
 
     public void reset() {
         this.activating = false;
         this.animating = false;
-        if (this.music.played) {
-            this.music.stopMusic();
-        }
         timer = 0;
     }
 

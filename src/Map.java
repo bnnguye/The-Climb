@@ -51,4 +51,7 @@ public abstract class Map {
     }
 
     public void setJotaroAbility(boolean bool) { jotaroAbility = bool;}
+    public boolean isJotaroAbility() {
+        return jotaroAbility;
+    }
 }

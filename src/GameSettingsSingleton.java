@@ -4,6 +4,7 @@ public class GameSettingsSingleton {
     private PowerUpsSettingsSingleton powerUpsSettingsSingleton = PowerUpsSettingsSingleton.getInstance();
     private int page = 0;
     private double mapSpeed = 1;
+    private Map map;
     private static GameSettingsSingleton single_instance = null;
 
     public synchronized static GameSettingsSingleton getInstance() {
@@ -25,4 +26,11 @@ public class GameSettingsSingleton {
     public int getPage() {return page;}
     public void setPage(int num) {page = num;}
 
+    public void setMap(Map map) {
+        this.map = map;
+    }
+
+    public Map getMap() {
+        return map;
+    }
 }

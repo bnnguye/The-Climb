@@ -37,7 +37,6 @@ public class SideYugi extends SideCharacter{
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
             this.music.playMusic("music/Yugi.wav");
-            this.music.played = true;
             this.activating = true;
             exodiaPieces = new ArrayList<>();
             exodiaPieces.add(new ExodiaPiece("Head",new Point(Math.random()*Window.getWidth(), - Window.getHeight() - map.getCurrentHeight() - Math.random()*(map.getHeight() - map.getCurrentHeight()))));
@@ -128,16 +127,10 @@ public class SideYugi extends SideCharacter{
     public void reset() {
         this.activating = false;
         this.animating = false;
-        stopMusic();
         this.timer = 0;
         this.radius = 0;
     }
 
-    public void stopMusic() {
-        if (this.music.played) {
-            this.music.stopMusic();
-        }
-    }
 
     public boolean isAnimating() {
         return this.animating;

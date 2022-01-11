@@ -66,6 +66,9 @@ public class PlayerOne extends Player{
         else if (input.isDown(Keys.S)) {
             getCharacter().move("S");
         }
+        else {
+            getCharacter().move(null);
+        }
     }
 
     public Point getPos() { return this.pos;}

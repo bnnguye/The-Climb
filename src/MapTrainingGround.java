@@ -13,9 +13,9 @@ public class MapTrainingGround extends Map {
     Image mapPeek = new Image(String.format("res/mapPeeks/%d.png", this.level));
     private Point pos;
     ArrayList<Tile> tiles = new ArrayList<>();
-    double height = 0;
-    double currentHeight = 0;
-    boolean jotaroAbility = false;
+    private double height = 0;
+    private double currentHeight = 0;
+    private boolean jotaroAbility = false;
 
     public Tile tileChooser(String line, Point point) {
         Tile tile = null;
@@ -134,4 +134,7 @@ public class MapTrainingGround extends Map {
         return this.currentHeight;
     }
     public void setJotaroAbility(boolean bool) { this.jotaroAbility = bool;}
+    public boolean isJotaroAbility() {
+        return jotaroAbility;
+    }
 }

@@ -68,8 +68,8 @@ public class PlayerThree extends Player{
         else if (input.isDown(Keys.H)) {
             getCharacter().move("S");
         }
-        else if (input.isDown(Keys.Z)) {
-            getCharacter().move("SPACE");
+        else {
+            getCharacter().move(null);
         }
     }
 

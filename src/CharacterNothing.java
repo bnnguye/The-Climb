@@ -20,8 +20,9 @@ public class CharacterNothing extends Character{
     private int[] stats = new int[2];
 
     private double timer = 0;
-    private double alternateTimer = 2 * frames;
-    final double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
+    private double alternateTimer = 1 * frames;
+    private boolean moving = false;
+    private double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     private boolean shield = false;
     private boolean noblePhantasm = false;
@@ -111,7 +112,9 @@ public class CharacterNothing extends Character{
         if (timer <= 0) {
             timer = alternateTimer;
         }
-        timer --;
+        if (moving) {
+            timer --;
+        }
         image = picture;
         if (minimisedTimer > 0) {
             picture.draw(pos.x, pos.y, new DrawOptions().setScale(0.5, 0.5));
@@ -142,13 +145,13 @@ public class CharacterNothing extends Character{
             shield = true;
         }
         else if (powerUp.getName().equals("Minimiser")) {
-            minimisedTimer = 5 * frames;
+            minimisedTimer += 3 * frames;
         }
         else if (powerUp.getName().equals("SpeedUp")) {
-            speedUpTimer = 5 * frames;
+            speedUpTimer += 3 * frames;
         }
         else if (powerUp.getName().equals("SpeedDown")) {
-            speedDownTimer = 5 * frames;
+            speedDownTimer += 3 * frames;
         }
         else if (powerUp.getName().equals("NoblePhantasm")) {
             noblePhantasm = true;
@@ -212,10 +215,10 @@ public class CharacterNothing extends Character{
         }
     }
     public void onIce() {
-        speedUpTimer = speedUpTimer + 2;
+        speedUpTimer += 1;
     }
     public void onSlow() {
-        speedDownTimer = speedDownTimer - 2;
+        speedDownTimer += 1;
     }
 
     public double getMinimisedTimer() {
@@ -241,6 +244,8 @@ public class CharacterNothing extends Character{
         speedDownTimer = 0;
         shield = true;
         hisokaTimer = 0;
+        jotaroAbility = false;
+        gojoAbility = false;
     }
     public void setHisokaAbility(double timer) { hisokaTimer = timer;}
     public void setJotaroAbility(boolean bool) { jotaroAbility = bool;}

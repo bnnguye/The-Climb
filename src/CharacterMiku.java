@@ -20,8 +20,9 @@ public class CharacterMiku extends Character{
     private int[] stats = new int[2];
 
     private double timer = 0;
-    private double alternateTimer = 2 * frames;
-    final double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
+    private double alternateTimer = 1 * frames;
+    private boolean moving = false;
+    private double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     private boolean shield = false;
     private boolean noblePhantasm = false;
@@ -41,62 +42,77 @@ public class CharacterMiku extends Character{
     public String getName() { return name;}
 
     public void move(String key) {
-        if (stunTimer >= 0) {
-            stunTimer --;
-        }
+        if (key != null) {
 
-        double currentSpeed = speed;
+            if (stunTimer >= 0) {
+                stunTimer --;
+            }
 
-        if (hisokaTimer >= 0) {
-            hisokaTimer--;
-        }
-        if (speedUpTimer >= 0) {
-            currentSpeed = speed + 2;
-            speedUpTimer--;
-        }
+            double currentSpeed = speed;
 
-        if (speedDownTimer >= 0) {
-            currentSpeed = speed - 1;
-            speedDownTimer--;
-        }
+            if (hisokaTimer > 0) {
+                hisokaTimer--;
+            }
+            if (speedUpTimer > 0) {
+                currentSpeed = speed + 1;
+                speedUpTimer--;
+            }
 
-        if (gojoAbility) {
-            currentSpeed = speed - 1;
-        }
+            if (speedDownTimer > 0) {
+                currentSpeed = speed - 1;
+                speedDownTimer--;
+            }
 
-        double new_X = pos.x;
-        double new_Y = pos.y;
-        if (key.equals("WA")) {
-            new_Y -= currentSpeed;
-            new_X -= currentSpeed;
+            if (gojoAbility) {
+                currentSpeed = speed - 1;
+            }
+
+            double new_X = pos.x;
+            double new_Y = pos.y;
+            if (key.equals("WA")) {
+                new_Y -= currentSpeed;
+                new_X -= currentSpeed;
+            }
+            if (key.equals("WD")) {
+                new_Y -= currentSpeed;
+                new_X += currentSpeed;
+            }
+            if (key.equals("SA")) {
+                new_Y += currentSpeed;
+                new_X -= currentSpeed;
+            }
+            if (key.equals("SD")) {
+                new_Y += currentSpeed;
+                new_X += currentSpeed;
+            }
+            if (key.equals("W")) {
+                new_Y -= currentSpeed;
+            }
+            if (key.equals("A")) {
+                new_X -= currentSpeed;
+            }
+            if (key.equals("S")) {
+                new_Y += currentSpeed;
+            }
+            if (key.equals("D")) {
+                new_X += currentSpeed;
+            }
+            Point newPoint = new Point(new_X, new_Y);
+            if (((0 < new_X) && (new_X < Window.getWidth())) && ((0 < new_Y) && (new_Y < Window.getHeight()))) {
+                if (((!(hisokaTimer > 0)) && (!(stunTimer > 0))) && (!jotaroAbility)) {
+                    pos = newPoint;
+                    moving = true;
+                }
+            }
         }
-        if (key.equals("WD")) {
-            new_Y -= currentSpeed;
-            new_X += currentSpeed;
-        }
-        if (key.equals("SA")) {
-            new_Y += currentSpeed;
-            new_X -= currentSpeed;
-        }
-        if (key.equals("SD")) {
-            new_Y += currentSpeed;
-            new_X += currentSpeed;
-        }
-        if (key.equals("W")) {
-            new_Y -= currentSpeed;
-        }
-        if (key.equals("A")) {
-            new_X -= currentSpeed;
-        }
-        if (key.equals("S")) {
-            new_Y += currentSpeed;
-        }
-        if (key.equals("D")) {
-            new_X += currentSpeed;
-        }
-        if (((0 < new_X) && (new_X < Window.getWidth())) && ((0 < new_Y) && (new_Y < Window.getHeight()))) {
+        else {
+            moving = false;
             if (((!(hisokaTimer > 0)) && (!(stunTimer > 0))) && (!jotaroAbility)) {
-                pos = new Point(new_X, new_Y);
+                if (!GameSettingsSingleton.getInstance().getMap().hasFinished()) {
+                    if (!GameSettingsSingleton.getInstance().getMap().isJotaroAbility()) {
+                        pos = new Point(pos.x, pos.y + GameSettingsSingleton.getInstance().getMapSpeed());
+                    }
+                }
             }
         }
     }
@@ -111,7 +127,9 @@ public class CharacterMiku extends Character{
         if (timer <= 0) {
             timer = alternateTimer;
         }
-        timer --;
+        if (moving) {
+            timer --;
+        }
         image = picture;
         if (minimisedTimer > 0) {
             picture.draw(pos.x, pos.y, new DrawOptions().setScale(0.5, 0.5));
@@ -142,13 +160,13 @@ public class CharacterMiku extends Character{
             shield = true;
         }
         else if (powerUp.getName().equals("Minimiser")) {
-            minimisedTimer = 5 * frames;
+            minimisedTimer += 3 * frames;
         }
         else if (powerUp.getName().equals("SpeedUp")) {
-            speedUpTimer = 5 * frames;
+            speedUpTimer += 3 * frames;
         }
         else if (powerUp.getName().equals("SpeedDown")) {
-            speedDownTimer = 5 * frames;
+            speedDownTimer += 3 * frames;
         }
         else if (powerUp.getName().equals("NoblePhantasm")) {
             noblePhantasm = true;
@@ -212,10 +230,10 @@ public class CharacterMiku extends Character{
         }
     }
     public void onIce() {
-        speedUpTimer = speedUpTimer + 2;
+        speedUpTimer += 1;
     }
     public void onSlow() {
-        speedDownTimer = speedDownTimer - 2;
+        speedDownTimer += 1;
     }
 
     public double getMinimisedTimer() {
@@ -241,6 +259,8 @@ public class CharacterMiku extends Character{
         speedDownTimer = 0;
         shield = true;
         hisokaTimer = 0;
+        jotaroAbility = false;
+        gojoAbility = false;
     }
     public void setHisokaAbility(double timer) { hisokaTimer = timer;}
     public void setJotaroAbility(boolean bool) { jotaroAbility = bool;}

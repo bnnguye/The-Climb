@@ -50,6 +50,10 @@ public class ObstacleBungeeGum {
 
     public Point getPos() {return this.pos;}
 
+    public Image getImage() {
+        return image;
+    }
+
     public void setJotaroAbility(boolean bool) {jotaroAbility = bool;}
 
 }

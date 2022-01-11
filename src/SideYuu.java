@@ -109,6 +109,9 @@ public class SideYuu extends SideCharacter{
         else if (player.getSideCharacter().getName().equals("Zoro")) {
             playerCharacter = new SideZoro();
         }
+        else if (player.getSideCharacter().getName().equals("Senkuu")) {
+            playerCharacter = new SideSenkuu();
+        }
         return playerCharacter;
     }
 

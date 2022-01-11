@@ -64,7 +64,7 @@ public class SideHisoka extends SideCharacter{
                     bg.move();
                     for(Player player: players) {
                         if (player.getId() != user.getId()) {
-                            if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(bg.getPos())) {
+                            if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(bg.getImage().getBoundingBoxAt(new Point(bg.getPos().x - bg.getImage().getWidth()/2, bg.getPos().y - bg.getImage().getHeight()/2)))) {
                                 if (!player.isDead()) {
                                     player.getCharacter().setHisokaAbility(4 * frames);
                                     bgToRemove.add(bg);

@@ -10,7 +10,7 @@ public class CollisionBlock {
     private Point pos;
     double width;
     double height;
-    Colour color = new Colour(1, 0.3, 0.3);
+    Colour color = new Colour(153.0/255.0, 27.0/255.0, 0);
 
     public CollisionBlock(Point point, double width, double height) {
         point = new Point(point.x - 10, point.y - 10);

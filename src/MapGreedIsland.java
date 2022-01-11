@@ -13,9 +13,9 @@ public class MapGreedIsland extends Map {
     Image mapPeek = new Image(String.format("res/mapPeeks/%d.png", this.level));
     private Point pos;
     ArrayList<Tile> tiles = new ArrayList<>();
-    double height = 0;
-    double currentHeight = 0;
-    boolean jotaroAbility = false;
+    private double height = 0;
+    private double currentHeight = 0;
+    private boolean jotaroAbility = false;
 
     public Tile tileChooser(String line, Point point) {
         Tile tile = null;
@@ -70,7 +70,7 @@ public class MapGreedIsland extends Map {
 
     public void updateTiles(double shift) {
         if (!this.jotaroAbility) {
-            currentHeight ++;
+            currentHeight += shift;
         }
         ArrayList<Tile>tilesToRemove = new ArrayList<>();
         if (!this.jotaroAbility) {
@@ -96,7 +96,7 @@ public class MapGreedIsland extends Map {
         tiles.clear();
         int currentBlocksInRow = 0;
         int currentRow = 0;
-        this.height = -1000;
+        this.height = -Window.getHeight();
         this.currentHeight = 0;
         try {
             Scanner scanner = new Scanner(new File("res/mapData/GreedIsland.txt"));
@@ -135,4 +135,7 @@ public class MapGreedIsland extends Map {
         return this.currentHeight;
     }
     public void setJotaroAbility(boolean bool) { this.jotaroAbility = bool;}
+    public boolean isJotaroAbility() {
+        return jotaroAbility;
+    }
 }
