@@ -1,11 +1,5 @@
-import bagel.DrawOptions;
 import bagel.Image;
-import bagel.Window;
 import bagel.util.Point;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 abstract class Character{
         private final double frames = SettingsSingleton.getInstance().getFrames();

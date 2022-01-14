@@ -14,7 +14,7 @@ public class SideItachi extends SideCharacter{
     Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
-    Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
+    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
 
     ArrayList<PowerUp> powerUps;
     boolean left = true;
@@ -43,7 +43,7 @@ public class SideItachi extends SideCharacter{
             this.activating = true;
         }
         else {
-            if (timer > 6*frames) {
+            if (timer > 4*frames) {
                 this.animating = true;
                 Image noblePhantasm = new Image("res/charactersS/Itachi/NoblePhantasm.png");
                 noblePhantasm.drawFromTopLeft(0,0);
@@ -68,7 +68,9 @@ public class SideItachi extends SideCharacter{
                     }
                 }
             }
-            timer--;
+            if (!map.isJotaroAbility()) {
+                timer--;
+            }
         }
         Colour red = new Colour(0.7, 0, 0, 0.5);
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), red);

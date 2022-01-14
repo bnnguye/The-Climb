@@ -9,10 +9,10 @@ import java.util.Scanner;
 public class Tutorial extends Character{
     private Player player;
     private String name = "Tutorial";
-    Image icon = new Image("res/icons/Mai.png");
+    Image icon = new Image("res/icons/Sakuta.png");
     private Point iconPos;
     Image image;
-    Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
+    private Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
     private Point pos;
     int[] stats = new int[2];
 

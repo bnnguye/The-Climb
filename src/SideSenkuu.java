@@ -14,7 +14,7 @@ public class SideSenkuu extends SideCharacter{
     Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
-    Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
+    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
     private Point iconPos;
     private ArrayList<ObstacleArrow> senkuuObstacles = new ArrayList<>();
 
@@ -58,14 +58,17 @@ public class SideSenkuu extends SideCharacter{
             }
             else {
                 for (ObstacleArrow obstacle: senkuuObstacles) {
-                    obstacle.update();
+                    if (!map.isJotaroAbility()) {
+                        obstacle.update();
+                    }
                     for (Player player: players) {
                         if (player.getId() != user.getId()) {
-                            Point pos = player.getCharacter().getPos();
                             Image playerImage = player.getCharacter().getImage();
-                            Rectangle playerRectangle = new Rectangle(new Point(pos.x - playerImage.getWidth()/2, pos.y - playerImage.getHeight()/2), playerImage.getWidth(), playerImage.getHeight());
-                            //Drawing.drawRectangle(new Point(pos.x - playerImage.getWidth()/2, pos.y - playerImage.getHeight()/2), playerImage.getWidth(), playerImage.getHeight(), new Colour(1,0,0,0.5));
-                            //Drawing.drawRectangle(obstacle.getPos(), obstacle.getImage().getWidth(), obstacle.getImage().getHeight(), new Colour(0,1,0,0.5));
+                            Point playerPos = player.getCharacter().getPos();
+                            Rectangle playerRectangle = new Rectangle(new Point(playerPos.x, playerPos.y), playerImage.getWidth(), playerImage.getHeight());
+                            if (player.getCharacter().isMinimised()) {
+                                playerRectangle = new Rectangle(new Point(playerPos.x - playerImage.getWidth()/2, playerPos.y - playerImage.getHeight()/2), playerImage.getWidth()/2, playerImage.getHeight()/2);
+                            }
                             if (playerRectangle.intersects(obstacle.getImage().getBoundingBoxAt(new Point(obstacle.getPos().x - obstacle.getImage().getWidth()/2, obstacle.getPos().y - obstacle.getImage().getHeight()/2)))) {
                                 if (!player.isDead()) {
                                     player.setDead();
@@ -78,7 +81,9 @@ public class SideSenkuu extends SideCharacter{
                 obstacles.removeAll(obstacles);
                 this.animating = false;
             }
-            timer--;
+            if (!map.isJotaroAbility()) {
+                timer--;
+            }
         }
         if (timer <= 0) {
             senkuuObstacles.removeAll(senkuuObstacles);

@@ -14,7 +14,7 @@ public class SideZoro extends SideCharacter{
     Image icon = new Image(String.format("res/charactersS/Zoro/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
-    Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
+    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
     double shakeTimer;
     private Point iconPos;
 

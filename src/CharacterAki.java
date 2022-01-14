@@ -15,8 +15,8 @@ public class CharacterAki extends Character{
     private Point iconPos;
     private Point pos;
     private Image image;
-    private Image icon = new Image(String.format("res/icons/%s.png", name));
-    private Image selected = new Image(String.format("res/Selected/%s_Selected.png", name));
+    private Image icon = new Image(String.format("res/characters/%s/Icon.png", name));
+    private Image selected = new Image(String.format("res/characters/%s/Selected.png", name));
     private int[] stats = new int[2];
 
     private double timer = 0;
@@ -25,11 +25,11 @@ public class CharacterAki extends Character{
     private double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     private boolean shield = false;
-    private boolean noblePhantasm = true;
+    private boolean noblePhantasm = false;
 
     private double speedDownTimer = 0;
     private double speedUpTimer = 0;
-    private double minimisedTimer = 20 * frames;
+    private double minimisedTimer = 0;
     private double stunTimer = 0;
     private double hisokaTimer = 0;
 

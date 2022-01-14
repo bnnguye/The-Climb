@@ -17,7 +17,7 @@ public class SideYugi extends SideCharacter{
     int radius = 0;
     Music music = new Music();
     Music musicEnd = new Music();
-    Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
+    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
     ArrayList<ExodiaPiece> exodiaPieces;
     ArrayList<ExodiaPiece> exodiaPiecesCollected;
     private Point iconPos;

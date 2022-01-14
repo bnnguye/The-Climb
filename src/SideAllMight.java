@@ -12,7 +12,7 @@ public class SideAllMight extends SideCharacter{
     boolean animating = false;
     double timer;
     Music music = new Music();
-    Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
+    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
     private Point iconPos;
 
 

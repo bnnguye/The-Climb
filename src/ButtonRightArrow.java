@@ -5,7 +5,7 @@ import bagel.util.Rectangle;
 
 public class ButtonRightArrow extends Button {
     GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
-    Image image = new Image("res/RightArrow.png");
+    Image image = new Image("res/arrows/RightArrow.png");
     Point position;
 
     public ButtonRightArrow(String name, Rectangle rectangle) {

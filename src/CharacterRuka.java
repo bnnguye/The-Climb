@@ -15,8 +15,8 @@ public class CharacterRuka extends Character{
     private Point iconPos;
     private Point pos;
     private Image image;
-    private Image icon = new Image(String.format("res/icons/%s.png", name));
-    private Image selected = new Image(String.format("res/Selected/%s_Selected.png", name));
+    private Image icon = new Image(String.format("res/characters/%s/Icon.png", name));
+    private Image selected = new Image(String.format("res/characters/%s/Selected.png", name));
     private int[] stats = new int[2];
 
     private double timer = 0;

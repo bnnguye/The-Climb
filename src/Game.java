@@ -54,38 +54,34 @@ public class Game extends AbstractGame {
     private ArrayList<PowerUp> powerUps;
     private ArrayList<PowerUp> powerUpsToRemove;
     private ArrayList<Character> allCharacters;
-    Character Chizuru;
-    Character zeroTwo;
-    Character Miku;
-    Character Mai;
-    Character Nino;
-    Character Futaba;
-    Character Ruka;
-    Character Sakuta;
-    Character unlocked;
-    Character Unknown;
-    Character Aki;
-    Character Tutorial;
-    Character Dio;
-    Character Chika;
-    Character Emilia;
-    Character Asuna;
-    Character Raphtalia;
-    Character Nothing;
+    private Character Chizuru;
+    private Character zeroTwo;
+    private Character Miku;
+    private Character Mai;
+    private Character Nino;
+    private Character Futaba;
+    private Character Ruka;
+    private Character unlocked;
+    private Character Aki;
+    private Character Chika;
+    private Character Emilia;
+    private Character Asuna;
+    private Character Raphtalia;
+    private Character Nothing;
     private ArrayList<SideCharacter> sideCharacters;
     private ArrayList<SideCharacter> allSideCharacters;
-    SideCharacter Zoro;
-    SideCharacter Gojo;
-    SideCharacter AllMight;
-    SideCharacter Lelouch;
-    SideCharacter Hisoka;
-    SideCharacter Jotaro;
-    SideCharacter Itachi;
-    SideCharacter Yugi;
-    SideCharacter Puck;
-    SideCharacter DioS;
-    SideCharacter Yuu;
-    SideCharacter Senkuu;
+    private SideCharacter Zoro;
+    private SideCharacter Gojo;
+    private SideCharacter AllMight;
+    private SideCharacter Lelouch;
+    private SideCharacter Hisoka;
+    private SideCharacter Jotaro;
+    private SideCharacter Itachi;
+    private SideCharacter Yugi;
+    private SideCharacter Puck;
+    private SideCharacter DioS;
+    private SideCharacter Yuu;
+    private SideCharacter Senkuu;
 
     private double spacer = 300;
     private String currentMusic;
@@ -93,36 +89,37 @@ public class Game extends AbstractGame {
     private final Music mainMusic;
     private ArrayList<Music> musics;
     private boolean picked;
-    Rectangle bottomRectangle;
-    Rectangle topRectangle;
+    private Rectangle bottomRectangle;
+    private Rectangle topRectangle;
 
     // custom map variables
     private ArrayList<Map> playableMaps;
-    Map map;
-    ArrayList<Tile> allTiles;
-    ArrayList<Tile> customMapTiles;
-    boolean addingTile = false;
-    int page = 0;
-    Tile tile1;
-    Tile tile2;
-    Tile tile3;
-    int offset = 0;
+    private Map map;
+    private ArrayList<Tile> allTiles;
+    private ArrayList<Tile> customMapTiles;
+    private boolean addingTile = false;
+    private int page = 0;
+    private Tile tile1;
+    private Tile tile2;
+    private Tile tile3;
+    private int offset = 0;
 
 
     private boolean winnerPlayed = false;
-    boolean playingAnimation = false;
+    private boolean playingAnimation = false;
     private String[] dialogueLine;
-    Scanner dialogueScanner;
-    ArrayList<String> dialogueWords;
+    private Scanner dialogueScanner;
+    private ArrayList<String> dialogueWords;
 
-    double timeToSaveStats = 60 * frames;
-    int currentTimeToSaveStats = 0;
+    private double timeToSaveStats = 60 * frames;
+    private int currentTimeToSaveStats = 0;
 
     //Story variables
     private boolean playingDialogue = false;
     private boolean playingStory = false;
     private boolean playingScene = false;
     private boolean playingMap = false;
+    private boolean playingWorld = false;
     private int currentDialogue = 0;
     private int currentStory = 0;
     private int currentScene = 0;
@@ -131,7 +128,7 @@ public class Game extends AbstractGame {
     private Image currentBackground;
     private Point currentBackgroundPoint = new Point(0,0);
     private String dialogueString = "";
-    private final Colour dialogueColour = new Colour(77.0/255, 57.0/255, 37.0/255, 0.5);
+    private final Colour dialogueColour = new Colour(77.0/255, 57.0/255, 37.0/255, 0.7);
     private final double dialogueWidth = Window.getWidth()*0.1;
     private final double dialogueLength = Window.getHeight() - 300;
     private final int maxLines = 7;
@@ -157,13 +154,13 @@ public class Game extends AbstractGame {
 
     private final Colour black = new Colour(0, 0, 0, 1);
     private final Colour white = new Colour(1, 1, 1, 1);
-    Colour red = new Colour(153.0/255.0, 27.0/255.0, 0);
-    Colour darken = new Colour(0, 0, 0, 0.85);
+    private Colour red = new Colour(153.0/255.0, 27.0/255.0, 0);
+    private Colour darken = new Colour(0, 0, 0, 0.85);
 
     // Game Settings variables
-    ArrayList<PowerUp> allPowerUps;
-    ArrayList<Obstacle> allObstacles;
-    String pageType;
+    private ArrayList<PowerUp> allPowerUps;
+    private ArrayList<Obstacle> allObstacles;
+    private String pageType;
 
     public static void main(String[] args) {
         new Game().run();
@@ -196,17 +193,11 @@ public class Game extends AbstractGame {
         Emilia = new CharacterEmilia();
         Asuna = new CharacterAsuna();
         Raphtalia = new CharacterRaphtalia();
-        Tutorial = new Tutorial();
-        Dio = new CharacterDio();
         characters.add(Chizuru);
         characters.add(zeroTwo);
         characters.add(Miku);
         characters.add(Mai);
-        Sakuta = new Sakuta();
-        Unknown = new Unknown();
         Nothing = new CharacterNothing();
-        allCharacters.add(Unknown);
-        allCharacters.add(Sakuta);
         allCharacters.add(Chizuru);
         allCharacters.add(zeroTwo);
         allCharacters.add(Miku);
@@ -215,11 +206,9 @@ public class Game extends AbstractGame {
         allCharacters.add(Futaba);
         allCharacters.add(Ruka);
         allCharacters.add(Aki);
-        allCharacters.add(Tutorial);
         allCharacters.add(Chika);
         allCharacters.add(Emilia);
         allCharacters.add(Asuna);
-        allCharacters.add(Dio);
         allCharacters.add(Nothing);
         for(Character character: allCharacters) {
             character.setStats();
@@ -291,8 +280,8 @@ public class Game extends AbstractGame {
 
 
 
-        bottomRectangle = new Rectangle(0, Window.getHeight() - 20, Window.getWidth(), 20);
-        topRectangle = new Rectangle(0, 0, Window.getWidth(), 20);
+        bottomRectangle = new Rectangle(0, Window.getHeight() + 40, Window.getWidth(), 20);
+        topRectangle = new Rectangle(0, 40, Window.getWidth(), 20);
         menuBackground = new Image("res/menu/MainMenu.PNG");
         menuTitle = "";
         currentMusic = "music/Silence.wav";
@@ -493,6 +482,8 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 4) { // Comrades
             if (!settingsSingleton.getGameStateString().equals("Comrade")) {
+                buttons.clear();
+                buttons.add(new ButtonGameSettings("Settings", new Rectangle(Window.getWidth()/2, 0 , titleFont.getWidth("Settings"), 100)));
                 menuTitle = "CHOOSE HUSBANDO";
                 menuBackground = new Image("res/menu/mapMenu.png");
                 settingsSingleton.setGameStateString("Comrade");
@@ -564,6 +555,8 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 5) { // Map
             if (!settingsSingleton.getGameStateString().equals("MAP")) {
+                buttons.clear();
+                buttons.add(new ButtonGameSettings("Settings", new Rectangle(Window.getWidth()/2, 0 , titleFont.getWidth("Settings"), 100)));
                 menuTitle = "Which Climb?";
                 menuBackground = null;
                 settingsSingleton.setGameStateString("MAP");
@@ -684,6 +677,9 @@ public class Game extends AbstractGame {
                     countdownFont.drawString(String.format("%s", string), Window.getWidth() / 2 - 125, Window.getHeight() / 2);
                     currentFrame++;
                 } else {
+                    if (input.wasPressed(Keys.ESCAPE)) {
+                        settingsSingleton.setGameState(11);
+                    }
                     playingAnimation = false;
                     boolean characterMusic = false;
                     for (Player player : players) {
@@ -713,7 +709,7 @@ public class Game extends AbstractGame {
                     }
                     if (!characterMusic) {
                         //currentMusic = String.format("music/Fight%d.wav", settingsSingleton.getMapNo());
-                        currentMusic = "music/L Theme.wav";
+                        currentMusic = "music/Giorno.wav";
                         mainMusic.setVolume((float) 1);
                     }
                     if(!map.hasFinished()) {
@@ -891,7 +887,6 @@ public class Game extends AbstractGame {
                             }
                         }
                         else if (currentStory == 3) {
-                            currentMusic = Dio.playLine();
                             dark = true;
                             if (lastStory != currentStory) {
                                 setPlayersPosition();
@@ -1018,7 +1013,6 @@ public class Game extends AbstractGame {
                                 lastScene = currentScene;
                                 playingDialogue = true;
                                 endDialogue = false;
-                                currentMusic = Dio.playLine();
                             }
                             if (endDialogue) {
                                 startTransition();
@@ -1404,8 +1398,8 @@ public class Game extends AbstractGame {
             double minimumFrequency = 0.98;
             if (pageType.equals("General")) {
                 titleFont.drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + index*100);
-                Image leftButton = new Image("res/LeftArrow.png");
-                Image rightButton = new Image("res/RightArrow.png");
+                Image leftButton = new Image("res/arrows/LeftArrow.png");
+                Image rightButton = new Image("res/arrows/RightArrow.png");
                 leftButton.drawFromTopLeft(titleFont.getWidth("Map Speed: 1000") + 50, 175 + index*100, new DrawOptions().setScale(0.3,0.3));
                 rightButton.drawFromTopLeft(titleFont.getWidth("Map Speed: 1000") + 50 + rightButton.getWidth()*0.5, 175 + index*100, new DrawOptions().setScale(0.3, 0.3));
                 Rectangle leftButtonRectangle = new Rectangle(new Point(titleFont.getWidth("Map Speed: 1000") + 60 + leftButton.getWidth()*0.3, 175 + index*100 + rightButton.getHeight()*0.35), leftButton.getWidth()*0.3, leftButton.getHeight()*0.3);
@@ -1482,8 +1476,16 @@ public class Game extends AbstractGame {
             }
             menuTitle = pageType;
         }
+        else if (settingsSingleton.getGameState() == 11) {
+            render();
+            playerFont.drawString("PAUSE", (Window.getWidth() - playerFont.getWidth("PAUSE"))/2, Window.getHeight()/2 - 50);
+            gameFont.drawString("Press ESC to resume", (Window.getWidth() - playerFont.getWidth("Press ESC to res"))/2, Window.getHeight()/2);
+            if (input.wasPressed(Keys.ESCAPE)) {
+                settingsSingleton.setGameState(6);
+            }
+        }
         if (((settingsSingleton.getGameState() > 0) && (settingsSingleton.getGameState() < 6)) || (settingsSingleton.getGameState() == 10)) {
-            Image back = new Image("res/BackArrow.PNG");
+            Image back = new Image("res/arrows/BackArrow.PNG");
             back.draw(Window.getWidth() - back.getWidth(), back.getHeight());
             if (back.getBoundingBoxAt(new Point(Window.getWidth() - back.getWidth(), back.getHeight())).intersects(input.getMousePosition())) {
                 if (input.wasPressed(MouseButtons.LEFT)) {
@@ -2145,7 +2147,7 @@ public class Game extends AbstractGame {
         for (Player player: players) {
             Image playerImage = player.getCharacter().getImage();
             Point playerPos = player.getCharacter().getPos();
-            Rectangle playerRectangle = new Rectangle(new Point(playerPos.x - playerImage.getWidth()/2, playerPos.y - playerImage.getHeight()/2), playerImage.getWidth(), playerImage.getHeight());
+            Rectangle playerRectangle = new Rectangle(new Point(playerPos.x, playerPos.y), playerImage.getWidth(), playerImage.getHeight());
             //Drawing.drawRectangle(new Point(pos.x - image.getWidth()/2, pos.y - image.getHeight()/2), image.getWidth(), image.getHeight(), new Colour(0,0,0, 0.5));
             if (player.getCharacter().isMinimised()) {
                 playerRectangle = new Rectangle(new Point(playerPos.x - playerImage.getWidth()/2, playerPos.y - playerImage.getHeight()/2), playerImage.getWidth()/2, playerImage.getHeight()/2);
@@ -2162,7 +2164,7 @@ public class Game extends AbstractGame {
             for (Tile tile : map.getVisibleTiles()) {
                 Image tileImage = tile.getImage();
                 Point tilePos = tile.getPos();
-                Rectangle tileRectangle = new Rectangle(new Point(tilePos.x - tileImage.getWidth()/2, tilePos.y - tileImage.getHeight()/2), tileImage.getWidth(), tileImage.getHeight());
+                Rectangle tileRectangle = new Rectangle(new Point(tilePos.x, tilePos.y + tileImage.getHeight()/2), tileImage.getWidth(), tileImage.getHeight());
                 if ((tile.getType().equals("Ice")) && (playerRectangle.intersects(tileRectangle))) {
                     player.getCharacter().onIce();
                 }
@@ -2208,7 +2210,7 @@ public class Game extends AbstractGame {
             //Drawing.drawRectangle(obstacle.getPos(), obstacle.getImage().getWidth(), obstacle.getImage().getHeight(), new Colour(0,0,0,0.5));
             Image obstacleImage = obstacle.getImage();
             Point obstaclePos = obstacle.getPos();
-            Rectangle obstacleRectangle = new Rectangle(new Point(obstacle.getPos().x + obstacle.getImage().getWidth()/2, obstacle.getPos().y + obstacle.getImage().getHeight()/2), obstacle.getImage().getWidth(), obstacleImage.getHeight());
+            Rectangle obstacleRectangle = new Rectangle(new Point(obstaclePos.x, obstaclePos.y), obstacle.getImage().getWidth(), obstacleImage.getHeight());
             for (Player player : players) {
                 Image playerImage = player.getCharacter().getImage();
                 Point playerPos = player.getCharacter().getPos();
@@ -2470,7 +2472,8 @@ public class Game extends AbstractGame {
     public void setPlayersPosition() {
         double spawnDivider = 1;
         for (Player player : players) {
-            player.getCharacter().setPosition(new Point(spawnDivider * Window.getWidth() / (players.size() + 2), Window.getHeight() - 200));
+            double width = player.getCharacter().getImage().getWidth();
+            player.getCharacter().setPosition(new Point((players.size() * width / 2) - Window.getWidth()/2 + spawnDivider * width, Window.getHeight() - 200));
             spawnDivider++;
         }
     }

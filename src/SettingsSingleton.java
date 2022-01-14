@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class SettingsSingleton {
     private final double frames = 144;
     private static SettingsSingleton single_instance = null;

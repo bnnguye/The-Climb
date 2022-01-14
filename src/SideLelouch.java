@@ -15,7 +15,7 @@ public class SideLelouch extends SideCharacter{
     boolean activating = false;
     boolean animating = false;
     double timer;
-    Image selected = new Image(String.format("res/Selected/%s_Selected.png", this.name));
+    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
 
     boolean shoot = false;
     private Point iconPos;
