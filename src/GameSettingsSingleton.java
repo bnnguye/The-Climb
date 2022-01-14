@@ -3,7 +3,7 @@ public class GameSettingsSingleton {
     private ObstaclesSettingsSingleton obstaclesSettingsSingleton = ObstaclesSettingsSingleton.getInstance();
     private PowerUpsSettingsSingleton powerUpsSettingsSingleton = PowerUpsSettingsSingleton.getInstance();
     private int page = 0;
-    private double mapSpeed = 0;
+    private double mapSpeed = 1;
     private Map map;
     private static GameSettingsSingleton single_instance = null;
 

@@ -28,11 +28,11 @@ public class Game extends AbstractGame {
 
     private final double frames = settingsSingleton.getFrames();
     private int countDown = 0;
-    private double waitTimer = 6 * frames;
+    private double waitTimer = 2 * frames;
     private int winnerTimer = 0;
     private int currentFrame = 0;
 
-    private ArrayList<StringDisplay> stringDisplays;
+    private ArrayList<StringDisplay> stringDisplays = new ArrayList<>();
 
     private final Font titleFont = new Font("res/fonts/DejaVuSans-Bold.ttf", FONT_SIZE);
     private final Font victoryFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 110);
@@ -42,61 +42,48 @@ public class Game extends AbstractGame {
     private final Font countdownFont = new Font("res/fonts/conformable.otf", 300);
     private final Font dialogueFont = new Font("res/fonts/DejaVuSans-Bold.ttf", DIALOGUE_FONT_SIZE);
     private final Font introFont = new Font("res/fonts/Storytime.ttf", 80);
-    private final DrawOptions DO;
+    private final DrawOptions DO = new DrawOptions();
 
     private double intro = 0;
 
-    private ArrayList<Button> buttons;
-    private ArrayList<Character> characters;
-    private ArrayList<Player> players;
-    private ArrayList<Obstacle> obstacles;
-    private ArrayList<Obstacle> obstaclesToRemove;
-    private ArrayList<PowerUp> powerUps;
-    private ArrayList<PowerUp> powerUpsToRemove;
-    private ArrayList<Character> allCharacters;
-    private Character Chizuru;
-    private Character zeroTwo;
-    private Character Miku;
-    private Character Mai;
-    private Character Nino;
-    private Character Futaba;
-    private Character Ruka;
-    private Character unlocked;
-    private Character Aki;
-    private Character Chika;
-    private Character Emilia;
-    private Character Asuna;
-    private Character Raphtalia;
-    private Character Nothing;
-    private ArrayList<SideCharacter> sideCharacters;
-    private ArrayList<SideCharacter> allSideCharacters;
-    private SideCharacter Zoro;
-    private SideCharacter Gojo;
-    private SideCharacter AllMight;
-    private SideCharacter Lelouch;
-    private SideCharacter Hisoka;
-    private SideCharacter Jotaro;
-    private SideCharacter Itachi;
-    private SideCharacter Yugi;
-    private SideCharacter Puck;
-    private SideCharacter DioS;
-    private SideCharacter Yuu;
-    private SideCharacter Senkuu;
+    private ArrayList<Button> buttons= new ArrayList<>();
+    private ArrayList<Character> characters= new ArrayList<>();
+    private ArrayList<Player> players= new ArrayList<>();
+    private ArrayList<Obstacle> obstacles= new ArrayList<>();
+    private ArrayList<Obstacle> obstaclesToRemove= new ArrayList<>();
+    private ArrayList<PowerUp> powerUps= new ArrayList<>();
+    private ArrayList<PowerUp> powerUpsToRemove= new ArrayList<>();
+    private ArrayList<Character> allCharacters= new ArrayList<>();
+    private ArrayList<SideCharacter> sideCharacters= new ArrayList<>();
+    private ArrayList<SideCharacter> allSideCharacters= new ArrayList<>();
+
+    private SideCharacter Zoro = new SideZoro();
+    private SideCharacter Gojo = new SideGojo();
+    private SideCharacter AllMight = new SideAllMight();
+    private SideCharacter Lelouch = new SideLelouch();
+    private SideCharacter Hisoka = new SideHisoka();
+    private SideCharacter Jotaro = new SideJotaro();
+    private SideCharacter Dio = new SideDio();
+    private SideCharacter Itachi = new SideItachi();
+    private SideCharacter Yugi = new SideYugi();
+    private SideCharacter Puck = new SidePuck();
+    private SideCharacter Yuu = new SideYuu();
+    private SideCharacter Senkuu = new SideSenkuu();
 
     private double spacer = 300;
-    private String currentMusic;
-    private final Music soundEffectMusic;
-    private final Music mainMusic;
-    private ArrayList<Music> musics;
-    private boolean picked;
-    private Rectangle bottomRectangle;
-    private Rectangle topRectangle;
+    private String currentMusic = "music/Silence.wav";
+    private final Music soundEffectMusic = new Music();
+    private final Music mainMusic = new Music();
+    private ArrayList<Music> musics = new ArrayList<>();
+    private boolean picked = false;
+    private Rectangle bottomRectangle = new Rectangle(0, Window.getHeight() + 40, Window.getWidth(), 20);
+    private Rectangle topRectangle = new Rectangle(0, 40, Window.getWidth(), 20);
 
     // custom map variables
-    private ArrayList<Map> playableMaps;
+    private ArrayList<Map> playableMaps= new ArrayList<>();
     private Map map;
-    private ArrayList<Tile> allTiles;
-    private ArrayList<Tile> customMapTiles;
+    private ArrayList<Tile> allTiles= new ArrayList<>();
+    private ArrayList<Tile> customMapTiles= new ArrayList<>();
     private boolean addingTile = false;
     private int page = 0;
     private Tile tile1;
@@ -107,9 +94,10 @@ public class Game extends AbstractGame {
 
     private boolean winnerPlayed = false;
     private boolean playingAnimation = false;
+    private Character unlocked;
     private String[] dialogueLine;
     private Scanner dialogueScanner;
-    private ArrayList<String> dialogueWords;
+    private ArrayList<String> dialogueWords= new ArrayList<>();
 
     private double timeToSaveStats = 60 * frames;
     private int currentTimeToSaveStats = 0;
@@ -150,7 +138,7 @@ public class Game extends AbstractGame {
     private boolean failed = false;
 
     private Image menuBackground;
-    private String menuTitle;
+    private String menuTitle = "";
 
     private final Colour black = new Colour(0, 0, 0, 1);
     private final Colour white = new Colour(1, 1, 1, 1);
@@ -158,8 +146,8 @@ public class Game extends AbstractGame {
     private Colour darken = new Colour(0, 0, 0, 0.85);
 
     // Game Settings variables
-    private ArrayList<PowerUp> allPowerUps;
-    private ArrayList<Obstacle> allObstacles;
+    private ArrayList<PowerUp> allPowerUps= new ArrayList<>();
+    private ArrayList<Obstacle> allObstacles= new ArrayList<>();
     private String pageType;
 
     public static void main(String[] args) {
@@ -169,86 +157,44 @@ public class Game extends AbstractGame {
     public Game()   {
         super(1920, 1080, "The Climb");
 
-        DO = new DrawOptions();
-        stringDisplays = new ArrayList<>();
-        players = new ArrayList<>();
-        players.add( new PlayerOne());
-        characters = new ArrayList<>();
-        allCharacters = new ArrayList<>();
-        sideCharacters= new ArrayList<>();
-        allSideCharacters = new ArrayList<>();
-        allPowerUps = new ArrayList<>();
-        allObstacles = new ArrayList<>();
+        players.add(new PlayerOne());
 
         // initialize characters
-        Chizuru = new CharacterChizuru();
-        zeroTwo = new CharacterZeroTwo();
-        Miku = new CharacterMiku();
-        Mai = new CharacterMai();
-        Nino = new CharacterNino();
-        Futaba = new CharacterFutaba();
-        Ruka = new CharacterRuka();
-        Aki = new CharacterAki();
-        Chika = new CharacterChika();
-        Emilia = new CharacterEmilia();
-        Asuna = new CharacterAsuna();
-        Raphtalia = new CharacterRaphtalia();
-        characters.add(Chizuru);
-        characters.add(zeroTwo);
-        characters.add(Miku);
-        characters.add(Mai);
-        Nothing = new CharacterNothing();
-        allCharacters.add(Chizuru);
-        allCharacters.add(zeroTwo);
-        allCharacters.add(Miku);
-        allCharacters.add(Mai);
-        allCharacters.add(Nino);
-        allCharacters.add(Futaba);
-        allCharacters.add(Ruka);
-        allCharacters.add(Aki);
-        allCharacters.add(Chika);
-        allCharacters.add(Emilia);
-        allCharacters.add(Asuna);
-        allCharacters.add(Nothing);
+        characters.add(new Character("Chizuru"));
+        characters.add(new Character("02"));
+        characters.add(new Character("Miku"));
+        characters.add(new Character("Mai"));
+        for (Character character: characters) {
+            if (!allCharacters.contains(character)) {
+                allCharacters.add(character);
+            }
+        }
+        allCharacters.add(new Character("Nino"));
+        allCharacters.add(new Character("Futaba"));
+        allCharacters.add(new Character("Ruka"));
+        allCharacters.add(new Character("Aki"));
+        allCharacters.add(new Character("Chika"));
+        allCharacters.add(new Character("Emilia"));
+        allCharacters.add(new Character("Asuna"));
+        allCharacters.add(new Character("Raphtalia"));
         for(Character character: allCharacters) {
             character.setStats();
         }
-        Zoro = new SideZoro();
-        Gojo = new SideGojo();
-        AllMight = new SideAllMight();
-        Lelouch = new SideLelouch();
-        Hisoka = new SideHisoka();
-        Jotaro = new SideJotaro();
-        Itachi = new SideItachi();
-        Yugi = new SideYugi();
-        Puck = new SidePuck();
-        DioS = new SideDio();
-        Yuu = new SideYuu();
-        Senkuu = new SideSenkuu();
+
         sideCharacters.add(Zoro);
         sideCharacters.add(Gojo);
         sideCharacters.add(AllMight);
         sideCharacters.add(Lelouch);
         sideCharacters.add(Hisoka);
         sideCharacters.add(Jotaro);
-        sideCharacters.add(DioS);
+        sideCharacters.add(Dio);
         sideCharacters.add(Itachi);
         sideCharacters.add(Yugi);
         sideCharacters.add(Puck);
         sideCharacters.add(Yuu);
         sideCharacters.add(Senkuu);
         checkAchievements();
-        buttons = new ArrayList<>();
-        obstacles = new ArrayList<>();
-        obstaclesToRemove = new ArrayList<>();
-        powerUps = new ArrayList<>();
-        powerUpsToRemove = new ArrayList<>();
 
-        soundEffectMusic = new Music();
-        mainMusic = new Music();
-        musics = new ArrayList<>();
-
-        playableMaps = new ArrayList<>();
         playableMaps.add(new MapTrainingGround());
         playableMaps.add(new MapPark());
         playableMaps.add(new MapSpookySpikes());
@@ -257,8 +203,7 @@ public class Game extends AbstractGame {
         playableMaps.add(new MapClaustrophobicLane());
         playableMaps.add(new MapUpsideDownCups());
         playableMaps.add(new MapCustom());
-        customMapTiles = new ArrayList<>();
-        allTiles = new ArrayList<>();
+
         allTiles.add(new TileBasic(new Point(0,0)));
         allTiles.add(new TileBasicLeft(new Point(0,0)));
         allTiles.add(new TileBasicTop(new Point(0,0)));
@@ -278,13 +223,7 @@ public class Game extends AbstractGame {
         allObstacles.add(new ObstacleRock());
         allObstacles.add(new ObstacleStunBall());
 
-
-
-        bottomRectangle = new Rectangle(0, Window.getHeight() + 40, Window.getWidth(), 20);
-        topRectangle = new Rectangle(0, 40, Window.getWidth(), 20);
         menuBackground = new Image("res/menu/MainMenu.PNG");
-        menuTitle = "";
-        currentMusic = "music/Silence.wav";
         getGameStats();
         loadStory();
         if (currentStory >= currentScene) {
@@ -476,7 +415,7 @@ public class Game extends AbstractGame {
                 }
             }
             else {
-                waitTimer = 6 * frames;
+                waitTimer = 2 * frames;
             }
 
         }
@@ -1236,8 +1175,13 @@ public class Game extends AbstractGame {
                             map = null;
                             unlocked = checkAchievementsInGame();
                             if (unlocked != null) {
-                                settingsSingleton.setGameState(8);
-                                saveStats();
+                                if (!isPlayable(unlocked.getName())) {
+                                    settingsSingleton.setGameState(8);
+                                    saveStats();
+                                }
+                                else {
+                                    settingsSingleton.setGameState(0);
+                                }
                             }
                             else {
                                 settingsSingleton.setGameState(0);
@@ -1567,83 +1511,56 @@ public class Game extends AbstractGame {
         }
     }
 
+    public void addToPlayableCharacter(String name) {
+        for (Character character: allCharacters) {
+            if (character.getName().equals(name)) {
+                characters.add(character);
+            }
+        }
+    }
+
+    public boolean isPlayable(String name) {
+        for (Character character: characters) {
+            if (character.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Character findCharacter(String name) {
+        for (Character character: allCharacters) {
+            if (character.getName().equals(name)) {
+                return character;
+            }
+        }
+        return null;
+    }
+
     public void checkAchievements() {
+        //This file includes achievements and information on how to unlock each unlockable character.
+        // Format: [Unlockable Character] then [Character involved in unlocking] [line No of their stat] [value threshold].
         try {
             Scanner achievementScanner = new Scanner(new File("stats/Achievements.txt"));
             while (achievementScanner.hasNextLine()) {
                 String[] achievementLine = achievementScanner.nextLine().split(" ");
-                switch (achievementLine[0]) {
-                    case "Nino": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            characters.add(Nino);
-                        }
-                        break;
-                    }
-                    case "Futaba": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            characters.add(Futaba);
-                        }
-                        break;
-                    }
-                    case "Ruka": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            characters.add(Ruka);
-                        }
-                        break;
-                    }
-                    case "Aki": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            characters.add(Aki);
-                        }
-                        break;
-                    }
-                    case "Chika": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            characters.add(Chika);
-                        }
-                        break;
-                    }
-                    case "Emilia": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            characters.add(Emilia);
-                        }
-                        break;
-                    }
-                    case "Asuna": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            characters.add(Asuna);
-                        }
-                        break;
-                    }
+                String name = achievementLine[1];
+                int threshold = Integer.parseInt(achievementLine[3]);
+                int line = Integer.parseInt(achievementLine[2]);
+                String newCharacter = achievementLine[0];
+                switch (newCharacter) {
+
+                    case "Nino":
+                    case "Futaba":
+                    case "Ruka":
+                    case "Aki":
+                    case "Chika":
+                    case "Emilia":
+                    case "Asuna":
                     case "Raphtalia": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
                         if (checkStats(name, line, threshold)) {
-                            characters.add(Raphtalia);
+                            addToPlayableCharacter(newCharacter);
                         }
-                        break;
                     }
                 }
             }
@@ -1664,9 +1581,9 @@ public class Game extends AbstractGame {
                         int threshold = Integer.parseInt(achievementLine[3]);
                         int line = Integer.parseInt(achievementLine[2]);
                         if (checkStats(name, line, threshold)) {
-                            if (!characters.contains(Nino)) {
-                                characters.add(Nino);
-                                return Nino;
+                            if (isPlayable(name)) {
+                                addToPlayableCharacter(name);
+                                return findCharacter(name);
                             }
                         }
                         break;
@@ -1676,9 +1593,9 @@ public class Game extends AbstractGame {
                         int threshold = Integer.parseInt(achievementLine[3]);
                         int line = Integer.parseInt(achievementLine[2]);
                         if (checkStats(name, line, threshold)) {
-                            if (!characters.contains(Futaba)) {
-                                characters.add(Futaba);
-                                return Futaba;
+                            if (!characters.contains(name)) {
+                                addToPlayableCharacter(name);
+                                return findCharacter(name);
                             }
                         }
                         break;
@@ -1688,9 +1605,9 @@ public class Game extends AbstractGame {
                         int threshold = Integer.parseInt(achievementLine[3]);
                         int line = Integer.parseInt(achievementLine[2]);
                         if (checkStats(name, line, threshold)) {
-                            if (!characters.contains(Ruka)) {
-                                characters.add(Ruka);
-                                return Ruka;
+                            if (!characters.contains(name)) {
+                                addToPlayableCharacter(name);
+                                return findCharacter(name);
                             }
                         }
                         break;
@@ -1700,9 +1617,9 @@ public class Game extends AbstractGame {
                         int threshold = Integer.parseInt(achievementLine[3]);
                         int line = Integer.parseInt(achievementLine[2]);
                         if (checkStats(name, line, threshold)) {
-                            if (!characters.contains(Aki)) {
-                                characters.add(Aki);
-                                return Aki;
+                            if (!characters.contains(name)) {
+                                addToPlayableCharacter(name);
+                                return findCharacter(name);
                             }
                         }
                         break;
@@ -1712,9 +1629,9 @@ public class Game extends AbstractGame {
                         int threshold = Integer.parseInt(achievementLine[3]);
                         int line = Integer.parseInt(achievementLine[2]);
                         if (checkStats(name, line, threshold)) {
-                            if (!characters.contains(Chika)) {
-                                characters.add(Chika);
-                                return Chika;
+                            if (!characters.contains(name)) {
+                                addToPlayableCharacter(name);
+                                return findCharacter(name);
                             }
                         }
                         break;
@@ -1724,9 +1641,9 @@ public class Game extends AbstractGame {
                         int threshold = Integer.parseInt(achievementLine[3]);
                         int line = Integer.parseInt(achievementLine[2]);
                         if (checkStats(name, line, threshold)) {
-                            if (!characters.contains(Emilia)) {
-                                characters.add(Emilia);
-                                return Emilia;
+                            if (!characters.contains(name)) {
+                                addToPlayableCharacter(name);
+                                return findCharacter(name);
                             }
                         }
                         break;
@@ -1736,9 +1653,9 @@ public class Game extends AbstractGame {
                         int threshold = Integer.parseInt(achievementLine[3]);
                         int line = Integer.parseInt(achievementLine[2]);
                         if (checkStats(name, line, threshold)) {
-                            if (!characters.contains(Asuna)) {
-                                characters.add(Asuna);
-                                return Asuna;
+                            if (!characters.contains(name)) {
+                                addToPlayableCharacter(name);
+                                return findCharacter(name);
                             }
                         }
                         break;
@@ -1748,9 +1665,9 @@ public class Game extends AbstractGame {
                         int threshold = Integer.parseInt(achievementLine[3]);
                         int line = Integer.parseInt(achievementLine[2]);
                         if (checkStats(name, line, threshold)) {
-                            if (!characters.contains(Raphtalia)) {
-                                characters.add(Raphtalia);
-                                return Raphtalia;
+                            if (!characters.contains(name)) {
+                                addToPlayableCharacter(name);
+                                return findCharacter(name);
                             }
                         }
                         break;
@@ -2320,7 +2237,9 @@ public class Game extends AbstractGame {
     }
 
     public void render() {
-        map.draw();
+        if (map != null) {
+            map.draw();
+        }
         for (Player player : players) {
             if (!player.isDead()) {
                 player.getCharacter().draw();
@@ -2473,7 +2392,7 @@ public class Game extends AbstractGame {
         double spawnDivider = 1;
         for (Player player : players) {
             double width = player.getCharacter().getImage().getWidth();
-            player.getCharacter().setPosition(new Point((players.size() * width / 2) - Window.getWidth()/2 + spawnDivider * width, Window.getHeight() - 200));
+            player.getCharacter().setPosition(new Point(Window.getWidth()/2 - (players.size() * width / 2)  + spawnDivider * width, Window.getHeight() - 200));
             spawnDivider++;
         }
     }
