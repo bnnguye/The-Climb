@@ -40,13 +40,9 @@ public class SidePuck extends SideCharacter{
         }
         else {
             if (timer > 3*frames) {
-                Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
-                Image noblePhantasm = new Image(String.format("res/charactersS/%s/NoblePhantasm.png", this.name));
-                noblePhantasm.drawFromTopLeft(0,0);
                 this.animating = true;
             }
             else {
-                Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 1, 0.5));
                 this.animating = false;
                 for (Player player: players) {
                     if (!player.getSideCharacter().getName().equals("Puck")) {
@@ -55,7 +51,6 @@ public class SidePuck extends SideCharacter{
 
                     if (shards.size() > 0) {
                         for (ObstacleShard obstacleShard : shards) {
-                            obstacleShard.draw();
                             if (obstacleShard.getImage().getBoundingBoxAt(obstacleShard.getPos()).intersects(player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()))) {
                                 player.setDead();
                             }
@@ -92,4 +87,20 @@ public class SidePuck extends SideCharacter{
             shards.add(new ObstacleShard());
         }
     }
+
+    public void renderAbility() {
+        if (timer > 3 * frames) {
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.8));
+            Image noblePhantasm = new Image(String.format("res/charactersS/%s/NoblePhantasm.png", this.name));
+            noblePhantasm.drawFromTopLeft(0,0);
+        }
+        else {
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 1, 0.5));
+            for (ObstacleShard shard: shards) {
+                shard.draw();
+            }
+        }
+    }
+
+    public String getSoundPath() {return soundPath;}
 }

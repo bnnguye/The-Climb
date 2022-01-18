@@ -6,7 +6,9 @@ import bagel.util.Colour;
 import bagel.util.Rectangle;
 import bagel.util.Point;
 
-public abstract class   Button {
+import java.util.Set;
+
+public abstract class Button {
 
     private final int FONT_SIZE = 160;
     private String name;
@@ -15,17 +17,16 @@ public abstract class   Button {
     private Rectangle box;
     private DrawOptions DO = new DrawOptions();
     private Font font = new Font("res/fonts/DejaVuSans-Bold.ttf", FONT_SIZE);
-    private Colour black = new Colour(0, 0, 0);
-    Colour whiteTranslucent = new Colour(1, 1, 1, 0.5);
-    Colour white = new Colour(1, 1, 1);
     private Music music = new Music();
     private Image image = null;
+    public Colour white = new Colour(1,1,1);
+    public Colour whiteTranslucent = new Colour(1,1,1, 0.5);
 
     public Button(String name, Rectangle rectangle) {
         this.name = name;
         this.box = rectangle;
         this.position = rectangle.bottomLeft();
-        DO.setBlendColour(white);
+        DO.setBlendColour(whiteTranslucent);
     }
 
     public void toggleHover(Point point) {

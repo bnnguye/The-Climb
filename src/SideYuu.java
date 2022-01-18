@@ -35,9 +35,6 @@ public class SideYuu extends SideCharacter{
             this.timer = 2 * frames;
         }
         if (timer > 0 * frames) {
-            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
-            Image noblePhantasm = new Image(String.format("res/charactersS/%s/NoblePhantasm.png", this.name));
-            noblePhantasm.drawFromTopLeft(0,0);
             this.animating = true;
         }
         else if (timer == 0) {
@@ -133,5 +130,20 @@ public class SideYuu extends SideCharacter{
         }
         return closest;
     }
+
+    public void renderAbility() {
+        if (timer > 0 ) {
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
+            Image noblePhantasm = new Image(String.format("res/charactersS/%s/NoblePhantasm.png", this.name));
+            noblePhantasm.drawFromTopLeft(0,0);
+        }
+        else {
+            if (temporarySideCharacter != null) {
+                temporarySideCharacter.renderAbility();
+            }
+        }
+    }
+
+    public String getSoundPath() {return soundPath;}
 
 }

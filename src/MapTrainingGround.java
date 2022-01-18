@@ -48,7 +48,7 @@ public class MapTrainingGround extends Map {
 
     public void draw() {
         for(Tile tile: tiles) {
-            if ((tile.getPos().y < Window.getHeight()) && (tile.getPos().y > -tile.getImage().getHeight())) {
+            if ((tile.getPos().y < Window.getHeight() + tile.getImage().getHeight()) && (tile.getPos().y > -tile.getImage().getHeight())) {
                 tile.draw();
             }
         }
@@ -120,7 +120,7 @@ public class MapTrainingGround extends Map {
     public ArrayList<Tile> getVisibleTiles() {
         ArrayList<Tile> visibleTiles = new ArrayList<>();
         for(Tile tile: this.tiles) {
-            if ((tile.getPos().y < Window.getHeight()) && (tile.getPos().y > -tile.getImage().getHeight())) {
+            if ((tile.getPos().y < Window.getHeight() + tile.getImage().getHeight()) && (tile.getPos().y > -tile.getImage().getHeight())) {
                 visibleTiles.add(tile);
             }
         }

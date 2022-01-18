@@ -37,9 +37,6 @@ public class SideDio extends SideCharacter{
     public String playLine() {return this.soundPath;}
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
-
-        Colour darken = new Colour(0, 0, 0.2, 0.5);
-        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (!this.activating) {
             timer = 5*frames;
             this.activating = true;
@@ -53,8 +50,6 @@ public class SideDio extends SideCharacter{
             user.getCharacter().setJotaroAbility(false);
             if (timer > 3*frames) {
                 this.animating = true;
-                Image noblePhantasm = new Image("res/charactersS/Dio/NoblePhantasm.png");
-                noblePhantasm.drawFromTopLeft(0,0);
             }
             else {
                 this.animating = false;
@@ -85,11 +80,21 @@ public class SideDio extends SideCharacter{
         }
     }
 
+    public void renderAbility() {
+        Colour darken = new Colour(0, 0, 0.2, 0.5);
+        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
+        if (timer > 3*frames) {
+             Image noblePhantasm = new Image("res/charactersS/Dio/NoblePhantasm.png");
+             noblePhantasm.drawFromTopLeft(0,0);
+        }
+    }
+
 
 
     public boolean isAnimating() {
         return this.animating;
     }
+    public String getSoundPath() {return soundPath;}
     public void setPowerUps(ArrayList<PowerUp> powerUps) {this.powerUps = powerUps;}
 
 }

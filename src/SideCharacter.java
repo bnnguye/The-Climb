@@ -34,4 +34,6 @@ public abstract class SideCharacter {
     public void setPowerUps(ArrayList<PowerUp> powerUps) {}
     public void setLeft(boolean bool) {}
     public ArrayList<ExodiaPiece> getExodiaPiecesCollected() { return null;}
+    public void renderAbility() {}
+    public String getSoundPath() {return soundPath;}
 }

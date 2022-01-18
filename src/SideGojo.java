@@ -48,38 +48,10 @@ public class SideGojo extends SideCharacter{
 
         if (this.timer > 6*frames) {
             this.animating = true;
-            if (radius < Window.getWidth()/1.5) {
-                radius += 2;
-            }
-            Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), new Colour(0,0,0,0.9));
-            Image gojo = new Image("res/charactersS/Gojo/NoblePhantasm2.png");
-            gojo.drawFromTopLeft(0,0);
-            Font font = new Font("res/fonts/DejaVuSans-Bold.ttf", 160);
-            //font.drawString("DOMAIN EXPANSION", Window.getWidth()/12, Window.getHeight()*0.8);
         }
         else {
             this.animating = false;
-            if (radius < Window.getWidth()/1.5) {
-                Drawing.drawCircle(user.getCharacter().getPos(), radius, new Colour(0,0,0));
-                radius += 3;
-            }
-            else {
-                Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), new Colour(0,0,0,0.9));
-                Drawing.drawCircle(new Point(Window.getWidth()/2, Window.getHeight()/2), 50, new Colour(1, 1, 1, 1));
-                if (timer % 10 == 0) {
-                    Drawing.drawCircle(new Point(Window.getWidth()/2, Window.getHeight()/2), 600, new Colour(0.5, 0, 0, 0.4));
-                }
-                else if (timer % 14 == 0) {
-                    Drawing.drawCircle(new Point(Window.getWidth()/2, Window.getHeight()/2), 400, new Colour(0, 0, 0.5, 0.6));
-                }
-                else if (timer % 16 == 0) {
-                    Drawing.drawCircle(new Point(Window.getWidth()/2, Window.getHeight()/2), 200, new Colour(0.5, 0, 0.5, 0.7));
-                }
-                else if (timer % 17 == 0) {
-                    Drawing.drawCircle(new Point(Window.getWidth()/2, Window.getHeight()/2), 100, new Colour(0.5, 0, 0.5, 0.9));
-                }
-                warp(players, user);
-            }
+            warp(players, user);
             for (Player player: players) {
                 if (player.getId() != user.getId()) {
                     if (player.getCharacter().getPos().distanceTo(new Point(Window.getWidth()/2, Window.getHeight()/2)) < 100){
@@ -121,4 +93,36 @@ public class SideGojo extends SideCharacter{
             }
         }
     }
+
+    public void renderAbility() {
+        if (radius < Window.getWidth()/1.5) {
+            radius += 2;
+        }
+        if (timer > 6 * frames) {
+            Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), new Colour(0,0,0,0.9));
+            Image gojo = new Image("res/charactersS/Gojo/NoblePhantasm2.png");
+            gojo.drawFromTopLeft(0,0);
+            if (radius < Window.getWidth()/1.5) {
+                Drawing.drawCircle(Window.getWidth()/2, Window.getHeight()/2, radius, new Colour(0,0,0));
+                radius += 3;
+            }
+        }
+        else {
+            Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), new Colour(0,0,0,0.9));
+            Drawing.drawCircle(new Point(Window.getWidth()/2, Window.getHeight()/2), 50, new Colour(1, 1, 1, 1));
+            if (timer % 10 == 0) {
+                Drawing.drawCircle(new Point(Window.getWidth()/2, Window.getHeight()/2), 600, new Colour(0.5, 0, 0, 0.4));
+            }
+            else if (timer % 14 == 0) {
+                Drawing.drawCircle(new Point(Window.getWidth()/2, Window.getHeight()/2), 400, new Colour(0, 0, 0.5, 0.6));
+            }
+            else if (timer % 16 == 0) {
+                Drawing.drawCircle(new Point(Window.getWidth()/2, Window.getHeight()/2), 200, new Colour(0.5, 0, 0.5, 0.7));
+            }
+            else if (timer % 17 == 0) {
+                Drawing.drawCircle(new Point(Window.getWidth()/2, Window.getHeight()/2), 100, new Colour(0.5, 0, 0.5, 0.9));
+            }
+        }
+    }
+    public String getSoundPath() {return soundPath;}
 }

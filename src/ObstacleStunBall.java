@@ -10,7 +10,7 @@ public class ObstacleStunBall extends Obstacle{
     boolean gojoAbility = false;
     boolean jotaroAbility = false;
     private final double frames = SettingsSingleton.getInstance().getFrames();
-    double time = 2*frames;
+    double time = 1*frames;
 
     public ObstacleStunBall() {
         this.pos = new Point(Window.getWidth() * Math.random(), -200);

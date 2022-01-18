@@ -45,11 +45,6 @@ public class SideHisoka extends SideCharacter{
         }
 
         if (timer > 8*frames) {
-            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
-            Image noblePhantasm = new Image("res/charactersS/Hisoka/NoblePhantasm.png");
-            Colour darken = new Colour(0, 0, 0, 0.5);
-            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
-            noblePhantasm.drawFromTopLeft(0,0);
             this.animating = true;
         }
         else {
@@ -60,7 +55,6 @@ public class SideHisoka extends SideCharacter{
             if (bungeeGums.size() > 0) {
                 ArrayList<ObstacleBungeeGum> bgToRemove = new ArrayList<>();
                 for (ObstacleBungeeGum bg: bungeeGums) {
-                    bg.draw();
                     bg.move();
                     for(Player player: players) {
                         if (player.getId() != user.getId()) {
@@ -97,4 +91,20 @@ public class SideHisoka extends SideCharacter{
     public boolean isAnimating() {
         return this.animating;
     }
+
+    public void renderAbility() {
+        if (timer > 8*frames) {
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
+            Image noblePhantasm = new Image("res/charactersS/Hisoka/NoblePhantasm.png");
+            Colour darken = new Colour(0, 0, 0, 0.5);
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
+            noblePhantasm.drawFromTopLeft(0,0);
+        }
+        else {
+            for (ObstacleBungeeGum bg: bungeeGums) {
+                bg.draw();
+            }
+        }
+    }
+    public String getSoundPath() {return soundPath;}
 }

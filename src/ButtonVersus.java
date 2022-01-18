@@ -15,5 +15,5 @@ public class ButtonVersus extends Button {
 
     public void playAction() {
         SettingsSingleton.getInstance().setGameMode(1);
-        SettingsSingleton.getInstance().setGameState(2);}
+        SettingsSingleton.getInstance().setGameStateString("VS");}
 }

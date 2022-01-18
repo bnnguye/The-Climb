@@ -1,7 +1,4 @@
-import bagel.Drawing;
 import bagel.Image;
-import bagel.Window;
-import bagel.util.Colour;
 import bagel.util.Point;
 import bagel.util.Rectangle;
 
@@ -35,14 +32,12 @@ public class SideSenkuu extends SideCharacter{
     public String playLine() {return this.soundPath;}
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
-        Image noblePhantasm = new Image("res/charactersS/Senkuu/NoblePhantasm.png");
         int space;
         if (!this.activating) {
-            senkuuObstacles.removeAll(senkuuObstacles);
+            senkuuObstacles.clear();
             timer = 6*frames;
             this.activating = true;
             space = (int) Math.round(Math.random()*80);
-            System.out.println(space);
             ObstacleArrow mock = new ObstacleArrow(new Point(0,0));
             Image mockImage = mock.getImage();
             for (int i = 0; i < 80; i++) {
@@ -54,7 +49,6 @@ public class SideSenkuu extends SideCharacter{
         else {
             if (timer > 4*frames) {
                 this.animating = true;
-                noblePhantasm.drawFromTopLeft(0,0);
             }
             else {
                 for (ObstacleArrow obstacle: senkuuObstacles) {
@@ -69,7 +63,7 @@ public class SideSenkuu extends SideCharacter{
                             if (player.getCharacter().isMinimised()) {
                                 playerRectangle = new Rectangle(new Point(playerPos.x - playerImage.getWidth()/2, playerPos.y - playerImage.getHeight()/2), playerImage.getWidth()/2, playerImage.getHeight()/2);
                             }
-                            if (playerRectangle.intersects(obstacle.getImage().getBoundingBoxAt(new Point(obstacle.getPos().x - obstacle.getImage().getWidth()/2, obstacle.getPos().y - obstacle.getImage().getHeight()/2)))) {
+                            if (playerRectangle.intersects(obstacle.getImage().getBoundingBoxAt(obstacle.getPos()))) {
                                 if (!player.isDead()) {
                                     player.setDead();
                                 }
@@ -77,8 +71,6 @@ public class SideSenkuu extends SideCharacter{
                         }
                     }
                 }
-                powerUps.removeAll(powerUps);
-                obstacles.removeAll(obstacles);
                 this.animating = false;
             }
             if (!map.isJotaroAbility()) {
@@ -95,5 +87,19 @@ public class SideSenkuu extends SideCharacter{
     public boolean isAnimating() {
         return this.animating;
     }
+
+    public void renderAbility() {
+        if (timer > 4 * frames) {
+            Image noblePhantasm = new Image("res/charactersS/Senkuu/NoblePhantasm.png");
+            noblePhantasm.drawFromTopLeft(0,0);
+        }
+        else {
+            for (ObstacleArrow arrow: senkuuObstacles) {
+                arrow.draw();
+            }
+        }
+    }
+
+    public String getSoundPath() {return soundPath;}
 
 }

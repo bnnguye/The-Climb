@@ -3,6 +3,7 @@ import bagel.Image;
 import bagel.util.Colour;
 import bagel.util.Point;
 import bagel.util.Rectangle;
+import org.w3c.dom.css.Rect;
 
 
 public class CollisionBlock {
@@ -31,8 +32,8 @@ public class CollisionBlock {
 
     public Rectangle getRectangle() {return this.rectangle;}
 
-    public boolean hasCollided(Player player) {
-        return player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(this.rectangle);
+    public boolean hasCollided(Rectangle rectangle) {
+        return rectangle.intersects(this.rectangle);
     }
 
     public Point getPos() { return this.pos;}

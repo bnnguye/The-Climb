@@ -1,7 +1,11 @@
 import bagel.DrawOptions;
+import bagel.Drawing;
 import bagel.Image;
 import bagel.Window;
+import bagel.util.Colour;
 import bagel.util.Point;
+import bagel.util.Rectangle;
+import org.lwjgl.system.windows.RECT;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,6 +19,7 @@ public class Character {
         private Point iconPos;
         private Point pos;
         private Image image;
+        private Rectangle rectangle;
         private Image icon;
         private Image selected;
         private int[] stats = new int[2];
@@ -140,10 +145,14 @@ public class Character {
                 }
                 image = picture;
                 if (minimisedTimer > 0) {
+                        rectangle = new Rectangle(new Point(pos.x - image.getWidth()/4, pos.y - image.getHeight()/4), image.getWidth()/2, image.getHeight()/2);
+                        //Drawing.drawRectangle(new Point(pos.x - image.getWidth()/4, pos.y - image.getHeight()/4), image.getWidth()/2, image.getHeight()/2, new Colour(0,0,0,0.5));
                         picture.draw(pos.x, pos.y, new DrawOptions().setScale(0.5, 0.5));
                         minimisedTimer--;
                 }
                 else {
+                        rectangle = new Rectangle(new Point(pos.x - image.getWidth()/2, pos.y - image.getHeight()/2), image.getWidth(), image.getHeight());
+                        //Drawing.drawRectangle(new Point(pos.x - image.getWidth()/2, pos.y - image.getHeight()/2), image.getWidth(), image.getHeight(), new Colour(0,0,0,0.5));
                         picture.draw(pos.x, pos.y);
                 }
                 if (shield) {
@@ -273,5 +282,6 @@ public class Character {
         public void setHisokaAbility(double timer) { hisokaTimer = timer;}
         public void setJotaroAbility(boolean bool) { jotaroAbility = bool;}
         public boolean isMinimised() {return minimisedTimer > 0;}
-        public void gotStunned() {stunTimer = 2*frames;}
+        public void gotStunned() {stunTimer = frames;}
+        public Rectangle getRectangle() {return rectangle;}
 }

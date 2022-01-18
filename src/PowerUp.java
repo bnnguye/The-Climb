@@ -6,7 +6,7 @@ public abstract class PowerUp {
     private String name;
     Image image;
     private Point pos;
-    double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
+    double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 
 
     public PowerUp() {

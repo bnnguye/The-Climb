@@ -7,6 +7,6 @@ public class ButtonStory extends Button {
 
     public void playAction() {
         SettingsSingleton.getInstance().setGameMode(0);
-        SettingsSingleton.getInstance().setGameState(2);
+        SettingsSingleton.getInstance().setGameStateString("STORY");
     }
 }

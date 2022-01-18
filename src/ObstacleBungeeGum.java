@@ -1,4 +1,6 @@
+import bagel.Drawing;
 import bagel.Image;
+import bagel.util.Colour;
 import bagel.util.Point;
 
 public class ObstacleBungeeGum {

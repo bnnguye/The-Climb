@@ -11,7 +11,6 @@ public class SideAllMight extends SideCharacter{
     boolean activating = false;
     boolean animating = false;
     double timer;
-    Music music = new Music();
     private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
     private Point iconPos;
 
@@ -29,14 +28,11 @@ public class SideAllMight extends SideCharacter{
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
-            this.music.playMusic("music/AllMight.wav");
             this.activating = true;
             this.timer = 10 * frames;
         }
 
         if (this.timer > 8*frames) {
-            Image noblePhantasm = new Image(String.format("res/charactersS/%s/NoblePhantasm.png", this.name));
-            noblePhantasm.drawFromTopLeft(0,0);
             this.animating = true;
         }
         else {
@@ -55,9 +51,15 @@ public class SideAllMight extends SideCharacter{
         timer = 0;
     }
 
-    public void shoot() {}
+    public void renderAbility() {
+        if (timer > 8 * frames) {
+            Image noblePhantasm = new Image(String.format("res/charactersS/%s/NoblePhantasm.png", this.name));
+            noblePhantasm.drawFromTopLeft(0,0);
+        }
+    }
     public boolean isAnimating() {
         return this.animating;
     }
+    public String getSoundPath() {return soundPath;}
 }
 

@@ -16,6 +16,7 @@ public class SideLelouch extends SideCharacter{
     boolean animating = false;
     double timer;
     private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
+    private Player user;
 
     boolean shoot = false;
     private Point iconPos;
@@ -33,23 +34,17 @@ public class SideLelouch extends SideCharacter{
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
+            this.user = user;
             this.activating = true;
             this.timer = 6 * frames;
         }
 
         if (timer > 1*frames) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
-            Image noblePhantasm = new Image("res/charactersS/Lelouch/NoblePhantasm.png");
-            noblePhantasm.drawFromTopLeft(0,0);
             this.animating = true;
         }
         else {
             this.animating = false;
-            Image eye = new Image("res/charactersS/Lelouch/Eye.png");
-            eye.drawFromTopLeft(0,0);
-            Colour red = new Colour(0.8, 0, 0, 0.5);
-            Drawing.drawRectangle(user.getCharacter().getPos().x, 0, 2, Window.getHeight(), red);
-            Drawing.drawRectangle(0, user.getCharacter().getPos().y, Window.getWidth(), 2, red);
         }
         this.timer--;
         if (this.timer <= 0) {
@@ -80,4 +75,19 @@ public class SideLelouch extends SideCharacter{
     public boolean isAnimating() {
         return this.animating;
     }
+
+    public void renderAbility() {
+        if (timer > 1 *frames) {
+            Image noblePhantasm = new Image("res/charactersS/Lelouch/NoblePhantasm.png");
+            noblePhantasm.drawFromTopLeft(0,0);
+        }
+        else {
+            Image eye = new Image("res/charactersS/Lelouch/Eye.png");
+            eye.drawFromTopLeft(0,0);
+            Colour red = new Colour(0.8, 0, 0, 0.5);
+            Drawing.drawRectangle(user.getCharacter().getPos().x, 0, 2, Window.getHeight(), red);
+            Drawing.drawRectangle(0, user.getCharacter().getPos().y, Window.getWidth(), 2, red);
+        }
+    }
+    public String getSoundPath() {return soundPath;}
 }

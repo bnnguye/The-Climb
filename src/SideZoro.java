@@ -37,12 +37,6 @@ public class SideZoro extends SideCharacter{
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
-        Image slashLeft = new Image("res/charactersS/Zoro/SlashLeft.png");
-        Image slashMiddle = new Image("res/charactersS/Zoro/SlashMiddle.png");
-        Image slashRight = new Image("res/charactersS/Zoro/SlashRight.png");
-        Image display = new Image("res/charactersS/Zoro/Activate.png");
-        Colour darken = new Colour(0, 0, 0, 0.5);
-        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (!this.activating) {
             timer = 5*frames;
             this.activating = true;
@@ -51,14 +45,10 @@ public class SideZoro extends SideCharacter{
         else {
             if (timer > 3*frames) {
                 this.animating = true;
-                display.drawFromTopLeft(0,0);
             }
             else {
                 shakeImage(map);
                 this.animating = false;
-                slashLeft.drawFromTopLeft(0, -200);
-                slashMiddle.drawFromTopLeft(0, Window.getHeight()/2 - 100);
-                slashRight.drawFromTopLeft(0, -200);
                 ArrayList<Point> hitbox = new ArrayList<>();
                 // bottomleft-topright
                 hitbox.add(new Point(354.00, 1065.00));
@@ -197,6 +187,24 @@ public class SideZoro extends SideCharacter{
             }
         }
         shakeTimer --;
+    }
+    public String getSoundPath() {return soundPath;}
+
+    public void renderAbility() {
+        Image slashLeft = new Image("res/charactersS/Zoro/SlashLeft.png");
+        Image slashMiddle = new Image("res/charactersS/Zoro/SlashMiddle.png");
+        Image slashRight = new Image("res/charactersS/Zoro/SlashRight.png");
+        Image display = new Image("res/charactersS/Zoro/Activate.png");
+        if (timer > 3 *frames) {
+            Colour darken = new Colour(0, 0, 0, 0.5);
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
+            display.drawFromTopLeft(0,0);
+        }
+        else {
+            slashLeft.drawFromTopLeft(0, -200);
+            slashMiddle.drawFromTopLeft(0, Window.getHeight()/2 - 100);
+            slashRight.drawFromTopLeft(0, -200);
+        }
     }
     
 }
