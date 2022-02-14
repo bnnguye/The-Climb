@@ -4,7 +4,7 @@ public class ObstaclesSettingsSingleton {
 
     private double rockFrequency = 0.98;
     private double ballFrequency = 0.99;
-    private double stunBallFrequency = 0.995;
+    private double stunBallFrequency = 0.998;
     private boolean rocks = true;
     private boolean balls = true;
     private boolean stunBalls = true;

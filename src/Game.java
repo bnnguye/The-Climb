@@ -522,7 +522,7 @@ public class Game extends AbstractGame {
                             if (input.wasPressed(player.getKey())) {
                                 if (player.getCharacter().hasNoblePhantasm()) {
                                     if (!player.getSideCharacter().isActivating()) {
-                                        //player.getCharacter().useNoblePhantasm();
+                                        player.getCharacter().useNoblePhantasm();
                                         player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
                                         playSound(player.getSideCharacter().getSoundPath());
                                         if (hasSound(player.getSideCharacter().getSoundPath())) {
@@ -2244,7 +2244,7 @@ public class Game extends AbstractGame {
                 }
             }
             for (Tile tile : map.getVisibleTiles()) {
-                Rectangle tileRectangle = getBoundingBoxOf(tile.getImage(), new Point(tile.getPos().x + tile.getImage().getWidth()/2, tile.getPos().y + tile.getImage().getHeight()/2));
+                Rectangle tileRectangle = getBoundingBoxOf(tile.getImage(), new Point(tile.getPos().x, tile.getPos().y));
                 if ((tile.getType().equals("Ice")) && (player.getCharacter().getRectangle().intersects(tileRectangle))) {
                     player.getCharacter().onIce();
                 }
@@ -2559,7 +2559,7 @@ public class Game extends AbstractGame {
         if (intro >= 2*frames) {
             introFont.drawString("Made by Bill Nguyen", Window.getWidth()/2 - introFont.getWidth("Made by Bill Nguyen")/2, Window.getHeight()/2, DO.setBlendColour(new Colour(0,0,0,(intro - 2*frames)/(1*frames))));
             if (intro == 2*frames) {
-                soundEffectMusic.playMusic("music/Intro.wav");
+                //soundEffectMusic.playMusic("music/Intro.wav");
             }
         }
         if (intro >= 5*frames) {
@@ -2593,7 +2593,7 @@ public class Game extends AbstractGame {
     }
 
     public Rectangle getBoundingBoxOf(Image image, Point pos) {
-        return image.getBoundingBoxAt(new Point(pos.x,  pos.y));
+        return image.getBoundingBoxAt(new Point(pos.x + image.getWidth()/2,  pos.y + image.getHeight()/2));
     }
 
     public void updateAbilities() {
