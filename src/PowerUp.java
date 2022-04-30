@@ -7,6 +7,7 @@ public abstract class PowerUp {
     Image image;
     private Point pos;
     double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
+    private boolean jotaroAbility = false;
 
 
     public PowerUp() {
@@ -17,5 +18,10 @@ public abstract class PowerUp {
     public Image getImage() {return image;}
     public Point getPos() { return pos;}
     public String getName() { return name;}
-    public void setJotaroAbility(boolean bool) {}
+    public void setJotaroAbility(boolean bool) {
+        jotaroAbility = bool;
+    }
+    public boolean canMove() {
+        return !jotaroAbility;
+    }
 }

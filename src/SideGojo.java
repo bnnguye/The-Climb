@@ -61,16 +61,10 @@ public class SideGojo extends SideCharacter{
                     }
                 }
             }
-            for (Obstacle obstacle: obstacles) {
-                obstacle.setGojoAbility(true);
-            }
         }
         this.timer--;
         if (this.timer <= 0) {
             this.activating = false;
-            for (Obstacle obstacle: obstacles) {
-                obstacle.setGojoAbility(false);
-            }
             this.radius = 0;
         }
     }

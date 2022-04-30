@@ -50,8 +50,6 @@ public abstract class Player {
     public void setSideCharacter(SideCharacter character) {
     }
 
-    public void freeCharacter() {}
-    public void freeSideCharacter() {}
     public boolean getCharacterChosen() { return characterChosen;}
     public boolean getSideCharacterChosen() {return sideCharacterChosen;}
     public boolean isDead() {

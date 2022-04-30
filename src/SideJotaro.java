@@ -40,40 +40,44 @@ public class SideJotaro extends SideCharacter{
         if (!this.activating) {
             timer = 5*frames;
             this.activating = true;
-            for (Player player: players) {
-                if (player.getId() != user.getId()) {
-                    player.getCharacter().setJotaroAbility(true);
-                }
-            }
         }
         else {
-            user.getCharacter().setJotaroAbility(false);
             if (timer > 3*frames) {
                 this.animating = true;
             }
             else {
-                this.animating = false;
+                for (Player player: players) {
+                    if (player.getId() != user.getId()) {
+                        player.getCharacter().setJotaroAbility(true);
+                    }
+                    if (player.getSideCharacter().isActivating()) {
+                        if (player.getSideCharacter().getName().equals("Dio")) {
+                            player.getCharacter().setJotaroAbility(false);
+                        }
+                    }
+                }
+                for (Obstacle obstacle: obstacles) {
+                    obstacle.setJotaroAbility(true);
+                }
                 for (PowerUp powerUp: powerUps) {
                     powerUp.setJotaroAbility(true);
                 }
-                for(Obstacle obstacle: obstacles) {
-                    obstacle.setJotaroAbility(true);
-                }
                 map.setJotaroAbility(true);
+                this.animating = false;
             }
             timer--;
         }
         if (timer <= 0) {
-            for (PowerUp powerUp: powerUps) {
-                powerUp.setJotaroAbility(false);
-            }
-            for(Obstacle obstacle: obstacles) {
-                obstacle.setJotaroAbility(false);
-            }
-            for (Player player: players) {
+            for (Player player : players) {
                 if (player.getId() != user.getId()) {
                     player.getCharacter().setJotaroAbility(false);
                 }
+            }
+            for (Obstacle obstacle : obstacles) {
+                obstacle.setJotaroAbility(false);
+            }
+            for (PowerUp powerUp : powerUps) {
+                powerUp.setJotaroAbility(false);
             }
             map.setJotaroAbility(false);
             this.activating = false;

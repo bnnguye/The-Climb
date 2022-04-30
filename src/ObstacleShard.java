@@ -12,16 +12,13 @@ public class ObstacleShard {
     }
 
     Image image = new Image("res/charactersS/Puck/Shard.png");
-    private boolean jotaroAbility = false;
 
     public ObstacleShard() {
         this.pos = new Point(Math.random()* Window.getWidth(), -200);
     }
 
     public void move() {
-        if (!jotaroAbility) {
-            this.pos = new Point(this.pos.x, this.pos.y + speed);
-        }
+        this.pos = new Point(this.pos.x, this.pos.y + speed);
     }
 
     public void draw() {
@@ -29,7 +26,5 @@ public class ObstacleShard {
     }
 
     public Point getPos() {return this.pos;}
-
-    public void setJotaroAbility(boolean bool) {jotaroAbility = bool;}
 
 }

@@ -5,8 +5,6 @@ import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
 import bagel.util.Rectangle;
-import org.lwjgl.system.CallbackI;
-import org.w3c.dom.css.Rect;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -18,11 +16,12 @@ import java.util.Scanner;
 public class Game extends AbstractGame {
 
     private final int FONT_SIZE = 100;
-    private final int DIALOGUE_FONT_SIZE = 30 ;
+    private final int DIALOGUE_FONT_SIZE = 30;
     private final int MAX_DIALOGUE_LIMIT = Window.getWidth()/(DIALOGUE_FONT_SIZE - 10);
 
     private static SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
     private static GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
+    private static TimeLogger timeLogger = TimeLogger.getInstance();
 
     // Stat variable
     int[] statTracker = new int[4];
@@ -198,14 +197,14 @@ public class Game extends AbstractGame {
         sideCharacters.add(Senkuu);
         checkAchievements();
 
-        playableMaps.add(new MapTrainingGround());
-        playableMaps.add(new MapPark());
-        playableMaps.add(new MapSpookySpikes());
-        playableMaps.add(new MapGreedIsland());
-        playableMaps.add(new MapMansion());
-        playableMaps.add(new MapClaustrophobicLane());
-        playableMaps.add(new MapUpsideDownCups());
-        playableMaps.add(new MapCustom());
+        playableMaps.add(new Map("Training Ground"));
+        playableMaps.add(new Map("Park"));
+        playableMaps.add(new Map("Spooky Spikes"));
+        playableMaps.add(new Map("Greed Island"));
+        playableMaps.add(new Map("Roswaals Mansion"));
+        playableMaps.add(new Map("Claustrophobic Lane"));
+        playableMaps.add(new Map("UpsideDown Cups"));
+        playableMaps.add(new Map("Custom"));
 
         allTiles.add(new TileBasic(new Point(0,0)));
         allTiles.add(new TileBasicLeft(new Point(0,0)));
@@ -221,7 +220,7 @@ public class Game extends AbstractGame {
         allPowerUps.add(new PowerUpSpeedUp());
         allPowerUps.add(new PowerUpMinimiser());
         allPowerUps.add(new PowerUpShield());
-        allPowerUps.add(new PowerUpNoblePhantasm());
+        allPowerUps.add(new PowerUpSpecialAbilityPoints());
         allObstacles.add(new ObstacleBall());
         allObstacles.add(new ObstacleRock());
         allObstacles.add(new ObstacleStunBall());
@@ -244,7 +243,23 @@ public class Game extends AbstractGame {
         changeMainMusic(currentMusic);
         updateDisplayStrings();
         updateSounds();
-        settingsSingleton.updateTime();
+        updateTime();
+
+        if (settingsSingleton.getGameState() == -100) {
+            players.add(new PlayerTwo());
+            players.get(0).setCharacter(new Character("Miku"));
+            players.get(0).setSideCharacter(new SideJotaro());
+            players.get(1).setCharacter(new Character("Mai"));
+            players.get(1).setSideCharacter(new SideDio());
+            settingsSingleton.setPlayers(2);
+            map = new Map("Park");
+            map.generateMap();
+            gameSettingsSingleton.setMap(map);
+            settingsSingleton.setGameMode(1);
+            settingsSingleton.setGameState(6);
+            settingsSingleton.setGameStateString("Test");
+
+        }
 
         if (settingsSingleton.getGameState() > -1) {
             if (buttons.size() > 0 ) {
@@ -375,6 +390,9 @@ public class Game extends AbstractGame {
                         settingsSingleton.setGameState(6);
                     }
                     else {
+                        for (Player player: players) {
+                            player.getCharacter().setPlayer(player);
+                        }
                         settingsSingleton.setGameState(4);
                     }
                 }
@@ -431,6 +449,7 @@ public class Game extends AbstractGame {
             }
             ArrayList<Map> mapsChosen = new ArrayList<>();
             for (Player player : players) {
+                System.out.println(players.size());
                 player.getCharacter().setPosition(player.getPos());
                 player.setPos(input);
                 int row = 1;
@@ -466,9 +485,8 @@ public class Game extends AbstractGame {
                 int playerMap = (int) Math.round(Math.random()*(players.size()-1)) + 1;
                 for (Player player: players) {
                     if (player.getId() == playerMap) {
-                        settingsSingleton.setMapNo(player.getMapChosen().getLevel());
                         for (Map mapChosen: playableMaps) {
-                            if (mapChosen.getLevel() == settingsSingleton.getMapNo()) {
+                            if (mapChosen.getName().equals(player.getMapChosen().getName())) {
                                 map = mapChosen;
                                 map.generateMap();
                                 gameSettingsSingleton.setMap(map);
@@ -486,8 +504,8 @@ public class Game extends AbstractGame {
                 if (!settingsSingleton.getGameStateString().equals("Game")) {
                     buttons.clear();
                     setPlayersPosition();
-                    currentMusic = "music/Giorno.wav";
-                    //currentMusic = String.format("music/Fight%d.wav", settingsSingleton.getMapNo());
+                    //currentMusic = "music/Giorno.wav";
+                    currentMusic = String.format("music/Fight%d.wav", Math.round(Math.random()*3));
                     resetMusic();
                     playSound("music/Start.wav");
                     settingsSingleton.setGameStateString("Game");
@@ -520,9 +538,9 @@ public class Game extends AbstractGame {
                         }
                         else {
                             if (input.wasPressed(player.getKey())) {
-                                if (player.getCharacter().hasNoblePhantasm()) {
+                                if (player.getCharacter().hasSpecialAbility()) {
                                     if (!player.getSideCharacter().isActivating()) {
-                                        player.getCharacter().useNoblePhantasm();
+                                        player.getCharacter().useSpecialAbility();
                                         player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
                                         playSound(player.getSideCharacter().getSoundPath());
                                         if (hasSound(player.getSideCharacter().getSoundPath())) {
@@ -539,18 +557,22 @@ public class Game extends AbstractGame {
                         if (player.getSideCharacter().isAnimating()) {
                             mainMusic.setVolume(0);
                             playingAnimation = true;
-                            break;
                         }
                     }
                     if ((!playingActivation) && (!playingAnimation)) {
                         mainMusic.setVolume(1);
                     }
+
+                    if (!playingAnimation) {
+                        updateExp();
+                        updateObjects();
+                        updatePlayerMovement(input);
+                        checkCollisionPowerUps();
+                        checkCollisionObstacles();
+                        checkCollisionTiles();
+                        recordButtons(input);
+                    }
                     updateAbilities();
-                    updateObjects();
-                    updatePlayerMovement(input);
-                    checkCollisionPowerUps();
-                    checkCollisionObstacles();
-                    checkCollisionTiles();
                     if (!settingsSingleton.getGameStateString().equals("Win")) {
                         int deathCounter = 0;
                         for (Player player : players) {
@@ -611,7 +633,7 @@ public class Game extends AbstractGame {
                                 }
                                 else {
                                     if (playersPassed()) {
-                                        mapToTransitionTo = new MapTrainingGround2();
+                                        //mapToTransitionTo = new MapTrainingGround2();
                                         map = mapToTransitionTo;
                                         map.generateMap();
                                         currentStory = 1;
@@ -796,7 +818,7 @@ public class Game extends AbstractGame {
                                 playingScene = false;
                                 currentStory = 0;
                                 startTransition();
-                                mapToTransitionTo = new MapTrainingGround();
+                                mapToTransitionTo = new Map("TrainingGround");
                                 setPlayersPosition();
                             }
                         }
@@ -825,7 +847,7 @@ public class Game extends AbstractGame {
                             }
                             if (endDialogue) {
                                 startTransition();
-                                mapToTransitionTo = new MapDioMansion();
+                                //mapToTransitionTo = new MapDioMansion();
                                 playingScene = false;
                                 playingStory = true;
                                 setPlayersPosition();
@@ -1042,19 +1064,18 @@ public class Game extends AbstractGame {
                         else if (settingsSingleton.getGameStateString().equals("Menu")) {
                             map = null;
                             unlocked = checkAchievementsInGame();
-                            if (!isPlayable(unlocked.getName())) {
-                                addToPlayableCharacter(unlocked.getName());
-                                settingsSingleton.setGameState(8);
-                                saveStats();
+                            if (unlocked != null) {
+                                if (!isPlayable(unlocked.getName())) {
+                                    addToPlayableCharacter(unlocked.getName());
+                                    settingsSingleton.setGameState(8);
+                                    saveStats();
+                                }
                             }
                             else {
                                 settingsSingleton.setGameState(0);
                             }
                             players.clear();
                             buttons.clear();
-                        }
-                        if (map != null) {
-                            map.setJotaroAbility(false);
                         }
                         obstacles.removeAll(obstacles);
                         powerUps.removeAll(powerUps);
@@ -1096,7 +1117,7 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 9) {
             if (!settingsSingleton.getGameStateString().equals("Create Your Own Map")) {
-                map = new MapCustom();
+                map = new Map("Custom");
                 map.generateMap();
                 customMapTiles.removeAll(customMapTiles);
                 for (Tile tile: map.getTiles()) {
@@ -1636,6 +1657,35 @@ public class Game extends AbstractGame {
             }
         }
         showDisplayStrings();
+        showTime();
+/*        Drawing.drawRectangle(0,0,Window.getWidth(), Window.getHeight(), new Colour(0,0,0));
+        Image sideCharacter = new Image(String.format("res/inGame/Dio.png"));
+        sideCharacter.drawFromTopLeft(Window.getWidth()/2, Window.getHeight()/2,
+                DO.setSection(0, sideCharacter.getHeight()/2, 100,
+                        -50));*/
+    }
+
+    public void showTime() {
+        gameFont.drawString(timeLogger.getDisplayTime(), Window.getWidth() - gameFont.getWidth(timeLogger.getDisplayTime()), 40);
+
+    }
+
+    public void updateTime() {
+        timeLogger.updateTime();
+    }
+
+    public void record(Input input) {
+        recordButtons(input);
+    }
+
+    public void recordButtons(Input input) {
+        ArrayList<Keys> buttons = new ArrayList<>();
+        for (Keys key: Keys.values()) {
+            if (input.wasPressed(key)) {
+                buttons.add(key);
+            }
+        }
+        timeLogger.updateButtonsLogger(buttons);
     }
 
     public boolean checkStats(String characterName, int line, int threshold) {
@@ -1727,20 +1777,8 @@ public class Game extends AbstractGame {
                 int threshold = Integer.parseInt(achievementLine[3]);
                 int line = Integer.parseInt(achievementLine[2]);
                 String newCharacter = achievementLine[0];
-                switch (newCharacter) {
-
-                    case "Nino":
-                    case "Futaba":
-                    case "Ruka":
-                    case "Aki":
-                    case "Chika":
-                    case "Emilia":
-                    case "Asuna":
-                    case "Raphtalia": {
-                        if (checkStats(name, line, threshold)) {
-                            addToPlayableCharacter(newCharacter);
-                        }
-                    }
+                if (checkStats(name, line, threshold)) {
+                    addToPlayableCharacter(newCharacter);
                 }
             }
         }
@@ -1755,94 +1793,12 @@ public class Game extends AbstractGame {
             while (achievementScanner.hasNextLine()) {
                 String[] achievementLine = achievementScanner.nextLine().split(" ");
                 String newCharacter = achievementLine[0];
-                switch (achievementLine[0]) {
-                    case "Nino": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            if (!isPlayable(newCharacter)) {
-                                return findCharacter(newCharacter);
-                            }
-                        }
-                        break;
-                    }
-                    case "Futaba": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            if (!isPlayable(newCharacter)) {
-                                return findCharacter(newCharacter);
-                            }
-                        }
-                        break;
-                    }
-                    case "Ruka": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            if (!isPlayable(newCharacter)) {
-                                return findCharacter(newCharacter);
-                            }
-                        }
-                        break;
-                    }
-                    case "Aki": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            if (!isPlayable(newCharacter)) {
-                                return findCharacter(newCharacter);
-                            }
-                        }
-                        break;
-                    }
-                    case "Chika": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            if (!isPlayable(newCharacter)) {
-                                return findCharacter(newCharacter);
-                            }
-                        }
-                        break;
-                    }
-                    case "Emilia": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            if (!isPlayable(newCharacter)) {
-                                return findCharacter(newCharacter);
-                            }
-                        }
-                        break;
-                    }
-                    case "Asuna": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            if (!isPlayable(newCharacter)) {
-                                return findCharacter(newCharacter);
-                            }
-                        }
-                        break;
-                    }
-                    case "Raphtalia": {
-                        String name = achievementLine[1];
-                        int threshold = Integer.parseInt(achievementLine[3]);
-                        int line = Integer.parseInt(achievementLine[2]);
-                        if (checkStats(name, line, threshold)) {
-                            if (!characters.contains(newCharacter)) {
-                                return findCharacter(newCharacter);
-                            }
-                        }
-                        break;
+                String name = achievementLine[1];
+                int threshold = Integer.parseInt(achievementLine[3]);
+                int line = Integer.parseInt(achievementLine[2]);
+                if (checkStats(name, line, threshold)) {
+                    if (!isPlayable(newCharacter)) {
+                        return findCharacter(newCharacter);
                     }
                 }
             }
@@ -2139,6 +2095,9 @@ public class Game extends AbstractGame {
         for (Player player: players) {
             Image picture = new Image(String.format("res/InGame/%s.png", player.getCharacter().getName()));
             Colour border = new Colour(0, 0, 0, 0.3);
+            if (player.getCharacter().getSpecialAbilityBar() >= 100) {
+                border = new Colour(255, 255, 0, 0.5);
+            }
             Drawing.drawRectangle(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight(), 200, picture.getHeight(), border);
             if (player.getCharacter().isMinimised()) {
                 picture.drawFromTopLeft(playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight(), new DrawOptions().setScale(0.5, 0.5));
@@ -2151,13 +2110,14 @@ public class Game extends AbstractGame {
                 Image shield = new Image("res/InGame/Shield_Selected.png");
                 shield.draw(picture.getWidth()/2 + playerIndex*Window.getWidth()/(players.size()), picture.getHeight()/2 + Window.getHeight() - picture.getHeight());
             }
-            if (player.getCharacter().hasNoblePhantasm()) {
-                if (!player.getSideCharacter().getName().equals("Yugi")) {
-                    Image sideCharacter = new Image(String.format("res/inGame/%s.png", player.getSideCharacter().getName()));
-                    sideCharacter.drawFromTopLeft(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight());
-                }
+            if (!player.getSideCharacter().getName().equals("Yugi")) {
+                Image sideCharacter = new Image(String.format("res/inGame/%s.png", player.getSideCharacter().getName()));
+                sideCharacter.drawFromTopLeft(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()),
+                        Window.getHeight() - picture.getHeight(),
+                        DO.setSection(0, 0, sideCharacter.getWidth(),
+                                sideCharacter.getHeight()*player.getCharacter().getSpecialAbilityBar()/100));
             }
-            if (player.getSideCharacter().getName().equals("Yugi")) {
+            else {
                 int index = 0;
                 for (ExodiaPiece exodiaPiece: Yugi.getExodiaPiecesCollected()) {
                     exodiaPiece.getImage().drawFromTopLeft(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()) + exodiaPiece.getImage().getWidth()*index, Window.getHeight() - picture.getHeight());
@@ -2274,10 +2234,49 @@ public class Game extends AbstractGame {
 
     public void updatePlayerMovement(Input input) {
         for (Player player: players) {
+            Character character = player.getCharacter();
             if (!player.isDead()) {
-                if (!playingAnimation) {
+                if (character.canMove()) {
                     player.moveCharacter(input);
                 }
+            }
+        }
+    }
+
+    public void updateObjects() {
+        for (Obstacle obstacle : obstacles) {
+            if (obstacle.canMove()) {
+                obstacle.move();
+            }
+            if ((obstacle.getPos().y > Window.getHeight()) && (!obstaclesToRemove.contains(obstacle))) {
+                obstaclesToRemove.add(obstacle);
+            }
+        }
+        for (PowerUp powerUp : powerUps) {
+                if (powerUp.canMove()) {
+                    powerUp.move();
+                }
+            if (powerUp.getPos().y > Window.getHeight()) {
+                powerUpsToRemove.add(powerUp);
+            }
+        }
+        for (Player player: players) {
+            player.getCharacter().updateCharacter();
+        }
+    }
+
+    public void updateAbilities() {
+        for (Player player: players) {
+            if (player.getSideCharacter().isActivating()) {
+                player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
+            }
+        }
+    }
+
+    public void renderAbilities() {
+        for (Player player: players) {
+            if (player.getSideCharacter().isActivating()) {
+                player.getSideCharacter().renderAbility();
             }
         }
     }
@@ -2353,9 +2352,9 @@ public class Game extends AbstractGame {
             }
         }
         else {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("NoblePhantasm")) {
-                if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("NoblePhantasm")) {
-                    powerUps.add(new PowerUpNoblePhantasm());
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Special Ability")) {
+                if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Special Ability")) {
+                    powerUps.add(new PowerUpSpecialAbilityPoints());
                 }
             }
         }
@@ -2415,25 +2414,6 @@ public class Game extends AbstractGame {
         }
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.7));
         victoryFont.drawString("YOU FAILED THE CLIMB!", 30, 110);
-    }
-
-    public void updateObjects() {
-        for (Obstacle obstacle : obstacles) {
-            if (!playingAnimation) {
-                obstacle.move();
-            }
-            if ((obstacle.getPos().y > Window.getHeight()) && (!obstaclesToRemove.contains(obstacle))) {
-                obstaclesToRemove.add(obstacle);
-            }
-        }
-        for (PowerUp powerUp : powerUps) {
-            if (!playingAnimation) {
-                powerUp.move();
-            }
-            if (powerUp.getPos().y > Window.getHeight()) {
-                powerUpsToRemove.add(powerUp);
-            }
-        }
     }
 
     public void playSound(String filePath) {
@@ -2596,22 +2576,6 @@ public class Game extends AbstractGame {
         return image.getBoundingBoxAt(new Point(pos.x + image.getWidth()/2,  pos.y + image.getHeight()/2));
     }
 
-    public void updateAbilities() {
-        for (Player player: players) {
-            if (player.getSideCharacter().isActivating()) {
-                player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
-            }
-        }
-    }
-
-    public void renderAbilities() {
-        for (Player player: players) {
-            if (player.getSideCharacter().isActivating()) {
-                player.getSideCharacter().renderAbility();
-            }
-        }
-    }
-
     public void removeSound(Music music) {
         musics.remove(music);
     }
@@ -2632,6 +2596,43 @@ public class Game extends AbstractGame {
             }
         }
         return null;
+    }
+
+    public void updateExp() {
+        gainExpOnObstacles();
+        gainExpOnHeight();
+    }
+
+    public void gainExpOnHeight() {
+        for (Player player: players) {
+            if (!player.getSideCharacter().isActivating()) {
+                double mapHeight = Window.getHeight();
+                player.getCharacter().gainSpecialAbilityBar((mapHeight - player.getCharacter().getPos().y)/mapHeight/90);
+            }
+        }
+    }
+
+    public void gainExpOnObstacles() {
+        for (Obstacle obstacle: obstacles) {
+            Point obstacleCentre = new Point(obstacle.getPos().x + obstacle.getImage().getWidth()/2,
+            obstacle.getPos().y + obstacle.getImage().getHeight()/2);
+            Drawing.drawRectangle(obstacleCentre, 10,10, new Colour(0,0,0));
+            for (Player player: players) {
+                Point characterCentre = player.getCharacter().getPos();
+                Drawing.drawRectangle(characterCentre, 200, 10, new Colour(0,0,0));
+                if (!player.getSideCharacter().isActivating()) {
+                    if (!obstacle.getPlayersGainedEXP().contains(player.getId())) {
+                        if (Math.abs(obstacleCentre.y -characterCentre.y) < 10) {
+                            double distance = Math.abs(obstacleCentre.x - characterCentre.x); //distance from x-axis
+                            if (distance < 200) {
+                                player.getCharacter().gainSpecialAbilityBar((200 - distance)/10);
+                                obstacle.updatePlayersGainedEXP(player.getId());
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

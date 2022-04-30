@@ -52,9 +52,7 @@ public class SideSenkuu extends SideCharacter{
             }
             else {
                 for (ObstacleArrow obstacle: senkuuObstacles) {
-                    if (!map.isJotaroAbility()) {
-                        obstacle.update();
-                    }
+                    obstacle.update();
                     for (Player player: players) {
                         if (player.getId() != user.getId()) {
                             Image playerImage = player.getCharacter().getImage();
@@ -73,9 +71,7 @@ public class SideSenkuu extends SideCharacter{
                 }
                 this.animating = false;
             }
-            if (!map.isJotaroAbility()) {
-                timer--;
-            }
+            timer--;
         }
         if (timer <= 0) {
             senkuuObstacles.removeAll(senkuuObstacles);

@@ -30,14 +30,14 @@ public class Character {
         private double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
 
         private boolean shield = false;
-        private boolean noblePhantasm = false;
+        private double specialAbilityBar = 0;
 
         private double speedDownTimer = 0;
         private double speedUpTimer = 0;
         private double minimisedTimer = 0;
         private double stunTimer = 0;
-        private double hisokaTimer = 0;
 
+        private double hisokaTimer = 0;
         private boolean gojoAbility = false;
         private boolean jotaroAbility = false;
 
@@ -47,39 +47,37 @@ public class Character {
                 selected = new Image(String.format("res/characters/%s/Selected.png", name));
                 icon = new Image(String.format("res/characters/%s/Icon.png", name));
                 soundPath = String.format("music/%s.wav", name);
-
+                image = new Image(String.format("res/characters/%s/%s_Left.png", name, name));
         }
 
-        public Image getIcon() { return icon;}
-        public Image getImage() { return image;}
-        public String getName() { return name;}
+        public Image getIcon() {
+                return icon;
+        }
+
+        public Image getImage() {
+                return image;
+        }
+
+        public String getName() {
+                return name;
+        }
 
         public void move(String key) {
+                double currentSpeed = speed;
+
+                if (speedDownTimer > 0) {
+                        currentSpeed = speed - 1;
+                        speedDownTimer--;
+                }
+                if (speedUpTimer > 0) {
+                        currentSpeed = speed + 1;
+                        speedUpTimer--;
+                }
+
+                if (gojoAbility) {
+                        currentSpeed = speed - 1;
+                }
                 if (key != null) {
-
-                        if (stunTimer >= 0) {
-                                stunTimer --;
-                        }
-
-                        double currentSpeed = speed;
-
-                        if (hisokaTimer > 0) {
-                                hisokaTimer--;
-                        }
-                        if (speedUpTimer > 0) {
-                                currentSpeed = speed + 1;
-                                speedUpTimer--;
-                        }
-
-                        if (speedDownTimer > 0) {
-                                currentSpeed = speed - 1;
-                                speedDownTimer--;
-                        }
-
-                        if (gojoAbility) {
-                                currentSpeed = speed - 1;
-                        }
-
                         double new_X = pos.x;
                         double new_Y = pos.y;
                         if (key.equals("WA")) {
@@ -112,23 +110,17 @@ public class Character {
                         }
                         Point newPoint = new Point(new_X, new_Y);
                         if (((0 < new_X) && (new_X < Window.getWidth())) && ((0 < new_Y) && (new_Y < Window.getHeight()))) {
-                                if (((!(hisokaTimer > 0)) && (!(stunTimer > 0))) && (!jotaroAbility)) {
-                                        pos = newPoint;
-                                        moving = true;
-                                }
+                                pos = newPoint;
+                                moving = true;
                         }
-                }
-                else {
+                } else {
                         moving = false;
-                        if (((!(hisokaTimer > 0)) && (!(stunTimer > 0))) && (!jotaroAbility)) {
-                                if (!GameSettingsSingleton.getInstance().getMap().hasFinished()) {
-                                        if (!GameSettingsSingleton.getInstance().getMap().isJotaroAbility()) {
-                                                pos = new Point(pos.x, pos.y + GameSettingsSingleton.getInstance().getMapSpeed());
-                                        }
-                                }
+                        if (!GameSettingsSingleton.getInstance().getMap().hasFinished() && !GameSettingsSingleton.getInstance().getMap().getJotaroAbility()) {
+                                pos = new Point(pos.x, pos.y + GameSettingsSingleton.getInstance().getMapSpeed());
                         }
                 }
         }
+
         public void draw() {
                 Image picture = new Image(String.format("res/characters/%s/%s_Left.png", name, name));
                 if (timer < alternateTimer/2) {
@@ -185,8 +177,8 @@ public class Character {
                 else if (powerUp.getName().equals("SpeedDown")) {
                         speedDownTimer += 3 * frames;
                 }
-                else if (powerUp.getName().equals("NoblePhantasm")) {
-                        noblePhantasm = true;
+                else if (powerUp.getName().equals("Special Ability")) {
+                        specialAbilityBar += 20;
                 }
         }
 
@@ -196,8 +188,9 @@ public class Character {
                 speedDownTimer = 0;
                 stunTimer = 0;
                 hisokaTimer = 0;
+                specialAbilityBar = 0;
+                moving = false;
                 shield = false;
-                noblePhantasm = false;
                 gojoAbility = false;
                 jotaroAbility = false;
         }
@@ -263,13 +256,14 @@ public class Character {
                 return speedUpTimer;
         }
 
-        public boolean hasNoblePhantasm() {return noblePhantasm;}
-        public void useNoblePhantasm() {
-                noblePhantasm = false;
+        public boolean hasSpecialAbility() {return specialAbilityBar > 99;}
+        public void useSpecialAbility() {
+                specialAbilityBar = 0;
         }
-        public void setGojoAbility(boolean bool) {
-                gojoAbility = bool;
+        public void gainSpecialAbilityBar(double num) {
+                specialAbilityBar += num;
         }
+        public double getSpecialAbilityBar() {return specialAbilityBar;}
         public void setAllMightAbility() {
                 speedUpTimer = 1;
                 stunTimer = 0;
@@ -280,8 +274,26 @@ public class Character {
                 gojoAbility = false;
         }
         public void setHisokaAbility(double timer) { hisokaTimer = timer;}
-        public void setJotaroAbility(boolean bool) { jotaroAbility = bool;}
         public boolean isMinimised() {return minimisedTimer > 0;}
         public void gotStunned() {stunTimer = frames;}
         public Rectangle getRectangle() {return rectangle;}
+        public void setJotaroAbility(boolean bool) {
+                jotaroAbility = bool;
+        }
+
+        public boolean canMove() {
+                return !(hisokaTimer > 0 || jotaroAbility || stunTimer > 0);
+        }
+
+        public void updateCharacter() {
+                if (stunTimer > 0) {
+                        stunTimer--;
+                }
+                if (hisokaTimer > 0) {
+                        hisokaTimer--;
+                }
+                if (speedUpTimer > 0) {
+                        speedUpTimer--;
+                }
+        }
 }

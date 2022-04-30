@@ -57,9 +57,7 @@ public class SideItachi extends SideCharacter{
                     }
                 }
             }
-            if (!map.isJotaroAbility()) {
-                timer--;
-            }
+            timer--;
         }
         if (timer <= 0) {
             this.activating = false;

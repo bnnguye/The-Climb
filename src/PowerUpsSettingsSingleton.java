@@ -7,13 +7,13 @@ public class PowerUpsSettingsSingleton {
     private double speedDownFrequency = 0.997;
     private double minimiserFrequency = 0.997;
     private double shieldFrequency = 0.997;
-    private double noblePhantasmFrequency = 0.997;
+    private double specialAbilityFrequency = 0.997;
 
     private boolean speedUp = true;
     private boolean speedDown = true;
     private boolean minimiser = true;
     private boolean shield = true;
-    private boolean noblePhantasm = true;
+    private boolean specialAbility = true;
 
 
     public double getFrequency(String string) {
@@ -29,8 +29,8 @@ public class PowerUpsSettingsSingleton {
         else if (string.equals("Minimiser")) {
             return this.minimiserFrequency;
         }
-        else if (string.equals("NoblePhantasm")) {
-            return this.noblePhantasmFrequency;
+        else if (string.equals("Special Ability")) {
+            return this.specialAbilityFrequency;
         }
         return 0;
     }
@@ -48,8 +48,8 @@ public class PowerUpsSettingsSingleton {
         else if (string.equals("Shield")) {
             return this.shield;
         }
-        else if (string.equals("NoblePhantasm")) {
-            return this.noblePhantasm;
+        else if (string.equals("Special Ability")) {
+            return this.specialAbility;
         }
         return false;
     }
@@ -67,8 +67,8 @@ public class PowerUpsSettingsSingleton {
         else if (powerUp.equals("Shield")) {
             shieldFrequency = frequency;
         }
-        else if (powerUp.equals("NoblePhantasm")) {
-            noblePhantasmFrequency = frequency;
+        else if (powerUp.equals("Special Ability")) {
+            specialAbilityFrequency = frequency;
         }
     }
 
@@ -82,12 +82,12 @@ public class PowerUpsSettingsSingleton {
         return single_instance;
     }
 
-    public void applySettings(boolean speedUp, boolean speedDown, boolean minimiser, boolean shield, boolean noblePhantasm) {
+    public void applySettings(boolean speedUp, boolean speedDown, boolean minimiser, boolean shield, boolean specialAbility) {
         this.speedUp = speedUp;
         this.speedDown = speedDown;
         this.minimiser = minimiser;
         this.shield = shield;
-        this.noblePhantasm = noblePhantasm;
+        this.specialAbility = specialAbility;
     }
 
     public void toggle(String powerUp) {
@@ -104,11 +104,11 @@ public class PowerUpsSettingsSingleton {
             shield = !shield;
         }
         else if (powerUp.equals("NoblePhantasm")) {
-            noblePhantasm = !noblePhantasm;
+            specialAbility = !specialAbility;
         }
     }
 
-    public void changeFrequency(double speedUp, double speedDown, double minimiser, double shield, double noblePhantasm) {
+    public void changeFrequency(double speedUp, double speedDown, double minimiser, double shield, double specialAbility) {
         this.speedUpFrequency = speedUp;
         if (speedUp <= 0) {
             this.speedUp = false;
@@ -125,9 +125,9 @@ public class PowerUpsSettingsSingleton {
         if (shield <= 0) {
             this.shield = false;
         }
-        this.noblePhantasmFrequency = noblePhantasm;
-        if (noblePhantasm <= 0) {
-            this.noblePhantasm = false;
+        this.specialAbilityFrequency = specialAbility;
+        if (specialAbility <= 0) {
+            this.specialAbility = false;
         }
 
     }
