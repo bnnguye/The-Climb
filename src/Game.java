@@ -48,7 +48,7 @@ public class Game extends AbstractGame {
 
     private ArrayList<Button> buttons= new ArrayList<>();
     private ArrayList<Character> characters= new ArrayList<>();
-    private ArrayList<Player> players= new ArrayList<>();
+    private ArrayList<Player> players= new Player(0).getInstance();
     private ArrayList<Obstacle> obstacles= new ArrayList<>();
     private ArrayList<Obstacle> obstaclesToRemove= new ArrayList<>();
     private ArrayList<PowerUp> powerUps= new ArrayList<>();
@@ -158,8 +158,7 @@ public class Game extends AbstractGame {
 
     public Game()   {
         super(1920, 1080, "The Climb");
-
-        players.add(new PlayerOne());
+        new Player(1);
 
         // initialize characters
         characters.add(new Character("Chizuru"));
@@ -246,12 +245,12 @@ public class Game extends AbstractGame {
         updateTime();
 
         if (settingsSingleton.getGameState() == -100) {
-            players.add(new PlayerTwo());
+            new Player(2);
             players.get(0).setCharacter(new Character("Miku"));
             players.get(0).setSideCharacter(new SideJotaro());
             players.get(1).setCharacter(new Character("Mai"));
             players.get(1).setSideCharacter(new SideDio());
-            settingsSingleton.setPlayers(2);
+            settingsSingleton.setPlayers(players.size());
             map = new Map("Park");
             map.generateMap();
             gameSettingsSingleton.setMap(map);
@@ -343,14 +342,14 @@ public class Game extends AbstractGame {
                 }
                 players.clear();
                 settingsSingleton.setGameStateString("Character");
-                players.add(new PlayerOne());
-                players.add(new PlayerTwo());
+                new Player(1);
+                new Player(2);
                 if (settingsSingleton.getPlayers() == 3) {
-                    players.add(new PlayerThree());
+                    new Player(3);
                 }
                 if (settingsSingleton.getPlayers() == 4) {
-                    players.add(new PlayerThree());
-                    players.add(new PlayerFour());
+                    new Player(3);
+                    new Player(4);
                 }
                 menuBackground = new Image("res/menu/characterMenu.png");
                 menuTitle = "CHOOSE WAIFU";
@@ -370,7 +369,7 @@ public class Game extends AbstractGame {
             for (Player player: players) {
                 for (Character character: characters) {
                     if (character.getIcon().getBoundingBoxAt(new Point(character.getIconPos().x - 25, character.getIconPos().y)).intersects(player.getPos())) {
-                        if (input.wasPressed((player.getKey()))) {
+                        if (input.wasPressed((player.getControl("Primary")))) {
                             pickCharacter(player, character);
                         }
                     }
@@ -416,7 +415,7 @@ public class Game extends AbstractGame {
             for (Player player: players) {
                 for (SideCharacter character: sideCharacters) {
                     if (character.getIcon().getBoundingBoxAt(new Point(character.getIconPos().x - 25, character.getIconPos().y)).intersects(player.getPos())) {
-                        if (input.wasPressed((player.getKey()))) {
+                        if (input.wasPressed((player.getControl("Primary")))) {
                             pickSideCharacter(player, character);
                         }
                     }
@@ -449,14 +448,13 @@ public class Game extends AbstractGame {
             }
             ArrayList<Map> mapsChosen = new ArrayList<>();
             for (Player player : players) {
-                System.out.println(players.size());
                 player.getCharacter().setPosition(player.getPos());
                 player.setPos(input);
                 int row = 1;
                 int currentIcon = 2;
                 for (Map map : playableMaps) {
                     if (map.getMapPeek().getBoundingBoxAt(new Point(-425 + map.getMapPeek().getWidth() * currentIcon + (row - 1) *400, -50 + spacer * row)).intersects(player.getPos())) {
-                        if(input.wasPressed(player.getKey())) {
+                        if(input.wasPressed(player.getControl("Primary"))) {
                             pickMap(player, map);
                         }
                     }
@@ -537,7 +535,7 @@ public class Game extends AbstractGame {
                             player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
                         }
                         else {
-                            if (input.wasPressed(player.getKey())) {
+                            if (input.wasPressed(player.getControl("Primary"))) {
                                 if (player.getCharacter().hasSpecialAbility()) {
                                     if (!player.getSideCharacter().isActivating()) {
                                         player.getCharacter().useSpecialAbility();
@@ -2311,7 +2309,7 @@ public class Game extends AbstractGame {
             for (Player player : players) {
                 if (player.getCharacter().getRectangle().intersects(getBoundingBoxOf(powerUp.getImage(), powerUp.getPos()))) {
                     if (!player.isDead()) {
-                        player.getCharacter().getPowerUp(powerUp);
+                        powerUp.gainPowerUp(player);
                         powerUpsToRemove.add(powerUp);
                         break;
                     }

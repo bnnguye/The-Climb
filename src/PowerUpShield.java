@@ -18,4 +18,8 @@ public class PowerUpShield extends PowerUp {
     }
     public String getName() { return this.name;}
 
+    public void gainPowerUp(Player player) {
+        player.getCharacter().shield();
+    }
+
 }

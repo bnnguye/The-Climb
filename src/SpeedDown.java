@@ -18,4 +18,8 @@ public class SpeedDown extends PowerUp{
     }
     public String getName() { return this.name;}
 
+    public void gainPowerUp(Player player) {
+        player.getCharacter().speedDown();
+    }
+
 }

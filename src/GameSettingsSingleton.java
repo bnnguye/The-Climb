@@ -4,6 +4,7 @@ public class GameSettingsSingleton {
     private PowerUpsSettingsSingleton powerUpsSettingsSingleton = PowerUpsSettingsSingleton.getInstance();
     private int page = 0;
     private double mapSpeed = 1;
+    private int lives = 1;
     private Map map;
     private static GameSettingsSingleton single_instance = null;
 
@@ -32,5 +33,13 @@ public class GameSettingsSingleton {
 
     public Map getMap() {
         return map;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
     }
 }

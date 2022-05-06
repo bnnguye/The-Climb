@@ -17,4 +17,8 @@ public class PowerUpMinimiser extends PowerUp{
         this.pos = new Point(pos.x, pos.y + speed);
     }
     public String getName() { return this.name;}
+
+    public void gainPowerUp(Player player) {
+        player.getCharacter().minimiser();
+    }
 }

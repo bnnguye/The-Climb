@@ -18,4 +18,8 @@ public class PowerUpSpecialAbilityPoints extends PowerUp {
     }
     public String getName() { return this.name;}
 
+    public void gainPowerUp(Player player) {
+        player.getCharacter().gainSpecialAbilityBar(20);
+    }
+
 }

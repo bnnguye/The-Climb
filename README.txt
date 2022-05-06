@@ -35,11 +35,11 @@ Pick character: M
 ___________________________________________________________________________________________________________
 POWERUPS
 
-SpeedUp: Grants a movement speed buff for five seconds.
+SpeedUp: Grants a movement speed buff for 3 seconds
 Shield: Grants a shield that breaks when colliding with an obstacle.
-Minimiser: Transform into a mini version of the character and be less vulnerable to colliding with obstacles.
-Noble Phantasm: Activates a special ability, varies based on the side character chosen.
+Minimiser: Transform into a mini version, be less vulnerable to colliding with obstacles for 3 seconds
+Special Ability Gain: Fills special ability bar up.
 
 POWERDOWNS
 
-SpeedDown: Grants a movement speed debuff for five seconds.
+SpeedDown: Grants a movement speed debuff for 3 seconds.

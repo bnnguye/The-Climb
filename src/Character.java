@@ -164,24 +164,6 @@ public class Character {
         public void popShield() { shield = false;}
         public boolean hasShield() { return shield;}
 
-        public void getPowerUp(PowerUp powerUp){
-                if (powerUp.getName().equals("Shield")) {
-                        shield = true;
-                }
-                else if (powerUp.getName().equals("Minimiser")) {
-                        minimisedTimer += 3 * frames;
-                }
-                else if (powerUp.getName().equals("SpeedUp")) {
-                        speedUpTimer += 3 * frames;
-                }
-                else if (powerUp.getName().equals("SpeedDown")) {
-                        speedDownTimer += 3 * frames;
-                }
-                else if (powerUp.getName().equals("Special Ability")) {
-                        specialAbilityBar += 20;
-                }
-        }
-
         public void resetTimer() {
                 minimisedTimer = 0;
                 speedUpTimer = 0;
@@ -246,16 +228,6 @@ public class Character {
                 speedDownTimer += 1;
         }
 
-        public double getMinimisedTimer() {
-                return minimisedTimer;
-        }
-        public double getSpeedDownTimer() {
-                return speedDownTimer;
-        }
-        public double getSpeedUpTimer() {
-                return speedUpTimer;
-        }
-
         public boolean hasSpecialAbility() {return specialAbilityBar > 99;}
         public void useSpecialAbility() {
                 specialAbilityBar = 0;
@@ -295,5 +267,18 @@ public class Character {
                 if (speedUpTimer > 0) {
                         speedUpTimer--;
                 }
+        }
+
+        public void speedUp() {
+                speedUpTimer = 3 * frames;
+        }
+        public void speedDown() {
+                speedDownTimer = 3 * frames;
+        }
+        public void minimiser() {
+                minimisedTimer = 3 * frames;
+        }
+        public void shield() {
+                shield = true;
         }
 }

@@ -24,4 +24,5 @@ public abstract class PowerUp {
     public boolean canMove() {
         return !jotaroAbility;
     }
+    public void gainPowerUp(Player player) {}
 }
