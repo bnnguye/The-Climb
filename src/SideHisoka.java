@@ -97,7 +97,7 @@ public class SideHisoka extends SideCharacter{
     public void renderAbility() {
         if (timer > 8*frames) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
-            Image noblePhantasm = new Image("res/charactersS/Hisoka/NoblePhantasm.png");
+            Image noblePhantasm = new Image("res/charactersS/Hisoka/SpecialAbilityPoints.png");
             Colour darken = new Colour(0, 0, 0, 0.5);
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
             noblePhantasm.drawFromTopLeft(0,0);

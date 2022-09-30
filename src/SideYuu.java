@@ -134,7 +134,7 @@ public class SideYuu extends SideCharacter{
     public void renderAbility() {
         if (timer > 0 ) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
-            Image noblePhantasm = new Image(String.format("res/charactersS/%s/NoblePhantasm.png", this.name));
+            Image noblePhantasm = new Image(String.format("res/charactersS/%s/SpecialAbilityPoints.png", this.name));
             noblePhantasm.drawFromTopLeft(0,0);
         }
         else {

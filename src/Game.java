@@ -15,13 +15,13 @@ import java.util.Scanner;
 
 public class Game extends AbstractGame {
 
-    private final int FONT_SIZE = 100;
+    private final int FONT_SIZE = 160;
     private final int DIALOGUE_FONT_SIZE = 30;
     private final int MAX_DIALOGUE_LIMIT = Window.getWidth()/(DIALOGUE_FONT_SIZE - 10);
 
-    private static SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
-    private static GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
-    private static TimeLogger timeLogger = TimeLogger.getInstance();
+    private static final SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
+    private static final GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
+    private static final TimeLogger timeLogger = TimeLogger.getInstance();
 
     // Stat variable
     int[] statTracker = new int[4];
@@ -32,9 +32,10 @@ public class Game extends AbstractGame {
     private int winnerTimer = 0;
     private int currentFrame = 0;
 
-    private ArrayList<StringDisplay> stringDisplays = new ArrayList<>();
+    private final ArrayList<StringDisplay> stringDisplays = new ArrayList<>();
+    private final ArrayList<String> stringOnScreen = new ArrayList<>();
 
-    private final Font titleFont = new Font("res/fonts/DejaVuSans-Bold.ttf", FONT_SIZE);
+    private final Font titleFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 100);
     private final Font victoryFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 110);
     private final Font playerFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 50);
     private final Font gameFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 40);
@@ -46,43 +47,43 @@ public class Game extends AbstractGame {
 
     private double intro = 0;
 
-    private ArrayList<Button> buttons= new ArrayList<>();
-    private ArrayList<Character> characters= new ArrayList<>();
-    private ArrayList<Player> players= new Player(0).getInstance();
-    private ArrayList<Obstacle> obstacles= new ArrayList<>();
-    private ArrayList<Obstacle> obstaclesToRemove= new ArrayList<>();
-    private ArrayList<PowerUp> powerUps= new ArrayList<>();
-    private ArrayList<PowerUp> powerUpsToRemove= new ArrayList<>();
-    private ArrayList<Character> allCharacters= new ArrayList<>();
-    private ArrayList<SideCharacter> sideCharacters= new ArrayList<>();
-    private ArrayList<SideCharacter> allSideCharacters= new ArrayList<>();
+    private final ArrayList<Button> buttons= new ButtonsSingleton().getInstance().getButtons();
+    private final ArrayList<Character> characters= new ArrayList<>();
+    private final ArrayList<Player> players= new Player(0).getInstance();
+    private final ArrayList<Obstacle> obstacles= new ArrayList<>();
+    private final ArrayList<Obstacle> obstaclesToRemove= new ArrayList<>();
+    private final ArrayList<PowerUp> powerUps= new ArrayList<>();
+    private final ArrayList<PowerUp> powerUpsToRemove= new ArrayList<>();
+    private final ArrayList<Character> allCharacters= new ArrayList<>();
+    private final ArrayList<SideCharacter> sideCharacters= new ArrayList<>();
+    private final ArrayList<SideCharacter> allSideCharacters= new ArrayList<>();
 
-    private SideCharacter Zoro = new SideZoro();
-    private SideCharacter Gojo = new SideGojo();
-    private SideCharacter AllMight = new SideAllMight();
-    private SideCharacter Lelouch = new SideLelouch();
-    private SideCharacter Hisoka = new SideHisoka();
-    private SideCharacter Jotaro = new SideJotaro();
-    private SideCharacter Dio = new SideDio();
-    private SideCharacter Itachi = new SideItachi();
-    private SideCharacter Yugi = new SideYugi();
-    private SideCharacter Puck = new SidePuck();
-    private SideCharacter Yuu = new SideYuu();
-    private SideCharacter Senkuu = new SideSenkuu();
+    private final SideCharacter Zoro = new SideZoro();
+    private final SideCharacter Gojo = new SideGojo();
+    private final SideCharacter AllMight = new SideAllMight();
+    private final SideCharacter Lelouch = new SideLelouch();
+    private final SideCharacter Hisoka = new SideHisoka();
+    private final SideCharacter Jotaro = new SideJotaro();
+    private final SideCharacter Dio = new SideDio();
+    private final SideCharacter Itachi = new SideItachi();
+    private final SideCharacter Yugi = new SideYugi();
+    private final SideCharacter Puck = new SidePuck();
+    private final SideCharacter Yuu = new SideYuu();
+    private final SideCharacter Senkuu = new SideSenkuu();
 
     private double spacer = 300;
     private String currentMusic = "music/Silence.wav";
     private final Music soundEffectMusic = new Music();
     private final Music mainMusic = new Music();
-    private ArrayList<Music> musics = new ArrayList<>();
+    private final ArrayList<Music> musics = new ArrayList<>();
     private boolean picked = false;
-    private Rectangle bottomRectangle = new Rectangle(0, Window.getHeight() + 40, Window.getWidth(), 20);
+    private final Rectangle bottomRectangle = new Rectangle(0, Window.getHeight() + 40, Window.getWidth(), 20);
 
     // custom map variables
-    private ArrayList<Map> playableMaps= new ArrayList<>();
+    private final ArrayList<Map> playableMaps= new ArrayList<>();
     private Map map;
-    private ArrayList<Tile> allTiles= new ArrayList<>();
-    private ArrayList<Tile> customMapTiles= new ArrayList<>();
+    private final ArrayList<Tile> allTiles= new ArrayList<>();
+    private final ArrayList<Tile> customMapTiles= new ArrayList<>();
     private boolean addingTile = false;
     private int page = 0;
     private Tile tile1;
@@ -98,15 +99,15 @@ public class Game extends AbstractGame {
     private Scanner dialogueScanner;
     private ArrayList<String> dialogueWords= new ArrayList<>();
 
-    private double timeToSaveStats = 60 * frames;
+    private final double timeToSaveStats = 60 * frames;
     private int currentTimeToSaveStats = 0;
 
     //Story variables
     private boolean playingDialogue = false;
     private boolean playingStory = false;
     private boolean playingScene = false;
-    private boolean playingMap = false;
-    private boolean playingWorld = false;
+    private final boolean playingMap = false;
+    private final boolean playingWorld = false;
     private int currentDialogue = 0;
     private int currentStory = 0;
     private int currentScene = 0;
@@ -148,15 +149,16 @@ public class Game extends AbstractGame {
     Point currentMousePosition;
 
     // Game Settings variables
-    private ArrayList<PowerUp> allPowerUps= new ArrayList<>();
-    private ArrayList<Obstacle> allObstacles= new ArrayList<>();
+    private final ArrayList<PowerUp> allPowerUps= new ArrayList<>();
+    private final ArrayList<Obstacle> allObstacles= new ArrayList<>();
+    private ArrayList<Slider> settingsSliders = new ArrayList<>();
     private String pageType;
 
     public static void main(String[] args) {
         new Game().run();
     }
 
-    public Game()   {
+    public Game() {
         super(1920, 1080, "The Climb");
         new Player(1);
 
@@ -224,6 +226,7 @@ public class Game extends AbstractGame {
         allObstacles.add(new ObstacleRock());
         allObstacles.add(new ObstacleStunBall());
 
+
         menuBackground = new Image("res/menu/MainMenu.PNG");
         getGameStats();
         loadStory();
@@ -280,9 +283,9 @@ public class Game extends AbstractGame {
             saveStatsChecker();
             if (!settingsSingleton.getGameStateString().equals("Main Menu")) {
                 buttons.clear();
-                buttons.add(new ButtonPlay("PLAY", new Rectangle(new Point(0, 440), Window.getWidth(), 160)));
-                buttons.add(new ButtonCreateMap("CREATE MAP", new Rectangle(new Point(0, 600), Window.getWidth(), 160)));
-                buttons.add(new ButtonExit("EXIT", new Rectangle(new Point(0, 760), Window.getWidth(), 160)));
+                buttons.add(new Button("PLAY", FONT_SIZE, Window.getWidth(), 160, new Point(0, 280)));
+                buttons.add(new Button("CREATE MAP", FONT_SIZE, Window.getWidth(), 160, (new Point(0, 440))));
+                buttons.add(new Button("EXIT", FONT_SIZE, Window.getWidth(), 160, new Point(0, 600)));
                 settingsSingleton.setGameStateString("Main Menu");
                 menuBackground = new Image("res/menu/MainMenu.PNG");
                 menuTitle = "THE CLIMB";
@@ -292,8 +295,12 @@ public class Game extends AbstractGame {
             if (!settingsSingleton.getGameStateString().equals("Level")) {
                 if (!settingsSingleton.getGameStateString().equals("STORY") && !settingsSingleton.getGameStateString().equals("VS")) {
                     gameModeOffset = 0;
-                    Button storyButton = new ButtonStory("STORY", new Rectangle(0, 0, titleFont.getWidth("STORYYY"), 160));
-                    Button versusButton = new ButtonVersus("VS",new Rectangle(Window.getWidth() - titleFont.getWidth("VSSs"), 0, titleFont.getWidth("VSS"), 160));
+                    Button storyButton = new Button("STORY", FONT_SIZE,
+                            titleFont.getWidth("STORYYY"), 160,
+                            new Point(0, 0));
+                    Button versusButton = new Button("VS", FONT_SIZE,
+                            titleFont.getWidth("VSS"), 160,
+                            new Point(Window.getWidth() - titleFont.getWidth("VSSs"), 0));
                     buttons.clear();
                     buttons.add(storyButton);
                     buttons.add(versusButton);
@@ -322,9 +329,15 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 2) {
             if (!settingsSingleton.getGameStateString().equals("Players")) {
                 buttons.clear();
-                Button twoPlayerButton = new ButtonTwoPlayer("2", new Rectangle(0, Window.getHeight() / 2 - 160, Window.getWidth(), 160));
-                Button threePlayerButton = new ButtonThreePlayer("3", new Rectangle(0, Window.getHeight() / 2, Window.getWidth(), 160));
-                Button fourPlayerButton = new ButtonFourPlayer("4", new Rectangle(0, Window.getHeight() / 2 + 160, Window.getWidth(), 160));
+                Button twoPlayerButton = new Button("2", FONT_SIZE,
+                        Window.getWidth(), 160,
+                        new Point(0, Window.getHeight() / 2 - 160));
+                Button threePlayerButton = new Button("3", FONT_SIZE,
+                        Window.getWidth(), 160,
+                        new Point(0, Window.getHeight() / 2));
+                Button fourPlayerButton = new Button("4", FONT_SIZE,
+                        Window.getWidth(), 160,
+                        new Point(0, Window.getHeight() / 2 + 160));
                 buttons.add(twoPlayerButton);
                 buttons.add(threePlayerButton);
                 buttons.add(fourPlayerButton);
@@ -338,7 +351,9 @@ public class Game extends AbstractGame {
                 spacer = 300;
                 buttons.clear();
                 if (settingsSingleton.getGameMode() == 1) {
-                    buttons.add(new ButtonGameSettings("Settings", new Rectangle(0, 0 , titleFont.getWidth("Settings"), 100)));
+                    buttons.add(new Button("Game Settings", FONT_SIZE,
+                            titleFont.getWidth("Settings"), 100,
+                            new Point(0, 0)));
                 }
                 players.clear();
                 settingsSingleton.setGameStateString("Character");
@@ -407,7 +422,9 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 4) { // Comrades
             if (!settingsSingleton.getGameStateString().equals("Comrade")) {
                 buttons.clear();
-                buttons.add(new ButtonGameSettings("Settings", new Rectangle(0, 0 , titleFont.getWidth("Settings"), 100)));
+                buttons.add(new Button("Game Settings", FONT_SIZE,
+                        titleFont.getWidth("Settings"), 100,
+                        new Point(0, 0)));
                 menuTitle = "CHOOSE YOUR POWER";
                 settingsSingleton.setGameStateString("Comrade");
             }
@@ -441,7 +458,9 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 5) { // Map
             if (!settingsSingleton.getGameStateString().equals("MAP")) {
                 buttons.clear();
-                buttons.add(new ButtonGameSettings("Settings", new Rectangle(0, 0 , titleFont.getWidth("Settings"), 100)));
+                buttons.add(new Button("Game Settings", FONT_SIZE,
+                        titleFont.getWidth("Settings"), 100,
+                        new Point(0, 0)));
                 menuTitle = "Which Climb?";
                 menuBackground = null;
                 settingsSingleton.setGameStateString("MAP");
@@ -1036,8 +1055,12 @@ public class Game extends AbstractGame {
                     settingsSingleton.getWinner().getCharacter().playLine();
                     winnerPlayed = true;
                     buttons.clear();
-                    Button backToStartButton = new ButtonBackToStart("Main Menu",new Rectangle(new Point(0, Window.getHeight() / 1.5 + 160), Window.getWidth(), 160));
-                    Button retryButton = new ButtonRetry("Restart", new Rectangle(new Point(0, Window.getHeight() / 2 + 160), Window.getWidth(), 160));
+                    Button backToStartButton = new Button("Back To Start", "Main Menu", FONT_SIZE,
+                            Window.getWidth(), 160,
+                            new Point(0, Window.getHeight() / 1.5 + 160));
+                    Button retryButton = new Button("Retry", "Restart", FONT_SIZE,
+                            Window.getWidth(), 160,
+                            new Point(0, Window.getHeight() / 2 + 160));
                     buttons.add(backToStartButton);
                     buttons.add(retryButton);
                 }
@@ -1189,80 +1212,26 @@ public class Game extends AbstractGame {
             if (!settingsSingleton.getGameStateString().equals("Game Settings")) {
                 settingsSingleton.setGameStateString("Game Settings");
                 buttons.clear();
-                buttons.add(new ButtonLeftArrow("", new Rectangle(new Point(Window.getWidth() - 350, 100), 100, 100)));
-                buttons.add(new ButtonRightArrow("", new Rectangle(new Point(Window.getWidth() - 200, 100), 100, 100)));
-                pageType = "PowerUps";
+                buttons.add(new Button("Left Arrow", new Image("res/arrows/LeftArrow.png"), new Point(Window.getWidth() - 350, 100)));
+                buttons.add(new Button("Right Arrow", new Image("res/arrows/RightArrow.png"), new Point(Window.getWidth() - 200, 100)));
+                buttons.add(new Button("Decrease Map Speed",
+                        new Image("res/arrows/LeftArrow.png"),
+                        new Point(Window.getWidth()/2, 175 + 100)));
+                buttons.add(new Button("Increase Map Speed",
+                        new Image("res/arrows/RightArrow.png"),
+                        new Point(Window.getWidth()/2, 175 + 500)));
+                titleFont.drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + 100);
+                pageType = "General";
+                page = 0;
             }
-            int index = 0;
-            double minimumFrequency = 0.98;
-            if (pageType.equals("General")) {
-                titleFont.drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + index*100);
-                Image leftButton = new Image("res/arrows/LeftArrow.png");
-                Image rightButton = new Image("res/arrows/RightArrow.png");
-                leftButton.drawFromTopLeft(titleFont.getWidth("Map Speed: 1000") + 50, 175 + index*100, new DrawOptions().setScale(0.3,0.3));
-                rightButton.drawFromTopLeft(titleFont.getWidth("Map Speed: 1000") + 50 + rightButton.getWidth()*0.5, 175 + index*100, new DrawOptions().setScale(0.3, 0.3));
-                Rectangle leftButtonRectangle = new Rectangle(new Point(titleFont.getWidth("Map Speed: 1000") + 60 + leftButton.getWidth()*0.3, 175 + index*100 + rightButton.getHeight()*0.35), leftButton.getWidth()*0.3, leftButton.getHeight()*0.3);
-                Rectangle rightButtonRectangle = new Rectangle(new Point(titleFont.getWidth("Map Speed: 1000") + 60 + rightButton.getWidth()*0.3 + rightButton.getWidth()*0.5, 175 + index*100 + rightButton.getHeight()*0.35), leftButton.getWidth()*0.3, leftButton.getHeight()*0.3);
-                if (input.wasPressed(MouseButtons.LEFT)) {
-                    if (leftButtonRectangle.intersects(input.getMousePosition())) {
-                        if (gameSettingsSingleton.getMapSpeed() > 1) {
-                            gameSettingsSingleton.setMapSpeed(gameSettingsSingleton.getMapSpeed() - 0.1);
-                        }
-                    }
-                    else if (rightButtonRectangle.intersects(input.getMousePosition())) {
-                        if (gameSettingsSingleton.getMapSpeed() < 3) {
-                            gameSettingsSingleton.setMapSpeed(gameSettingsSingleton.getMapSpeed() + 0.1);
-                        }
-                    }
-                }
-            }
-            else if (pageType.equals("PowerUps")) {
+            if (pageType.equals("PowerUps")) {
                 gameFont.drawString("Drag the slider across to increase/decrease the spawn rate!", titleFont.getWidth("SETTINGS"), 150, new DrawOptions().setBlendColour(0,0,0, 0.7));
                 gameFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS"), 190, new DrawOptions().setBlendColour(0,0,0, 0.7));
-                for (int i = 0; i < allPowerUps.size(); i++) {
-                    PowerUp currentPowerUp = allPowerUps.get(i);
-                    Image currentImage = currentPowerUp.getImage();
-                    double currentFrequency = 500 - (gameSettingsSingleton.getInstance().getPowerUpsSettingsSingleton().getFrequency(currentPowerUp.getName()) - minimumFrequency)*500/(1 - minimumFrequency);
-                    Rectangle maxRectangle = new Rectangle(100 + currentImage.getWidth()*2, 300 + index*100, 500, currentImage.getHeight());
-                    currentImage.drawFromTopLeft(100, 300 + index*100);
-                    if ((input.wasPressed(MouseButtons.LEFT)) && (currentImage.getBoundingBoxAt(new Point(100 + currentImage.getWidth()/2, currentImage.getHeight()/2 + 300 + index*100)).intersects(input.getMousePosition()))) {
-                        gameSettingsSingleton.getPowerUpsSettingsSingleton().toggle(currentPowerUp.getName());
-                    }
-                    else if ((input.isDown(MouseButtons.LEFT)) && (maxRectangle.intersects(input.getMousePosition()))) {
-                        double position = input.getMouseX() - maxRectangle.left();
-                        gameSettingsSingleton.getPowerUpsSettingsSingleton().changeFrequency(currentPowerUp.getName(), 1 - (1 - minimumFrequency)*(position/(maxRectangle.right() - maxRectangle.left())));
 
-                    }
-                    if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(currentPowerUp.getName())) {
-                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + index*100, 500, currentImage.getHeight(), new Colour(0, 0, 0, 0.5));
-                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + index*100, currentFrequency, currentImage.getHeight(), new Colour(0, 0, 0));
-                    }
-                    index++;
-                }
             }
             else if (pageType.equals("Obstacles")) {
                 gameFont.drawString("Drag the slider across to increase/decrease the spawn rate!", titleFont.getWidth("SETTINGS"), 150,new DrawOptions().setBlendColour(0,0,0, 0.7));
-                gameFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS"), 190, new DrawOptions().setBlendColour(0,0,0, 0.7));
-                for (int j = 0; j < allObstacles.size(); j++) {
-                    Obstacle currentObstacle = allObstacles.get(j);
-                    Image currentImage = currentObstacle.getImage();
-                    double currentFrequency = 500 - (gameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getFrequency(currentObstacle.getName()) - minimumFrequency)*500/(1 - minimumFrequency);
-                    Rectangle maxRectangle = new Rectangle(100 + currentImage.getWidth()*2, 300 + index*100, 500, currentImage.getHeight());
-                    currentImage.drawFromTopLeft(100, 300 + index*100);
-                    if ((input.wasPressed(MouseButtons.LEFT)) && (currentImage.getBoundingBoxAt(new Point(100 + currentImage.getWidth()/2, currentImage.getHeight()/2 + 300 + index*100)).intersects(input.getMousePosition()))) {
-                        gameSettingsSingleton.getObstaclesSettingsSingleton().toggle(currentObstacle.getName());
-                    }
-                    else if ((input.isDown(MouseButtons.LEFT)) && (maxRectangle.intersects(input.getMousePosition()))) {
-                        double position = input.getMouseX() - maxRectangle.left();
-                        gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency(currentObstacle.getName(), 1 - (1 - minimumFrequency)*(position/(maxRectangle.right() - maxRectangle.left())));
-
-                    }
-                    if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(currentObstacle.getName())) {
-                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + index*100, 500, currentImage.getHeight(), new Colour(0, 0, 0, 0.5));
-                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + index*100, currentFrequency, currentImage.getHeight(), new Colour(0, 0, 0));
-                    }
-                    index++;
-                }
+                gameFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS"),  190, new DrawOptions().setBlendColour(0,0,0, 0.7));
             }
             if (gameSettingsSingleton.getPage() == 0) {
                 pageType = "General";
@@ -1274,8 +1243,6 @@ public class Game extends AbstractGame {
                 pageType = "Obstacles";
             }
             menuTitle = pageType;
-        }
-        else if (settingsSingleton.getGameState() == 11) {
         }
         if (input.wasPressed(Keys.ESCAPE)) {
             if (settingsSingleton.getGameState() == 1) {
@@ -1338,9 +1305,14 @@ public class Game extends AbstractGame {
                 }
             }
             else if (settingsSingleton.getGameState() == 2) {
-                if (settingsSingleton.getPlayers() != 0) {
-                    Image playerArt = new Image(String.format("res/menu/%dPlayers.PNG", settingsSingleton.getPlayers()));
-                    playerArt.draw(Window.getWidth()/2, Window.getHeight()/2);
+                for (Button button: buttons) {
+                    if ("234".contains(button.getName())) {
+                        button.setNight();
+                        if (button.isHovering()) {
+                            Image playerArt = new Image(String.format("res/menu/%sPlayers.PNG", button.getName()));
+                            playerArt.draw(Window.getWidth()/2, Window.getHeight()/2);
+                        }
+                    }
                 }
             }
             else if (settingsSingleton.getGameState() == 3) {
@@ -1590,28 +1562,21 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 10) {
             menuBackground = null;
-            double minimumFrequency = 0.98;
-            int index = 0;
+            for (Slider slider: settingsSliders) {
+                slider.draw();
+            }
             if (pageType.equals("General")) {
-                titleFont.drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + index*100);
-                Image leftButton = new Image("res/arrows/LeftArrow.png");
-                Image rightButton = new Image("res/arrows/RightArrow.png");
-                leftButton.drawFromTopLeft(titleFont.getWidth("Map Speed: 1000") + 50, 175 + index*100, new DrawOptions().setScale(0.3,0.3));
-                rightButton.drawFromTopLeft(titleFont.getWidth("Map Speed: 1000") + 50 + rightButton.getWidth()*0.5, 175 + index*100, new DrawOptions().setScale(0.3, 0.3));
+                titleFont.drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + 0);
             }
             else if (pageType.equals("PowerUps")) {
                 gameFont.drawString("Drag the slider across to increase/decrease the spawn rate!", titleFont.getWidth("SETTINGS"), 150, new DrawOptions().setBlendColour(0,0,0, 0.7));
                 gameFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS"), 190, new DrawOptions().setBlendColour(0,0,0, 0.7));
                 for (int i = 0; i < allPowerUps.size(); i++) {
                     PowerUp currentPowerUp = allPowerUps.get(i);
-                    double currentFrequency = 500 - (gameSettingsSingleton.getInstance().getPowerUpsSettingsSingleton().getFrequency(currentPowerUp.getName()) - minimumFrequency)*500/(1 - minimumFrequency);
                     Image currentImage = currentPowerUp.getImage();
-                    currentImage.drawFromTopLeft(100, 300 + index*100);
+                    currentImage.drawFromTopLeft(100, 300 + 100);
                     if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(currentPowerUp.getName())) {
-                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + index*100, 500, currentImage.getHeight(), new Colour(0, 0, 0, 0.5));
-                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + index*100, currentFrequency, currentImage.getHeight(), new Colour(0, 0, 0));
                     }
-                    index++;
                 }
             }
             else if (pageType.equals("Obstacles")) {
@@ -1620,14 +1585,12 @@ public class Game extends AbstractGame {
                 for (int j = 0; j < allObstacles.size(); j++) {
                     Obstacle currentObstacle = allObstacles.get(j);
                     Image currentImage = currentObstacle.getImage();
-                    double currentFrequency = 500 - (gameSettingsSingleton.getInstance().getObstaclesSettingsSingleton().getFrequency(currentObstacle.getName()) - minimumFrequency)*500/(1 - minimumFrequency);
-                    Rectangle maxRectangle = new Rectangle(100 + currentImage.getWidth()*2, 300 + index*100, 500, currentImage.getHeight());
-                    currentImage.drawFromTopLeft(100, 300 + index*100);
+                    Rectangle maxRectangle = new Rectangle(100 + currentImage.getWidth()*2, 300 + 100, 500, currentImage.getHeight());
+                    currentImage.drawFromTopLeft(100, 300 + 100);
                     if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(currentObstacle.getName())) {
-                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + index*100, 500, currentImage.getHeight(), new Colour(0, 0, 0, 0.5));
-                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + index*100, currentFrequency, currentImage.getHeight(), new Colour(0, 0, 0));
+                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + 100, 500, currentImage.getHeight(), new Colour(0, 0, 0, 0.5));
+                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + 100, 0, currentImage.getHeight(), new Colour(0, 0, 0));
                     }
-                    index++;
                 }
             }
             if (gameSettingsSingleton.getPage() == 0) {
@@ -1852,6 +1815,9 @@ public class Game extends AbstractGame {
     public void drawButtons() {
         if (buttons.size() > 0) {
             for (Button button: buttons) {
+                if (button.getName().equals("Game Settings")) {
+                    button.setNight();
+                }
                 button.draw();
             }
         }
@@ -1958,7 +1924,7 @@ public class Game extends AbstractGame {
             File dump = new File(currentFile);
             newFile.renameTo(dump);
 
-            stringDisplays.add(new StringDisplay("Story saved successfully.", 3));
+            stringDisplays.add(new StringDisplay("Story saved successfully.", 3, 50, new Point(0,0)));
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -2320,7 +2286,7 @@ public class Game extends AbstractGame {
     }
 
     public void spawnPowerUps() {
-        double spawnNo = Math.random()*5;;
+        double spawnNo = Math.random()*5;
         if (spawnNo < 1) {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpeedUp")) {
                 if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedUp")) {
@@ -2406,8 +2372,12 @@ public class Game extends AbstractGame {
         if (failed) {
             failed = false;
             buttons.clear();
-            buttons.add(new ButtonRetry("Continue?", new Rectangle(new Point(0, Window.getHeight() / 2), Window.getWidth(), 160)));
-            buttons.add(new ButtonBackToStart("Exit", new Rectangle(new Point(0, Window.getHeight() / 1.5), Window.getWidth(), 160)));
+            buttons.add(new Button("Retry", "Continue?", FONT_SIZE,
+                    Window.getWidth(), 160,
+                    new Point(0, Window.getHeight() / 2)));
+            buttons.add(new Button("Back To Start", "Exit", FONT_SIZE,
+                    Window.getWidth(), 160,
+                    new Point(0, Window.getHeight() / 1.5)));
             currentMusic = "music/Fail.wav";
         }
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.7));
@@ -2487,8 +2457,8 @@ public class Game extends AbstractGame {
     public void showDisplayStrings() {
         int i = 1;
         for (StringDisplay stringDisplay: stringDisplays) {
+            stringDisplay.draw();
             gameFont.drawString(stringDisplay.getName(), Window.getWidth() - gameFont.getWidth(stringDisplay.getName()), 60*i);
-            i++;
         }
     }
 
@@ -2506,7 +2476,7 @@ public class Game extends AbstractGame {
     }
 
     public void addDisplayString(String string, int time) {
-        stringDisplays.add(new StringDisplay(string, time));
+        stringDisplays.add(new StringDisplay(string, time, 50, new Point(0,0)));
     }
 
     public void setPlayersPosition() {
@@ -2525,10 +2495,7 @@ public class Game extends AbstractGame {
                 playersFinished++;
             }
         }
-        if (playersFinished >= players.size()) {
-            return true;
-        }
-        return false;
+        return playersFinished >= players.size();
     }
 
     public void playIntro() {

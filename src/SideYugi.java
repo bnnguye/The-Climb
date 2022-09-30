@@ -137,7 +137,7 @@ public class SideYugi extends SideCharacter{
                 }
             } else if (timer > 1 * frames) {
                 Image yugi = new Image("res/Renders/Yugi.png");
-                Image exodia = new Image("res/charactersS/Yugi/NoblePhantasm.png");
+                Image exodia = new Image("res/charactersS/Yugi/SpecialAbilityPoints.png");
                 exodia.drawFromTopLeft(0, 0);
                 yugi.drawFromTopLeft(0, 0);
             }

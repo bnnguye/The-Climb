@@ -88,7 +88,7 @@ public class SideDio extends SideCharacter{
         Colour darken = new Colour(0, 0, 0.2, 0.5);
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (timer > 3*frames) {
-             Image noblePhantasm = new Image("res/charactersS/Dio/NoblePhantasm.png");
+             Image noblePhantasm = new Image("res/charactersS/Dio/SpecialAbilityPoints.png");
              noblePhantasm.drawFromTopLeft(0,0);
         }
     }

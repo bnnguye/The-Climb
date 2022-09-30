@@ -86,7 +86,7 @@ public class SideSenkuu extends SideCharacter{
 
     public void renderAbility() {
         if (timer > 4 * frames) {
-            Image noblePhantasm = new Image("res/charactersS/Senkuu/NoblePhantasm.png");
+            Image noblePhantasm = new Image("res/charactersS/Senkuu/SpecialAbilityPoints.png");
             noblePhantasm.drawFromTopLeft(0,0);
         }
         else {

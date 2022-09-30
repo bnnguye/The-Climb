@@ -5,7 +5,7 @@ import bagel.util.Point;
 public class PowerUpSpecialAbilityPoints extends PowerUp {
     private String name = "Special Ability";
     private Point pos;
-    Image image = new Image("res/PowerUp/NoblePhantasm.png");
+    Image image = new Image("res/PowerUp/SpecialAbilityPoints.png");
 
     public PowerUpSpecialAbilityPoints() {
         pos = new Point(Window.getWidth() * Math.random(), -200);

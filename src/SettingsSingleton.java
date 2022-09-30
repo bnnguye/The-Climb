@@ -1,7 +1,9 @@
+import java.util.ArrayList;
+
 public class SettingsSingleton {
     private final double frames = 144;
     private static SettingsSingleton single_instance = null;
-    private static int gameState = -1;
+    private static int gameState = 0;
     private static int lastGameState = 0;
     private static int gameMode = 0;
     private static int players = 0;
@@ -10,6 +12,7 @@ public class SettingsSingleton {
     private static Player winner;
     private double time = 0;
     private boolean theme = ((java.time.LocalTime.now().getHour() > 18) && ((java.time.LocalTime.now().getHour() < 4)));
+    private ArrayList<Button> buttons;
 
     public synchronized static SettingsSingleton getInstance() {
         if (single_instance == null) {

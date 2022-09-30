@@ -95,7 +95,7 @@ public class SideJotaro extends SideCharacter{
         Colour darken = new Colour(0, 0, 0.2, 0.5);
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (timer > 3*frames) {
-            Image noblePhantasm = new Image("res/charactersS/Jotaro/NoblePhantasm.png");
+            Image noblePhantasm = new Image("res/charactersS/Jotaro/SpecialAbilityPoints.png");
             noblePhantasm.drawFromTopLeft(0,0);
         }
     }

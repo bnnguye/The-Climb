@@ -78,7 +78,7 @@ public class SideLelouch extends SideCharacter{
 
     public void renderAbility() {
         if (timer > 1 *frames) {
-            Image noblePhantasm = new Image("res/charactersS/Lelouch/NoblePhantasm.png");
+            Image noblePhantasm = new Image("res/charactersS/Lelouch/SpecialAbilityPoints.png");
             noblePhantasm.drawFromTopLeft(0,0);
         }
         else {

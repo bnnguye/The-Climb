@@ -53,7 +53,7 @@ public class SideAllMight extends SideCharacter{
 
     public void renderAbility() {
         if (timer > 8 * frames) {
-            Image noblePhantasm = new Image(String.format("res/charactersS/%s/NoblePhantasm.png", this.name));
+            Image noblePhantasm = new Image(String.format("res/charactersS/%s/SpecialAbilityPoints.png", this.name));
             noblePhantasm.drawFromTopLeft(0,0);
         }
     }

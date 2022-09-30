@@ -83,7 +83,7 @@ public class SideItachi extends SideCharacter{
         if (timer > 4*frames) {
             Colour darken = new Colour(0, 0, 0, 0.5);
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
-            Image noblePhantasm = new Image("res/charactersS/Itachi/NoblePhantasm.png");
+            Image noblePhantasm = new Image("res/charactersS/Itachi/SpecialAbilityPoints.png");
             noblePhantasm.drawFromTopLeft(0,0);
         }
         else {

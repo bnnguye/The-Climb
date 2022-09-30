@@ -1,7 +1,11 @@
+import java.util.ArrayList;
+
 public class GameSettingsSingleton {
 
     private ObstaclesSettingsSingleton obstaclesSettingsSingleton = ObstaclesSettingsSingleton.getInstance();
     private PowerUpsSettingsSingleton powerUpsSettingsSingleton = PowerUpsSettingsSingleton.getInstance();
+    private static ArrayList<Slider> allSliders = new ArrayList<>();
+    private ArrayList<Slider> currentSliders = new ArrayList<>();
     private int page = 0;
     private double mapSpeed = 1;
     private int lives = 1;
@@ -11,6 +15,14 @@ public class GameSettingsSingleton {
     public synchronized static GameSettingsSingleton getInstance() {
         if (single_instance == null) {
             single_instance = new GameSettingsSingleton();
+            
+            allSliders.add(new Slider("Minimiser", "PowerUp"));
+            allSliders.add(new Slider("Shield", "PowerUp"));
+            allSliders.add(new Slider("SpecialAbilityPoints", "PowerUp"));
+            allSliders.add(new Slider("SpeedUp", "PowerUp"));
+            allSliders.add(new Slider("Rock", "obstacles"));
+            allSliders.add(new Slider("BowlingBall", "obstacles"));
+            allSliders.add(new Slider("StunBall", "obstacles"));
 
         }
         return single_instance;
