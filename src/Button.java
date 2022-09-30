@@ -2,21 +2,27 @@ import bagel.*;
 import bagel.util.Colour;
 import bagel.util.Rectangle;
 import bagel.util.Point;
-import org.lwjgl.system.CallbackI;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Button {
 
-    private int FONT_SIZE;
-    private DrawOptions DO = new DrawOptions();
-    private Font font;
-    private Music music = new Music();
+    private ArrayList<Button> buttons = ButtonsSingleton.getInstance().getButtons();
+    private ArrayList<Button> buttonsToRemove = ButtonsSingleton.getInstance().getButtonsToRemove();
+    private ArrayList<Slider> sliders = ButtonsSingleton.getInstance().getSliders();
+    private ArrayList<Slider> slidersToRemove = ButtonsSingleton.getInstance().getSlidersToRemove();
 
-    private String name;
-    private String displayString;
-    private Rectangle box;
-    private Point position;
+    private int FONT_SIZE;
+    private final DrawOptions DO = new DrawOptions();
+    private Font font;
+    private final Music music = new Music();
+
+    private final String name;
+    private final String displayString;
+    private final Rectangle box;
+    private final Point position;
     private Image image = null;
 
     private boolean hovering = false;
@@ -132,7 +138,17 @@ public class Button {
         else if (name.equalsIgnoreCase("Right Arrow")) {
                 if (GameSettingsSingleton.getInstance().getPage() < 2) {
                     GameSettingsSingleton.getInstance().setPage(GameSettingsSingleton.getInstance().getPage() + 1);
-                    ButtonsSingleton.getInstance().getButtons().clear();
+                    buttonsToRemove.addAll(buttons);
+                }
+                if (GameSettingsSingleton.getInstance().getPage() == 1) {
+                    Collections.addAll(
+                            (new ArrayList<>(Arrays.asList(
+                            new Slider("Minimiser", "PowerUp", new Point(400, 300)),
+                            new Slider("SpeedUp", "PowerUp", new Point(400, 400)),
+                            new Slider("SpeedDown", "PowerUp", new Point(400, 500)),
+                            new Slider("Shield", "PowerUp", new Point(400, 600)),
+                            new Slider("SpecialAbilityPoints", "PowerUp", new Point(400, 700))))),
+                            sliders);
                 }
         }
         else if (name.equalsIgnoreCase("Story")) {

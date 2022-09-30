@@ -19,13 +19,13 @@ public class ObstaclesSettingsSingleton {
     }
 
     public void changeFrequency(String obstacle, double frequency) {
-        if (obstacle.equals("Ball")) {
+        if (obstacle.equalsIgnoreCase("Ball")) {
             this.ballFrequency = frequency;
         }
-        else if (obstacle.equals("Rock")) {
+        else if (obstacle.equalsIgnoreCase("Rock")) {
             this.rockFrequency = frequency;
         }
-        else if (obstacle.equals("StunBall")) {
+        else if (obstacle.equalsIgnoreCase("StunBall")) {
             this.stunBallFrequency = frequency;
         }
     }
@@ -37,50 +37,38 @@ public class ObstaclesSettingsSingleton {
     }
 
     public void toggle(String obstacle) {
-        if (obstacle.equals("Rock")) {
+        if (obstacle.equalsIgnoreCase("Rock")) {
             this.rocks = !this.rocks;
         }
-        else if (obstacle.equals("Ball")) {
+        else if (obstacle.equalsIgnoreCase("Ball")) {
             this.balls = !this.balls;
         }
-        else if (obstacle.equals("StunBall")) {
+        else if (obstacle.equalsIgnoreCase("StunBall")) {
             this.stunBalls = !this.stunBalls;
         }
     }
 
     public boolean isObstacle(String string) {
-        if (string.equals("Rock")) {
+        if (string.equalsIgnoreCase("Rock")) {
             return this.rocks;
         }
-        else if (string.equals("Ball")) {
+        else if (string.equalsIgnoreCase("Ball")) {
             return this.balls;
         }
-        if (string.equals("StunBall")) {
+        if (string.equalsIgnoreCase("StunBall")) {
             return this.stunBalls;
         }
         return false;
     }
 
-    public double getRockFrequency() {
-        return rockFrequency;
-    }
-
-    public double getBallFrequency() {
-        return ballFrequency;
-    }
-
-    public double getStunBallFrequency() {
-        return stunBallFrequency;
-    }
-
-    public double getFrequency(String string) {
-        if (string.equals("Rock")) {
+    public double getFrequency(String obstacle) {
+        if (obstacle.equalsIgnoreCase("rock")) {
             return rockFrequency;
         }
-        else if (string.equals("Ball")) {
+        else if (obstacle.equalsIgnoreCase("ball")) {
             return ballFrequency;
         }
-        else if (string.equals("StunBall")) {
+        else if (obstacle.equalsIgnoreCase("stunball")) {
             return stunBallFrequency;
         }
         return 0;

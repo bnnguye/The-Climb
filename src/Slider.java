@@ -13,22 +13,12 @@ public class Slider {
     private Point topLeft;
     private double percentage;
 
-    public Slider(String name, String type) {
-        this.name = name;
-        this.topLeft = new Point(0,0);
-        percentage = 0.5;
-    }
-
     public Slider(String name, String type, Point topLeft) {
         this.name = name;
         logo = new Image(String.format("res/%s/%s.png", type, name));
         slide = new Rectangle(new Point(logo.getWidth(), 0), Window.getWidth() - logo.getWidth()*2, 100);
         this.topLeft = topLeft;
         percentage = 0.5;
-    }
-
-    public Image getLogo() {
-        return logo;
     }
 
     public String getName() {
@@ -40,9 +30,11 @@ public class Slider {
     }
 
     public void draw() {
-
+        logo.drawFromTopLeft(topLeft.x, topLeft.y);
         Drawing.drawRectangle(topLeft, 500, logo.getHeight(), new Colour(0, 0, 0, 0.5));
-        Drawing.drawRectangle(topLeft, percentage * slide.right() - slide.left(), logo.getHeight(), new Colour(0, 0, 0));
+        Drawing.drawRectangle(topLeft,
+                500,
+                logo.getHeight(), new Colour(0, 0, 0));
     }
 
     public void interact(Input input) {
@@ -51,5 +43,6 @@ public class Slider {
     public void setPos(double x, double y) {
         this.topLeft = new Point(x, y);
     }
+
 
 }
