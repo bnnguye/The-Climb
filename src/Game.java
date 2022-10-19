@@ -1280,6 +1280,13 @@ public class Game extends AbstractGame {
                 settingsSingleton.setGameState(6);
             }
         }
+        buttons.removeAll(buttonsToRemove);
+        buttonsToRemove.clear();
+        sliders.removeAll(slidersToRemove);
+        slidersToRemove.clear();
+        for (Slider slider: sliders) {
+            slider.interact(input);
+        }
         render();
     }
 
@@ -1579,35 +1586,13 @@ public class Game extends AbstractGame {
             else if (pageType.equals("Obstacles")) {
                 gameFont.drawString("Drag the slider across to increase/decrease the spawn rate!", titleFont.getWidth("SETTINGS"), 150,new DrawOptions().setBlendColour(0,0,0, 0.7));
                 gameFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS"), 190, new DrawOptions().setBlendColour(0,0,0, 0.7));
-                for (int j = 0; j < allObstacles.size(); j++) {
-                    Obstacle currentObstacle = allObstacles.get(j);
-                    Image currentImage = currentObstacle.getImage();
-                    Rectangle maxRectangle = new Rectangle(100 + currentImage.getWidth()*2, 300 + 100, 500, currentImage.getHeight());
-                    currentImage.drawFromTopLeft(100, 300 + 100);
-                    if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(currentObstacle.getName())) {
-                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + 100, 500, currentImage.getHeight(), new Colour(0, 0, 0, 0.5));
-                        Drawing.drawRectangle(100 + currentImage.getWidth()*2, 300 + 100, 0, currentImage.getHeight(), new Colour(0, 0, 0));
-                    }
-                }
             }
-            if (gameSettingsSingleton.getPage() == 0) {
-                pageType = "General";
-            }
-            else if (gameSettingsSingleton.getPage() == 1) {
-                pageType = "PowerUps";
-            }
-            else if (gameSettingsSingleton.getPage() == 2) {
-                pageType = "Obstacles";
-            }
-            menuTitle = pageType;
         }
         else if (settingsSingleton.getGameState() == 11) {
             drawGame();
             playerFont.drawString("PAUSE", (Window.getWidth() - playerFont.getWidth("PAUSE"))/2, Window.getHeight()/2 - 50);
             gameFont.drawString("Press ESC to resume", (Window.getWidth() - playerFont.getWidth("Press ESC to res"))/2, Window.getHeight()/2);
         }
-        buttons.removeAll(buttonsToRemove);
-        sliders.removeAll(slidersToRemove);
         drawButtons();
         drawSliders();
         if (menuTitle != null) {
@@ -1815,9 +1800,6 @@ public class Game extends AbstractGame {
     public void drawButtons() {
         if (buttons.size() > 0) {
             for (Button button: buttons) {
-                if (button.getName().equals("Game Settings")) {
-                    button.setNight();
-                }
                 button.draw();
             }
         }

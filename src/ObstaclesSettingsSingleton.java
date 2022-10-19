@@ -8,6 +8,7 @@ public class ObstaclesSettingsSingleton {
     private boolean rocks = true;
     private boolean balls = true;
     private boolean stunBalls = true;
+    private double minimumFrequency = 0.98;
 
 
 
@@ -79,5 +80,9 @@ public class ObstaclesSettingsSingleton {
 
     public boolean isStunBalls() {
         return this.stunBalls;
+    }
+
+    public double getMinimumFrequency() {
+        return minimumFrequency;
     }
 }

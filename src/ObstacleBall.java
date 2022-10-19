@@ -4,7 +4,7 @@ import bagel.util.Point;
 
 public class ObstacleBall extends Obstacle {
     private String name = "Ball";
-    private Image image = new Image("res/obstacles/bowlingball.png");
+    private Image image = new Image("res/obstacle/ball.png");
     private Point pos;
     private double speed = 6 + GameSettingsSingleton.getInstance().getMapSpeed();;
 

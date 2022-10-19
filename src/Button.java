@@ -5,7 +5,6 @@ import bagel.util.Point;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class Button {
 
@@ -121,7 +120,14 @@ public class Button {
         else if (name.equalsIgnoreCase("Left Arrow")) {
             if (GameSettingsSingleton.getInstance().getPage() > 0) {
                 GameSettingsSingleton.getInstance().setPage(GameSettingsSingleton.getInstance().getPage() - 1);
-                ButtonsSingleton.getInstance().getButtons().clear();
+                buttonsToRemove.addAll(buttons);
+                slidersToRemove.addAll(sliders);
+            }
+            if (GameSettingsSingleton.getInstance().getPage() == 1) {
+                addPowerUpSliders();
+            }
+            else if (GameSettingsSingleton.getInstance().getPage() == 2) {
+                addObstacleSliders();
             }
         }
         else if (name.equalsIgnoreCase("PLAY")) {
@@ -139,16 +145,13 @@ public class Button {
                 if (GameSettingsSingleton.getInstance().getPage() < 2) {
                     GameSettingsSingleton.getInstance().setPage(GameSettingsSingleton.getInstance().getPage() + 1);
                     buttonsToRemove.addAll(buttons);
+                    slidersToRemove.addAll(sliders);
                 }
                 if (GameSettingsSingleton.getInstance().getPage() == 1) {
-                    Collections.addAll(
-                            (new ArrayList<>(Arrays.asList(
-                            new Slider("Minimiser", "PowerUp", new Point(400, 300)),
-                            new Slider("SpeedUp", "PowerUp", new Point(400, 400)),
-                            new Slider("SpeedDown", "PowerUp", new Point(400, 500)),
-                            new Slider("Shield", "PowerUp", new Point(400, 600)),
-                            new Slider("SpecialAbilityPoints", "PowerUp", new Point(400, 700))))),
-                            sliders);
+                    addPowerUpSliders();
+                }
+                else if (GameSettingsSingleton.getInstance().getPage() == 2) {
+                    addObstacleSliders();
                 }
         }
         else if (name.equalsIgnoreCase("Story")) {
@@ -178,5 +181,21 @@ public class Button {
     }
     public void setNight() {
         night = true;
+    }
+
+    public void addPowerUpSliders() {
+        sliders.addAll(Arrays.asList(
+                new Slider("Minimiser", "PowerUp", new Point(400, 300)),
+                new Slider("SpeedUp", "PowerUp", new Point(400, 400)),
+                new Slider("SpeedDown", "PowerUp", new Point(400, 500)),
+                new Slider("Shield", "PowerUp", new Point(400, 600)),
+                new Slider("SpecialAbilityPoints", "PowerUp", new Point(400, 700))));
+    }
+
+    public void addObstacleSliders() {
+        sliders.addAll(Arrays.asList(
+                new Slider("Ball", "obstacle", new Point(400, 300)),
+                new Slider("Rock", "obstacle", new Point(400, 400)),
+                new Slider("StunBall", "obstacle", new Point(400, 500))));
     }
 }

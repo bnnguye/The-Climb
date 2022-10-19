@@ -4,7 +4,7 @@ import bagel.util.Point;
 
 public class ObstacleStunBall extends Obstacle{
     private String name = "StunBall";
-    Image image = new Image("res/obstacles/stunball.png");
+    Image image = new Image("res/obstacle/stunball.png");
     private Point pos;
     double speed = 2 + GameSettingsSingleton.getInstance().getMapSpeed();
     double time = 1*SettingsSingleton.getInstance().getFrames();
