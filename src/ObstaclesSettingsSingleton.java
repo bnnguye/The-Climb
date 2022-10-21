@@ -2,13 +2,12 @@ public class ObstaclesSettingsSingleton {
 
     private static ObstaclesSettingsSingleton single_instance = null;
 
-    private double rockFrequency = 0.98;
-    private double ballFrequency = 0.99;
-    private double stunBallFrequency = 0.998;
+    private double rockFrequency = 0.925;
+    private double ballFrequency = 0.925;
+    private double stunBallFrequency = 0.925;
     private boolean rocks = true;
     private boolean balls = true;
     private boolean stunBalls = true;
-    private double minimumFrequency = 0.98;
 
 
 
@@ -64,13 +63,13 @@ public class ObstaclesSettingsSingleton {
 
     public double getFrequency(String obstacle) {
         if (obstacle.equalsIgnoreCase("rock")) {
-            return rockFrequency;
+            return this.rockFrequency;
         }
         else if (obstacle.equalsIgnoreCase("ball")) {
-            return ballFrequency;
+            return this.ballFrequency;
         }
         else if (obstacle.equalsIgnoreCase("stunball")) {
-            return stunBallFrequency;
+            return this.stunBallFrequency;
         }
         return 0;
     }
@@ -82,7 +81,4 @@ public class ObstaclesSettingsSingleton {
         return this.stunBalls;
     }
 
-    public double getMinimumFrequency() {
-        return minimumFrequency;
-    }
 }

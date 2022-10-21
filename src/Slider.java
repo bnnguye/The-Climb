@@ -4,18 +4,26 @@ import bagel.util.Point;
 import bagel.util.Rectangle;
 
 public class Slider {
-    private Image logo;
-    private String name;
-    private Rectangle slide;
+
+    private final ObstaclesSettingsSingleton obstaclesSettingsSingleton = ObstaclesSettingsSingleton.getInstance();
+    private final GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
+    private final PowerUpsSettingsSingleton powerUpsSettingsSingleton = gameSettingsSingleton.getPowerUpsSettingsSingleton();
+
+    private final Image logo;
+    private final String name;
+    private final String type;
+    private final Rectangle slide;
     private Point topLeft;
-    private double currentBar;
+    private final double minimumFrequency = 0.9;
+    private final double maxFrequency = 0.95;
+    private final double maxBSize = 500;
 
     public Slider(String name, String type, Point topLeft) {
         this.name = name;
-        logo = new Image(String.format("res/%s/%s.png", type, name));
-        slide = new Rectangle(topLeft, Window.getWidth() - logo.getWidth()*2, logo.getHeight());
+        this.type = type;
+        this.logo = new Image(String.format("res/%s/%s.png", type, name));
+        this.slide = new Rectangle(topLeft, maxBSize, logo.getHeight());
         this.topLeft = topLeft;
-        currentBar = ObstaclesSettingsSingleton.getInstance().getFrequency(name)*500;
     }
 
     public String getName() {
@@ -23,27 +31,58 @@ public class Slider {
     }
 
     public void draw() {
-        logo.drawFromTopLeft(topLeft.x - logo.getWidth(), topLeft.y);
-        if (GameSettingsSingleton.getInstance().getPowerUpsSettingsSingleton().isPowerUp(name)) {
-            Drawing.drawRectangle(topLeft, 500, logo.getHeight(), new Colour(0, 0, 0, 0.5));
-            Drawing.drawRectangle(topLeft, currentBar,
-                    logo.getHeight(), new Colour(0, 1, 0));
+        double currentBar;
+        double currentFrequency;
+        if (("obstacle").equalsIgnoreCase(type)) {
+            currentFrequency = obstaclesSettingsSingleton.getFrequency(name);
+            currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
+            if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(name)) {
+                Drawing.drawRectangle(topLeft, maxBSize, logo.getHeight(), new Colour(0, 0, 0, 0.5));
+                Drawing.drawRectangle(topLeft, currentBar, logo.getHeight(), new Colour(0, 1, 0.7));
+            }
         }
+        else if (("powerup").equalsIgnoreCase(type)) {
+            currentFrequency = powerUpsSettingsSingleton.getFrequency(name);
+            currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(name)) {
+                Drawing.drawRectangle(topLeft, maxBSize, logo.getHeight(), new Colour(0, 0, 0, 0.5));
+                Drawing.drawRectangle(topLeft, currentBar, logo.getHeight(), new Colour(0, 1, 0.7));
+            }
+        }
+        logo.drawFromTopLeft(topLeft.x - logo.getWidth(), topLeft.y);
     }
 
     public void interact(Input input) {
-//        if (GameSettingsSingleton.getInstance())
-        if ((slide.intersects(input.getMousePosition())) && (input.wasPressed(MouseButtons.LEFT))) {
-            currentBar = input.getMouseX() - slide.left();
-            double minimumFrequency = ObstaclesSettingsSingleton.getInstance().getMinimumFrequency();
-            ObstaclesSettingsSingleton.getInstance().changeFrequency(name,
-                    minimumFrequency + (1 - minimumFrequency) *  ((slide.right() - slide.left())/500)
-                    );
-        }
-        else if ((input.wasPressed(MouseButtons.LEFT)) && logo.getBoundingBoxAt(
-                new Point(topLeft.x - logo.getWidth(), topLeft.y + logo.getHeight()/2)).intersects(
-                        input.getMousePosition())) {
-            GameSettingsSingleton.getInstance().getPowerUpsSettingsSingleton().toggle(name);
+        if (input.wasPressed(MouseButtons.LEFT)) {
+            double mouseX = input.getMouseX();
+            if (slide.intersects(input.getMousePosition())) {
+                if (mouseX > topLeft.x + maxBSize) {
+                    mouseX = topLeft.x + maxBSize;
+                }
+                double newFrequency = ((mouseX - topLeft.x)/maxBSize)*(maxFrequency - minimumFrequency) + minimumFrequency;
+                if (newFrequency > maxFrequency) {
+                    newFrequency = maxFrequency;
+                }
+                else if (newFrequency < minimumFrequency) {
+                    newFrequency = minimumFrequency;
+                }
+                System.out.println(newFrequency);
+                if (type.equalsIgnoreCase("obstacle")) {
+                     obstaclesSettingsSingleton.changeFrequency(name, newFrequency);
+                }
+                else if (type.equalsIgnoreCase("powerup")) {
+                    powerUpsSettingsSingleton.changeFrequency(name, newFrequency);
+                }
+            }
+            else if (logo.getBoundingBoxAt(new Point(topLeft.x - logo.getWidth()/2
+                    , topLeft.y + logo.getHeight()/2)).intersects(input.getMousePosition())) {
+                if (type.equalsIgnoreCase("obstacle")) {
+                    obstaclesSettingsSingleton.toggle(name);
+                }
+                else if (type.equalsIgnoreCase("powerup")) {
+                    powerUpsSettingsSingleton.toggle(name);
+                }
+            }
         }
     }
 

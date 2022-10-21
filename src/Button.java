@@ -12,6 +12,9 @@ public class Button {
     private ArrayList<Button> buttonsToRemove = ButtonsSingleton.getInstance().getButtonsToRemove();
     private ArrayList<Slider> sliders = ButtonsSingleton.getInstance().getSliders();
     private ArrayList<Slider> slidersToRemove = ButtonsSingleton.getInstance().getSlidersToRemove();
+    
+    private SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
+    private GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
 
     private int FONT_SIZE;
     private final DrawOptions DO = new DrawOptions();
@@ -89,7 +92,7 @@ public class Button {
         if (image != null) {
             // need to adjust as boundingBoxAt takes centre, not topLeft
             image.drawFromTopLeft(position.x, position.y);
-        } else {
+        } else if (font != null) {
             font.drawString(displayString, position.x, position.y + (box.bottom() - box.top()), DO);
         }
     }
@@ -99,80 +102,80 @@ public class Button {
     public boolean isHovering() {return hovering;}
     public void playAction() {
         if (name.equalsIgnoreCase("Back To Start")) {
-            SettingsSingleton.getInstance().setGameStateString("Menu");
+            settingsSingleton.setGameStateString("Menu");
         }
         else if (name.equalsIgnoreCase("Back")) {
-            SettingsSingleton.getInstance().setGameState(1);
+            settingsSingleton.setGameState(1);
         }
         else if (name.equalsIgnoreCase("Create Map")) {
-            SettingsSingleton.getInstance().setGameState(9);
+            settingsSingleton.setGameState(9);
         }
         else if (name.equalsIgnoreCase("Exit")) {
             Window.close();
         }
         else if (name.equalsIgnoreCase("4")) {
-            SettingsSingleton.getInstance().setPlayers(4);
-            SettingsSingleton.getInstance().setGameState(3);
+            settingsSingleton.setPlayers(4);
+            settingsSingleton.setGameState(3);
         }
         else if (name.equalsIgnoreCase("Game Settings")) {
-            SettingsSingleton.getInstance().setGameState(10);
+            settingsSingleton.setGameState(10);
         }
         else if (name.equalsIgnoreCase("Left Arrow")) {
-            if (GameSettingsSingleton.getInstance().getPage() > 0) {
-                GameSettingsSingleton.getInstance().setPage(GameSettingsSingleton.getInstance().getPage() - 1);
+            if (gameSettingsSingleton.getPage() > 0) {
+                gameSettingsSingleton.setPage(gameSettingsSingleton.getPage() - 1);
                 buttonsToRemove.addAll(buttons);
                 slidersToRemove.addAll(sliders);
             }
-            if (GameSettingsSingleton.getInstance().getPage() == 1) {
+            if (gameSettingsSingleton.getPage() == 1) {
                 addPowerUpSliders();
             }
-            else if (GameSettingsSingleton.getInstance().getPage() == 2) {
+            else if (gameSettingsSingleton.getPage() == 2) {
                 addObstacleSliders();
             }
         }
         else if (name.equalsIgnoreCase("PLAY")) {
-                SettingsSingleton.getInstance().setGameState(1);
+                settingsSingleton.setGameState(1);
         }
         else if (name.equalsIgnoreCase("Retry")) {
-                if (SettingsSingleton.getInstance().getGameMode() < 99) {
-                    SettingsSingleton.getInstance().setGameStateString("Retry");
+                if (settingsSingleton.getGameMode() < 99) {
+                    settingsSingleton.setGameStateString("Retry");
                 }
                 else {
-                    SettingsSingleton.getInstance().setGameStateString("Continue");
+                    settingsSingleton.setGameStateString("Continue");
                 }
         }
         else if (name.equalsIgnoreCase("Right Arrow")) {
-                if (GameSettingsSingleton.getInstance().getPage() < 2) {
-                    GameSettingsSingleton.getInstance().setPage(GameSettingsSingleton.getInstance().getPage() + 1);
+                if (gameSettingsSingleton.getPage() < 2) {
+                    gameSettingsSingleton.setPage(gameSettingsSingleton.getPage() + 1);
                     buttonsToRemove.addAll(buttons);
                     slidersToRemove.addAll(sliders);
                 }
-                if (GameSettingsSingleton.getInstance().getPage() == 1) {
+                if (gameSettingsSingleton.getPage() == 1) {
                     addPowerUpSliders();
                 }
-                else if (GameSettingsSingleton.getInstance().getPage() == 2) {
+                else if (gameSettingsSingleton.getPage() == 2) {
                     addObstacleSliders();
                 }
         }
         else if (name.equalsIgnoreCase("Story")) {
-            SettingsSingleton.getInstance().setGameMode(0);
-            SettingsSingleton.getInstance().setGameStateString("STORY");
+            settingsSingleton.setGameMode(0);
+            settingsSingleton.setGameStateString("STORY");
         }
         else if (name.equalsIgnoreCase("3")) {
-            SettingsSingleton.getInstance().setPlayers(3); SettingsSingleton.getInstance().setGameState(3);
+            settingsSingleton.setPlayers(3); settingsSingleton.setGameState(3);
         }
         else if (name.equalsIgnoreCase("2")) {
-            SettingsSingleton.getInstance().setGameState(3);
+            settingsSingleton.setGameState(3);
         }
         else if (name.equalsIgnoreCase("VS")) {
-            SettingsSingleton.getInstance().setGameMode(1);
-            SettingsSingleton.getInstance().setGameStateString("VS");
+            settingsSingleton.setGameMode(1);
+            settingsSingleton.setGameStateString("VS");
         }
         else if (name.equalsIgnoreCase("Decrease Map Speed")) {
-            GameSettingsSingleton.getInstance().setMapSpeed(GameSettingsSingleton.getInstance().getMapSpeed() - 0.1);
+            gameSettingsSingleton.setMapSpeed(gameSettingsSingleton.getMapSpeed() - 0.1);
         }
         else if (name.equalsIgnoreCase("Increase Map Speed")) {
-            GameSettingsSingleton.getInstance().setMapSpeed(GameSettingsSingleton.getInstance().getMapSpeed() + 0.1);
+            gameSettingsSingleton.setMapSpeed(gameSettingsSingleton.getMapSpeed() + 0.1);
         }
     }
 

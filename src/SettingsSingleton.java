@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-
 public class SettingsSingleton {
+
     private final double frames = 144;
     private static SettingsSingleton single_instance = null;
     private static int gameState = 0;
@@ -8,7 +7,6 @@ public class SettingsSingleton {
     private static int gameMode = 0;
     private static int players = 0;
     private static String gameStateString = "";
-    private static int mapNo;
     private static Player winner;
     private double time = 0;
     private boolean theme = ((java.time.LocalTime.now().getHour() > 18) && ((java.time.LocalTime.now().getHour() < 4)));
@@ -24,9 +22,7 @@ public class SettingsSingleton {
     public int getGameState() { return gameState;}
     public void setGameState(int num) { lastGameState = gameState; gameState = num;}
     public void setGameMode(int num) {gameMode = num;}
-    public void setMapNo(int num) { mapNo = num;}
     public int getGameMode() {return gameMode;}
-    public int getMapNo() {return mapNo;}
 
     public void setPlayers(int players) {
         SettingsSingleton.players = players;
@@ -37,7 +33,6 @@ public class SettingsSingleton {
     public void setWinner(Player id) { winner = id;}
     public Player getWinner() { return winner;}
     public double getTime() {return time; }
-    public void updateTime() {time++;}
     public double getFrames() {return frames;}
     public int getLastGameState() {return lastGameState;}
     public boolean isNight() { return theme;}
