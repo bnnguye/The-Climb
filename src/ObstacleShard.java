@@ -5,7 +5,7 @@ import bagel.util.Point;
 public class ObstacleShard {
 
     private Point pos;
-    private final double speed = 3* GameSettingsSingleton.getInstance().getMapSpeed();;
+    private final double speed = 3* GameSettingsSingleton.getInstance().getMapSpeed();
 
     public Image getImage() {
         return image;

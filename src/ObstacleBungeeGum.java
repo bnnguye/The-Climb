@@ -6,7 +6,7 @@ import bagel.util.Point;
 public class ObstacleBungeeGum {
     private String direction;
     private Point pos;
-    private final double speed = 6 + GameSettingsSingleton.getInstance().getMapSpeed();;
+    private final double speed = 6 + GameSettingsSingleton.getInstance().getMapSpeed();
     private Image image = new Image("res/charactersS/Hisoka/BungeeGum.png");
 
     public ObstacleBungeeGum(Point point, String direction) {

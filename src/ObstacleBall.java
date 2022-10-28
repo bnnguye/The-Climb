@@ -6,7 +6,7 @@ public class ObstacleBall extends Obstacle {
     private String name = "Ball";
     private Image image = new Image("res/obstacle/ball.png");
     private Point pos;
-    private double speed = 6 + GameSettingsSingleton.getInstance().getMapSpeed();;
+    private double speed = 6 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public ObstacleBall() {
         this.pos = new Point(Window.getWidth() * Math.random(), -200);

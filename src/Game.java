@@ -8,6 +8,7 @@ import bagel.util.Rectangle;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -22,6 +23,7 @@ public class Game extends AbstractGame {
     private static final SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
     private static final GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
     private static final TimeLogger timeLogger = TimeLogger.getInstance();
+    private static final ButtonsSingleton buttonsSingleton = ButtonsSingleton.getInstance();
 
     // Stat variable
     int[] statTracker = new int[4];
@@ -47,10 +49,11 @@ public class Game extends AbstractGame {
 
     private double intro = 0;
 
-    private final ArrayList<Button> buttons= new ButtonsSingleton().getInstance().getButtons();
-    private final ArrayList<Button> buttonsToRemove = new ButtonsSingleton().getButtonsToRemove();
-    private final ArrayList<Slider> sliders = new ButtonsSingleton().getInstance().getSliders();
-    private final ArrayList<Slider> slidersToRemove = new ButtonsSingleton().getInstance().getSlidersToRemove();
+    private final ArrayList<Button> buttons= buttonsSingleton.getButtons();
+    private final ArrayList<Button> buttonsToRemove = buttonsSingleton.getButtonsToRemove();
+    private final ArrayList<Button> buttonsToAdd = buttonsSingleton.getButtonsToAdd();
+    private final ArrayList<Slider> sliders = buttonsSingleton.getSliders();
+    private final ArrayList<Slider> slidersToRemove = buttonsSingleton.getSlidersToRemove();
     private final ArrayList<Character> characters= new ArrayList<>();
     private final ArrayList<Player> players= new Player(0).getInstance();
     private final ArrayList<Obstacle> obstacles= new ArrayList<>();
@@ -280,12 +283,11 @@ public class Game extends AbstractGame {
             }
         }
 
-
         if (settingsSingleton.getGameState() == 0) {
             currentMusic = "music/Game Main Menu.wav";
             saveStatsChecker();
             if (!settingsSingleton.getGameStateString().equals("Main Menu")) {
-                buttonsToRemove.addAll(buttons);;
+                buttonsToRemove.addAll(buttons);
                 buttons.add(new Button("PLAY", FONT_SIZE, Window.getWidth(), 160, new Point(0, 280)));
                 buttons.add(new Button("CREATE MAP", FONT_SIZE, Window.getWidth(), 160, (new Point(0, 440))));
                 buttons.add(new Button("EXIT", FONT_SIZE, Window.getWidth(), 160, new Point(0, 600)));
@@ -304,7 +306,7 @@ public class Game extends AbstractGame {
                     Button versusButton = new Button("VS", FONT_SIZE,
                             titleFont.getWidth("VSS"), 160,
                             new Point(Window.getWidth() - titleFont.getWidth("VSSs"), 0));
-                    buttonsToRemove.addAll(buttons);;
+                    buttonsToRemove.addAll(buttons);
                     buttons.add(storyButton);
                     buttons.add(versusButton);
                     settingsSingleton.setGameStateString("Level");
@@ -313,14 +315,14 @@ public class Game extends AbstractGame {
             }
             if (settingsSingleton.getGameStateString().equals("STORY")) {
                 gameModeOffset += 8;
-                buttonsToRemove.addAll(buttons);;
+                buttonsToRemove.addAll(buttons);
                 if (Window.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset > Window.getWidth())  {
                     settingsSingleton.setGameState(2);
                 }
             }
             else if (settingsSingleton.getGameStateString().equals("VS")) {
                 gameModeOffset -= 8;
-                buttonsToRemove.addAll(buttons);;
+                buttonsToRemove.addAll(buttons);
                 if (Window.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset < 0)  {
                     settingsSingleton.setGameState(2);
                 }
@@ -331,7 +333,7 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 2) {
             if (!settingsSingleton.getGameStateString().equals("Players")) {
-                buttonsToRemove.addAll(buttons);;
+                buttonsToRemove.addAll(buttons);
                 Button twoPlayerButton = new Button("2", FONT_SIZE,
                         Window.getWidth(), 160,
                         new Point(0, Window.getHeight() / 2 - 160));
@@ -352,7 +354,7 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 3) {
             if (!settingsSingleton.getGameStateString().equals("Character")) {
                 spacer = 300;
-                buttonsToRemove.addAll(buttons);;
+                buttonsToRemove.addAll(buttons);
                 if (settingsSingleton.getGameMode() == 1) {
                     buttons.add(new Button("Game Settings", FONT_SIZE,
                             titleFont.getWidth("Settings"), 100,
@@ -371,6 +373,7 @@ public class Game extends AbstractGame {
                 }
                 menuBackground = new Image("res/menu/characterMenu.png");
                 menuTitle = "CHOOSE WAIFU";
+                slidersToRemove.addAll(sliders);
             }
 
             int row = 1;
@@ -424,12 +427,13 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 4) { // Comrades
             if (!settingsSingleton.getGameStateString().equals("Comrade")) {
-                buttonsToRemove.addAll(buttons);;
+                buttonsToRemove.addAll(buttons);
                 buttons.add(new Button("Game Settings", FONT_SIZE,
                         titleFont.getWidth("Settings"), 100,
                         new Point(0, 0)));
                 menuTitle = "CHOOSE YOUR POWER";
                 settingsSingleton.setGameStateString("Comrade");
+                slidersToRemove.addAll(sliders);
             }
 
             for (Player player: players) {
@@ -460,7 +464,7 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 5) { // Map
             if (!settingsSingleton.getGameStateString().equals("MAP")) {
-                buttonsToRemove.addAll(buttons);;
+                buttonsToRemove.addAll(buttons);
                 buttons.add(new Button("Game Settings", FONT_SIZE,
                         titleFont.getWidth("Settings"), 100,
                         new Point(0, 0)));
@@ -522,7 +526,7 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 6) {
             if (settingsSingleton.getGameMode() == 1) {
                 if (!settingsSingleton.getGameStateString().equals("Game")) {
-                    buttonsToRemove.addAll(buttons);;
+                    buttonsToRemove.addAll(buttons);
                     setPlayersPosition();
                     //currentMusic = "music/Giorno.wav";
                     currentMusic = String.format("music/Fight%d.wav", Math.round(Math.random()*3));
@@ -615,7 +619,7 @@ public class Game extends AbstractGame {
             }
             else {
                 if (!settingsSingleton.getGameStateString().equals("Story")) {
-                    buttonsToRemove.addAll(buttons);;
+                    buttonsToRemove.addAll(buttons);
                     settingsSingleton.setGameStateString("Story");
                     setPlayersPosition();
                     map = mapToTransitionTo;
@@ -988,7 +992,7 @@ public class Game extends AbstractGame {
             if (settingsSingleton.getGameMode() == 0) {
                 if (settingsSingleton.getGameStateString().equals("Continue")) {
                     changeMainMusic(currentMusic);
-                    buttonsToRemove.addAll(buttons);;
+                    buttonsToRemove.addAll(buttons);
                     settingsSingleton.setGameState(6);
                     map.generateMap();
                     for (Player player : players) {
@@ -1057,15 +1061,13 @@ public class Game extends AbstractGame {
                     statTracker[settingsSingleton.getGameMode() + 1] = statTracker[settingsSingleton.getGameMode() + 1] + 1;
                     settingsSingleton.getWinner().getCharacter().playLine();
                     winnerPlayed = true;
-                    buttonsToRemove.addAll(buttons);;
-                    Button backToStartButton = new Button("Back To Start", "Main Menu", FONT_SIZE,
+                    buttonsToRemove.addAll(buttons);
+                    buttons.add(new Button("Back To Start", "Main Menu", FONT_SIZE,
                             Window.getWidth(), 160,
-                            new Point(0, Window.getHeight() / 1.5 + 160));
-                    Button retryButton = new Button("Retry", "Restart", FONT_SIZE,
+                            new Point(0, Window.getHeight() / 1.5 + 160)));
+                    buttons.add(new Button("Retry", "Restart", FONT_SIZE,
                             Window.getWidth(), 160,
-                            new Point(0, Window.getHeight() / 2 + 160));
-                    buttons.add(backToStartButton);
-                    buttons.add(retryButton);
+                            new Point(0, Window.getHeight() / 2 + 160)));
                 }
                 if (input.wasPressed(MouseButtons.LEFT)) {
                     if((settingsSingleton.getGameStateString().equals("Retry")) || (settingsSingleton.getGameStateString().equals("Menu"))) {
@@ -1083,7 +1085,7 @@ public class Game extends AbstractGame {
                             }
                             map.generateMap();
                             settingsSingleton.setGameState(6);
-                            buttonsToRemove.addAll(buttons);;
+                            buttonsToRemove.addAll(buttons);
                         }
                         else if (settingsSingleton.getGameStateString().equals("Menu")) {
                             map = null;
@@ -1099,7 +1101,7 @@ public class Game extends AbstractGame {
                                 settingsSingleton.setGameState(0);
                             }
                             players.clear();
-                            buttonsToRemove.addAll(buttons);;
+                            buttonsToRemove.addAll(buttons);
                         }
                         obstacles.removeAll(obstacles);
                         powerUps.removeAll(powerUps);
@@ -1147,7 +1149,7 @@ public class Game extends AbstractGame {
                 for (Tile tile: map.getTiles()) {
                     customMapTiles.add(tile);
                 }
-                buttonsToRemove.addAll(buttons);;
+                buttonsToRemove.addAll(buttons);
                 settingsSingleton.setGameStateString("Create Your Own Map");
                 menuBackground = null;
                 menuTitle = null;
@@ -1214,7 +1216,7 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 10) {
             if (!settingsSingleton.getGameStateString().equals("Game Settings")) {
                 settingsSingleton.setGameStateString("Game Settings");
-                buttonsToRemove.addAll(buttons);;
+                buttonsToRemove.addAll(buttons);
                 buttons.add(new Button("Left Arrow",
                         new Image("res/arrows/LeftArrow.png"),
                         new Point(Window.getWidth() - 450, 100)));
@@ -1231,15 +1233,7 @@ public class Game extends AbstractGame {
                 pageType = "General";
                 page = 0;
             }
-            if (pageType.equals("PowerUps")) {
-                gameFont.drawString("Drag the slider across to increase/decrease the spawn rate!", titleFont.getWidth("SETTINGS"), 150, new DrawOptions().setBlendColour(0,0,0, 0.7));
-                gameFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS"), 190, new DrawOptions().setBlendColour(0,0,0, 0.7));
 
-            }
-            else if (pageType.equals("Obstacles")) {
-                gameFont.drawString("Drag the slider across to increase/decrease the spawn rate!", titleFont.getWidth("SETTINGS"), 150,new DrawOptions().setBlendColour(0,0,0, 0.7));
-                gameFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS"),  190, new DrawOptions().setBlendColour(0,0,0, 0.7));
-            }
             if (gameSettingsSingleton.getPage() == 0) {
                 pageType = "General";
             }
@@ -1248,6 +1242,9 @@ public class Game extends AbstractGame {
             }
             else if (gameSettingsSingleton.getPage() == 2) {
                 pageType = "Obstacles";
+            }
+            else {
+                pageType = "";
             }
             menuTitle = pageType;
         }
@@ -1280,13 +1277,11 @@ public class Game extends AbstractGame {
                 settingsSingleton.setGameState(6);
             }
         }
-        buttons.removeAll(buttonsToRemove);
-        buttonsToRemove.clear();
-        sliders.removeAll(slidersToRemove);
-        slidersToRemove.clear();
         for (Slider slider: sliders) {
             slider.interact(input);
         }
+        updateButtons();
+        updateSliders();
         render();
     }
 
@@ -1576,15 +1571,11 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 10) {
             menuBackground = null;
-            if (pageType.equals("General")) {
+            if ("General".equalsIgnoreCase(pageType)) {
                 titleFont.drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + 0);
             }
-            else if (pageType.equals("PowerUps")) {
+            else if (Arrays.asList("PowerUps", "Obstacles").contains(pageType)) {
                 gameFont.drawString("Drag the slider across to increase/decrease the spawn rate!", titleFont.getWidth("SETTINGS"), 150, new DrawOptions().setBlendColour(0,0,0, 0.7));
-                gameFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS"), 190, new DrawOptions().setBlendColour(0,0,0, 0.7));
-            }
-            else if (pageType.equals("Obstacles")) {
-                gameFont.drawString("Drag the slider across to increase/decrease the spawn rate!", titleFont.getWidth("SETTINGS"), 150,new DrawOptions().setBlendColour(0,0,0, 0.7));
                 gameFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS"), 190, new DrawOptions().setBlendColour(0,0,0, 0.7));
             }
         }
@@ -1604,11 +1595,6 @@ public class Game extends AbstractGame {
         }
         showDisplayStrings();
         showTime();
-/*        Drawing.drawRectangle(0,0,Window.getWidth(), Window.getHeight(), new Colour(0,0,0));
-        Image sideCharacter = new Image(String.format("res/inGame/Dio.png"));
-        sideCharacter.drawFromTopLeft(Window.getWidth()/2, Window.getHeight()/2,
-                DO.setSection(0, sideCharacter.getHeight()/2, 100,
-                        -50));*/
     }
 
     public void showTime() {
@@ -2363,7 +2349,7 @@ public class Game extends AbstractGame {
     public void displayFailScreen() {
         if (failed) {
             failed = false;
-            buttonsToRemove.addAll(buttons);;
+            buttonsToRemove.addAll(buttons);
             buttons.add(new Button("Retry", "Continue?", FONT_SIZE,
                     Window.getWidth(), 160,
                     new Point(0, Window.getHeight() / 2)));
@@ -2592,4 +2578,15 @@ public class Game extends AbstractGame {
         }
     }
 
+    public void updateButtons() {
+        buttons.removeAll(buttonsToRemove);
+        buttons.addAll(buttonsToAdd);
+        buttonsToAdd.clear();
+        buttonsToRemove.clear();
+    }
+    
+    public void updateSliders() {
+        sliders.removeAll(slidersToRemove);
+        slidersToRemove.clear();
+    }
 }

@@ -45,7 +45,7 @@ public class PowerUpsSettingsSingleton {
         else if (powerUp.equals("Shield")) {
             shield = !shield;
         }
-        else if (powerUp.equals("NoblePhantasm")) {
+        else if (powerUp.equals("SpecialAbilityPoints")) {
             specialAbility = !specialAbility;
         }
     }
@@ -88,7 +88,7 @@ public class PowerUpsSettingsSingleton {
         else if (string.equals("Minimiser")) {
             return this.minimiserFrequency;
         }
-        else if (string.equals("Special Ability")) {
+        else if (string.equals("SpecialAbilityPoints")) {
             return this.specialAbilityFrequency;
         }
         return 0;
@@ -107,7 +107,7 @@ public class PowerUpsSettingsSingleton {
         else if (string.equals("Shield")) {
             return this.shield;
         }
-        else if (string.equals("Special Ability")) {
+        else if (string.equals("SpecialAbilityPoints")) {
             return this.specialAbility;
         }
         return false;
@@ -126,7 +126,7 @@ public class PowerUpsSettingsSingleton {
         else if (powerUp.equals("Shield")) {
             shieldFrequency = frequency;
         }
-        else if (powerUp.equals("Special Ability")) {
+        else if (powerUp.equals("SpecialAbilityPoints")) {
             specialAbilityFrequency = frequency;
         }
     }

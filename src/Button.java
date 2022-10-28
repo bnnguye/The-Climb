@@ -12,6 +12,7 @@ public class Button {
     private ArrayList<Button> buttonsToRemove = ButtonsSingleton.getInstance().getButtonsToRemove();
     private ArrayList<Slider> sliders = ButtonsSingleton.getInstance().getSliders();
     private ArrayList<Slider> slidersToRemove = ButtonsSingleton.getInstance().getSlidersToRemove();
+    private ArrayList<Button> buttonsToAdd = ButtonsSingleton.getInstance().getButtonsToAdd();
     
     private SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
     private GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
@@ -125,12 +126,20 @@ public class Button {
                 gameSettingsSingleton.setPage(gameSettingsSingleton.getPage() - 1);
                 buttonsToRemove.addAll(buttons);
                 slidersToRemove.addAll(sliders);
-            }
-            if (gameSettingsSingleton.getPage() == 1) {
-                addPowerUpSliders();
-            }
-            else if (gameSettingsSingleton.getPage() == 2) {
-                addObstacleSliders();
+                if (gameSettingsSingleton.getPage() == 0) {
+                    buttons.add(new Button("Decrease Map Speed",
+                            new Image("res/arrows/LeftArrow.png"),
+                            new Point(Window.getWidth()/2, 175 + 100)));
+                    buttons.add(new Button("Increase Map Speed",
+                            new Image("res/arrows/RightArrow.png"),
+                            new Point(Window.getWidth()/2, 175 + 500)));
+                }
+                else if (gameSettingsSingleton.getPage() == 1) {
+                    addPowerUpSliders();
+                }
+                else if (gameSettingsSingleton.getPage() == 2) {
+                    addObstacleSliders();
+                }
             }
         }
         else if (name.equalsIgnoreCase("PLAY")) {
@@ -149,12 +158,20 @@ public class Button {
                     gameSettingsSingleton.setPage(gameSettingsSingleton.getPage() + 1);
                     buttonsToRemove.addAll(buttons);
                     slidersToRemove.addAll(sliders);
-                }
-                if (gameSettingsSingleton.getPage() == 1) {
-                    addPowerUpSliders();
-                }
-                else if (gameSettingsSingleton.getPage() == 2) {
-                    addObstacleSliders();
+                    if (gameSettingsSingleton.getPage() == 0) {
+                        buttonsToAdd.add(new Button("Decrease Map Speed",
+                                new Image("res/arrows/LeftArrow.png"),
+                                new Point(Window.getWidth()/2, 175 + 100)));
+                        buttonsToAdd.add(new Button("Increase Map Speed",
+                                new Image("res/arrows/RightArrow.png"),
+                                new Point(Window.getWidth()/2, 175 + 500)));
+                    }
+                    else if (gameSettingsSingleton.getPage() == 1) {
+                        addPowerUpSliders();
+                    }
+                    else if (gameSettingsSingleton.getPage() == 2) {
+                        addObstacleSliders();
+                    }
                 }
         }
         else if (name.equalsIgnoreCase("Story")) {

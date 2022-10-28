@@ -4,6 +4,8 @@ public class ButtonsSingleton {
     private static ButtonsSingleton single_instance = null;
     private ArrayList<Button> buttons = new ArrayList<>();
     private ArrayList<Button> buttonsToRemove = new ArrayList<>();
+    private ArrayList<Button> buttonsToAdd = new ArrayList<>();
+
     private ArrayList<Slider> sliders = new ArrayList<>();
     private ArrayList<Slider> slidersToRemove = new ArrayList<>();
 
@@ -20,6 +22,10 @@ public class ButtonsSingleton {
 
     public ArrayList<Button> getButtonsToRemove() {
         return buttonsToRemove;
+    }
+
+    public ArrayList<Button> getButtonsToAdd() {
+        return buttonsToAdd;
     }
 
     public ArrayList<Slider> getSlidersToRemove() {
