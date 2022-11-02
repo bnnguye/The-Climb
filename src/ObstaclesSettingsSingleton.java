@@ -2,9 +2,9 @@ public class ObstaclesSettingsSingleton {
 
     private static ObstaclesSettingsSingleton single_instance = null;
 
-    private double rockFrequency = 0.925;
-    private double ballFrequency = 0.925;
-    private double stunBallFrequency = 0.925;
+    private double rockFrequency = 0.003;
+    private double ballFrequency = 0.003;
+    private double stunBallFrequency = 0.003;
     private boolean rocks = true;
     private boolean balls = true;
     private boolean stunBalls = true;

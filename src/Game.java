@@ -532,6 +532,7 @@ public class Game extends AbstractGame {
                     currentMusic = String.format("music/Fight%d.wav", Math.round(Math.random()*3));
                     resetMusic();
                     playSound("music/Start.wav");
+                    settingsSingleton.setPlayers(players.size());
                     settingsSingleton.setGameStateString("Game");
                 }
                 startCountdown();
@@ -545,6 +546,7 @@ public class Game extends AbstractGame {
                         }
                     }
                     else {
+                        // when top is reached, first one to touch top wins
                         for (Player player : players) {
                             if (player.getCharacter().getPos().distanceTo(new Point(player.getCharacter().getPos().x, 0)) < 10) {
                                 settingsSingleton.setGameState(7);
@@ -586,7 +588,6 @@ public class Game extends AbstractGame {
                     if ((!playingActivation) && (!playingAnimation)) {
                         mainMusic.setVolume(1);
                     }
-
                     if (!playingAnimation) {
                         updateExp();
                         updateObjects();
@@ -1476,17 +1477,17 @@ public class Game extends AbstractGame {
             drawGame();
             if (countDown < 3 * frames) {
                 Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, (390.0 - currentFrame)/390.0));
-                String string;
+                String countdown;
                 if (currentFrame < 150) {
-                    string = "3..";
+                    countdown = "3..";
                 } else if (currentFrame < 270) {
-                    string = "2..";
+                    countdown = "2..";
                 } else if (currentFrame < 390) {
-                    string = "1..";
+                    countdown = "1..";
                 } else {
-                    string = "GO!";
+                    countdown = "GO!";
                 }
-                countdownFont.drawString(String.format("%s", string), Window.getWidth() / 2 - 125, Window.getHeight() / 2);
+                countdownFont.drawString(String.format("%s", countdown), Window.getWidth() / 2 - 125, Window.getHeight() / 2);
                 currentFrame++;
             }
             else {
@@ -2271,35 +2272,35 @@ public class Game extends AbstractGame {
         double spawnNo = Math.random()*5;
         if (spawnNo < 1) {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpeedUp")) {
-                if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedUp")) {
+                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedUp")) {
                     powerUps.add(new PowerUpSpeedUp());
                 }
             }
         }
         else if (spawnNo < 2) {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpeedDown")) {
-                if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedDown")) {
+                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedDown")) {
                     powerUps.add(new SpeedDown());
                 }
             }
         }
         else if (spawnNo < 3) {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Minimiser")) {
-                if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Minimiser")) {
+                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Minimiser")) {
                     powerUps.add(new PowerUpMinimiser());
                 }
             }
         }
         else if (spawnNo < 4) {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Shield")) {
-                if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Shield")) {
+                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Shield")) {
                     powerUps.add(new PowerUpShield());
                 }
             }
         }
         else {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Special Ability")) {
-                if (Math.random() > gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Special Ability")) {
+                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Special Ability")) {
                     powerUps.add(new PowerUpSpecialAbilityPoints());
                 }
             }
@@ -2308,19 +2309,19 @@ public class Game extends AbstractGame {
 
     public void spawnObstacles() {
         if (gameSettingsSingleton.getObstaclesSettingsSingleton().isRocks()) {
-            if (Math.random() > gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getFrequency("Rock")) {
+            if (Math.random() < gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getFrequency("Rock")) {
                 obstacles.add(new ObstacleRock());
             }
         }
         if (gameSettingsSingleton.getObstaclesSettingsSingleton().isBalls()) {
             if (Math.random()
-                    > gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getFrequency("Ball")) {
+                    < gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getFrequency("Ball")) {
                 obstacles.add(new ObstacleBall());
             }
         }
         if (gameSettingsSingleton.getObstaclesSettingsSingleton().isStunBalls()) {
             if (Math.random()
-                    > gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getFrequency("StunBall")) {
+                    < gameSettingsSingleton.getObstaclesSettingsSingleton().getInstance().getFrequency("StunBall")) {
                 obstacles.add(new ObstacleStunBall());
             }
         }
