@@ -27,6 +27,7 @@ public class Button {
     private final Rectangle box;
     private final Point position;
     private Image image = null;
+    private double scale;
 
     private boolean hovering = false;
     private boolean night = false;
@@ -43,6 +44,7 @@ public class Button {
         this.position = topLeft;
         DO.setBlendColour(whiteTranslucent);
         FONT_SIZE = fontSize;
+        this.scale = 1;
     }
     // Constructor for Strings/Buttons without images
     public Button(String name, int fontSize, double width, double length, Point topLeft)  {
@@ -52,6 +54,7 @@ public class Button {
         this.position = topLeft;
         FONT_SIZE = fontSize;
         font = new Font("res/fonts/DejaVuSans-Bold.ttf", FONT_SIZE);
+        this.scale = 1;
         DO.setBlendColour(whiteTranslucent);
     }
 
@@ -62,6 +65,20 @@ public class Button {
         this.box = image.getBoundingBoxAt(new Point(topLeft.x + image.getWidth()/2, topLeft.y + image.getHeight()/2));
         this.position = topLeft;
         this.image = image;
+        this.scale = 1;
+        DO.setBlendColour(whiteTranslucent);
+    }
+
+    public Button(String name, Image image, Point topLeft, double scale) {
+        this.name = name;
+        this.displayString = name;
+        Rectangle collisionImage = new Rectangle(topLeft.x + image.getWidth()*scale/2,
+                topLeft.y + image.getHeight()*scale/2,
+                image.getWidth()*scale, image.getHeight()*scale);
+        this.box = collisionImage;
+        this.position = topLeft;
+        this.image = image;
+        this.scale = scale;
         DO.setBlendColour(whiteTranslucent);
     }
 
@@ -90,9 +107,10 @@ public class Button {
     }
 
     public void draw() {
+        DO.setScale(scale, scale);
         if (image != null) {
             // need to adjust as boundingBoxAt takes centre, not topLeft
-            image.drawFromTopLeft(position.x, position.y);
+            image.drawFromTopLeft(position.x, position.y, DO);
         } else if (font != null) {
             font.drawString(displayString, position.x, position.y + (box.bottom() - box.top()), DO);
         }
@@ -126,13 +144,23 @@ public class Button {
                 gameSettingsSingleton.setPage(gameSettingsSingleton.getPage() - 1);
                 buttonsToRemove.addAll(buttons);
                 slidersToRemove.addAll(sliders);
+                buttonsToAdd.add(new Button("Left Arrow",
+                        new Image("res/arrows/LeftArrow.png"),
+                        new Point(600, 0),
+                        0.5));
+                buttonsToAdd.add(new Button("Right Arrow",
+                        new Image("res/arrows/RightArrow.png"),
+                        new Point(Window.getWidth() - 750, 0),
+                        0.5));
                 if (gameSettingsSingleton.getPage() == 0) {
-                    buttons.add(new Button("Decrease Map Speed",
+                    buttonsToAdd.add(new Button("Decrease Map Speed",
                             new Image("res/arrows/LeftArrow.png"),
-                            new Point(Window.getWidth()/2, 175 + 100)));
-                    buttons.add(new Button("Increase Map Speed",
+                            new Point(Window.getWidth()/2 + 30, 200),
+                            0.5));
+                    buttonsToAdd.add(new Button("Increase Map Speed",
                             new Image("res/arrows/RightArrow.png"),
-                            new Point(Window.getWidth()/2, 175 + 500)));
+                            new Point(Window.getWidth()/2 + 130, 200),
+                            0.5));
                 }
                 else if (gameSettingsSingleton.getPage() == 1) {
                     addPowerUpSliders();
@@ -158,15 +186,15 @@ public class Button {
                     gameSettingsSingleton.setPage(gameSettingsSingleton.getPage() + 1);
                     buttonsToRemove.addAll(buttons);
                     slidersToRemove.addAll(sliders);
-                    if (gameSettingsSingleton.getPage() == 0) {
-                        buttonsToAdd.add(new Button("Decrease Map Speed",
-                                new Image("res/arrows/LeftArrow.png"),
-                                new Point(Window.getWidth()/2, 175 + 100)));
-                        buttonsToAdd.add(new Button("Increase Map Speed",
-                                new Image("res/arrows/RightArrow.png"),
-                                new Point(Window.getWidth()/2, 175 + 500)));
-                    }
-                    else if (gameSettingsSingleton.getPage() == 1) {
+                    buttonsToAdd.add(new Button("Left Arrow",
+                            new Image("res/arrows/LeftArrow.png"),
+                            new Point(600, 0),
+                            0.5));
+                    buttonsToAdd.add(new Button("Right Arrow",
+                            new Image("res/arrows/RightArrow.png"),
+                            new Point(Window.getWidth() - 750, 0),
+                            0.5));
+                    if (gameSettingsSingleton.getPage() == 1) {
                         addPowerUpSliders();
                     }
                     else if (gameSettingsSingleton.getPage() == 2) {
@@ -218,4 +246,5 @@ public class Button {
                 new Slider("Rock", "obstacle", new Point(400, 400)),
                 new Slider("StunBall", "obstacle", new Point(400, 500))));
     }
+
 }

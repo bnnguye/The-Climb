@@ -1215,23 +1215,27 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 10) {
             if (!settingsSingleton.getGameStateString().equals("Game Settings")) {
+                gameSettingsSingleton.setPage(0);
                 settingsSingleton.setGameStateString("Game Settings");
                 buttonsToRemove.addAll(buttons);
                 buttons.add(new Button("Left Arrow",
                         new Image("res/arrows/LeftArrow.png"),
-                        new Point(Window.getWidth() - 450, 100)));
+                        new Point(600, 0),
+                        0.5));
                 buttons.add(new Button("Right Arrow",
                         new Image("res/arrows/RightArrow.png"),
-                        new Point(Window.getWidth() - 200, 100)));
+                        new Point(Window.getWidth() - 750, 0),
+                        0.5));
                 buttons.add(new Button("Decrease Map Speed",
                         new Image("res/arrows/LeftArrow.png"),
-                        new Point(Window.getWidth()/2, 175 + 100)));
+                        new Point(Window.getWidth()/2 + 30, 200),
+                        0.5));
                 buttons.add(new Button("Increase Map Speed",
                         new Image("res/arrows/RightArrow.png"),
-                        new Point(Window.getWidth()/2, 175 + 500)));
+                        new Point(Window.getWidth()/2 + 130, 200),
+                        0.5));
                 titleFont.drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + 100);
                 pageType = "General";
-                page = 0;
             }
 
             if (gameSettingsSingleton.getPage() == 0) {
