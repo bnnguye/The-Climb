@@ -260,7 +260,7 @@ public class Game extends AbstractGame {
             players.get(1).setCharacter(new Character("Mai"));
             players.get(1).setSideCharacter(new SideDio());
             settingsSingleton.setPlayers(players.size());
-            map = new Map("Park");
+            map = new Map("Spooky Spikes");
             map.generateMap();
             gameSettingsSingleton.setMap(map);
             settingsSingleton.setGameMode(1);
@@ -465,9 +465,6 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 5) { // Map
             if (!settingsSingleton.getGameStateString().equals("MAP")) {
                 buttonsToRemove.addAll(buttons);
-                buttons.add(new Button("Game Settings", FONT_SIZE,
-                        titleFont.getWidth("Settings"), 100,
-                        new Point(0, 0)));
                 menuTitle = "Which Climb?";
                 menuBackground = null;
                 settingsSingleton.setGameStateString("MAP");
@@ -592,12 +589,12 @@ public class Game extends AbstractGame {
                         updateExp();
                         updateObjects();
                         updatePlayerMovement(input);
-                        checkCollisionPowerUps();
-                        checkCollisionObstacles();
-                        checkCollisionTiles();
-                        recordButtons(input);
                     }
                     updateAbilities();
+                    checkCollisionPowerUps();
+                    checkCollisionObstacles();
+                    checkCollisionTiles();
+                    recordButtons(input);
                     if (!settingsSingleton.getGameStateString().equals("Win")) {
                         int deathCounter = 0;
                         for (Player player : players) {

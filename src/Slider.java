@@ -14,8 +14,8 @@ public class Slider {
     private final String type;
     private final Rectangle slide;
     private Point topLeft;
-    private final double minimumFrequency = 0.003;
-    private final double maxFrequency = 0.006;
+    private final double minimumFrequency = 0.002;
+    private final double maxFrequency = 0.005;
     private final double maxBSize = 500;
 
     public Slider(String name, String type, Point topLeft) {

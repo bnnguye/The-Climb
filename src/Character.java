@@ -65,18 +65,15 @@ public class Character {
         public void move(String key) {
                 double currentSpeed = speed;
 
-                if (speedDownTimer > 0) {
-                        currentSpeed = speed - 1;
+                if (speedDownTimer > 0 || gojoAbility) {
+                        currentSpeed = speed/5*3;
                         speedDownTimer--;
                 }
                 if (speedUpTimer > 0) {
-                        currentSpeed = speed + 1;
+                        currentSpeed = speed*2;
                         speedUpTimer--;
                 }
 
-                if (gojoAbility) {
-                        currentSpeed = speed - 1;
-                }
                 if (key != null) {
                         double new_X = pos.x;
                         double new_Y = pos.y;
@@ -263,9 +260,6 @@ public class Character {
                 }
                 if (hisokaTimer > 0) {
                         hisokaTimer--;
-                }
-                if (speedUpTimer > 0) {
-                        speedUpTimer--;
                 }
         }
 
