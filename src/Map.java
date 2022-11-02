@@ -104,6 +104,9 @@ public class Map {
         else if (line.equals("IceTop")) {
             tile = new TileIceTop(point);
         }
+        else if (line.equals("IceLeft")) {
+            tile = new TileIceLeft(point);
+        }
         else if (line.equals("Slow")) {
             tile = new TileSlow(point);
         }
