@@ -1492,6 +1492,7 @@ public class Game extends AbstractGame {
             else {
                 if(!map.hasFinished()) {
                     if(!playingAnimation) {
+                        drawBoundaries();
                         displayCharacterStats(players);
                     }
                 }
@@ -1546,12 +1547,8 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 9) {
             int index = 0;
             for (Tile tile: customMapTiles) {
-                System.out.println(customMapTiles);
-                System.out.println(tile);
                 tile.draw();
-                System.out.println("Draw");
                 index++;
-                System.out.println(index);
             }
             if (!addingTile) {
                 playerFont.drawString("S: Save and Exit ESC: Exit without Saving Arrow Keys: Navigate\nA: Add, R: Remove last block", 100, 50);
@@ -2145,7 +2142,6 @@ public class Game extends AbstractGame {
     public void checkCollisionTiles() {
         for (Player player: players) {
             if (!map.hasFinished()) {
-                drawBoundaries();
                 if ((player.getCharacter().getRectangle().intersects(bottomRectangle))) {
                     if (!player.isDead()) {
                         player.setDead();

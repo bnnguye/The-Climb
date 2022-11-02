@@ -19,7 +19,7 @@ public class Button {
 
     private int FONT_SIZE;
     private final DrawOptions DO = new DrawOptions();
-    private Font font;
+    private Font font = new Font("res/fonts/DejaVuSans-Bold.ttf", 100);
     private final Music music = new Music();
 
     private final String name;
