@@ -1,17 +1,17 @@
 Game
-Amount of times the game has been opened: 885
+Amount of times the game has been opened: 889
 Amount of games played in Easy Mode: 107
-Amount of games played in Hard Mode: 3035
+Amount of games played in Hard Mode: 3039
 Amount of games played in Story Mode: 98
 Chizuru
 Played: 0
 Won: 0
 02
-Played: 0
+Played: 1
 Won: 0
 Miku
-Played: 4
-Won: 2
+Played: 5
+Won: 3
 Mai
 Played: 4
 Won: 2

@@ -16,7 +16,7 @@ public class Slider {
     private Point topLeft;
     private final double minimumFrequency = 0.002;
     private final double maxFrequency = 0.005;
-    private final double maxBSize = 500;
+    private final double maxBSize = 1220;
 
     public Slider(String name, String type, Point topLeft) {
         this.name = name;
@@ -31,14 +31,16 @@ public class Slider {
     }
 
     public void draw() {
-        double currentBar;
+        double currentBar = 0;
         double currentFrequency;
+        Image sliderIndicator = new Image("res/misc/sliderIndicatorS.png");
         if (("obstacle").equalsIgnoreCase(type)) {
             currentFrequency = obstaclesSettingsSingleton.getFrequency(name);
             currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
             if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(name)) {
                 Drawing.drawRectangle(topLeft, maxBSize, logo.getHeight(), new Colour(0, 0, 0, 0.5));
-                Drawing.drawRectangle(topLeft, currentBar, logo.getHeight(), new Colour(0, 1, 0.7));
+                Drawing.drawRectangle(topLeft, currentBar, logo.getHeight(), new Colour((1 - currentBar/maxBSize), 1, currentBar/maxBSize, currentBar/maxBSize));
+                sliderIndicator.drawFromTopLeft(currentBar + topLeft.x - sliderIndicator.getWidth()/2, topLeft.y - 10);
             }
         }
         else if (("powerup").equalsIgnoreCase(type)) {
@@ -46,15 +48,16 @@ public class Slider {
             currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(name)) {
                 Drawing.drawRectangle(topLeft, maxBSize, logo.getHeight(), new Colour(0, 0, 0, 0.5));
-                Drawing.drawRectangle(topLeft, currentBar, logo.getHeight(), new Colour(0, 1, 0.7));
+                Drawing.drawRectangle(topLeft, currentBar, logo.getHeight(), new Colour((1 - currentBar/maxBSize), 1, currentBar/maxBSize, currentBar/maxBSize ));
+                sliderIndicator.drawFromTopLeft(currentBar + topLeft.x - sliderIndicator.getWidth()/2, topLeft.y - 10);
             }
         }
         logo.drawFromTopLeft(topLeft.x - logo.getWidth(), topLeft.y);
     }
 
     public void interact(Input input) {
-        if (input.wasPressed(MouseButtons.LEFT)) {
-            double mouseX = input.getMouseX();
+        double mouseX = input.getMouseX();
+        if (input.isDown(MouseButtons.LEFT)) {
             if (slide.intersects(input.getMousePosition())) {
                 if (mouseX > topLeft.x + maxBSize) {
                     mouseX = topLeft.x + maxBSize;
@@ -66,7 +69,6 @@ public class Slider {
                 else if (newFrequency < minimumFrequency) {
                     newFrequency = minimumFrequency;
                 }
-                System.out.println(newFrequency);
                 if (type.equalsIgnoreCase("obstacle")) {
                      obstaclesSettingsSingleton.changeFrequency(name, newFrequency);
                 }
@@ -74,7 +76,9 @@ public class Slider {
                     powerUpsSettingsSingleton.changeFrequency(name, newFrequency);
                 }
             }
-            else if (logo.getBoundingBoxAt(new Point(topLeft.x - logo.getWidth()/2
+        }
+        if (input.wasPressed(MouseButtons.LEFT)) {
+            if (logo.getBoundingBoxAt(new Point(topLeft.x - logo.getWidth()/2
                     , topLeft.y + logo.getHeight()/2)).intersects(input.getMousePosition())) {
                 if (type.equalsIgnoreCase("obstacle")) {
                     obstaclesSettingsSingleton.toggle(name);

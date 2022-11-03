@@ -310,13 +310,14 @@ public class Game extends AbstractGame {
                     buttons.add(storyButton);
                     buttons.add(versusButton);
                     settingsSingleton.setGameStateString("Level");
-                    menuTitle = "SELECT GAME MODE";
+                    menuTitle = "GAME MODE";
                 }
             }
             if (settingsSingleton.getGameStateString().equals("STORY")) {
                 gameModeOffset += 8;
                 buttonsToRemove.addAll(buttons);
                 if (Window.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset > Window.getWidth())  {
+                    settingsSingleton.setGameMode(0);
                     settingsSingleton.setGameState(2);
                 }
             }
@@ -324,6 +325,7 @@ public class Game extends AbstractGame {
                 gameModeOffset -= 8;
                 buttonsToRemove.addAll(buttons);
                 if (Window.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset < 0)  {
+                    settingsSingleton.setGameMode(1);
                     settingsSingleton.setGameState(2);
                 }
             }
@@ -625,17 +627,7 @@ public class Game extends AbstractGame {
                         map.generateMap();
                     }
                 }
-                else if (currentBackground != null) {
-                    currentBackground.drawFromTopLeft(currentBackgroundPoint.x, currentBackgroundPoint.y);
-                }
-                if (dark) {
-                    darken();
-                }
-                if ((shakeTimer > 0) || (transitionTimer > 0)) {
-                    shakeImage();
-                    transition();
-                }
-                else {
+                if (!dark && shakeTimer <= 0 && transitionTimer <= 0) {
                     if (playingStory) {
                         currentMode = "Story";
                         currentDialogue = currentStory;
@@ -877,8 +869,8 @@ public class Game extends AbstractGame {
                         }
                     }
                     else if (playingMap) {
-
                     }
+
                     // code for displaying dialogue
                     if (playingDialogue) {
                         if (dialogueCharacter == null) {
@@ -896,7 +888,7 @@ public class Game extends AbstractGame {
                         }
                         else {
                             if (dialogueCharacter != null) {
-                                Image characterOnScreen = new Image(String.format("res/Selected/%s_Selected.png", dialogueCharacter.getName()));
+                                Image characterOnScreen = new Image(String.format("res/Renders/%s.png", dialogueCharacter.getName()));
                                 if (alternate) {
                                     characterOnScreen.draw(dialogueWidth + characterOnScreen.getWidth()/2, dialogueLength - characterOnScreen.getHeight()/2);
                                 }
@@ -984,7 +976,6 @@ public class Game extends AbstractGame {
                     }
                 }
             }
-
         }
         else if (settingsSingleton.getGameState() == 7) {
             if (settingsSingleton.getGameMode() == 0) {
@@ -1294,212 +1285,225 @@ public class Game extends AbstractGame {
         } else {
             drawMapBackground();
         }
-        if (settingsSingleton.getGameState() < 6) {
-            if (settingsSingleton.getGameState() == -1 ) {
-                Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), black);
-                playIntro();
+        if (settingsSingleton.getGameState() == -1 ) {
+            Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), black);
+            playIntro();
+        }
+        if (settingsSingleton.getGameState() == 1) {
+            Image storyImage = new Image("res/menu/storyMenu.png");
+            Image vsImage = new Image("res/menu/vsMenu.png");
+            if (settingsSingleton.getGameStateString().equals("STORY")) {
+                vsImage.drawFromTopLeft(vsImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset, 0);
+                storyImage.drawFromTopLeft(-storyImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) +gameModeOffset, 0);
             }
-            if (settingsSingleton.getGameState() == 1) {
-                Image storyImage = new Image("res/menu/storyMenu.png");
-                Image vsImage = new Image("res/menu/vsMenu.png");
-                if (settingsSingleton.getGameStateString().equals("STORY")) {
-                    vsImage.drawFromTopLeft(vsImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset, 0);
-                    storyImage.drawFromTopLeft(-storyImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) +gameModeOffset, 0);
-                }
-                else if (settingsSingleton.getGameStateString().equals("VS")) {
-                    storyImage.drawFromTopLeft(-storyImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset, 0);
-                    vsImage.drawFromTopLeft(vsImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset, 0);
-                }
-                else {
-                    storyImage.drawFromTopLeft(-storyImage.getWidth()/2 - (currentMousePosition.x/3 - Window.getWidth()/6), 0);
-                    vsImage.drawFromTopLeft(vsImage.getWidth()/2 - (currentMousePosition.x/3 - Window.getWidth()/6), 0);
-                }
+            else if (settingsSingleton.getGameStateString().equals("VS")) {
+                storyImage.drawFromTopLeft(-storyImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset, 0);
+                vsImage.drawFromTopLeft(vsImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset, 0);
             }
-            else if (settingsSingleton.getGameState() == 2) {
-                for (Button button: buttons) {
-                    if ("234".contains(button.getName())) {
-                        button.setNight();
-                        if (button.isHovering()) {
-                            Image playerArt = new Image(String.format("res/menu/%sPlayers.PNG", button.getName()));
-                            playerArt.draw(Window.getWidth()/2, Window.getHeight()/2);
-                        }
+            else {
+                storyImage.drawFromTopLeft(-storyImage.getWidth()/2 - (currentMousePosition.x/3 - Window.getWidth()/6), 0);
+                vsImage.drawFromTopLeft(vsImage.getWidth()/2 - (currentMousePosition.x/3 - Window.getWidth()/6), 0);
+            }
+            Drawing.drawRectangle(vsImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset, 0, 20, Window.getHeight(), new Colour(1,1,1));
+        }
+        else if (settingsSingleton.getGameState() == 2) {
+            for (Button button: buttons) {
+                if ("234".contains(button.getName())) {
+                    button.setNight();
+                    if (button.isHovering()) {
+                        Image playerArt = new Image(String.format("res/menu/%sPlayers.PNG", button.getName()));
+                        playerArt.draw(Window.getWidth()/2, Window.getHeight()/2);
                     }
                 }
             }
-            else if (settingsSingleton.getGameState() == 3) {
-                // draw character Icons
-                int row = 1;
-                int currentIcon = 1;
-                Image locked = new Image("res/icons/Unknown.png");
+        }
+        else if (settingsSingleton.getGameState() == 3) {
+            // draw character Icons
+            int row = 1;
+            int currentIcon = 1;
+            Image locked = new Image("res/icons/Unknown.png");
+            for (Character character: characters) {
+                character.getIcon().drawFromTopLeft(-240 +spacer * currentIcon, -200 + spacer * row);
+                currentIcon++;
+                if (currentIcon >= 7) {
+                    currentIcon = 1;
+                    row++;
+                }
+            }
+            // draw filler for locked characters
+            for (int i = characters.size(); i < 12; i++) {
+                locked.drawFromTopLeft(-240 + spacer * currentIcon, -200 + spacer * row);
+                currentIcon++;
+                if (currentIcon >= 7) {
+                    currentIcon = 1;
+                    row++;
+                }
+            }
+            drawBorders();
+            // react to player movement relative to character icons
+            for (Player player: players) {
                 for (Character character: characters) {
-                    character.getIcon().drawFromTopLeft(-240 +spacer * currentIcon, -200 + spacer * row);
-                    currentIcon++;
-                    if (currentIcon >= 7) {
-                        currentIcon = 1;
-                        row++;
-                    }
-                }
-                // draw filler for locked characters
-                for (int i = characters.size(); i < 12; i++) {
-                    locked.drawFromTopLeft(-240 + spacer * currentIcon, -200 + spacer * row);
-                    currentIcon++;
-                    if (currentIcon >= 7) {
-                        currentIcon = 1;
-                        row++;
-                    }
-                }
-                drawBorders();
-                // react to player movement relative to character icons
-                for (Player player: players) {
-                    for (Character character: characters) {
-                        Image border = new Image("res/Selected/Selected.png");
-                        if (player.getCharacter() == null) {
-                            Rectangle iconRectangle = new Rectangle(character.getIconPos().x - 165, character.getIconPos().y - 150, 299, 299);
-                            if (iconRectangle.intersects(player.getPos())) {
-                                character.getSelected().draw(250 + border.getWidth()*1.5*(player.getId()-1), Window.getHeight() - 100);
-                                playerFont.drawString(String.format("P%d: %s", player.getId(), character.getName()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight());
-                            }
-                            else {
-                                playerFont.drawString(String.format("P%d: ", player.getId()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight());
-                            }
+                    Image border = new Image("res/Selected/Selected.png");
+                    if (player.getCharacter() == null) {
+                        Rectangle iconRectangle = new Rectangle(character.getIconPos().x - 165, character.getIconPos().y - 150, 299, 299);
+                        if (iconRectangle.intersects(player.getPos())) {
+                            character.getSelected().draw(250 + border.getWidth()*1.5*(player.getId()-1), Window.getHeight() - 100);
+                            playerFont.drawString(String.format("P%d: %s", player.getId(), character.getName()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight());
                         }
                         else {
-                            player.getCharacter().getSelected().draw(250 + border.getWidth()*1.5*(player.getId()-1), Window.getHeight() - 100);
-                            playerFont.drawString(String.format("P%d: %s", player.getId(), player.getCharacter().getName()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight());
+                            playerFont.drawString(String.format("P%d: ", player.getId()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight());
                         }
-                        playerFont.drawString(String.format("Wins: %d", player.getNoOfWins()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight() - 40);
                     }
-                    player.getCursor().drawFromTopLeft(player.getPos().x, player.getPos().y);
+                    else {
+                        player.getCharacter().getSelected().draw(250 + border.getWidth()*1.5*(player.getId()-1), Window.getHeight() - 100);
+                        playerFont.drawString(String.format("P%d: %s", player.getId(), player.getCharacter().getName()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight());
+                    }
+                    playerFont.drawString(String.format("Wins: %d", player.getNoOfWins()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight() - 40);
+                }
+                player.getCursor().drawFromTopLeft(player.getPos().x, player.getPos().y);
+            }
+        }
+        else if (settingsSingleton.getGameState() == 4 ) {
+            spacer = 300;
+            int row = 1;
+            int currentIcon = 1;
+            Image locked = new Image("res/icons/Unknown.png");
+            for (SideCharacter character : sideCharacters) {
+                character.getIcon().draw(200 + spacer * currentIcon, -50 + spacer * row);
+                character.setIconPos(new Point(200 + spacer * currentIcon, -50 + spacer * row));
+                currentIcon++;
+                if (currentIcon >= 5) {
+                    currentIcon = 1;
+                    row++;
                 }
             }
-            else if (settingsSingleton.getGameState() == 4 ) {
-                spacer = 300;
-                int row = 1;
-                int currentIcon = 1;
-                Image locked = new Image("res/icons/Unknown.png");
+            // draw filler for locked characters
+            for (int i = sideCharacters.size(); i < 12; i++) {
+                locked.draw(200 + spacer * currentIcon, -50 + spacer * row);
+                currentIcon++;
+                if (currentIcon >= 5) {
+                    currentIcon = 1;
+                    row++;
+                }
+            }
+            drawBorders();
+            // react to player movement relative to character icons
+            for (Player player : players) {
                 for (SideCharacter character : sideCharacters) {
-                    character.getIcon().draw(200 + spacer * currentIcon, -50 + spacer * row);
-                    character.setIconPos(new Point(200 + spacer * currentIcon, -50 + spacer * row));
-                    currentIcon++;
-                    if (currentIcon >= 5) {
-                        currentIcon = 1;
-                        row++;
-                    }
-                }
-                // draw filler for locked characters
-                for (int i = sideCharacters.size(); i < 12; i++) {
-                    locked.draw(200 + spacer * currentIcon, -50 + spacer * row);
-                    currentIcon++;
-                    if (currentIcon >= 5) {
-                        currentIcon = 1;
-                        row++;
-                    }
-                }
-                drawBorders();
-                // react to player movement relative to character icons
-                for (Player player : players) {
-                    for (SideCharacter character : sideCharacters) {
-                        Image border = new Image("res/Selected/Selected.png");
-                        if (player.getSideCharacter() == null) {
-                            if (character.getIcon().getBoundingBoxAt(new Point(character.getIconPos().x - 25, character.getIconPos().y)).intersects(player.getPos())) {
-                                character.getSelected().draw(250 + border.getWidth() * 1.5 * (player.getId() - 1), Window.getHeight() - 150);
-                                playerFont.drawString(String.format("P%d: %s", player.getId(), character.getName()), 310 + (player.getId() - 1) * border.getWidth() * 3 / 2, Window.getHeight());
-                            } else {
-                                playerFont.drawString(String.format("P%d: ", player.getId()), 310 + (player.getId() - 1) * border.getWidth() * 3 / 2, Window.getHeight());
-                            }
+                    Image border = new Image("res/Selected/Selected.png");
+                    if (player.getSideCharacter() == null) {
+                        if (character.getIcon().getBoundingBoxAt(new Point(character.getIconPos().x - 25, character.getIconPos().y)).intersects(player.getPos())) {
+                            character.getSelected().draw(250 + border.getWidth() * 1.5 * (player.getId() - 1), Window.getHeight() - 150);
+                            playerFont.drawString(String.format("P%d: %s", player.getId(), character.getName()), 310 + (player.getId() - 1) * border.getWidth() * 3 / 2, Window.getHeight());
                         } else {
-                            player.getSideCharacter().getSelected().draw(250 + border.getWidth() * 1.5 * (player.getId() - 1), Window.getHeight() - 150);
-                            playerFont.drawString(String.format("P%d: %s", player.getId(), player.getSideCharacter().getName()), 310 + (player.getId() - 1) * border.getWidth() * 3 / 2, Window.getHeight());
+                            playerFont.drawString(String.format("P%d: ", player.getId()), 310 + (player.getId() - 1) * border.getWidth() * 3 / 2, Window.getHeight());
                         }
-                        playerFont.drawString(String.format("Wins: %d", player.getNoOfWins()), 310 + (player.getId() - 1) * border.getWidth() * 3 / 2, Window.getHeight() - 40);
+                    } else {
+                        player.getSideCharacter().getSelected().draw(250 + border.getWidth() * 1.5 * (player.getId() - 1), Window.getHeight() - 150);
+                        playerFont.drawString(String.format("P%d: %s", player.getId(), player.getSideCharacter().getName()), 310 + (player.getId() - 1) * border.getWidth() * 3 / 2, Window.getHeight());
                     }
-                    player.getCursor().drawFromTopLeft(player.getPos().x, player.getPos().y);
+                    playerFont.drawString(String.format("Wins: %d", player.getNoOfWins()), 310 + (player.getId() - 1) * border.getWidth() * 3 / 2, Window.getHeight() - 40);
+                }
+                player.getCursor().drawFromTopLeft(player.getPos().x, player.getPos().y);
+            }
+        }
+        else if (settingsSingleton.getGameState() == 5) {
+            spacer = 400;
+            int row = 1;
+            int currentIcon = 1;
+            Image locked = new Image("res/mapPeeks/locked.png");
+            for (Map map : playableMaps) {
+                map.getMapPeek().draw(spacer * currentIcon, -50 + spacer * row);
+                currentIcon++;
+                if (currentIcon >= 5) {
+                    currentIcon = 1;
+                    if (row < 2) {
+                        row++;
+                    }
                 }
             }
-            else if (settingsSingleton.getGameState() == 5) {
-                spacer = 400;
-                int row = 1;
-                int currentIcon = 1;
-                Image locked = new Image("res/mapPeeks/locked.png");
-                for (Map map : playableMaps) {
-                    map.getMapPeek().draw(spacer * currentIcon, -50 + spacer * row);
-                    currentIcon++;
-                    if (currentIcon >= 5) {
-                        currentIcon = 1;
-                        if (row < 2) {
-                            row++;
+            row = 1;
+            currentIcon = 2;
+            for (Map map : playableMaps) {
+                for (Player player: players) {
+                    if (!map.getMapPeek().getBoundingBoxAt(new Point(-425 + map.getMapPeek().getWidth() * currentIcon + (row - 1) *400, -50 + spacer * row)).intersects(player.getPos())) {
+                        if(player.getMapChosen() != null) {
+                            gameFont.drawString(String.format("P%d: %s", player.getId(), player.getMapChosen().getName()), (player.getId() - 1) * (Window.getWidth()+300) / (players.size() + 1), Window.getHeight() - 15, DO.setBlendColour(white));
                         }
+                    }
+                    else {
+                        if(player.getMapChosen() == null) {
+                            gameFont.drawString(String.format("P%d: %s", player.getId(), map.getName()), (player.getId() - 1) * (Window.getWidth()+300) / (players.size() + 1), Window.getHeight() - 15, DO.setBlendColour(white));
+                        }
+                    }
+                    if (player.getCharacter().getPos() != null) {
+                        player.getCharacter().draw();
                     }
                 }
-                row = 1;
-                currentIcon = 2;
-                for (Map map : playableMaps) {
-                    for (Player player: players) {
-                        if (!map.getMapPeek().getBoundingBoxAt(new Point(-425 + map.getMapPeek().getWidth() * currentIcon + (row - 1) *400, -50 + spacer * row)).intersects(player.getPos())) {
-                            if(player.getMapChosen() != null) {
-                                gameFont.drawString(String.format("P%d: %s", player.getId(), player.getMapChosen().getName()), (player.getId() - 1) * (Window.getWidth()+300) / (players.size() + 1), Window.getHeight() - 15, DO.setBlendColour(white));
-                            }
-                        }
-                        else {
-                            if(player.getMapChosen() == null) {
-                                gameFont.drawString(String.format("P%d: %s", player.getId(), map.getName()), (player.getId() - 1) * (Window.getWidth()+300) / (players.size() + 1), Window.getHeight() - 15, DO.setBlendColour(white));
-                            }
-                        }
-                        if (player.getCharacter().getPos() != null) {
-                            player.getCharacter().draw();
-                        }
-                    }
-                    currentIcon++;
-                    if (currentIcon > 5) {
-                        currentIcon = 1;
-                        if (row < 2) {
-                            row++;
-                        }
+                currentIcon++;
+                if (currentIcon > 5) {
+                    currentIcon = 1;
+                    if (row < 2) {
+                        row++;
                     }
                 }
-                for (int i = playableMaps.size(); i < 8; i++) {
-                    locked.draw(spacer * currentIcon, -50 + spacer * row);
-                    currentIcon++;
-                    if (currentIcon > 5) {
-                        currentIcon = 1;
-                        if (row < 2) {
-                            row++;
-                        }
+            }
+            for (int i = playableMaps.size(); i < 8; i++) {
+                locked.draw(spacer * currentIcon, -50 + spacer * row);
+                currentIcon++;
+                if (currentIcon > 5) {
+                    currentIcon = 1;
+                    if (row < 2) {
+                        row++;
                     }
                 }
             }
         }
         if (settingsSingleton.getGameState() == 6) {
-            menuTitle = null;
-            drawGame();
-            if (countDown < 3 * frames) {
-                Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, (390.0 - currentFrame)/390.0));
-                String countdown;
-                if (currentFrame < 150) {
-                    countdown = "3..";
-                } else if (currentFrame < 270) {
-                    countdown = "2..";
-                } else if (currentFrame < 390) {
-                    countdown = "1..";
-                } else {
-                    countdown = "GO!";
-                }
-                countdownFont.drawString(String.format("%s", countdown), Window.getWidth() / 2 - 125, Window.getHeight() / 2);
-                currentFrame++;
-            }
-            else {
-                if(!map.hasFinished()) {
-                    if(!playingAnimation) {
-                        drawBoundaries();
-                        displayCharacterStats(players);
+            if (settingsSingleton.getGameMode() == 1) {
+                menuTitle = null;
+                drawGame();
+                if (countDown < 3 * frames) {
+                    Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, (390.0 - currentFrame)/390.0));
+                    String countdown;
+                    if (currentFrame < 150) {
+                        countdown = "3..";
+                    } else if (currentFrame < 270) {
+                        countdown = "2..";
+                    } else if (currentFrame < 390) {
+                        countdown = "1..";
+                    } else {
+                        countdown = "GO!";
                     }
+                    countdownFont.drawString(String.format("%s", countdown), Window.getWidth() / 2 - 125, Window.getHeight() / 2);
+                    currentFrame++;
                 }
                 else {
-                    if (!playingAnimation) {
-                        titleFont.drawString("CLEAR! REACH THE TOP!", 16, FONT_SIZE, DO.setBlendColour(black));
+                    if(!map.hasFinished()) {
+                        if(!playingAnimation) {
+                            drawBoundaries();
+                            displayCharacterStats(players);
+                        }
                     }
+                    else {
+                        if (!playingAnimation) {
+                            titleFont.drawString("CLEAR! REACH THE TOP!", 16, FONT_SIZE, DO.setBlendColour(black));
+                        }
+                    }
+                    renderAbilities();
                 }
-                renderAbilities();
+            }
+            else {
+                if (currentBackground != null) {
+                    currentBackground.drawFromTopLeft(currentBackgroundPoint.x, currentBackgroundPoint.y);
+                }
+                if (dark) {
+                    darken();
+                }
+                if ((shakeTimer > 0) || (transitionTimer > 0)) {
+                    shakeImage();
+                    transition();
+                }
             }
         }
         else if (settingsSingleton.getGameState() == 7) {
@@ -1576,6 +1580,7 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 10) {
             menuBackground = null;
+            Drawing.drawRectangle(0,0, Window.getWidth(), Window.getHeight(), new Colour(0,0,0, 0.2));
             if ("General".equalsIgnoreCase(pageType)) {
                 titleFont.drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + 0);
             }

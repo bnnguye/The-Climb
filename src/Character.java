@@ -17,7 +17,7 @@ public class Character {
         private String name;
         private String soundPath;
         private Point iconPos;
-        private Point pos;
+        private Point pos = new Point(0,0);
         private Image image;
         private Rectangle rectangle;
         private Image icon;
