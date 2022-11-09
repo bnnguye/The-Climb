@@ -64,19 +64,6 @@ public class Game extends AbstractGame {
     private final ArrayList<SideCharacter> sideCharacters= new ArrayList<>();
     private final ArrayList<SideCharacter> allSideCharacters= new ArrayList<>();
 
-    private final SideCharacter Zoro = new SideZoro();
-    private final SideCharacter Gojo = new SideGojo();
-    private final SideCharacter AllMight = new SideAllMight();
-    private final SideCharacter Lelouch = new SideLelouch();
-    private final SideCharacter Hisoka = new SideHisoka();
-    private final SideCharacter Jotaro = new SideJotaro();
-    private final SideCharacter Dio = new SideDio();
-    private final SideCharacter Itachi = new SideItachi();
-    private final SideCharacter Yugi = new SideYugi();
-    private final SideCharacter Puck = new SidePuck();
-    private final SideCharacter Yuu = new SideYuu();
-    private final SideCharacter Senkuu = new SideSenkuu();
-
     private double spacer = 300;
     private String currentMusic = "music/Silence.wav";
     private final Music soundEffectMusic = new Music();
@@ -157,7 +144,6 @@ public class Game extends AbstractGame {
     // Game Settings variables
     private final ArrayList<PowerUp> allPowerUps= new ArrayList<>();
     private final ArrayList<Obstacle> allObstacles= new ArrayList<>();
-    private ArrayList<Slider> settingsSliders = new ArrayList<>();
     private String pageType;
 
     public static void main(String[] args) {
@@ -166,71 +152,65 @@ public class Game extends AbstractGame {
 
     public Game() {
         super(1920, 1080, "The Climb");
+
+        init();
+
+    }
+
+    private void init() {
         new Player(1);
 
         // initialize characters
-        characters.add(new Character("Chizuru"));
-        characters.add(new Character("02"));
-        characters.add(new Character("Miku"));
-        characters.add(new Character("Mai"));
-        for (Character character: characters) {
-            if (!allCharacters.contains(character)) {
-                allCharacters.add(character);
-            }
+        characters.add(new Character(CharacterNames.CHIZURU));
+        characters.add(new Character(CharacterNames.ZEROTWO));
+        characters.add(new Character(CharacterNames.MIKU));
+        characters.add(new Character(CharacterNames.MAI));
+
+        for (CharacterNames characterName: CharacterNames.values()) {
+            allCharacters.add(new Character(characterName));
         }
-        allCharacters.add(new Character("Nino"));
-        allCharacters.add(new Character("Futaba"));
-        allCharacters.add(new Character("Ruka"));
-        allCharacters.add(new Character("Aki"));
-        allCharacters.add(new Character("Chika"));
-        allCharacters.add(new Character("Emilia"));
-        allCharacters.add(new Character("Asuna"));
-        allCharacters.add(new Character("Raphtalia"));
         for(Character character: allCharacters) {
             character.setStats();
         }
 
-        sideCharacters.add(Zoro);
-        sideCharacters.add(Gojo);
-        sideCharacters.add(AllMight);
-        sideCharacters.add(Lelouch);
-        sideCharacters.add(Hisoka);
-        sideCharacters.add(Jotaro);
-        sideCharacters.add(Dio);
-        sideCharacters.add(Itachi);
-        sideCharacters.add(Yugi);
-        sideCharacters.add(Puck);
-        sideCharacters.add(Yuu);
-        sideCharacters.add(Senkuu);
+        for (SideCharacterNames sideCharacterNames: SideCharacterNames.values()) {
+            sideCharacters.add(new SideCh)
+        }
+
         checkAchievements();
 
-        playableMaps.add(new Map("Training Ground"));
-        playableMaps.add(new Map("Park"));
-        playableMaps.add(new Map("Spooky Spikes"));
-        playableMaps.add(new Map("Greed Island"));
-        playableMaps.add(new Map("Roswaals Mansion"));
-        playableMaps.add(new Map("Claustrophobic Lane"));
-        playableMaps.add(new Map("UpsideDown Cups"));
-        playableMaps.add(new Map("Custom"));
+        playableMaps.addAll(Arrays.asList(
+                new Map("Training Ground"),
+                new Map("Park"),
+                new Map("Spooky Spikes"),
+                new Map("Greed Island"),
+                new Map("Roswaals Mansion"),
+                new Map("Claustrophobic Lane"),
+                new Map("UpsideDown Cups"),
+                new Map("Custom")));
 
-        allTiles.add(new TileBasic(new Point(0,0)));
-        allTiles.add(new TileBasicLeft(new Point(0,0)));
-        allTiles.add(new TileBasicTop(new Point(0,0)));
-        allTiles.add(new TileIce(new Point(0,0)));
-        allTiles.add(new TileIceLeft(new Point(0,0)));
-        allTiles.add(new TileIceTop(new Point(0,0)));
-        allTiles.add(new TileSlow(new Point(0,0)));
-        allTiles.add(new TileSlowLeft(new Point(0,0)));
-        allTiles.add(new TileSlowTop(new Point(0,0)));
+        allTiles.addAll(Arrays.asList(
+                new TileBasic(new Point(0,0)),
+                new TileBasicLeft(new Point(0,0)) ,
+                new TileBasicTop(new Point(0,0)),
+                new TileIce(new Point(0,0)),
+                new TileIceLeft(new Point(0,0)),
+                new TileIceTop(new Point(0,0)),
+                new TileSlow(new Point(0,0)),
+                new TileSlowLeft(new Point(0,0)),
+                new TileSlowTop(new Point(0,0))));
 
-        allPowerUps.add(new SpeedDown());
-        allPowerUps.add(new PowerUpSpeedUp());
-        allPowerUps.add(new PowerUpMinimiser());
-        allPowerUps.add(new PowerUpShield());
-        allPowerUps.add(new PowerUpSpecialAbilityPoints());
-        allObstacles.add(new ObstacleBall());
-        allObstacles.add(new ObstacleRock());
-        allObstacles.add(new ObstacleStunBall());
+        allPowerUps.addAll(Arrays.asList(
+                new SpeedDown(),
+                new PowerUpSpeedUp(),
+                new PowerUpMinimiser(),
+                new PowerUpShield(),
+                new PowerUpSpecialAbilityPoints()));
+
+        allObstacles.addAll(Arrays.asList(
+                new ObstacleBall(),
+                new ObstacleRock(),
+                new ObstacleStunBall()));
 
 
         menuBackground = new Image("res/menu/MainMenu.PNG");
@@ -242,7 +222,6 @@ public class Game extends AbstractGame {
         else {
             currentMode = "Story";
         }
-
     }
 
     @Override
@@ -558,7 +537,7 @@ public class Game extends AbstractGame {
                     playingAnimation = false;
                     boolean playingActivation = false;
                     for (Player player: players) {
-                        if (player.getSideCharacter().getName().equals("Yugi")) {
+                        if ("Yugi".equals(player.getSideCharacter().getName())) {
                             player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
                         }
                         else {
@@ -2069,7 +2048,7 @@ public class Game extends AbstractGame {
             }
             else {
                 int index = 0;
-                for (ExodiaPiece exodiaPiece: Yugi.getExodiaPiecesCollected()) {
+                for (ExodiaPiece exodiaPiece: player.getSideCharacter().getExodiaPiecesCollected()) {
                     exodiaPiece.getImage().drawFromTopLeft(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()) + exodiaPiece.getImage().getWidth()*index, Window.getHeight() - picture.getHeight());
                     index++;
                 }

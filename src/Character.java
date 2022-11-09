@@ -1,11 +1,8 @@
 import bagel.DrawOptions;
-import bagel.Drawing;
 import bagel.Image;
 import bagel.Window;
-import bagel.util.Colour;
 import bagel.util.Point;
 import bagel.util.Rectangle;
-import org.lwjgl.system.windows.RECT;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,7 +39,7 @@ public class Character {
         private boolean jotaroAbility = false;
 
 
-        public Character(String name) {
+        public Character(CharacterNames name) {
                 this.name = name;
                 selected = new Image(String.format("res/characters/%s/Selected.png", name));
                 icon = new Image(String.format("res/characters/%s/Icon.png", name));
