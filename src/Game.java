@@ -1193,7 +1193,7 @@ public class Game extends AbstractGame {
                     }
                 }
                 if (input.wasPressed((Keys.RIGHT))) {
-                    if (page < 4) {
+                    if (page < 2) {
                         page++;
                     }
                 }
@@ -1604,7 +1604,7 @@ public class Game extends AbstractGame {
             }
         }
         showDisplayStrings();
-        showTime();
+        //showTime();
     }
 
     public void showTime() {
@@ -2487,7 +2487,7 @@ public class Game extends AbstractGame {
 
     public void playIntro() {
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1, 1, 1, intro/(2*frames)));
-        intro++;
+        intro += 2;
         if (intro >= 2*frames) {
             introFont.drawString("Made by Bill Nguyen", Window.getWidth()/2 - introFont.getWidth("Made by Bill Nguyen")/2, Window.getHeight()/2, DO.setBlendColour(new Colour(0,0,0,(intro - 2*frames)/(1*frames))));
             if (intro == 2*frames) {
