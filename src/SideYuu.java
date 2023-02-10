@@ -3,19 +3,18 @@ import bagel.Image;
 import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
-import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 
 public class SideYuu extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name = "Yuu";
     private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
+    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
     boolean activating = false;
     boolean animating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
+    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
     private Point iconPos;
     SideCharacter temporarySideCharacter;
 
@@ -106,9 +105,6 @@ public class SideYuu extends SideCharacter{
         else if (player.getSideCharacter().getName().equals("Zoro")) {
             playerCharacter = new SideZoro();
         }
-        else if (player.getSideCharacter().getName().equals("Senkuu")) {
-            playerCharacter = new SideSenkuu();
-        }
         return playerCharacter;
     }
 
@@ -119,11 +115,11 @@ public class SideYuu extends SideCharacter{
             if (player.getId() != user.getId()) {
                 if (closest == null) {
                     closest = player;
-                    closestDistance = (Math.abs(user.getPos().x - player.getPos().x) + Math.abs(user.getPos().y - player.getPos().y));
+                    closestDistance = (Math.abs(user.getCursorPos().x - player.getCursorPos().x) + Math.abs(user.getCursorPos().y - player.getCursorPos().y));
                 } else {
-                    if ((Math.abs(user.getPos().x - player.getPos().x) + Math.abs(user.getPos().y - player.getPos().y)) < closestDistance) {
+                    if ((Math.abs(user.getCursorPos().x - player.getCursorPos().x) + Math.abs(user.getCursorPos().y - player.getCursorPos().y)) < closestDistance) {
                         closest = player;
-                        closestDistance = (Math.abs(user.getPos().x - player.getPos().x) + Math.abs(user.getPos().y - player.getPos().y));
+                        closestDistance = (Math.abs(user.getCursorPos().x - player.getCursorPos().x) + Math.abs(user.getCursorPos().y - player.getCursorPos().y));
                     }
                 }
             }
@@ -134,8 +130,8 @@ public class SideYuu extends SideCharacter{
     public void renderAbility() {
         if (timer > 0 ) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
-            Image noblePhantasm = new Image(String.format("res/charactersS/%s/SpecialAbilityPoints.png", this.name));
-            noblePhantasm.drawFromTopLeft(0,0);
+            Image special = new Image(String.format("res/sidecharacters/%s/special.png", this.name));
+            special.drawFromTopLeft(0,0);
         }
         else {
             if (temporarySideCharacter != null) {

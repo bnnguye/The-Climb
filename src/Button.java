@@ -16,11 +16,10 @@ public class Button {
     
     private SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
     private GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
+    private EventsListenerSingleton eventsListenerSingleton = EventsListenerSingleton.getInstance();
 
-    private int FONT_SIZE;
+    private FontSize font;
     private final DrawOptions DO = new DrawOptions();
-    private Font font = new Font("res/fonts/DejaVuSans-Bold.ttf", 100);
-    private final Music music = new Music();
 
     private final String name;
     private final String displayString;
@@ -31,31 +30,18 @@ public class Button {
 
     private boolean hovering = false;
     private boolean night = false;
-    public Colour white = new Colour(1,1,1);
-    public Colour whiteTranslucent = new Colour(1,1,1, 0.5);
-    public Colour black = new Colour(0,0,0);
-    public Colour blackTranslucent = new Colour(0,0,0, 0.5);
+    private Colour colour = new Colour(1,1,1,0);
 
 
-    public Button(String name, String displayString, int fontSize, double width, double length, Point topLeft) {
+    public Button(String name, String displayString, FontSize fontSize, Rectangle rectangle, Colour colour) {
         this.name = name;
         this.displayString = displayString;
-        this.box = new Rectangle(topLeft, width, length);
-        this.position = topLeft;
-        DO.setBlendColour(whiteTranslucent);
-        FONT_SIZE = fontSize;
+        this.font = fontSize;
+        this.box = rectangle;
+        this.position = rectangle.topLeft();
+        DO.setBlendColour(translucent(colour));
         this.scale = 1;
-    }
-    // Constructor for Strings/Buttons without images
-    public Button(String name, int fontSize, double width, double length, Point topLeft)  {
-        this.name = name;
-        this.displayString = name;
-        this.box = new Rectangle(topLeft, width, length);
-        this.position = topLeft;
-        FONT_SIZE = fontSize;
-        font = new Font("res/fonts/DejaVuSans-Bold.ttf", FONT_SIZE);
-        this.scale = 1;
-        DO.setBlendColour(whiteTranslucent);
+        this.colour = colour;
     }
 
     // Constructor for Images
@@ -66,9 +52,10 @@ public class Button {
         this.position = topLeft;
         this.image = image;
         this.scale = 1;
-        DO.setBlendColour(whiteTranslucent);
+        DO.setScale(scale, scale);
     }
 
+    // Constructor for Images with scale
     public Button(String name, Image image, Point topLeft, double scale) {
         this.name = name;
         this.displayString = name;
@@ -79,40 +66,32 @@ public class Button {
         this.position = topLeft;
         this.image = image;
         this.scale = scale;
-        DO.setBlendColour(whiteTranslucent);
+        DO.setScale(scale, scale);
     }
 
     public void toggleHover(Point point) {
+        DO.setScale(scale, scale);
         if (box.intersects(point)) {
             if (!hovering) {
-                music.playMusic("music/Hover.wav");
+                MusicPlayer.getInstance().addMusic("music/Hover.wav");
             }
-
-            if (night) {
-                DO.setBlendColour(black);
-            }
-            else {
-                DO.setBlendColour(white);
-            }
+            DO.setBlendColour(opaque());
+            DO.setScale(scale * 1.2, scale * 1.2);
             hovering = true;
         } else {
-            if (night) {
-                DO.setBlendColour(blackTranslucent);
-            }
-            else {
-                DO.setBlendColour(whiteTranslucent);
-            }
+            DO.setBlendColour(translucent(this.colour));
             hovering = false;
+            DO.setScale(scale, scale);
         }
     }
 
     public void draw() {
-        DO.setScale(scale, scale);
         if (image != null) {
             // need to adjust as boundingBoxAt takes centre, not topLeft
             image.drawFromTopLeft(position.x, position.y, DO);
         } else if (font != null) {
-            font.drawString(displayString, position.x, position.y + (box.bottom() - box.top()), DO);
+            DO.setScale(1, 1);
+            font.getFont().drawString(displayString == null ? name : displayString, position.x, position.y + (box.bottom() - box.top()), DO);
         }
     }
 
@@ -120,6 +99,7 @@ public class Button {
 
     public boolean isHovering() {return hovering;}
     public void playAction() {
+        int frames = TimeLogger.getInstance().getFrames();
         if (name.equalsIgnoreCase("Back To Start")) {
             settingsSingleton.setGameStateString("Menu");
         }
@@ -174,47 +154,55 @@ public class Button {
                 settingsSingleton.setGameState(1);
         }
         else if (name.equalsIgnoreCase("Retry")) {
-                if (settingsSingleton.getGameMode() < 99) {
-                    settingsSingleton.setGameStateString("Retry");
-                }
-                else {
-                    settingsSingleton.setGameStateString("Continue");
-                }
+            if (settingsSingleton.getGameMode() < 99) {
+                settingsSingleton.setGameStateString("Retry");
+            }
+            else {
+                settingsSingleton.setGameStateString("Continue");
+            }
         }
         else if (name.equalsIgnoreCase("Right Arrow")) {
-                if (gameSettingsSingleton.getPage() < 2) {
-                    gameSettingsSingleton.setPage(gameSettingsSingleton.getPage() + 1);
-                    buttonsToRemove.addAll(buttons);
-                    slidersToRemove.addAll(sliders);
-                    buttonsToAdd.add(new Button("Left Arrow",
-                            new Image("res/arrows/LeftArrow.png"),
-                            new Point(600, 0),
-                            0.5));
-                    buttonsToAdd.add(new Button("Right Arrow",
-                            new Image("res/arrows/RightArrow.png"),
-                            new Point(Window.getWidth() - 750, 0),
-                            0.5));
-                    if (gameSettingsSingleton.getPage() == 1) {
-                        addPowerUpSliders();
-                    }
-                    else if (gameSettingsSingleton.getPage() == 2) {
-                        addObstacleSliders();
-                    }
+            if (gameSettingsSingleton.getPage() < 2) {
+                gameSettingsSingleton.setPage(gameSettingsSingleton.getPage() + 1);
+                buttonsToRemove.addAll(buttons);
+                slidersToRemove.addAll(sliders);
+                buttonsToAdd.add(new Button("Left Arrow",
+                        new Image("res/arrows/LeftArrow.png"),
+                        new Point(600, 0),
+                        0.5));
+                buttonsToAdd.add(new Button("Right Arrow",
+                        new Image("res/arrows/RightArrow.png"),
+                        new Point(Window.getWidth() - 750, 0),
+                        0.5));
+                if (gameSettingsSingleton.getPage() == 1) {
+                    addPowerUpSliders();
                 }
+                else if (gameSettingsSingleton.getPage() == 2) {
+                    addObstacleSliders();
+                }
+            }
+        }
+        else if (name.equalsIgnoreCase("Tutorial")) {
+
         }
         else if (name.equalsIgnoreCase("Story")) {
             settingsSingleton.setGameMode(0);
-            settingsSingleton.setGameStateString("STORY");
+            settingsSingleton.setPlayers(2);
+            settingsSingleton.setGameState(2);
+            //eventsListenerSingleton.getEventsListener().addEvent(new EventGameModeSelected(2 * frames, "Story Mode selected!"));
         }
         else if (name.equalsIgnoreCase("3")) {
             settingsSingleton.setPlayers(3); settingsSingleton.setGameState(3);
         }
         else if (name.equalsIgnoreCase("2")) {
+            settingsSingleton.setPlayers(2);
             settingsSingleton.setGameState(3);
         }
         else if (name.equalsIgnoreCase("VS")) {
             settingsSingleton.setGameMode(1);
-            settingsSingleton.setGameStateString("VS");
+            settingsSingleton.setGameState(2);
+            //eventsListenerSingleton.getEventsListener().addEvent(new EventGameModeSelected(2 * frames, "Story Mode selected!"));
+
         }
         else if (name.equalsIgnoreCase("Decrease Map Speed")) {
             gameSettingsSingleton.setMapSpeed(gameSettingsSingleton.getMapSpeed() - 0.1);
@@ -245,6 +233,13 @@ public class Button {
                 new Slider("Ball", "obstacle", new Point(400, 300)),
                 new Slider("Rock", "obstacle", new Point(400, 400)),
                 new Slider("StunBall", "obstacle", new Point(400, 500))));
+    }
+
+    public Colour translucent(Colour colour) { return new Colour(colour.r, colour.g, colour.b, 0.5);
+    }
+
+    public Colour opaque() {
+        return new Colour(colour.r, colour.g, colour.b, 1);
     }
 
 }

@@ -4,14 +4,14 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideAllMight extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name = "AllMight";
     private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
+    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
     boolean activating = false;
     boolean animating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
+    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
     private Point iconPos;
 
 
@@ -53,8 +53,8 @@ public class SideAllMight extends SideCharacter{
 
     public void renderAbility() {
         if (timer > 8 * frames) {
-            Image noblePhantasm = new Image(String.format("res/charactersS/%s/SpecialAbilityPoints.png", this.name));
-            noblePhantasm.drawFromTopLeft(0,0);
+            Image special = new Image(String.format("res/sidecharacters/%s/special.png", this.name));
+            special.drawFromTopLeft(0,0);
         }
     }
     public boolean isAnimating() {

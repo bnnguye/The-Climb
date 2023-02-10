@@ -1,6 +1,5 @@
+import Enums.MapNames;
 import bagel.*;
-import bagel.Font;
-import bagel.Image;
 import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
@@ -16,63 +15,44 @@ import java.util.Scanner;
 
 public class Game extends AbstractGame {
 
-    private final int FONT_SIZE = 160;
-    private final int DIALOGUE_FONT_SIZE = 30;
-    private final int MAX_DIALOGUE_LIMIT = Window.getWidth()/(DIALOGUE_FONT_SIZE - 10);
-
     private static final SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
     private static final GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
     private static final TimeLogger timeLogger = TimeLogger.getInstance();
     private static final ButtonsSingleton buttonsSingleton = ButtonsSingleton.getInstance();
-
-    // Stat variable
-    int[] statTracker = new int[4];
-
-    private final double frames = settingsSingleton.getFrames();
-    private int countDown = 0;
-    private double waitTimer = 2 * frames;
-    private int winnerTimer = 0;
-    private int currentFrame = 0;
-
-    private final ArrayList<StringDisplay> stringDisplays = new ArrayList<>();
-    private final ArrayList<String> stringOnScreen = new ArrayList<>();
-
-    private final Font titleFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 100);
-    private final Font victoryFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 110);
-    private final Font playerFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 50);
-    private final Font gameFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 40);
-    private final Font chooseCharacterFont = new Font("res/fonts/DejaVuSans-Bold.ttf", 100);
-    private final Font countdownFont = new Font("res/fonts/conformable.otf", 300);
-    private final Font dialogueFont = new Font("res/fonts/DejaVuSans-Bold.ttf", DIALOGUE_FONT_SIZE);
-    private final Font introFont = new Font("res/fonts/Storytime.ttf", 80);
-    private final DrawOptions DO = new DrawOptions();
-
-    private double intro = 0;
+    private static final EventsListenerSingleton eventsListenerSingleton = EventsListenerSingleton.getInstance();
+    private static final ImagePointManagerSingleton imagePointManagerSingleton = ImagePointManagerSingleton.getInstance();
+    private static final MusicPlayer musicPlayer = MusicPlayer.getInstance();
 
     private final ArrayList<Button> buttons= buttonsSingleton.getButtons();
     private final ArrayList<Button> buttonsToRemove = buttonsSingleton.getButtonsToRemove();
     private final ArrayList<Button> buttonsToAdd = buttonsSingleton.getButtonsToAdd();
     private final ArrayList<Slider> sliders = buttonsSingleton.getSliders();
     private final ArrayList<Slider> slidersToRemove = buttonsSingleton.getSlidersToRemove();
+    private final EventsListenerSingleton.EventsListener eventsListener = eventsListenerSingleton.getEventsListener();
     private final ArrayList<Character> characters= new ArrayList<>();
-    private final ArrayList<Player> players= new Player(0).getInstance();
+    private final ArrayList<Character> allCharacters = new ArrayList<>();
+    private final ArrayList<Player> players= new ArrayList<>();
     private final ArrayList<Obstacle> obstacles= new ArrayList<>();
     private final ArrayList<Obstacle> obstaclesToRemove= new ArrayList<>();
     private final ArrayList<PowerUp> powerUps= new ArrayList<>();
     private final ArrayList<PowerUp> powerUpsToRemove= new ArrayList<>();
-    private final ArrayList<Character> allCharacters= new ArrayList<>();
     private final ArrayList<SideCharacter> sideCharacters= new ArrayList<>();
     private final ArrayList<SideCharacter> allSideCharacters= new ArrayList<>();
+    private final ArrayList<StringDisplay> stringDisplays = new ArrayList<>();
 
-    private double spacer = 300;
-    private String currentMusic = "music/Silence.wav";
-    private final Music soundEffectMusic = new Music();
-    private final Music mainMusic = new Music();
-    private final ArrayList<Music> musics = new ArrayList<>();
-    private boolean picked = false;
-    private final Rectangle bottomRectangle = new Rectangle(0, Window.getHeight() + 40, Window.getWidth(), 20);
+    private final int frames = settingsSingleton.getRefreshRate();
+    private final int DIALOGUE_FONT_SIZE = 30;
+    private final int MAX_DIALOGUE_LIMIT = Window.getWidth()/(DIALOGUE_FONT_SIZE - 10);
 
-    // custom map variables
+    private final Stats stats = new Stats();
+
+    private int countDown = 0;
+    private int winnerTimer = 0;
+
+    private final Font dialogueFont = new Font(Fonts.DEJAVUSANS, DIALOGUE_FONT_SIZE);
+    private final DrawOptions DO = new DrawOptions();
+
+    // Custom Map Vars
     private final ArrayList<Map> playableMaps= new ArrayList<>();
     private Map map;
     private final ArrayList<Tile> allTiles= new ArrayList<>();
@@ -85,124 +65,97 @@ public class Game extends AbstractGame {
     private int offset = 0;
 
 
-    private boolean winnerPlayed = false;
     private boolean playingAnimation = false;
-    private Character unlocked;
-    private String[] dialogueLine;
-    private Scanner dialogueScanner;
-    private ArrayList<String> dialogueWords= new ArrayList<>();
+    private String unlocked;
+    private boolean canInteract = eventsListenerSingleton.isCanInteract();
 
-    private final double timeToSaveStats = 60 * frames;
-    private int currentTimeToSaveStats = 0;
+//    private String[] dialogueLine;
+//    private Scanner dialogueScanner;
+//    private ArrayList<String> dialogueWords= new ArrayList<>();
 
     //Story variables
-    private boolean playingDialogue = false;
-    private boolean playingStory = false;
-    private boolean playingScene = false;
-    private final boolean playingMap = false;
-    private final boolean playingWorld = false;
-    private int currentDialogue = 0;
-    private int currentStory = 0;
-    private int currentScene = 0;
-    private int lastStory = -1;
-    private int lastScene = -1;
-    private Image currentBackground;
-    private Point currentBackgroundPoint = new Point(0,0);
-    private String dialogueString = "";
-    private final Colour dialogueColour = new Colour(77.0/255, 57.0/255, 37.0/255, 0.7);
-    private final double dialogueWidth = Window.getWidth()*0.1;
-    private final double dialogueLength = Window.getHeight() - 300;
-    private final int maxLines = 7;
-    private int currentLines = 0;
-    private int dialogueIndex = 0;
-    private boolean alternate = false;
-    private boolean playNextCharacter = true;
-    private Character dialogueCharacter = null;
-    private Character nextCharacter = null;
-    private double shakeTimer = 0;
-    private double transitionTimer = 0;
-    private boolean dark = false;
-    private int dialogueCounter = 0;
-    private int keyboardTimer = 0;
-    private boolean endDialogue = false;
-    private String currentMode;
-    private Map mapToTransitionTo;
-    private Image sceneToTransitionTo;
-    private boolean failed = false;
-
-    private Image menuBackground;
+//    private boolean playingDialogue = false;
+//    private boolean playingStory = false;
+//    private boolean playingScene = false;
+//    private final boolean playingMap = false;
+//    private final boolean playingWorld = false;
+//    private int currentDialogue = 0;
+//    private int currentStory = 0;
+//    private int currentScene = 0;
+//    private int lastStory = -1;
+//    private int lastScene = -1;
+//    private String dialogueString = "";
+//    private final Colour dialogueColour = new Colour(77.0/255, 57.0/255, 37.0/255, 0.7);
+//    private final double dialogueWidth = Window.getWidth()*0.1;
+//    private final double dialogueLength = Window.getHeight() - 300;
+//    private final int maxLines = 7;
+//    private int currentLines = 0;
+//    private int dialogueIndex = 0;
+//    private boolean alternate = false;
+//    private boolean playNextCharacter = true;
+//    private Character dialogueCharacter = null;
+//    private Character nextCharacter = null;
+//    private double shakeTimer = 0;
+//    private double transitionTimer = 0;
+//    private boolean dark = false;
+//    private int dialogueCounter = 0;
+//    private int keyboardTimer = 0;
+//    private boolean endDialogue = false;
+//    private String currentMode;
     private String menuTitle = "";
 
-    public final Colour black = new Colour(0, 0, 0);
-    public final Colour white = new Colour(1, 1, 1);
-    public Colour red = new Colour(153.0/255.0, 27.0/255.0, 0);
-    public Colour darken = new Colour(0, 0, 0, 0.85);
-    double gameModeOffset = 0;
-    Point mousePosition;
+    double scale = 1;
+
     Point currentMousePosition;
 
     // Game Settings variables
     private final ArrayList<PowerUp> allPowerUps= new ArrayList<>();
     private final ArrayList<Obstacle> allObstacles= new ArrayList<>();
-    private String pageType;
 
     public static void main(String[] args) {
         new Game().run();
     }
 
     public Game() {
+
         super(1920, 1080, "The Climb");
-
         init();
-
     }
 
     private void init() {
-        new Player(1);
-
+        players.addAll(Arrays.asList(new Player(1), new Player(2), new Player(3), new Player(4)));
         // initialize characters
         characters.add(new Character(CharacterNames.CHIZURU));
         characters.add(new Character(CharacterNames.ZEROTWO));
         characters.add(new Character(CharacterNames.MIKU));
         characters.add(new Character(CharacterNames.MAI));
 
-        for (CharacterNames characterName: CharacterNames.values()) {
-            allCharacters.add(new Character(characterName));
-        }
-        for(Character character: allCharacters) {
-            character.setStats();
-        }
+        imagePointManagerSingleton.setCurrentBackground(null);
 
-        for (SideCharacterNames sideCharacterNames: SideCharacterNames.values()) {
-            sideCharacters.add(new SideCh)
-        }
-
+        // adds unlocked characters
         checkAchievements();
 
-        playableMaps.addAll(Arrays.asList(
-                new Map("Training Ground"),
-                new Map("Park"),
-                new Map("Spooky Spikes"),
-                new Map("Greed Island"),
-                new Map("Roswaals Mansion"),
-                new Map("Claustrophobic Lane"),
-                new Map("UpsideDown Cups"),
-                new Map("Custom")));
+        for (String character: new CharacterNames().getAllCharacterNames()) {
+            allCharacters.add(new Character(character));
+        }
+
+        sideCharacters.addAll(Arrays.asList(
+                new SideHisoka(), new SideJotaro(), new SideDio(),
+                new SideYuu(), new SideYugi(), new SidePuck(), new SideZoro(),
+                new SideLelouch(), new SideAllMight(), new SideGojo(), new SideItachi()));
+
+        for (MapNames mapName: MapNames.values()) {
+            playableMaps.add(new Map(mapName.toString()));
+        }
+
 
         allTiles.addAll(Arrays.asList(
-                new TileBasic(new Point(0,0)),
-                new TileBasicLeft(new Point(0,0)) ,
-                new TileBasicTop(new Point(0,0)),
-                new TileIce(new Point(0,0)),
-                new TileIceLeft(new Point(0,0)),
-                new TileIceTop(new Point(0,0)),
-                new TileSlow(new Point(0,0)),
-                new TileSlowLeft(new Point(0,0)),
-                new TileSlowTop(new Point(0,0))));
+                new TileBasic(new Point(0,0)), new TileBasicLeft(new Point(0,0)) , new TileBasicTop(new Point(0,0)),
+                new TileIce(new Point(0,0)), new TileIceLeft(new Point(0,0)), new TileIceTop(new Point(0,0)),
+                new TileSlow(new Point(0,0)), new TileSlowLeft(new Point(0,0)), new TileSlowTop(new Point(0,0))));
 
         allPowerUps.addAll(Arrays.asList(
-                new SpeedDown(),
-                new PowerUpSpeedUp(),
+                new SpeedDown(), new PowerUpSpeedUp(),
                 new PowerUpMinimiser(),
                 new PowerUpShield(),
                 new PowerUpSpecialAbilityPoints()));
@@ -213,252 +166,249 @@ public class Game extends AbstractGame {
                 new ObstacleStunBall()));
 
 
-        menuBackground = new Image("res/menu/MainMenu.PNG");
-        getGameStats();
-        loadStory();
-        if (currentStory >= currentScene) {
-            currentMode = "Scene";
-        }
-        else {
-            currentMode = "Story";
-        }
+        stats.getGameStats();
+//        loadStory();
+//        currentMode = currentStory >= currentScene ? "Scene" : "Story";
+
+        eventsListener.addEvent(new EventStartApp(3 * frames, "Game initiated"));
     }
 
     @Override
     protected void update(Input input) {
-        currentMousePosition = input.getMousePosition();
-        changeMainMusic(currentMusic);
-        updateDisplayStrings();
-        updateSounds();
-        updateTime();
 
-        if (settingsSingleton.getGameState() == -100) {
-            new Player(2);
-            players.get(0).setCharacter(new Character("Miku"));
-            players.get(0).setSideCharacter(new SideJotaro());
-            players.get(1).setCharacter(new Character("Mai"));
-            players.get(1).setSideCharacter(new SideDio());
-            settingsSingleton.setPlayers(players.size());
-            map = new Map("Spooky Spikes");
-            map.generateMap();
-            gameSettingsSingleton.setMap(map);
-            settingsSingleton.setGameMode(1);
-            settingsSingleton.setGameState(6);
-            settingsSingleton.setGameStateString("Test");
-
+        if (settingsSingleton.getGameState() == -999) {
+            if (input.wasPressed(Keys.LEFT)) {
+                scale -= 0.01;
+                System.out.println(scale);
+            }
+            else if (input.wasPressed(Keys.RIGHT)) {
+                scale += 0.01;
+                System.out.println(scale);
+            }
+            ImagePoint test = new ImagePoint("res/renders/Characters/NAO TOMORI.png", new Point(0,0));
+            test.setScale(scale);
+            test.draw();
         }
 
-        if (settingsSingleton.getGameState() > -1) {
-            if (buttons.size() > 0) {
-                for (Button button: buttons) {
-                    button.toggleHover(input.getMousePosition());
-                    if (input.wasPressed(MouseButtons.LEFT)) {
-                        if (button.isHovering()) {
-                            playSound("music/Click.wav");
-                            button.playAction();
-                        }
-                    }
+        if (!canInteract) {
+            input = null;
+        }
+        for (Button button: buttons) {
+            if (input != null) {
+                button.toggleHover(input.getMousePosition());
+            }
+            if (input != null && input.wasPressed(MouseButtons.LEFT)) {
+                if (button.isHovering()) {
+                    musicPlayer.addMusic("music/Click.wav");
+                    button.playAction();
                 }
             }
         }
 
         if (settingsSingleton.getGameState() == 0) {
-            currentMusic = "music/Game Main Menu.wav";
-            saveStatsChecker();
-            if (!settingsSingleton.getGameStateString().equals("Main Menu")) {
+            if (!"Main Menu".equals(settingsSingleton.getGameStateString())) {
+                musicPlayer.clear();
                 buttonsToRemove.addAll(buttons);
-                buttons.add(new Button("PLAY", FONT_SIZE, Window.getWidth(), 160, new Point(0, 280)));
-                buttons.add(new Button("CREATE MAP", FONT_SIZE, Window.getWidth(), 160, (new Point(0, 440))));
-                buttons.add(new Button("EXIT", FONT_SIZE, Window.getWidth(), 160, new Point(0, 600)));
+                buttons.addAll(Arrays.asList(
+                        new Button("PLAY", null,
+                                new FontSize(Fonts.DEJAVUSANS, 160),
+                                new Rectangle(0, 280, Window.getWidth(), 160),
+                                ColourPresets.WHITE.toColour()),
+                        new Button("TUTORIAL", null,
+                                new FontSize(Fonts.DEJAVUSANS, 160),
+                                new Rectangle(0, 280 + 160, Window.getWidth(), 160),
+                                ColourPresets.WHITE.toColour()),
+                        new Button("CREATE MAP", null,
+                                new FontSize(Fonts.DEJAVUSANS, 160),
+                                new Rectangle(0, 280 + 320, Window.getWidth(), 160),
+                                ColourPresets.WHITE.toColour()),
+                        new Button("EXIT", null,
+                                new FontSize(Fonts.DEJAVUSANS, 160),
+                                new Rectangle(0, 280 + 3*160, Window.getWidth(),
+                                        160),
+                                ColourPresets.WHITE.toColour())
+                ));
                 settingsSingleton.setGameStateString("Main Menu");
-                menuBackground = new Image("res/menu/MainMenu.PNG");
                 menuTitle = "THE CLIMB";
+                imagePointManagerSingleton.setCurrentBackground("res/menu/MainMenu.PNG");
+                musicPlayer.setMainMusic("music/Giorno.wav");
             }
         }
         else if (settingsSingleton.getGameState() == 1) {
-            if (!settingsSingleton.getGameStateString().equals("Level")) {
-                if (!settingsSingleton.getGameStateString().equals("STORY") && !settingsSingleton.getGameStateString().equals("VS")) {
-                    gameModeOffset = 0;
-                    Button storyButton = new Button("STORY", FONT_SIZE,
-                            titleFont.getWidth("STORYYY"), 160,
-                            new Point(0, 0));
-                    Button versusButton = new Button("VS", FONT_SIZE,
-                            titleFont.getWidth("VSS"), 160,
-                            new Point(Window.getWidth() - titleFont.getWidth("VSSs"), 0));
-                    buttonsToRemove.addAll(buttons);
-                    buttons.add(storyButton);
-                    buttons.add(versusButton);
-                    settingsSingleton.setGameStateString("Level");
-                    menuTitle = "GAME MODE";
-                }
-            }
-            if (settingsSingleton.getGameStateString().equals("STORY")) {
-                gameModeOffset += 8;
+            String storyMenuFileName = "res/menu/StoryMenu.png";
+            String vsMenuFileName = "res/menu/vsMenu.png";
+
+            if (!settingsSingleton.getGameStateString().equals("Game Mode")) {
+                settingsSingleton.setGameStateString("Game Mode");
+                imagePointManagerSingleton.add(new ImagePoint(storyMenuFileName, new Point(Window.getWidth()/2,0)));
+                imagePointManagerSingleton.add(new ImagePoint(vsMenuFileName, new Point(-Window.getWidth()/2,0)));
+                Button storyButton = new Button("STORY", null,
+                        new FontSize(Fonts.DEJAVUSANS, 160),
+                        new Rectangle(0,0,new Font(Fonts.DEJAVUSANS, 160).getWidth("STORY"),160),
+                        ColourPresets.WHITE.toColour());
+                Button versusButton = new Button("VS", null,
+                        new FontSize(Fonts.DEJAVUSANS, 160),
+                        new Rectangle(Window.getWidth() - new Font(Fonts.DEJAVUSANS, 160).getWidth("VS"),0,new Font(Fonts.DEJAVUSANS, 160).getWidth("VS"),160),
+                        ColourPresets.WHITE.toColour());
                 buttonsToRemove.addAll(buttons);
-                if (Window.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset > Window.getWidth())  {
-                    settingsSingleton.setGameMode(0);
-                    settingsSingleton.setGameState(2);
-                }
+                buttons.add(storyButton);
+                buttons.add(versusButton);
+                menuTitle = "";
+
             }
-            else if (settingsSingleton.getGameStateString().equals("VS")) {
-                gameModeOffset -= 8;
-                buttonsToRemove.addAll(buttons);
-                if (Window.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset < 0)  {
-                    settingsSingleton.setGameMode(1);
-                    settingsSingleton.setGameState(2);
-                }
-            }
-            else {
-                mousePosition = currentMousePosition;
-            }
+            imagePointManagerSingleton.get(storyMenuFileName).setPos(currentMousePosition.x, 0);
+            imagePointManagerSingleton.get(vsMenuFileName).setPos(-Window.getWidth() + currentMousePosition.x, 0);
         }
         else if (settingsSingleton.getGameState() == 2) {
-            if (!settingsSingleton.getGameStateString().equals("Players")) {
+            if (!"Players".equals(settingsSingleton.getGameStateString()))  {
                 buttonsToRemove.addAll(buttons);
-                Button twoPlayerButton = new Button("2", FONT_SIZE,
-                        Window.getWidth(), 160,
-                        new Point(0, Window.getHeight() / 2 - 160));
-                Button threePlayerButton = new Button("3", FONT_SIZE,
-                        Window.getWidth(), 160,
-                        new Point(0, Window.getHeight() / 2));
-                Button fourPlayerButton = new Button("4", FONT_SIZE,
-                        Window.getWidth(), 160,
-                        new Point(0, Window.getHeight() / 2 + 160));
-                buttons.add(twoPlayerButton);
-                buttons.add(threePlayerButton);
-                buttons.add(fourPlayerButton);
+                Button twoPlayerButton = new Button("2", null,
+                        new FontSize(Fonts.DEJAVUSANS, 160),
+                        new Rectangle(0, Window.getHeight() / 2  - 160, Window.getWidth(), 160),
+                        ColourPresets.BLACK.toColour());
+                Button threePlayerButton = new Button("3", null,
+                        new FontSize(Fonts.DEJAVUSANS, 160),
+                        new Rectangle(0, Window.getHeight() /2, Window.getWidth(), 160),
+                        ColourPresets.BLACK.toColour());
+                Button fourPlayerButton = new Button("4", null,
+                        new FontSize(Fonts.DEJAVUSANS, 160),
+                        new Rectangle(0, Window.getHeight() / 2 + 160, Window.getWidth(), 160),
+                        ColourPresets.BLACK.toColour());
+                buttons.addAll(Arrays.asList(twoPlayerButton, threePlayerButton, fourPlayerButton));
                 settingsSingleton.setGameStateString("Players");
-                menuBackground = new Image("res/menu/playerMenu.PNG");
+                imagePointManagerSingleton.getImages().clear();
+                imagePointManagerSingleton.setCurrentBackground("res/menu/playerMenu.PNG");
                 menuTitle = "PLAYERS";
             }
         }
         else if (settingsSingleton.getGameState() == 3) {
             if (!settingsSingleton.getGameStateString().equals("Character")) {
-                spacer = 300;
-                buttonsToRemove.addAll(buttons);
-                if (settingsSingleton.getGameMode() == 1) {
-                    buttons.add(new Button("Game Settings", FONT_SIZE,
-                            titleFont.getWidth("Settings"), 100,
-                            new Point(0, 0)));
-                }
-                players.clear();
                 settingsSingleton.setGameStateString("Character");
-                new Player(1);
-                new Player(2);
-                if (settingsSingleton.getPlayers() == 3) {
-                    new Player(3);
-                }
-                if (settingsSingleton.getPlayers() == 4) {
-                    new Player(3);
-                    new Player(4);
-                }
-                menuBackground = new Image("res/menu/characterMenu.png");
-                menuTitle = "CHOOSE WAIFU";
+                buttonsToRemove.addAll(buttons);
                 slidersToRemove.addAll(sliders);
-            }
-
-            int row = 1;
-            int currentIcon = 1;
-            for (Character character: characters) {
-                character.setIconPos(new Point(-240 + spacer * currentIcon + character.getIcon().getWidth()/2, -200 + spacer * row + character.getIcon().getHeight()/2));
-                currentIcon++;
-                if (currentIcon >= 7) {
-                    currentIcon = 1;
-                    row++;
+                imagePointManagerSingleton.setCurrentBackground(null);
+                menuTitle = "";
+                if (settingsSingleton.getGameMode() == 1) {
+                    buttons.add(new Button("Game Settings", new Image("res/settings.png"), new Point(10,10)));
                 }
-            }
+                int index = 0;
+                double minScale = 0.275;
+                double maxScale = 1;
+                int middleIndex = allCharacters.size() % 2 == 1 ?
+                        allCharacters.size() / 2 + 1 : allCharacters.size() / 2;
+                double spacing = 270;
 
-            for (Player player: players) {
-                for (Character character: characters) {
-                    if (character.getIcon().getBoundingBoxAt(new Point(character.getIconPos().x - 25, character.getIconPos().y)).intersects(player.getPos())) {
-                        if (input.wasPressed((player.getControl("Primary")))) {
-                            pickCharacter(player, character);
-                        }
+                for (Character character: allCharacters) {
+                    ImagePoint characterRender = new ImagePoint(String.format("res/renders/Characters/%s.png", character.getFullName()),
+                            new Point(0, 0), "CharacterRender");
+                    characterRender.setScale(minScale);
+                    if (index < middleIndex) {
+                        characterRender.setPos( (-(allCharacters.size() * spacing/2) + Window.getWidth()/2) + (spacing * (index - 1.5)),
+                                Window.getHeight() - (characterRender.getHeight() * characterRender.getScale()));
                     }
+                    else if (middleIndex == index) {
+                        characterRender.setScale(maxScale);
+                        characterRender.setPos(525, Window.getHeight()/8);
+                    }
+                    else {
+                        characterRender.setPos( (-(allCharacters.size() * spacing/2) + Window.getWidth()/2) + (spacing * (index + 0.5)),
+                                Window.getHeight() - (characterRender.getHeight() * characterRender.getScale()));
+                    }
+                    imagePointManagerSingleton.add(characterRender);
+                    index++;
+                }
+            }
+            Player currentPlayer = players.get(0);
+            for (Player player: players) {
+                if (player.getCharacter() == null) {
+                    currentPlayer = player;
+                    break;
                 }
             }
 
-            picked = true;
+            Character currentCharacter = allCharacters.get(allCharacters.size() % 2 == 1 ?
+                    allCharacters.size() / 2 + 1 : allCharacters.size() / 2);
+            imagePointManagerSingleton.setCurrentBackground((String.format("res/background/%s.png", currentCharacter.getFullName())));
+
+            if (input != null && input.isDown(Keys.RIGHT)) {
+                eventsListener.addEvent(new EventCharacterRotate(frames/8, "Rotate LEFT"));
+                rotateCharacter("LEFT");
+            } else if (input != null && input.isDown(Keys.LEFT)) {
+                eventsListener.addEvent(new EventCharacterRotate(frames/8, "Rotate RIGHT"));
+                rotateCharacter("RIGHT");
+            }
+
+            if (input != null && input.wasPressed(Keys.SPACE)) {
+                pickCharacter(currentPlayer, currentCharacter);
+            }
+
+            boolean picked = true;
             for (Player player: players) {
-                player.setPos(input);
                 if (player.getCharacter() == null) {
                     picked = false;
                 }
             }
             if (picked) {
-                if (waitTimer < 0) {
-                    if(settingsSingleton.getGameMode() == 0) {
-                        settingsSingleton.setGameState(6);
-                    }
-                    else {
-                        for (Player player: players) {
-                            player.getCharacter().setPlayer(player);
-                        }
-                        settingsSingleton.setGameState(4);
-                    }
-                }
-                else {
-                    waitTimer--;
-                }
-            }
-            else {
-                waitTimer = 2 * frames;
+                eventsListener.addEvent(new EventCharacterPicked(3 * frames, "All players have picked a character"));
             }
 
         }
         else if (settingsSingleton.getGameState() == 4) { // Comrades
             if (!settingsSingleton.getGameStateString().equals("Comrade")) {
                 buttonsToRemove.addAll(buttons);
-                buttons.add(new Button("Game Settings", FONT_SIZE,
-                        titleFont.getWidth("Settings"), 100,
-                        new Point(0, 0)));
+                buttons.add(new Button("Game Settings", new Image("res/settings.png"), new Point(10,10)));
                 menuTitle = "CHOOSE YOUR POWER";
                 settingsSingleton.setGameStateString("Comrade");
                 slidersToRemove.addAll(sliders);
             }
-
+            Player currentPlayer = players.get(0);
             for (Player player: players) {
-                for (SideCharacter character: sideCharacters) {
-                    if (character.getIcon().getBoundingBoxAt(new Point(character.getIconPos().x - 25, character.getIconPos().y)).intersects(player.getPos())) {
-                        if (input.wasPressed((player.getControl("Primary")))) {
-                            pickSideCharacter(player, character);
-                        }
-                    }
+                if (player.getSideCharacter() == null) {
+                    currentPlayer = player;
+                    break;
                 }
             }
 
-            picked = true;
+            SideCharacter currentCharacter = allSideCharacters.get(0);
+            if (input != null && input.wasPressed(Keys.RIGHT)) {
+                rotateSideCharacter("LEFT");
+            }
+            else if (input != null && input.wasPressed(Keys.LEFT)) {
+                rotateSideCharacter("RIGHT");
+            }
+
+            if (input != null && input.wasPressed(Keys.SPACE)) {
+                pickSideCharacter(currentPlayer, currentCharacter);
+            }
+
+            boolean picked = true;
             for (Player player: players) {
-                player.setPos(input);
                 if (player.getSideCharacter() == null) {
                     picked = false;
                 }
             }
             if (picked) {
-                if (waitTimer < 0) {
-                    settingsSingleton.setGameState(5);
-                }
-                else {
-                    waitTimer--;
-                }
+                eventsListener.addEvent(new EventCharacterPicked(3 * frames, "All players have picked a character"));
             }
         }
         else if (settingsSingleton.getGameState() == 5) { // Map
             if (!settingsSingleton.getGameStateString().equals("MAP")) {
                 buttonsToRemove.addAll(buttons);
                 menuTitle = "Which Climb?";
-                menuBackground = null;
+                imagePointManagerSingleton.setCurrentBackground(null);
                 settingsSingleton.setGameStateString("MAP");
             }
             ArrayList<Map> mapsChosen = new ArrayList<>();
             for (Player player : players) {
-                player.getCharacter().setPosition(player.getPos());
-                player.setPos(input);
+                player.getCharacter().setPosition(player.getCursorPos());
+                player.setCursorPos(input);
+                int spacer = 300;
                 int row = 1;
                 int currentIcon = 2;
                 for (Map map : playableMaps) {
-                    if (map.getMapPeek().getBoundingBoxAt(new Point(-425 + map.getMapPeek().getWidth() * currentIcon + (row - 1) *400, -50 + spacer * row)).intersects(player.getPos())) {
-                        if(input.wasPressed(player.getControl("Primary"))) {
+                    if (map.getMapPeek().getBoundingBoxAt(new Point(-425 + map.getMapPeek().getWidth() * currentIcon +
+                            (row - 1) *400, -50 + spacer * row)).intersects(player.getCursorPos())) {
+                        if(input != null && input.wasPressed(player.getControl("Primary"))) {
                             pickMap(player, map);
                         }
                     }
@@ -506,19 +456,18 @@ public class Game extends AbstractGame {
                 if (!settingsSingleton.getGameStateString().equals("Game")) {
                     buttonsToRemove.addAll(buttons);
                     setPlayersPosition();
-                    //currentMusic = "music/Giorno.wav";
-                    currentMusic = String.format("music/Fight%d.wav", Math.round(Math.random()*3));
-                    resetMusic();
-                    playSound("music/Start.wav");
+                    //musicPlayer.setMainMusic("music/Giorno.wav");
+                    musicPlayer.setMainMusic(String.format("music/Fight%d.wav", Math.round(Math.random()*3)));
+                    musicPlayer.clear();
+                    musicPlayer.addMusic("music/Start.wav");
                     settingsSingleton.setPlayers(players.size());
                     settingsSingleton.setGameStateString("Game");
+                    startCountdown();
                 }
-                startCountdown();
                 if (!(countDown < 3 * frames)) {
                     if(!map.hasFinished()) {
                         if(!playingAnimation) {
-                            mainMusic.setVolume((float)1);
-                            map.updateTiles(gameSettingsSingleton.getMapSpeed());
+                            musicPlayer.setMainVolume(musicPlayer.getMaxMainVol());
                             spawnObstacles();
                             spawnPowerUps();
                         }
@@ -526,68 +475,83 @@ public class Game extends AbstractGame {
                     else {
                         // when top is reached, first one to touch top wins
                         for (Player player : players) {
-                            if (player.getCharacter().getPos().distanceTo(new Point(player.getCharacter().getPos().x, 0)) < 10) {
+                            if (player.getCharacter().getPos().distanceTo(
+                                    new Point(player.getCharacter().getPos().x, 0)) < 10) {
                                 settingsSingleton.setGameState(7);
                                 settingsSingleton.setWinner(player);
-                                settingsSingleton.setGameStateString("Win");
+                                settingsSingleton.setGameStateString("Game Finished");
                                 break;
                             }
                         }
                     }
                     playingAnimation = false;
                     boolean playingActivation = false;
+                    boolean theWorld = false;
                     for (Player player: players) {
                         if ("Yugi".equals(player.getSideCharacter().getName())) {
                             player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
                         }
                         else {
-                            if (input.wasPressed(player.getControl("Primary"))) {
-                                if (player.getCharacter().hasSpecialAbility()) {
+                            if (player.getCharacter().hasSpecialAbility()) {
+                                if (input != null && input.wasPressed(player.getControl("Primary"))) {
                                     if (!player.getSideCharacter().isActivating()) {
                                         player.getCharacter().useSpecialAbility();
-                                        player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
-                                        playSound(player.getSideCharacter().getSoundPath());
-                                        if (hasSound(player.getSideCharacter().getSoundPath())) {
-                                            removeSound(findSound(player.getSideCharacter().getSoundPath()));
-                                        }
+                                        player.getSideCharacter().activateAbility(player, players, obstacles, powerUps,
+                                                map);
+                                        musicPlayer.addMusic(player.getSideCharacter().getSoundPath());
                                     }
                                 }
                             }
                             if (player.getSideCharacter().isActivating()) {
-                                mainMusic.setVolume(0);
+                                musicPlayer.setMainVolume(0);
                                 playingActivation = true;
+                                if (Arrays.asList("Jotaro", "Dio").contains(player.getSideCharacter().getName())) {
+                                    theWorld = true;
+                                }
                             }
                         }
                         if (player.getSideCharacter().isAnimating()) {
-                            mainMusic.setVolume(0);
+                            musicPlayer.setMainVolume(0);
                             playingAnimation = true;
                         }
                     }
                     if ((!playingActivation) && (!playingAnimation)) {
-                        mainMusic.setVolume(1);
+                        musicPlayer.setMainVolume(1);
                     }
                     if (!playingAnimation) {
                         updateExp();
-                        updateObjects();
-                        updatePlayerMovement(input);
+                        if (!theWorld) {
+                            updatePlayerMovement(input);
+                            updateObjects();
+                            if (!map.hasFinished()) {
+                                map.updateTiles(gameSettingsSingleton.getMapSpeed());
+                            }
+                        }
+                        else {
+                            for (Player player: players) {
+                                if (player.getSideCharacter().isActivating() &&
+                                        Arrays.asList("Jotaro", "Dio").contains(player.getSideCharacter().getName())) {
+                                    player.moveCharacter(input);
+                                }
+                            }
+                        }
                     }
                     updateAbilities();
                     checkCollisionPowerUps();
                     checkCollisionObstacles();
                     checkCollisionTiles();
-                    recordButtons(input);
                     if (!settingsSingleton.getGameStateString().equals("Win")) {
                         int deathCounter = 0;
                         for (Player player : players) {
-                            if (player.isDead()) {
+                            if (player.getCharacter().isDead()) {
                                 deathCounter++;
                             }
                         }
                         if (settingsSingleton.getPlayers() - deathCounter < 2) {
-                            settingsSingleton.setGameStateString("Lose");
+                            settingsSingleton.setGameStateString("Game Finished");
                             settingsSingleton.setGameState(7);
                             for (Player player : players) {
-                                if (!player.isDead()) {
+                                if (!player.getCharacter().isDead()) {
                                     settingsSingleton.setWinner(player);
                                     break;
                                 }
@@ -596,391 +560,394 @@ public class Game extends AbstractGame {
                     }
                 }
             }
-            else {
-                if (!settingsSingleton.getGameStateString().equals("Story")) {
-                    buttonsToRemove.addAll(buttons);
-                    settingsSingleton.setGameStateString("Story");
-                    setPlayersPosition();
-                    map = mapToTransitionTo;
-                    if (map != null) {
-                        map.generateMap();
-                    }
-                }
-                if (!dark && shakeTimer <= 0 && transitionTimer <= 0) {
-                    if (playingStory) {
-                        currentMode = "Story";
-                        currentDialogue = currentStory;
-
-                        if (currentStory == 0) {
-                            currentMusic = "music/Fight0.wav";
-                            if (lastStory != currentStory) {
-                                lastStory = currentStory;
-                                playingDialogue = true;
-                                endDialogue = false;
-                            }
-
-                            if (endDialogue) {
-                                updatePlayerMovement(input);
-                                if(!map.hasFinished()) {
-                                    map.updateTiles(1);
-                                }
-                                else {
-                                    if (playersPassed()) {
-                                        //mapToTransitionTo = new MapTrainingGround2();
-                                        map = mapToTransitionTo;
-                                        map.generateMap();
-                                        currentStory = 1;
-                                    }
-                                }
-                            }
-                        }
-
-                        else if (currentStory == 1) {
-                            currentMusic = "music/Fight1.wav";
-                            if (lastStory != currentStory) {
-                                setPlayersPosition();
-                                lastStory = currentStory;
-                                playingDialogue = true;
-                                endDialogue = false;
-                                currentMusic = "music/Fight2.wav";
-                            }
-
-                            if (endDialogue) {
-                                updatePlayerMovement(input);
-                                render();
-                                checkCollisionTiles();
-                                for (Player player: players) {
-                                    if (player.isDead()) {
-                                        settingsSingleton.setGameState(7);
-                                        failed = true;
-                                    }
-                                }
-                                if(!map.hasFinished()) {
-                                    map.updateTiles(0.8);
-                                    displayCharacterStats(players);
-                                }
-                                else {
-                                    if (playersPassed()) {
-                                        map.generateMap();
-                                        currentStory++;
-                                    }
-                                }
-                            }
-                        }
-                        else if (currentStory == 2) {
-                            currentMusic = "music/Fight2.wav";
-                            if (lastStory != currentStory) {
-                                setPlayersPosition();
-                                lastStory = currentStory;
-                                playingDialogue = true;
-                                endDialogue = false;
-                                currentMusic = "music/Fight1.wav";
-                                gameSettingsSingleton.getObstaclesSettingsSingleton().applySettings(true, true, false);
-                                gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency("Rock", 0.99);
-                                gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency("Ball", 0.995);
-                            }
-
-                            if (endDialogue) {
-                                updatePlayerMovement(input);
-                                render();
-                                checkCollisionPowerUps();
-                                checkCollisionObstacles();
-                                checkCollisionTiles();
-                                updateObjects();
-                                for (Player player: players) {
-                                    if (player.isDead()) {
-                                        settingsSingleton.setGameState(7);
-                                        failed = true;
-                                    }
-                                }
-                                if(!map.hasFinished()) {
-                                    map.updateTiles(0.8);
-                                    displayCharacterStats(players);
-                                    spawnObstacles();
-                                }
-                                else {
-                                    if (playersPassed()) {
-                                        playingStory = false;
-                                        playingScene = true;
-                                        currentScene++;
-                                        updateStory(currentScene);
-                                        sceneToTransitionTo = new Image("res/background/Futaba.png");
-                                        startTransition();
-                                    }
-                                }
-                            }
-                        }
-                        else if (currentStory == 3) {
-                            dark = true;
-                            if (lastStory != currentStory) {
-                                setPlayersPosition();
-                                lastStory = currentStory;
-                                playingDialogue = true;
-                                endDialogue = false;
-                                gameSettingsSingleton.getObstaclesSettingsSingleton().applySettings(true, true, true);
-                                gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency("StunBall", 0.995);
-                            }
-
-                            if (endDialogue) {
-                                updatePlayerMovement(input);
-                                render();
-                                checkCollisionPowerUps();
-                                checkCollisionObstacles();
-                                checkCollisionTiles();
-                                updateObjects();
-                                for (Player player: players) {
-                                    if (player.isDead()) {
-                                        settingsSingleton.setGameState(7);
-                                        failed = true;
-                                    }
-                                }
-                                if(!map.hasFinished()) {
-                                    map.updateTiles(0.8);
-                                    displayCharacterStats(players);
-                                    spawnObstacles();
-                                }
-                                else {
-                                    if (playersPassed()) {
-                                        playingStory = false;
-                                        playingScene = true;
-                                        currentScene++;
-                                        updateStory(currentScene);
-                                        sceneToTransitionTo = new Image("res/background/Futaba.png");
-                                        startTransition();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if (playingScene){
-                        currentMode = "Scene";
-                        currentDialogue = currentScene;
-                        map = null;
-
-                        if(currentScene == 0) {
-                            if (lastScene != currentScene) {
-                                lastScene = currentScene;
-                                currentMusic = "music/Rain 1.wav";
-                                changeBackground(new Image("res/background/Mountain.png"));
-                                dark = true;
-                                playingDialogue = true;
-                                endDialogue = false;
-                            }
-                            if (dialogueCounter == 7) {
-                                shakeTimer = 2 * frames;
-                                dialogueCounter++;
-                            }
-                            if (endDialogue) {
-                                startTransition();
-                                sceneToTransitionTo = new Image("res/background/Nino.png");
-                                currentScene++;
-                            }
-                        }
-
-                        else if (currentScene == 1) {
-                            if (lastScene != currentScene) {
-                                lastScene = currentScene;
-                                playingDialogue = true;
-                                endDialogue = false;
-                                currentMusic = "music/Idle.wav";
-                            }
-                            if (dialogueCounter == 0) {
-                                dark = true;
-                            }
-                            else if (dialogueCounter > 2) {
-                                dark = false;
-                            }
-                            if (endDialogue) {
-                                startTransition();
-                                currentScene = 2;
-                                sceneToTransitionTo = new Image("res/background/Nino.png");
-                            }
-                        }
-                        else if (currentScene == 2) {
-                            if (lastScene != currentScene) {
-                                if (currentBackground == null) {
-                                    changeBackground(new Image("res/background/Nino.png"));
-                                }
-                                lastScene = currentScene;
-                                playingDialogue = true;
-                                endDialogue = false;
-                                currentMusic = "music/Idle.wav";
-                            }
-                            if (endDialogue) {
-                                playingStory = true;
-                                playingScene = false;
-                                currentStory = 0;
-                                startTransition();
-                                mapToTransitionTo = new Map("TrainingGround");
-                                setPlayersPosition();
-                            }
-                        }
-                        else if (currentScene == 3) {
-                            if (lastScene != currentScene) {
-                                if (currentBackground == null) {
-                                    changeBackground(new Image("res/background/Nino.png"));
-                                }
-                                currentStory = 3;
-                                lastScene = currentScene;
-                                playingDialogue = true;
-                                endDialogue = false;
-                                currentMusic = "music/Idle.wav";
-                            }
-                            if (endDialogue) {
-                                startTransition();
-                                sceneToTransitionTo = new Image("res/background/Dio.png");
-                                currentScene++;
-                            }
-                        }
-                        else if (currentScene == 4) {
-                            if (lastScene != currentScene) {
-                                lastScene = currentScene;
-                                playingDialogue = true;
-                                endDialogue = false;
-                            }
-                            if (endDialogue) {
-                                startTransition();
-                                //mapToTransitionTo = new MapDioMansion();
-                                playingScene = false;
-                                playingStory = true;
-                                setPlayersPosition();
-                            }
-                        }
-                    }
-                    else if (playingMap) {
-                    }
-
-                    // code for displaying dialogue
-                    if (playingDialogue) {
-                        if (dialogueCharacter == null) {
-                            for (Character character : allCharacters) {
-                                String name = playDialogue(currentDialogue, currentMode).split(" ")[0];
-                                if (character.getName().equals(name.substring(0, name.length() - 1))) {
-                                    dialogueCharacter = character;
-                                }
-                            }
-                        }
-                        if (endDialogue) {
-                            playingDialogue = false;
-                            dialogueCounter = 0;
-                            dialogueCharacter = null;
-                        }
-                        else {
-                            if (dialogueCharacter != null) {
-                                Image characterOnScreen = new Image(String.format("res/Renders/%s.png", dialogueCharacter.getName()));
-                                if (alternate) {
-                                    characterOnScreen.draw(dialogueWidth + characterOnScreen.getWidth()/2, dialogueLength - characterOnScreen.getHeight()/2);
-                                }
-                                else {
-                                    characterOnScreen.draw(Window.getWidth() - dialogueWidth - characterOnScreen.getWidth()/2, dialogueLength - characterOnScreen.getHeight()/2);
-                                }
-                            }
-                            Drawing.drawRectangle(dialogueWidth, dialogueLength, Window.getWidth()*0.8, 250, dialogueColour);
-                            dialogueFont.drawString(dialogueString.replaceAll("Nothing: ", ""), dialogueWidth + DIALOGUE_FONT_SIZE, dialogueLength + DIALOGUE_FONT_SIZE);
-                            if (shakeTimer <= 0) {
-                                if (playDialogue(currentDialogue, currentMode).length() - dialogueIndex > 1) {
-                                    if (!playNextCharacter) {
-                                        if(input.wasPressed(Keys.SPACE)) {
-                                            currentLines = 0;
-                                            if (!dialogueCharacter.getName().equals(nextCharacter.getName())) {
-                                                alternate = !alternate;
-                                            }
-                                            dialogueCharacter = nextCharacter;
-                                            dialogueString = "";
-                                            playNextCharacter = true;
-                                            if (playDialogue(currentDialogue, currentMode).length() - dialogueIndex <= 1) {
-                                                endDialogue = true;
-                                            }
-                                            dialogueCounter++;
-                                        }
-                                    }
-                                    else {
-                                        if ((playDialogue(currentDialogue, currentMode).charAt(dialogueIndex) == '\n') || (playDialogue(currentDialogue, currentMode).charAt(dialogueIndex) == ' ') ) {
-                                            String nextWord = "";
-                                            for(int i = dialogueIndex + 1; i < playDialogue(currentDialogue, currentMode).length(); i ++) {
-                                                if (playDialogue(currentDialogue, currentMode).charAt(i) == ' ') {
-                                                    break;
-                                                }
-                                                else {
-                                                    nextWord += playDialogue(currentDialogue, currentMode).charAt(i);
-                                                }
-                                            }
-                                            for (Character character: allCharacters) {
-                                                if (nextWord.equals(String.format("%s:", character.getName()))) {
-                                                    if (nextWord.substring(0, nextWord.length() - 1).equals(character.getName())) {
-                                                        if (!nextWord.equals(dialogueCharacter.getName())) {
-                                                            playNextCharacter = false;
-                                                            nextCharacter = character;
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (playDialogue(currentDialogue, currentMode).charAt(dialogueIndex) == '\n') {
-                                            currentLines++;
-                                            if(currentLines >= maxLines) {
-                                                if(input.wasPressed(Keys.SPACE)) {
-                                                    dialogueString = "";
-                                                    currentLines = 0;
-                                                }
-                                            }
-                                        }
-                                        if (currentLines < maxLines) {
-                                            dialogueString += playDialogue(currentDialogue, currentMode).charAt(dialogueIndex);
-                                            if (keyboardTimer > 9) {
-                                                soundEffectMusic.playMusic("music/Type.wav");
-                                                keyboardTimer = 0;
-                                            }
-                                            else {
-                                                keyboardTimer++;
-                                            }
-                                            if (dialogueIndex < playDialogue(currentDialogue, currentMode).length()) {
-                                                dialogueIndex++;
-                                            }
-                                        }
-                                    }
-                                }
-                                else {
-                                    dialogueString += playDialogue(currentDialogue, currentMode).charAt(dialogueIndex);
-                                    if (input.wasPressed(Keys.SPACE)) {
-                                        endDialogue = true;
-                                        currentLines = 0;
-                                        dialogueString = "";
-                                        dialogueIndex = 0;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+//            else {
+//                if (!settingsSingleton.getGameStateString().equals("Story")) {
+//                    buttonsToRemove.addAll(buttons);
+//                    settingsSingleton.setGameStateString("Story");
+//                    menuTitle = "";
+//                    setPlayersPosition();
+//                    map = mapToTransitionTo;
+//                    if (map != null) {
+//                        map.generateMap();
+//                    }
+//                }
+//                if (!dark && shakeTimer <= 0 && transitionTimer <= 0) {
+//                    if (playingStory) {
+//                        currentMode = "Story";
+//                        currentDialogue = currentStory;
+//
+//                        if (currentStory == 0) {
+//                            musicPlayer.setMainMusic("music/Fight0.wav");
+//                            if (lastStory != currentStory) {
+//                                lastStory = currentStory;
+//                                playingDialogue = true;
+//                                endDialogue = false;
+//                            }
+//
+//                            if (endDialogue) {
+//                                updatePlayerMovement(input);
+//                                if(!map.hasFinished()) {
+//                                    map.updateTiles(1);
+//                                }
+//                                else {
+//                                    if (playersPassed()) {
+//                                        //mapToTransitionTo = new MapTrainingGround2();
+//                                        map = mapToTransitionTo;
+//                                        map.generateMap();
+//                                        currentStory = 1;
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                        else if (currentStory == 1) {
+//                            musicPlayer.setMainMusic("music/Fight1.wav");
+//                            if (lastStory != currentStory) {
+//                                setPlayersPosition();
+//                                lastStory = currentStory;
+//                                playingDialogue = true;
+//                                endDialogue = false;
+//                                musicPlayer.setMainMusic("music/Fight2.wav");
+//                            }
+//
+//                            if (endDialogue) {
+//                                updatePlayerMovement(input);
+//                                render();
+//                                checkCollisionTiles();
+//                                for (Player player: players) {
+//                                    if (player.isDead()) {
+//                                        settingsSingleton.setGameState(7);
+//                                        failed = true;
+//                                    }
+//                                }
+//                                if(!map.hasFinished()) {
+//                                    map.updateTiles(0.8);
+//                                    displayCharacterStats(players);
+//                                }
+//                                else {
+//                                    if (playersPassed()) {
+//                                        map.generateMap();
+//                                        currentStory++;
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        else if (currentStory == 2) {
+//                            musicPlayer.setMainMusic("music/Fight2.wav");
+//                            if (lastStory != currentStory) {
+//                                setPlayersPosition();
+//                                lastStory = currentStory;
+//                                playingDialogue = true;
+//                                endDialogue = false;
+//                                musicPlayer.setMainMusic("music/Fight1.wav");
+//                                gameSettingsSingleton.getObstaclesSettingsSingleton().applySettings(true, true, false);
+//                                gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency("Rock", 0.99);
+//                                gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency("Ball", 0.995);
+//                            }
+//
+//                            if (endDialogue) {
+//                                updatePlayerMovement(input);
+//                                render();
+//                                checkCollisionPowerUps();
+//                                checkCollisionObstacles();
+//                                checkCollisionTiles();
+//                                updateObjects();
+//                                for (Player player: players) {
+//                                    if (player.isDead()) {
+//                                        settingsSingleton.setGameState(7);
+//                                        failed = true;
+//                                    }
+//                                }
+//                                if(!map.hasFinished()) {
+//                                    map.updateTiles(0.8);
+//                                    displayCharacterStats(players);
+//                                    spawnObstacles();
+//                                }
+//                                else {
+//                                    if (playersPassed()) {
+//                                        playingStory = false;
+//                                        playingScene = true;
+//                                        currentScene++;
+//                                        updateStory(currentScene);
+//                                        sceneToTransitionTo = new ImagePoint("res/background/Futaba.png", new Point(0,0));
+//                                        startTransition();
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        else if (currentStory == 3) {
+//                            dark = true;
+//                            if (lastStory != currentStory) {
+//                                setPlayersPosition();
+//                                lastStory = currentStory;
+//                                playingDialogue = true;
+//                                endDialogue = false;
+//                                gameSettingsSingleton.getObstaclesSettingsSingleton().applySettings(true, true, true);
+//                                gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency("StunBall", 0.995);
+//                            }
+//
+//                            if (endDialogue) {
+//                                updatePlayerMovement(input);
+//                                render();
+//                                checkCollisionPowerUps();
+//                                checkCollisionObstacles();
+//                                checkCollisionTiles();
+//                                updateObjects();
+//                                for (Player player: players) {
+//                                    if (player.isDead()) {
+//                                        settingsSingleton.setGameState(7);
+//                                        failed = true;
+//                                    }
+//                                }
+//                                if(!map.hasFinished()) {
+//                                    map.updateTiles(0.8);
+//                                    displayCharacterStats(players);
+//                                    spawnObstacles();
+//                                }
+//                                else {
+//                                    if (playersPassed()) {
+//                                        playingStory = false;
+//                                        playingScene = true;
+//                                        currentScene++;
+//                                        updateStory(currentScene);
+//                                        sceneToTransitionTo = new ImagePoint("res/background/Futaba.png", new Point(0,0));
+//                                        startTransition();
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                    else if (playingScene){
+//                        currentMode = "Scene";
+//                        currentDialogue = currentScene;
+//                        map = null;
+//
+//                        if(currentScene == 0) {
+//                            if (lastScene != currentScene) {
+//                                lastScene = currentScene;
+//                                musicPlayer.setMainMusic("music/Rain 1.wav");
+//                                changeBackground("res/background/Mountain.png");
+//                                dark = true;
+//                                playingDialogue = true;
+//                                endDialogue = false;
+//                            }
+//                            if (dialogueCounter == 7) {
+//                                shakeTimer = 2 * frames;
+//                                dialogueCounter++;
+//                            }
+//                            if (endDialogue) {
+//                                startTransition();
+//                                sceneToTransitionTo = new ImagePoint("res/background/Nino.png", new Point(0,0));
+//                                currentScene++;
+//                            }
+//                        }
+//
+//                        else if (currentScene == 1) {
+//                            if (lastScene != currentScene) {
+//                                lastScene = currentScene;
+//                                playingDialogue = true;
+//                                endDialogue = false;
+//                                musicPlayer.setMainMusic("music/Idle.wav");
+//                            }
+//                            if (dialogueCounter == 0) {
+//                                dark = true;
+//                            }
+//                            else if (dialogueCounter > 2) {
+//                                dark = false;
+//                            }
+//                            if (endDialogue) {
+//                                startTransition();
+//                                currentScene = 2;
+//                                sceneToTransitionTo = new ImagePoint("res/background/Nino.png", new Point(0,0));
+//                            }
+//                        }
+//                        else if (currentScene == 2) {
+//                            if (lastScene != currentScene) {
+//                                if (currentBackground == null) {
+//                                    changeBackground("res/background/Nino.png");
+//                                }
+//                                lastScene = currentScene;
+//                                playingDialogue = true;
+//                                endDialogue = false;
+//                                musicPlayer.setMainMusic("music/Idle.wav");
+//                            }
+//                            if (endDialogue) {
+//                                playingStory = true;
+//                                playingScene = false;
+//                                currentStory = 0;
+//                                startTransition();
+//                                mapToTransitionTo = new Map("TrainingGround");
+//                                setPlayersPosition();
+//                            }
+//                        }
+//                        else if (currentScene == 3) {
+//                            if (lastScene != currentScene) {
+//                                if (currentBackground == null) {
+//                                    changeBackground("res/background/Nino.png");
+//                                }
+//                                currentStory = 3;
+//                                lastScene = currentScene;
+//                                playingDialogue = true;
+//                                endDialogue = false;
+//                                musicPlayer.setMainMusic("music/Idle.wav");
+//                            }
+//                            if (endDialogue) {
+//                                startTransition();
+//                                sceneToTransitionTo = new ImagePoint("res/background/Dio.png", new Point(0,0));
+//                                currentScene++;
+//                            }
+//                        }
+//                        else if (currentScene == 4) {
+//                            if (lastScene != currentScene) {
+//                                lastScene = currentScene;
+//                                playingDialogue = true;
+//                                endDialogue = false;
+//                            }
+//                            if (endDialogue) {
+//                                startTransition();
+//                                //mapToTransitionTo = new MapDioMansion();
+//                                playingScene = false;
+//                                playingStory = true;
+//                                setPlayersPosition();
+//                            }
+//                        }
+//                    }
+//                    else if (playingMap) {
+//                    }
+//
+//                    // code for displaying dialogue
+//                    if (playingDialogue) {
+//                        if (dialogueCharacter == null) {
+//                                String name = playDialogue(currentDialogue, currentMode).split(" ")[0];
+//                                dialogueCharacter = new Character(name);
+//                        }
+//                        if (endDialogue) {
+//                            playingDialogue = false;
+//                            dialogueCounter = 0;
+//                            dialogueCharacter = null;
+//                        }
+//                        else {
+//                            if (dialogueCharacter != null) {
+//                                ImagePoint characterOnScreen = new ImagePoint(String.format("res/renders/Characters/%s.png",
+//                                        dialogueCharacter.getName()), new Point(0,0));
+//                                if (alternate) {
+//                                    characterOnScreen.setPos(dialogueWidth + characterOnScreen.getWidth()/2,
+//                                            dialogueLength - characterOnScreen.getHeight()/2);
+//                                }
+//                                else {
+//                                    characterOnScreen.setPos(Window.getWidth() - dialogueWidth -
+//                                            characterOnScreen.getWidth()/2, dialogueLength -
+//                                            characterOnScreen.getHeight()/2);
+//                                }
+//                                characterOnScreen.draw();
+//                            }
+//                            Drawing.drawRectangle(dialogueWidth, dialogueLength, Window.getWidth()*0.8, 250,
+//                                    dialogueColour);
+//                            dialogueFont.drawString(dialogueString.replaceAll("Nothing: ", ""), dialogueWidth +
+//                                    DIALOGUE_FONT_SIZE, dialogueLength + DIALOGUE_FONT_SIZE);
+//                            if (shakeTimer <= 0) {
+//                                if (playDialogue(currentDialogue, currentMode).length() - dialogueIndex > 1) {
+//                                    if (!playNextCharacter) {
+//                                        if(input != null && input.wasPressed(Keys.SPACE)) {
+//                                            currentLines = 0;
+//                                            if (!dialogueCharacter.getName().equals(nextCharacter.getName())) {
+//                                                alternate = !alternate;
+//                                            }
+//                                            dialogueCharacter = nextCharacter;
+//                                            dialogueString = "";
+//                                            playNextCharacter = true;
+//                                            if (playDialogue(currentDialogue, currentMode).length() -
+//                                                    dialogueIndex <= 1) {
+//                                                endDialogue = true;
+//                                            }
+//                                            dialogueCounter++;
+//                                        }
+//                                    }
+//                                    else {
+//                                        if ((playDialogue(currentDialogue, currentMode).charAt(dialogueIndex) == '\n') ||
+//                                                (playDialogue(currentDialogue, currentMode).charAt(dialogueIndex) == ' ')) {
+//                                            String nextWord = "";
+//                                            for(int i = dialogueIndex + 1;
+//                                                i < playDialogue(currentDialogue, currentMode).length();
+//                                                i ++) {
+//                                                if (playDialogue(currentDialogue, currentMode).charAt(i) == ' ') {
+//                                                    break;
+//                                                }
+//                                                else {
+//                                                    nextWord += playDialogue(currentDialogue, currentMode).charAt(i);
+//                                                }
+//                                            }
+//                                            for (Character character: allCharacters) {
+//                                                if (nextWord.equals(String.format("%s:", character.getName()))) {
+//                                                    if (nextWord.substring(0, nextWord.length() - 1).
+//                                                            equals(character.getName())) {
+//                                                        if (!nextWord.equals(dialogueCharacter.getName())) {
+//                                                            playNextCharacter = false;
+//                                                            nextCharacter = character;
+//                                                            break;
+//                                                        }
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//                                        if (playDialogue(currentDialogue, currentMode).charAt(dialogueIndex) == '\n') {
+//                                            currentLines++;
+//                                            if(currentLines >= maxLines) {
+//                                                if(input != null && input.wasPressed(Keys.SPACE)) {
+//                                                    dialogueString = "";
+//                                                    currentLines = 0;
+//                                                }
+//                                            }
+//                                        }
+//                                        if (currentLines < maxLines) {
+//                                            dialogueString += playDialogue(currentDialogue, currentMode).charAt(dialogueIndex);
+//                                            if (keyboardTimer > 9) {
+//                                                musicPlayer.addMusic("music/Type.wav");
+//                                                keyboardTimer = 0;
+//                                            }
+//                                            else {
+//                                                keyboardTimer++;
+//                                            }
+//                                            if (dialogueIndex < playDialogue(currentDialogue, currentMode).length()) {
+//                                                dialogueIndex++;
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                                else {
+//                                    dialogueString += playDialogue(currentDialogue, currentMode).charAt(dialogueIndex);
+//                                    if (input != null && input.wasPressed(Keys.SPACE)) {
+//                                        endDialogue = true;
+//                                        currentLines = 0;
+//                                        dialogueString = "";
+//                                        dialogueIndex = 0;
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
         else if (settingsSingleton.getGameState() == 7) {
             if (settingsSingleton.getGameMode() == 0) {
                 if (settingsSingleton.getGameStateString().equals("Continue")) {
-                    changeMainMusic(currentMusic);
+                    musicPlayer.restart(null);
                     buttonsToRemove.addAll(buttons);
                     settingsSingleton.setGameState(6);
                     map.generateMap();
                     for (Player player : players) {
-                        player.getCharacter().resetTimer();
-                        if (player.isDead()) {
-                            player.setDead();
-                        }
+                        player.getCharacter().reset();
                     }
                     setPlayersPosition();
                     powerUps.removeAll(powerUps);
                     obstacles.removeAll(obstacles);
                 }
                 else if (settingsSingleton.getGameStateString().equals("Menu")) {
-                    failed = false;
                     settingsSingleton.setGameState(0);
                     for (Player player : players) {
-                        player.getCharacter().resetTimer();
-                        if (player.isDead()) {
-                            player.setDead();
-                        }
+                        player.getCharacter().reset();
+                        player.reset();
                     }
                     setPlayersPosition();
                     powerUps.removeAll(powerUps);
@@ -988,125 +955,74 @@ public class Game extends AbstractGame {
                 }
             }
             else {
-                currentMusic = "music/Fail.wav";
-                countDown = 0;
-                currentFrame = 0;
-                for (Player player: players) {
-                    player.getCharacter().resetTimer();
-                    if (!player.isDead()) {
-                        if (settingsSingleton.getWinner().getId() == player.getId()) {
-                            Image winner = new Image(String.format("res/Renders/%s.png", player.getCharacter().getName()));
-                            Image comrade = new Image(String.format("res/Renders/%s.png", player.getSideCharacter().getName()));
-                            if (winnerTimer < winner.getWidth() + comrade.getWidth()/2) {
-                                winnerTimer+=10;
-                            }
-                            Colour transparent = new Colour(0, 0, 0, 0.5);
-                            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), transparent);
-                            winner.draw(Window.getWidth() - winnerTimer, Window.getHeight()/2 +200);
-                            comrade.draw(Window.getWidth() - winnerTimer + winner.getWidth(), Window.getHeight()/2 + 200);
-                            victoryFont.drawString(String.format("Player %d: %s is victorious!", settingsSingleton.getWinner().getId(), settingsSingleton.getWinner().getCharacter().getName()), 16, 100);
-                        }
-                    }
-                }
-                if (settingsSingleton.getGameStateString().equals("Win")) {
-                    playSound("music/Congratulations.wav");
-                    settingsSingleton.setGameStateString("Congratulations");
-                }
-                if (!winnerPlayed) {
-                    for (Player player: players) {
-                        player.getCharacter().resetTimer();
-                        if (player.getCharacter() != null) {
-                            if (player.getCharacter().getName().equals(settingsSingleton.getWinner().getCharacter().getName())) {
-                                playSound(player.getCharacter().playLine());
-                                player.getCharacter().updateStats(true, true);
-                                player.recordWin();
-                            }
-                            else {
-                                player.getCharacter().updateStats(true, false);
-                            }
-                        }
-                    }
-                    statTracker[settingsSingleton.getGameMode() + 1] = statTracker[settingsSingleton.getGameMode() + 1] + 1;
-                    settingsSingleton.getWinner().getCharacter().playLine();
-                    winnerPlayed = true;
+                if (settingsSingleton.getGameStateString().equalsIgnoreCase("Game Finished")) {
+                    settingsSingleton.setGameStateString("Retry or Menu?");
+                    musicPlayer.setMainMusic("music/Fail.wav");
+                    stats.updateGameStats(players);
+                    musicPlayer.addMusic(settingsSingleton.getWinner().getCharacter().playLine());
                     buttonsToRemove.addAll(buttons);
-                    buttons.add(new Button("Back To Start", "Main Menu", FONT_SIZE,
-                            Window.getWidth(), 160,
-                            new Point(0, Window.getHeight() / 1.5 + 160)));
-                    buttons.add(new Button("Retry", "Restart", FONT_SIZE,
-                            Window.getWidth(), 160,
-                            new Point(0, Window.getHeight() / 2 + 160)));
+                    buttons.add(new Button("Back To Start", "Main Menu",
+                            new FontSize(Fonts.DEJAVUSANS, 160),
+                            new Rectangle(0, Window.getHeight() / 1.5 + 160, Window.getWidth(), 160),
+                            ColourPresets.WHITE.toColour()));
+                    buttons.add(new Button("Retry", "Restart",
+                            new FontSize(Fonts.DEJAVUSANS, 160),
+                            new Rectangle(0, Window.getHeight() / 2 + 160, Window.getWidth(), 160),
+                            ColourPresets.WHITE.toColour()));
                 }
-                if (input.wasPressed(MouseButtons.LEFT)) {
-                    if((settingsSingleton.getGameStateString().equals("Retry")) || (settingsSingleton.getGameStateString().equals("Menu"))) {
-                        resetMusic();
-                        for (SideCharacter character: sideCharacters) {
-                            character.reset();
+                else if (Arrays.asList("Retry", "Menu").contains(settingsSingleton.getGameStateString())) {
+                    if (settingsSingleton.getGameStateString().equals("Retry")) {
+                        buttonsToRemove.addAll(buttons);
+                        map.generateMap();
+                        settingsSingleton.setGameState(6);
+                        for (Player player: players) {
+                            player.getCharacter().reset();
+                            player.getSideCharacter().reset();
                         }
-                        if (settingsSingleton.getGameStateString().equals("Retry")) {
-                            for (Player player: players) {
-                                player.getCharacter().resetTimer();
-                                player.getSideCharacter().reset();
-                                if (player.isDead()) {
-                                    player.setDead();
-                                }
-                            }
-                            map.generateMap();
-                            settingsSingleton.setGameState(6);
-                            buttonsToRemove.addAll(buttons);
+                    } else if (settingsSingleton.getGameStateString().equals("Menu")) {
+                        for (Player player : players) {
+                            player.reset();
                         }
-                        else if (settingsSingleton.getGameStateString().equals("Menu")) {
-                            map = null;
-                            unlocked = checkAchievementsInGame();
-                            if (unlocked != null) {
-                                if (!isPlayable(unlocked.getName())) {
-                                    addToPlayableCharacter(unlocked.getName());
-                                    settingsSingleton.setGameState(8);
-                                    saveStats();
-                                }
-                            }
-                            else {
-                                settingsSingleton.setGameState(0);
-                            }
-                            players.clear();
-                            buttonsToRemove.addAll(buttons);
+                        map = null;
+                        unlocked = checkAchievementsInGame();
+                        if (unlocked != null) {
+                            settingsSingleton.setGameState(8);
+                        } else {
+                            settingsSingleton.setGameState(0);
                         }
-                        obstacles.removeAll(obstacles);
-                        powerUps.removeAll(powerUps);
-                        waitTimer = 840;
-                        winnerTimer = 0;
-                        winnerPlayed = false;
-                        currentFrame = 0;
-                        countDown = 0;
-                        saveStats();
                     }
+                    musicPlayer.clear();
+                    buttonsToRemove.addAll(buttons);
+                    obstacles.removeAll(obstacles);
+                    powerUps.removeAll(powerUps);
+                    stats.saveStats();
                 }
             }
         }
         else if (settingsSingleton.getGameState() == 8) {
+            String musicWho = "music/Who.wav";
+
             if (!settingsSingleton.getGameStateString().equals("Unlocked")) {
-                resetMusic();
-                currentMusic = "music/Who.wav";
-                mainMusic.clip.setFramePosition(0);
+                musicPlayer.clear();
+                musicPlayer.setMainMusic("music/Silence.wav");
+                musicPlayer.addMusic(new Music(musicWho));
                 settingsSingleton.setGameStateString("Unlocked");
             }
-            if (mainMusic.clip.getFramePosition() >= mainMusic.clip.getFrameLength()) {
-                currentMusic = String.format("music/%sUnlock.wav", unlocked.getName());
-                if (!currentMusic.replaceAll("/", "\\\\").equals(mainMusic.musicPath.getPath())) {
-                    playSound(String.format("music/%sVoice.wav", unlocked.getName()));
-                }
-            }
-            if (currentMusic.equals(String.format("music/%sUnlock.wav", unlocked.getName()))) {
-                chooseCharacterFont.drawString(String.format("NEW CHARACTER UNLOCKED: %s!", unlocked.getName().toUpperCase()), 0, 100);
-                Image unlockedImage = new Image(String.format("res/Renders/%s.png", unlocked.getName()));
-                unlockedImage.draw(Window.getWidth()/2, Window.getHeight()/2 + 300);
-                if (input.wasPressed(MouseButtons.LEFT)) {
-                    resetMusic();
+            if (musicPlayer.getSound(musicWho) != null && musicPlayer.getSound(musicWho).hasEnded()) {
+                musicPlayer.setMainMusic(String.format("music/%sUnlock.wav", unlocked));
+                musicPlayer.addMusic(String.format("music/%sVoice.wav", unlocked));
+                new Font(Fonts.DEJAVUSANS, 100).drawString(String.format("NEW CHARACTER UNLOCKED: %s!", unlocked), 0, 100);
+                ImagePoint unlockedImage = new ImagePoint(String.format("res/renders/Characters/%s.png", unlocked),
+                        new Point(Window.getWidth()/2, Window.getHeight()/2 + 300));
+                unlockedImage.draw();
+                if (input != null && input.wasPressed(MouseButtons.LEFT)) {
+                    musicPlayer.clear();
+                    musicPlayer.setMainMusic("music/Fail.wav");
                     settingsSingleton.setGameState(0);
                 }
             }
             else {
-                Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
+                Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), ColourPresets.BLACK.toColour());
             }
         }
         else if (settingsSingleton.getGameState() == 9) {
@@ -1119,22 +1035,22 @@ public class Game extends AbstractGame {
                 }
                 buttonsToRemove.addAll(buttons);
                 settingsSingleton.setGameStateString("Create Your Own Map");
-                menuBackground = null;
+                imagePointManagerSingleton.setCurrentBackground(null);
                 menuTitle = null;
             }
 
             if (!addingTile) {
-                if (input.wasPressed(Keys.UP)) {
+                if (input != null && input.wasPressed(Keys.UP)) {
                     updateTiles(100);
                     offset++;
                 }
-                if (input.wasPressed((Keys.DOWN))) {
+                if (input != null && input.wasPressed((Keys.DOWN))) {
                     if (offset > 0) {
                         updateTiles(-100);
                         offset--;
                     }
                 }
-                if (input.wasPressed(Keys.S)) {
+                if (input != null && input.wasPressed(Keys.S)) {
                     if (customMapTiles.size()%4 != 0) {
                         addDisplayString("Error: Cannot save map. Map not complete! (Row is not filled)", 5);
                     }
@@ -1144,39 +1060,39 @@ public class Game extends AbstractGame {
                         settingsSingleton.setGameState(0);
                     }
                 }
-                if (input.wasPressed(Keys.A)) {
+                if (input != null && input.wasPressed(Keys.A)) {
                     addingTile = true;
                 }
-                if (input.wasPressed(Keys.R)) {
+                if (input != null && input.wasPressed(Keys.R)) {
                     if (customMapTiles.size() > 0) {
                         customMapTiles.remove(customMapTiles.size() - 1);
                     }
                 }
-                if (input.wasPressed(Keys.ESCAPE)) {
+                if (input != null && input.wasPressed(Keys.ESCAPE)) {
                     settingsSingleton.setGameState(0);
                 }
             }
             else {
-                if (input.wasPressed(Keys.NUM_1)) {
+                if (input != null && input.wasPressed(Keys.NUM_1)) {
                     addTileToCustomMap(tile1.getName());
                 }
-                if (input.wasPressed(Keys.NUM_2)) {
+                if (input != null && input.wasPressed(Keys.NUM_2)) {
                     addTileToCustomMap(tile2.getName());
                 }
-                if (input.wasPressed(Keys.NUM_3)) {
+                if (input != null && input.wasPressed(Keys.NUM_3)) {
                     addTileToCustomMap(tile3.getName());
                 }
-                if (input.wasPressed(Keys.LEFT)) {
+                if (input != null && input.wasPressed(Keys.LEFT)) {
                     if (page > 0) {
                         page--;
                     }
                 }
-                if (input.wasPressed((Keys.RIGHT))) {
+                if (input != null && input.wasPressed((Keys.RIGHT))) {
                     if (page < 2) {
                         page++;
                     }
                 }
-                if (input.wasPressed(Keys.ESCAPE)) {
+                if (input != null && input.wasPressed(Keys.ESCAPE)) {
                     addingTile = false;
                 }
             }
@@ -1202,25 +1118,18 @@ public class Game extends AbstractGame {
                         new Image("res/arrows/RightArrow.png"),
                         new Point(Window.getWidth()/2 + 130, 200),
                         0.5));
-                titleFont.drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + 100);
-                pageType = "General";
+                new Font(Fonts.DEJAVUSANS, 100).drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + 100);
             }
-
-            if (gameSettingsSingleton.getPage() == 0) {
-                pageType = "General";
-            }
-            else if (gameSettingsSingleton.getPage() == 1) {
-                pageType = "PowerUps";
-            }
-            else if (gameSettingsSingleton.getPage() == 2) {
-                pageType = "Obstacles";
-            }
-            else {
-                pageType = "";
-            }
-            menuTitle = pageType;
         }
-        if (input.wasPressed(Keys.ESCAPE)) {
+        else if (settingsSingleton.getGameState() == 11) {
+            if (!settingsSingleton.getGameStateString().equals("Tutorial")) {
+                settingsSingleton.setGameStateString("Tutorial");
+                map = new Map("Training Ground");
+                map.generateMap();
+
+            }
+        }
+        if (input != null && input.wasPressed(Keys.ESCAPE)) {
             if (settingsSingleton.getGameState() == 1) {
                 settingsSingleton.setGameState(0);
             }
@@ -1228,8 +1137,10 @@ public class Game extends AbstractGame {
                 settingsSingleton.setGameState(1);
             }
             else if (settingsSingleton.getGameState() == 3) {
-                players.removeAll(players);
                 settingsSingleton.setGameState(settingsSingleton.getGameState() - 1);
+                for (Player player: players) {
+                    player.reset();
+                }
             }
             else if (settingsSingleton.getGameState() == 4) {
                 settingsSingleton.setGameState(3);
@@ -1242,111 +1153,91 @@ public class Game extends AbstractGame {
             }
             else if (settingsSingleton.getGameState() == 6) {
                 settingsSingleton.setGameState(11);
-            } else if (settingsSingleton.getGameState() == 10) {
-                settingsSingleton.setGameState(settingsSingleton.getLastGameState());
             }
             else if (settingsSingleton.getGameState() == 11) {
                 settingsSingleton.setGameState(6);
             }
         }
+
+        currentMousePosition = input == null ? null : input.getMousePosition();
+        musicPlayer.update();
+        updateDisplayStrings();
+        updateTime();
         for (Slider slider: sliders) {
             slider.interact(input);
         }
         updateButtons();
         updateSliders();
         render();
+        eventsListener.updateEvents();
+        canInteract = eventsListener.canInteract();
+
+        // TEST GAME
+        if (settingsSingleton.getGameState() == -100) {
+            players.get(0).setCharacter(new Character(CharacterNames.MIKU));
+            players.get(0).setSideCharacter(new SideJotaro());
+            players.get(0).getCharacter().gainSpecialAbilityBar(500);
+            players.get(1).setCharacter(new Character(CharacterNames.MAI));
+            players.get(1).setSideCharacter(new SideDio());
+            players.get(1).getCharacter().gainSpecialAbilityBar(500);
+            settingsSingleton.setPlayers(players.size());
+            map = new Map("Spooky Spikes");
+            map.generateMap();
+            gameSettingsSingleton.setMap(map);
+            settingsSingleton.setGameMode(1);
+            settingsSingleton.setGameState(6);
+            settingsSingleton.setGameStateString("Test");
+
+        }
     }
 
     public void render() {
-        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
-        if (menuBackground != null) {
-            menuBackground.drawFromTopLeft(0, 0);
-        } else {
-            drawMapBackground();
-        }
+        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), ColourPresets.BLACK.toColour());
         if (settingsSingleton.getGameState() == -1 ) {
-            Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), black);
-            playIntro();
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), ColourPresets.WHITE.toColour());
+        }
+        if (settingsSingleton.getGameState() == 0) {
+            imagePointManagerSingleton.getCurrentBackground().draw();
         }
         if (settingsSingleton.getGameState() == 1) {
-            Image storyImage = new Image("res/menu/storyMenu.png");
-            Image vsImage = new Image("res/menu/vsMenu.png");
-            if (settingsSingleton.getGameStateString().equals("STORY")) {
-                vsImage.drawFromTopLeft(vsImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset, 0);
-                storyImage.drawFromTopLeft(-storyImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) +gameModeOffset, 0);
-            }
-            else if (settingsSingleton.getGameStateString().equals("VS")) {
-                storyImage.drawFromTopLeft(-storyImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset, 0);
-                vsImage.drawFromTopLeft(vsImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset, 0);
-            }
-            else {
-                storyImage.drawFromTopLeft(-storyImage.getWidth()/2 - (currentMousePosition.x/3 - Window.getWidth()/6), 0);
-                vsImage.drawFromTopLeft(vsImage.getWidth()/2 - (currentMousePosition.x/3 - Window.getWidth()/6), 0);
-            }
-            Drawing.drawRectangle(vsImage.getWidth()/2 - (mousePosition.x/3 - Window.getWidth()/6) + gameModeOffset, 0, 20, Window.getHeight(), new Colour(1,1,1));
+            imagePointManagerSingleton.draw();
         }
         else if (settingsSingleton.getGameState() == 2) {
+            imagePointManagerSingleton.getCurrentBackground().draw();
             for (Button button: buttons) {
                 if ("234".contains(button.getName())) {
                     button.setNight();
                     if (button.isHovering()) {
-                        Image playerArt = new Image(String.format("res/menu/%sPlayers.PNG", button.getName()));
-                        playerArt.draw(Window.getWidth()/2, Window.getHeight()/2);
+                        ImagePoint playerArt = new ImagePoint(String.format("res/menu/%sPlayers.PNG",
+                                button.getName()), new Point(0, 0));
+                        playerArt.setPos(Window.getWidth()/2 - playerArt.getWidth()/2, Window.getHeight() - playerArt.getHeight());
+                        playerArt.draw();
                     }
                 }
             }
         }
         else if (settingsSingleton.getGameState() == 3) {
-            // draw character Icons
-            int row = 1;
-            int currentIcon = 1;
-            Image locked = new Image("res/icons/Unknown.png");
-            for (Character character: characters) {
-                character.getIcon().drawFromTopLeft(-240 +spacer * currentIcon, -200 + spacer * row);
-                currentIcon++;
-                if (currentIcon >= 7) {
-                    currentIcon = 1;
-                    row++;
-                }
+
+            Character currentCharacter = allCharacters.get(allCharacters.size() % 2 == 1 ?
+                    allCharacters.size() / 2 + 1 : allCharacters.size() / 2);
+
+            imagePointManagerSingleton.getCurrentBackground().draw();
+            Drawing.drawRectangle(new Point(0,0), Window.getWidth(), Window.getHeight()/4, new Colour(0,0,0,0.5));
+            Drawing.drawRectangle(new Point(0,Window.getHeight()*3/4), Window.getWidth(), Window.getHeight()/4, new Colour(0,0,0,0.5));
+            if (isUnlocked(currentCharacter.getName())) {
+                FontSize characterFont = new FontSize(Fonts.TCB, 80);
+                characterFont.draw(currentCharacter.getName(), Window.getWidth()/5
+                        - characterFont.getFont().getWidth(currentCharacter.getName())/2, Window.getHeight()/2);
+                characterFont.draw(currentCharacter.getLastName(), Window.getWidth()*4/5
+                        - characterFont.getFont().getWidth(currentCharacter.getLastName())/2, Window.getHeight()/2);
             }
-            // draw filler for locked characters
-            for (int i = characters.size(); i < 12; i++) {
-                locked.drawFromTopLeft(-240 + spacer * currentIcon, -200 + spacer * row);
-                currentIcon++;
-                if (currentIcon >= 7) {
-                    currentIcon = 1;
-                    row++;
-                }
-            }
-            drawBorders();
-            // react to player movement relative to character icons
-            for (Player player: players) {
-                for (Character character: characters) {
-                    Image border = new Image("res/Selected/Selected.png");
-                    if (player.getCharacter() == null) {
-                        Rectangle iconRectangle = new Rectangle(character.getIconPos().x - 165, character.getIconPos().y - 150, 299, 299);
-                        if (iconRectangle.intersects(player.getPos())) {
-                            character.getSelected().draw(250 + border.getWidth()*1.5*(player.getId()-1), Window.getHeight() - 100);
-                            playerFont.drawString(String.format("P%d: %s", player.getId(), character.getName()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight());
-                        }
-                        else {
-                            playerFont.drawString(String.format("P%d: ", player.getId()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight());
-                        }
-                    }
-                    else {
-                        player.getCharacter().getSelected().draw(250 + border.getWidth()*1.5*(player.getId()-1), Window.getHeight() - 100);
-                        playerFont.drawString(String.format("P%d: %s", player.getId(), player.getCharacter().getName()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight());
-                    }
-                    playerFont.drawString(String.format("Wins: %d", player.getNoOfWins()), 310 + (player.getId() - 1) * border.getWidth()*3/2, Window.getHeight() - 40);
-                }
-                player.getCursor().drawFromTopLeft(player.getPos().x, player.getPos().y);
-            }
+            drawBorders(currentCharacter);
+            imagePointManagerSingleton.draw();
         }
         else if (settingsSingleton.getGameState() == 4 ) {
-            spacer = 300;
+            int spacer  = 300;
             int row = 1;
             int currentIcon = 1;
-            Image locked = new Image("res/icons/Unknown.png");
             for (SideCharacter character : sideCharacters) {
                 character.getIcon().draw(200 + spacer * currentIcon, -50 + spacer * row);
                 character.setIconPos(new Point(200 + spacer * currentIcon, -50 + spacer * row));
@@ -1358,20 +1249,21 @@ public class Game extends AbstractGame {
             }
             // draw filler for locked characters
             for (int i = sideCharacters.size(); i < 12; i++) {
-                locked.draw(200 + spacer * currentIcon, -50 + spacer * row);
+                ImagePoint locked = new ImagePoint("res/icons/Unknown.png", new Point(200 + spacer * currentIcon, -50 + spacer * row));
+                locked.draw();
                 currentIcon++;
                 if (currentIcon >= 5) {
                     currentIcon = 1;
                     row++;
                 }
             }
-            drawBorders();
             // react to player movement relative to character icons
             for (Player player : players) {
                 for (SideCharacter character : sideCharacters) {
+                    Font playerFont = new Font(Fonts.DEJAVUSANS, 40);
                     Image border = new Image("res/Selected/Selected.png");
                     if (player.getSideCharacter() == null) {
-                        if (character.getIcon().getBoundingBoxAt(new Point(character.getIconPos().x - 25, character.getIconPos().y)).intersects(player.getPos())) {
+                        if (character.getIcon().getBoundingBoxAt(new Point(character.getIconPos().x - 25, character.getIconPos().y)).intersects(player.getCursorPos())) {
                             character.getSelected().draw(250 + border.getWidth() * 1.5 * (player.getId() - 1), Window.getHeight() - 150);
                             playerFont.drawString(String.format("P%d: %s", player.getId(), character.getName()), 310 + (player.getId() - 1) * border.getWidth() * 3 / 2, Window.getHeight());
                         } else {
@@ -1383,14 +1275,13 @@ public class Game extends AbstractGame {
                     }
                     playerFont.drawString(String.format("Wins: %d", player.getNoOfWins()), 310 + (player.getId() - 1) * border.getWidth() * 3 / 2, Window.getHeight() - 40);
                 }
-                player.getCursor().drawFromTopLeft(player.getPos().x, player.getPos().y);
+                player.getCursor().drawFromTopLeft(player.getCursorPos().x, player.getCursorPos().y);
             }
         }
         else if (settingsSingleton.getGameState() == 5) {
-            spacer = 400;
+            int spacer = 400;
             int row = 1;
             int currentIcon = 1;
-            Image locked = new Image("res/mapPeeks/locked.png");
             for (Map map : playableMaps) {
                 map.getMapPeek().draw(spacer * currentIcon, -50 + spacer * row);
                 currentIcon++;
@@ -1405,14 +1296,21 @@ public class Game extends AbstractGame {
             currentIcon = 2;
             for (Map map : playableMaps) {
                 for (Player player: players) {
-                    if (!map.getMapPeek().getBoundingBoxAt(new Point(-425 + map.getMapPeek().getWidth() * currentIcon + (row - 1) *400, -50 + spacer * row)).intersects(player.getPos())) {
+                    if (!map.getMapPeek().getBoundingBoxAt(new Point(-425 + map.getMapPeek().getWidth() * currentIcon + (row - 1) *400, -50 + spacer * row)).intersects(player.getCursorPos())) {
                         if(player.getMapChosen() != null) {
-                            gameFont.drawString(String.format("P%d: %s", player.getId(), player.getMapChosen().getName()), (player.getId() - 1) * (Window.getWidth()+300) / (players.size() + 1), Window.getHeight() - 15, DO.setBlendColour(white));
+                            new Font(Fonts.DEJAVUSANS, 40).drawString(String.format("P%d: %s", player.getId(),
+                                    player.getMapChosen().getName()),
+                                    (player.getId() - 1) * (Window.getWidth()+300) / (players.size() + 1),
+                                    Window.getHeight() - 15, DO.setBlendColour(ColourPresets.WHITE.toColour()));
                         }
                     }
                     else {
                         if(player.getMapChosen() == null) {
-                            gameFont.drawString(String.format("P%d: %s", player.getId(), map.getName()), (player.getId() - 1) * (Window.getWidth()+300) / (players.size() + 1), Window.getHeight() - 15, DO.setBlendColour(white));
+                            new Font(Fonts.DEJAVUSANS, 40).drawString(String.format("P%d: %s", player.getId(),
+                                    map.getName()),
+                                    (player.getId() - 1) * (Window.getWidth()+300) / (players.size() + 1),
+                                    Window.getHeight() - 15,
+                                    DO.setBlendColour(Colour.WHITE));
                         }
                     }
                     if (player.getCharacter().getPos() != null) {
@@ -1428,7 +1326,8 @@ public class Game extends AbstractGame {
                 }
             }
             for (int i = playableMaps.size(); i < 8; i++) {
-                locked.draw(spacer * currentIcon, -50 + spacer * row);
+                ImagePoint locked = new ImagePoint("res/mapPeeks/locked.png", new Point(spacer * currentIcon, -50 + spacer * row));
+                locked.draw();
                 currentIcon++;
                 if (currentIcon > 5) {
                     currentIcon = 1;
@@ -1438,104 +1337,95 @@ public class Game extends AbstractGame {
                 }
             }
         }
-        if (settingsSingleton.getGameState() == 6) {
+        else if (settingsSingleton.getGameState() == 6) {
             if (settingsSingleton.getGameMode() == 1) {
                 menuTitle = null;
                 drawGame();
                 if (countDown < 3 * frames) {
-                    Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, (390.0 - currentFrame)/390.0));
-                    String countdown;
-                    if (currentFrame < 150) {
-                        countdown = "3..";
-                    } else if (currentFrame < 270) {
-                        countdown = "2..";
-                    } else if (currentFrame < 390) {
-                        countdown = "1..";
+                    Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, (390.0 - countDown)/390.0));
+                    String countString;
+                    if (countDown < 150) {
+                        countString = "3..";
+                    } else if (countDown < 270) {
+                        countString = "2..";
+                    } else if (countDown < 390) {
+                        countString = "1..";
                     } else {
-                        countdown = "GO!";
+                        countString = "GO!";
                     }
-                    countdownFont.drawString(String.format("%s", countdown), Window.getWidth() / 2 - 125, Window.getHeight() / 2);
-                    currentFrame++;
+                    new Font(Fonts.CONFORMABLE, 300).drawString(String.format("%s", countString), Window.getWidth() / 2 - 125, Window.getHeight() / 2);
+                    countDown++;
                 }
                 else {
                     if(!map.hasFinished()) {
                         if(!playingAnimation) {
-                            drawBoundaries();
+                            drawCollisionBoundaries();
                             displayCharacterStats(players);
                         }
                     }
                     else {
                         if (!playingAnimation) {
-                            titleFont.drawString("CLEAR! REACH THE TOP!", 16, FONT_SIZE, DO.setBlendColour(black));
+                            new Font(Fonts.DEJAVUSANS, 100).drawString("CLEAR! REACH THE TOP!", 16, 160, DO.setBlendColour(ColourPresets.BLACK.toColour()));
                         }
                     }
                     renderAbilities();
                 }
             }
-            else {
-                if (currentBackground != null) {
-                    currentBackground.drawFromTopLeft(currentBackgroundPoint.x, currentBackgroundPoint.y);
-                }
-                if (dark) {
-                    darken();
-                }
-                if ((shakeTimer > 0) || (transitionTimer > 0)) {
-                    shakeImage();
-                    transition();
-                }
-            }
+//            else {
+//                currentBackground.draw();
+//                if (dark) {
+//                    darken();
+//                }
+//                if ((shakeTimer > 0) || (transitionTimer > 0)) {
+//                    shakeImage();
+//                    transition();
+//                }
+//            }
         }
         else if (settingsSingleton.getGameState() == 7) {
             drawGame();
+            Colour transparent = new Colour(0, 0, 0, 0.5);
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), transparent);
             if (settingsSingleton.getGameMode() == 0) {
                 displayFailScreen();
             }
             else {
-                countDown = 0;
-                currentFrame = 0;
-                for (Player player: players) {
-                    player.getCharacter().resetTimer();
-                    if (!player.isDead()) {
-                        if (settingsSingleton.getWinner().getId() == player.getId()) {
-                            Image winner = new Image(String.format("res/Renders/%s.png", player.getCharacter().getName()));
-                            Image comrade = new Image(String.format("res/Renders/%s.png", player.getSideCharacter().getName()));
-                            if (winnerTimer < winner.getWidth() + comrade.getWidth()/2) {
-                                winnerTimer+=10;
-                            }
-                            Colour transparent = new Colour(0, 0, 0, 0.5);
-                            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), transparent);
-                            winner.draw(Window.getWidth() - winnerTimer, Window.getHeight()/2 +200);
-                            comrade.draw(Window.getWidth() - winnerTimer + winner.getWidth(), Window.getHeight()/2 + 200);
-                            victoryFont.drawString(String.format("Player %d: %s is victorious!", settingsSingleton.getWinner().getId(), settingsSingleton.getWinner().getCharacter().getName()), 16, 100);
-                        }
-                    }
-                }
+                Player winner = settingsSingleton.getWinner();
+                Image characterImage = new Image(String.format("res/renders/Characters/%s.png", winner.getCharacter().getName()));
+                Image sideCharacterImage = new Image(String.format("res/renders/SideCharacters/%s.png", winner.getSideCharacter().getName()));
+                characterImage.draw(Window.getWidth() - winnerTimer, Window.getHeight()/2 +200);
+                sideCharacterImage.draw(Window.getWidth() + characterImage.getWidth()/2, Window.getHeight()/2 + 200);
+                new Font(Fonts.DEJAVUSANS, 110).drawString(String.format("Player %d: %s is victorious!", settingsSingleton.getWinner().getId(), settingsSingleton.getWinner().getCharacter().getName()), 16, 100);
+
             }
         }
         else if (settingsSingleton.getGameState() == 8) {
-            Colour black = new Colour(0, 0, 0, (float) (mainMusic.clip.getFrameLength() - mainMusic.clip.getFramePosition())/ (float) mainMusic.clip.getFrameLength());
-            Image background = new Image(String.format("res/background/%s.png", unlocked.getName()));
-            background.drawFromTopLeft(0,0);
-            if (currentMusic.equals(String.format("music/%sUnlock.wav", unlocked.getName()))) {
-                chooseCharacterFont.drawString(String.format("NEW CHARACTER UNLOCKED: %s!", unlocked.getName().toUpperCase()), 0, 100);
-                Image unlockedImage = new Image(String.format("res/Renders/%s.png", unlocked.getName()));
-                unlockedImage.draw(Window.getWidth()/2, Window.getHeight()/2 + 300);
+            Font chooseCharacterFont = new Font(Fonts.DEJAVUSANS, 100);
+            Colour black = new Colour(0, 0, 0,
+                    (float) (musicPlayer.getSound("music/Who.wav").getClip().getFrameLength() -
+                            musicPlayer.getMainMusic().getClip().getFramePosition()) /
+                            (float) musicPlayer.getSound("music/Who.wav").getClip().getFrameLength());
+            imagePointManagerSingleton.setCurrentBackground(String.format("res/background/%s.png", unlocked));
+            if (musicPlayer.getSound("music/Who.wav").hasEnded()) {
+                chooseCharacterFont.drawString(String.format("NEW CHARACTER UNLOCKED: %s!", unlocked), 0, 100);
+                ImagePoint unlockedImage = new ImagePoint(String.format("res/renders/Characters/%s.png", unlocked), new Point(Window.getWidth()/2, Window.getHeight()/2 + 300));
+                unlockedImage.draw();
             }
             else {
                 Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), black);
             }
         }
         else if (settingsSingleton.getGameState() == 9) {
-            int index = 0;
+            Font playerFont = new Font(Fonts.DEJAVUSANS, 40);
+            Font victoryFont = new Font(Fonts.DEJAVUSANS, 110);
             for (Tile tile: customMapTiles) {
                 tile.draw();
-                index++;
             }
             if (!addingTile) {
                 playerFont.drawString("S: Save and Exit ESC: Exit without Saving Arrow Keys: Navigate\nA: Add, R: Remove last block", 100, 50);
             }
             else {
-                Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
+                Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), ColourPresets.DARK.toColour());
                 for (int i = page * 3; i < page * 3 + 3; i++) {
                     if (i < allTiles.size()) {
                         Tile tile = allTiles.get(i);
@@ -1558,115 +1448,57 @@ public class Game extends AbstractGame {
             }
         }
         else if (settingsSingleton.getGameState() == 10) {
-            menuBackground = null;
+            Font titleFont = new Font(Fonts.DEJAVUSANS, 100);
+            Font gameFont = new Font(Fonts.DEJAVUSANS, 40);
+            imagePointManagerSingleton.setCurrentBackground(null);
             Drawing.drawRectangle(0,0, Window.getWidth(), Window.getHeight(), new Colour(0,0,0, 0.2));
-            if ("General".equalsIgnoreCase(pageType)) {
+
+            if (gameSettingsSingleton.getPage() == 0) {
+                menuTitle = "General";
                 titleFont.drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + 0);
             }
-            else if (Arrays.asList("PowerUps", "Obstacles").contains(pageType)) {
+            else if (gameSettingsSingleton.getPage() == 1 || gameSettingsSingleton.getPage() == 2) {
+                if (gameSettingsSingleton.getPage() == 1) {
+                    menuTitle = "PowerUps";
+                }
+                else if (gameSettingsSingleton.getPage() == 2) {
+                    menuTitle = "Obstacles";
+                }
                 gameFont.drawString("Drag the slider across to increase/decrease the spawn rate!", titleFont.getWidth("SETTINGS"), 150, new DrawOptions().setBlendColour(0,0,0, 0.7));
                 gameFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS"), 190, new DrawOptions().setBlendColour(0,0,0, 0.7));
             }
         }
         else if (settingsSingleton.getGameState() == 11) {
+            Font playerFont = new Font(Fonts.DEJAVUSANS, 40);
             drawGame();
             playerFont.drawString("PAUSE", (Window.getWidth() - playerFont.getWidth("PAUSE"))/2, Window.getHeight()/2 - 50);
-            gameFont.drawString("Press ESC to resume", (Window.getWidth() - playerFont.getWidth("Press ESC to res"))/2, Window.getHeight()/2);
+            playerFont.drawString("Press ESC to resume", (Window.getWidth() - playerFont.getWidth("Press ESC to res"))/2, Window.getHeight()/2);
         }
         drawButtons();
         drawSliders();
         if (menuTitle != null) {
+            FontSize titleFont = new FontSize(Fonts.DEJAVUSANS, 110);
             if ((((settingsSingleton.getGameState() == 3) || (settingsSingleton.getGameState() == 10)) || (settingsSingleton.getGameState() == 4)) || (settingsSingleton.getGameState() == 9)) {
-                titleFont.drawString(menuTitle, (Window.getWidth() - titleFont.getWidth(menuTitle)) / 2, 90, DO.setBlendColour(black));
+                DO.setBlendColour(ColourPresets.BLACK.toColour());
             } else {
-                titleFont.drawString(menuTitle, (Window.getWidth() - titleFont.getWidth(menuTitle)) / 2, 90, DO.setBlendColour(white));
+                 DO.setBlendColour(ColourPresets.WHITE.toColour());
             }
+            titleFont.draw(menuTitle, (Window.getWidth() - titleFont.getFont().getWidth(menuTitle)) / 2, 90);
         }
         showDisplayStrings();
-        //showTime();
     }
 
     public void showTime() {
+        Font gameFont = new Font(Fonts.DEJAVUSANS, 40);
         gameFont.drawString(timeLogger.getDisplayTime(), Window.getWidth() - gameFont.getWidth(timeLogger.getDisplayTime()), 40);
-
     }
 
     public void updateTime() {
-        timeLogger.updateTime();
-    }
-
-    public void record(Input input) {
-        recordButtons(input);
-    }
-
-    public void recordButtons(Input input) {
-        ArrayList<Keys> buttons = new ArrayList<>();
-        for (Keys key: Keys.values()) {
-            if (input.wasPressed(key)) {
-                buttons.add(key);
-            }
-        }
-        timeLogger.updateButtonsLogger(buttons);
-    }
-
-    public boolean checkStats(String characterName, int line, int threshold) {
-        for (Character character: allCharacters) {
-            if (character.getName().equals(characterName)) {
-                return character.getStats()[line] >= threshold;
-            }
-        }
-        return false;
-    }
-
-    public void saveStatsChecker() {
-        if (currentTimeToSaveStats > timeToSaveStats) {
-            currentTimeToSaveStats = 0;
-            saveStats();
-        }
-        else {
-            currentTimeToSaveStats++;
-        }
-    }
-
-    public void saveStats() {
-        currentTimeToSaveStats = 0;
-        String tempFile = "stats/Temp.txt";
-        String currentFile = "stats/Stats.txt";
-        File oldFile = new File(currentFile);
-        File newFile = new File(tempFile);
-        try {
-
-            FileWriter fw = new FileWriter(tempFile, false);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter pw = new PrintWriter(bw);
-
-            pw.println("Game");
-            pw.println(String.format("Amount of times the game has been opened: %d", statTracker[0]));
-            pw.println(String.format("Amount of games played in Easy Mode: %d", statTracker[1]));
-            pw.println(String.format("Amount of games played in Hard Mode: %d", statTracker[2]));
-            pw.println(String.format("Amount of games played in Story Mode: %d", statTracker[3]));
-            for(Character character: allCharacters) {
-                pw.println(character.getName());
-                int[] stats = character.getStats();
-                pw.println(String.format("Played: %d", stats[0]));
-                pw.println(String.format("Won: %d", stats[1]));
-            }
-            pw.flush();
-            pw.close();
-            oldFile.delete();
-            File dump = new File(currentFile);
-            newFile.renameTo(dump);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        timeLogger.updateFrames();
     }
 
     public void addToPlayableCharacter(String name) {
-        for (Character character: allCharacters) {
-            if (character.getName().equals(name)) {
-                characters.add(character);
-            }
-        }
+        characters.add(new Character(name));
     }
 
     public boolean isPlayable(String name) {
@@ -1678,27 +1510,28 @@ public class Game extends AbstractGame {
         return false;
     }
 
-    public Character findCharacter(String name) {
-        for (Character character: allCharacters) {
-            if (character.getName().equals(name)) {
-                return character;
-            }
-        }
-        return null;
-    }
-
     public void checkAchievements() {
         //This file includes achievements and information on how to unlock each unlockable character.
         // Format: [Unlockable Character] then [Character involved in unlocking] [line No of their stat] [value threshold].
         try {
             Scanner achievementScanner = new Scanner(new File("stats/Achievements.txt"));
             while (achievementScanner.hasNextLine()) {
-                String[] achievementLine = achievementScanner.nextLine().split(" ");
-                String name = achievementLine[1];
-                int threshold = Integer.parseInt(achievementLine[3]);
-                int line = Integer.parseInt(achievementLine[2]);
-                String newCharacter = achievementLine[0];
-                if (checkStats(name, line, threshold)) {
+                ArrayList<String> achievementLine = new ArrayList<>(Arrays.asList(achievementScanner.nextLine().split(" ")));
+                String newCharacter;
+                if (new CharacterNames().getAllCharacterNames().contains(String.format("%s %s", achievementLine.get(0),
+                        achievementLine.get(1)))) {
+                    newCharacter = String.format("%s %s", achievementLine.get(0), achievementLine.get(1));
+                    achievementLine.remove(0);
+                    achievementLine.remove(0);
+                }
+                else {
+                    newCharacter = achievementLine.get(0);
+                    achievementLine.remove(0);
+                }
+                int threshold = Integer.valueOf(achievementLine.get(achievementLine.size() - 1));
+                achievementLine.remove(achievementLine.size() - 1);
+                String existingChar = String.join(" ", achievementLine);
+                if (stats.hasPassedThreshold(existingChar, threshold)) {
                     addToPlayableCharacter(newCharacter);
                 }
             }
@@ -1708,18 +1541,18 @@ public class Game extends AbstractGame {
         }
     }
 
-    public Character checkAchievementsInGame() {
+    public String checkAchievementsInGame() {
         try {
             Scanner achievementScanner = new Scanner(new File("stats/Achievements.txt"));
             while (achievementScanner.hasNextLine()) {
                 String[] achievementLine = achievementScanner.nextLine().split(" ");
-                String newCharacter = achievementLine[0];
+                String newCharacterName = achievementLine[0];
                 String name = achievementLine[1];
                 int threshold = Integer.parseInt(achievementLine[3]);
-                int line = Integer.parseInt(achievementLine[2]);
-                if (checkStats(name, line, threshold)) {
-                    if (!isPlayable(newCharacter)) {
-                        return findCharacter(newCharacter);
+                if (stats.hasPassedThreshold(name, threshold)) {
+                    if (!isPlayable(newCharacterName)) {
+                        addToPlayableCharacter(newCharacterName);
+                        return newCharacterName;
                     }
                 }
             }
@@ -1730,47 +1563,43 @@ public class Game extends AbstractGame {
         return null;
     }
 
-    public String playDialogue(Integer dialogueInt, String mode) {
-        String currentDialogue = "";
-        try {
-            if (mode.equals("Story")) {
-                dialogueScanner = new Scanner(new File(String.format("story/%d.txt", dialogueInt)));
-            }
-            else {
-                dialogueScanner = new Scanner(new File(String.format("scene/%d.txt", dialogueInt)));
-            }
-            dialogueWords = new ArrayList<>();
-            while (dialogueScanner.hasNextLine()) {
-                dialogueLine = dialogueScanner.nextLine().split(" ");
-                for (String word: dialogueLine) {
-                    dialogueWords.add(word);
-                }
-            }
-            int currentLineLength = 0;
-            for (String word: dialogueWords) {
-                for (Character character: allCharacters) {
-                    if (word.endsWith(":")) {
-                        if (word.substring(0, word.length()-1).equals(character.getName())) {
-                            currentLineLength = 0;
-                            break;
-                        }
-                    }
-                }
-                if (currentLineLength + word.length() + 1 < MAX_DIALOGUE_LIMIT) {
-                    currentDialogue = currentDialogue + word + ' ';
-                    currentLineLength += word.length() + 1;
-                }
-                else {
-                    currentDialogue = currentDialogue + '\n' + word + ' ';
-                    currentLineLength = word.length() + 1;
-                }
-            }
-            return currentDialogue;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return currentDialogue;
-    }
+//    public String playDialogue(Integer dialogueInt, String mode) {
+//        String currentDialogue = "";
+//        try {
+//            if (mode.equals("Story")) {
+//                dialogueScanner = new Scanner(new File(String.format("story/%d.txt", dialogueInt)));
+//            }
+//            else {
+//                dialogueScanner = new Scanner(new File(String.format("scene/%d.txt", dialogueInt)));
+//            }
+//            dialogueWords = new ArrayList<>();
+//            while (dialogueScanner.hasNextLine()) {
+//                dialogueLine = dialogueScanner.nextLine().split(" ");
+//                for (String word: dialogueLine) {
+//                    dialogueWords.add(word);
+//                }
+//            }
+//            int currentLineLength = 0;
+//            for (String word: dialogueWords) {
+//                if (word.endsWith(":")) {
+//                    currentLineLength = 0;
+//                    // break;
+//                }
+//                if (currentLineLength + word.length() + 1 < MAX_DIALOGUE_LIMIT) {
+//                    currentDialogue = currentDialogue + word + ' ';
+//                    currentLineLength += word.length() + 1;
+//                }
+//                else {
+//                    currentDialogue = currentDialogue + '\n' + word + ' ';
+//                    currentLineLength = word.length() + 1;
+//                }
+//            }
+//            return currentDialogue;
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        return currentDialogue;
+//    }
 
     public void drawButtons() {
         if (buttons.size() > 0) {
@@ -1788,72 +1617,73 @@ public class Game extends AbstractGame {
         }
     }
 
-    public void drawBorders() {
-        Image P1  = new Image("res/Selected/P1.png");
-        Image P2  = new Image("res/Selected/P2.png");
-        Image P3  = new Image("res/Selected/P3.png");
-        Image P4  = new Image("res/Selected/P4.png");
+    public void drawBorders(Character currentCharacter) {
+        Image border = new Image("res/Selected/Selected.png");
 
-        for (Player player: players) {
-            if (player.getId() == 1) {
-                if (player.getCharacterChosen()) {
-                    P1  = new Image("res/Selected/P1_Selected.png");
+        double spacing = Window.getWidth()/6;
+
+        FontSize playerDesc = new FontSize(Fonts.TCB, 30);
+
+        for (int i = 0; i < settingsSingleton.getPlayers(); i++) {
+            Player currentPlayer = players.get(i);
+            Character playerCharacter = currentPlayer.getCharacter();
+            double timeSpace = i > 1 ? 200 : 0;
+            border.drawFromTopLeft(i * ((border.getWidth()*2/3) + spacing) + spacing/3 + timeSpace, 0);
+            String name;
+            if (currentPlayer.getId() == getIDOfPlayerPicking()) {
+                name = String.format("P%d\nSelecting...", currentPlayer.getId());
+                ImagePoint characterPeek = new ImagePoint(String.format("res/characters/%s/peek.png", currentCharacter.getFullName()),
+                        new Point(i * ((border.getWidth()*2/3) + spacing) + spacing/3 + timeSpace, 0));
+                if (isUnlocked(currentCharacter.getName())) {
+                    characterPeek.setTransparent(true);
                 }
-            }
-            else if (player.getId() == 2) {
-                if (player.getCharacterChosen()) {
-                    P2  = new Image("res/Selected/P2_Selected.png");
+                else {
+                    characterPeek.setDarken(isUnlocked(currentCharacter.getName()));
                 }
+                characterPeek.draw();
             }
-            else if (player.getId() == 3) {
-                if (player.getCharacterChosen()) {
-                    P3  = new Image("res/Selected/P3_Selected.png");
-                }
+            else if (playerCharacter != null) {
+                name = String.format("P%d\n%s", currentPlayer.getId(), playerCharacter.getFullName());
+                ImagePoint characterPeek = new ImagePoint(String.format("res/characters/%s/peek.png", playerCharacter.getFullName()),
+                        new Point(i * ((border.getWidth()*2/3) + spacing) + spacing/3 + timeSpace, 0));
+                characterPeek.setDarken(!isUnlocked(playerCharacter.getName()));
+                characterPeek.draw();
             }
-            else if (player.getId() == 4) {
-                if (player.getCharacterChosen()) {
-                    P4  = new Image("res/Selected/P4_Selected.png");
-                }
+            else {
+                name = String.format("P%d", players.get(i).getId());
             }
-        }
-        P1.draw(250, Window.getHeight() - 115);
-        P2.draw(250 + P1.getWidth()*1.5, Window.getHeight() - 115);
-        if(settingsSingleton.getPlayers() == 3) {
-            P3.draw(250 + P1.getWidth()*3, Window.getHeight() - 115);
-        }
-        if (settingsSingleton.getPlayers() == 4) {
-            P3.draw(250 + P1.getWidth()*3, Window.getHeight() - 115);
-            P4.draw(250 + P1.getWidth()*4.5, Window.getHeight() - 115);
+            playerDesc.draw(name,
+                    i * ((border.getWidth()*2/3) + spacing) + spacing/3 + timeSpace, border.getHeight());
         }
     }
 
-    public void loadStory() {
-        int lineNumber = 0;
-        try {
-            Scanner storyScanner = new Scanner(new File("stats/Story.txt"));
-            while(storyScanner.hasNextLine()) {
-                String[] line = storyScanner.nextLine().split(" ");
-                if (lineNumber == 0) {
-                    currentScene = Integer.parseInt(line[line.length- 1]);
-                    if (currentScene < 0) {
-                        currentScene = 0;
-                    }
-                }
-                else if (lineNumber == 1) {
-                    currentStory = Integer.parseInt(line[line.length - 1]);
-                    if (currentStory < 0) {
-                        currentStory = 0;
-                    }
-                }
-                lineNumber++;
-            }
-            if (!playingMap) {
-                playingScene = true;
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void loadStory() {
+//        int lineNumber = 0;
+//        try {
+//            Scanner storyScanner = new Scanner(new File("stats/Story.txt"));
+//            while(storyScanner.hasNextLine()) {
+//                String[] line = storyScanner.nextLine().split(" ");
+//                if (lineNumber == 0) {
+//                    currentScene = Integer.parseInt(line[line.length- 1]);
+//                    if (currentScene < 0) {
+//                        currentScene = 0;
+//                    }
+//                }
+//                else if (lineNumber == 1) {
+//                    currentStory = Integer.parseInt(line[line.length - 1]);
+//                    if (currentStory < 0) {
+//                        currentStory = 0;
+//                    }
+//                }
+//                lineNumber++;
+//            }
+//            if (!playingMap) {
+//                playingScene = true;
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void updateStory(int currentProgress) {
         String tempFile = "stats/TempStory.txt";
@@ -1898,48 +1728,6 @@ public class Game extends AbstractGame {
         }
     }
 
-    public void shakeImage() {
-        if (shakeTimer > 0) {
-            if (shakeTimer % 6 == 0) {
-                currentBackgroundPoint = new Point(currentBackgroundPoint.x - 50, currentBackgroundPoint.y);
-            }
-            else if (shakeTimer % 5 == 0) {
-                currentBackgroundPoint = new Point(currentBackgroundPoint.x + 50, currentBackgroundPoint.y);
-            }
-            shakeTimer --;
-        }
-        else {
-            currentBackgroundPoint = new Point(0, 0);
-        }
-    }
-
-    public void transition() {
-        if (transitionTimer >= 3 * frames) {
-            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 1 - (transitionTimer - 3*frames)/(2*frames)));
-        }
-        else if ((transitionTimer < 3 * frames) && (transitionTimer > 2 * frames)) {
-            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0,0,0,1));
-        }
-        else if (transitionTimer <= 2 * frames) {
-            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, transitionTimer/(2*frames)));
-        }
-        if (transitionTimer == 2.5 * frames) {
-            dark = false;
-            if (playingStory) {
-                map = mapToTransitionTo;
-                map.generateMap();
-            }
-            else {
-                changeBackground(sceneToTransitionTo);
-            }
-        }
-        transitionTimer--;
-    }
-
-    public void darken() {
-        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
-    }
-
     public void startCountdown() {
         countDown++;
     }
@@ -1982,74 +1770,47 @@ public class Game extends AbstractGame {
         }
     }
 
-    public void getGameStats() {
-        int num;
-        try {
-            Scanner scanner = new Scanner(new File("stats/Stats.txt"));
-            scanner.nextLine();
-            for (int i =0; i < 4; i++) {
-                String[] stat = scanner.nextLine().split(" ");
-                num = Integer.parseInt(stat[stat.length - 1]);
-                if (i == 0) {
-                    statTracker[i] = num + 1;
-                }
-                else {
-                    statTracker[i] = num;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void changeMainMusic(String filePath) {
-        if (mainMusic.musicPath == null) {
-            mainMusic.run(filePath);
-        }
-        else {
-            if (!currentMusic.replaceAll("/", "\\\\").equals(mainMusic.musicPath.getPath())) {
-                mainMusic.stopMusic();
-                mainMusic.run(filePath);
-            }
-        }
-        mainMusic.musicPath = new File(filePath);
-    }
-
-    public void changeBackground(Image background) {
-        currentBackground = background;
+    public void changeBackground(String filename) {
+        imagePointManagerSingleton.setCurrentBackground(filename);
     }
 
     public void displayCharacterStats(ArrayList<Player> players) {
         int playerIndex = 0;
         for (Player player: players) {
-            Image picture = new Image(String.format("res/InGame/%s.png", player.getCharacter().getName()));
+            ImagePoint characterDisplay = new ImagePoint(String.format("res/InGame/%s.png", player.getCharacter().getName()), new Point(0,0));
+            characterDisplay.setPos(playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - characterDisplay.getHeight());
+            characterDisplay.setScale(1);
             Colour border = new Colour(0, 0, 0, 0.3);
             if (player.getCharacter().getSpecialAbilityBar() >= 100) {
                 border = new Colour(255, 255, 0, 0.5);
             }
-            Drawing.drawRectangle(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight(), 200, picture.getHeight(), border);
             if (player.getCharacter().isMinimised()) {
-                picture.drawFromTopLeft(playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight(), new DrawOptions().setScale(0.5, 0.5));
-            }
-            else {
-                picture.drawFromTopLeft(playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - picture.getHeight());
+                characterDisplay.setScale(0.5);
             }
 
+            Drawing.drawRectangle(characterDisplay.getWidth() + playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - characterDisplay.getHeight(), 200, characterDisplay.getHeight(), border);
+            characterDisplay.draw();
+
             if (player.getCharacter().hasShield()) {
-                Image shield = new Image("res/InGame/Shield_Selected.png");
-                shield.draw(picture.getWidth()/2 + playerIndex*Window.getWidth()/(players.size()), picture.getHeight()/2 + Window.getHeight() - picture.getHeight());
+                ImagePoint shield = new ImagePoint("res/InGame/Shield_Selected.png",
+                        new Point(characterDisplay.getWidth()/2 + playerIndex*Window.getWidth()/(players.size()),
+                                characterDisplay.getHeight()/2 + Window.getHeight() - characterDisplay.getHeight()));
+                shield.draw();
             }
+
             if (!player.getSideCharacter().getName().equals("Yugi")) {
-                Image sideCharacter = new Image(String.format("res/inGame/%s.png", player.getSideCharacter().getName()));
-                sideCharacter.drawFromTopLeft(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()),
-                        Window.getHeight() - picture.getHeight(),
-                        DO.setSection(0, 0, sideCharacter.getWidth(),
-                                sideCharacter.getHeight()*player.getCharacter().getSpecialAbilityBar()/100));
+                ImagePoint sideCharacter = new ImagePoint(String.format("res/inGame/%s.png", player.getSideCharacter().getName()),
+                        new Point(0,0));
+                sideCharacter.setPos(characterDisplay.getWidth() + playerIndex*Window.getWidth()/players.size(),
+                        Window.getHeight() - characterDisplay.getHeight());
+                sideCharacter.setSection(0, 0, sideCharacter.getWidth(),
+                        sideCharacter.getHeight()*player.getCharacter().getSpecialAbilityBar()/100);
+                sideCharacter.draw();
             }
             else {
                 int index = 0;
                 for (ExodiaPiece exodiaPiece: player.getSideCharacter().getExodiaPiecesCollected()) {
-                    exodiaPiece.getImage().drawFromTopLeft(picture.getWidth() + playerIndex*Window.getWidth()/(players.size()) + exodiaPiece.getImage().getWidth()*index, Window.getHeight() - picture.getHeight());
+                    exodiaPiece.getImage().drawFromTopLeft(characterDisplay.getWidth() + playerIndex*Window.getWidth()/(players.size()) + exodiaPiece.getImage().getWidth()*index, Window.getHeight() - characterDisplay.getHeight());
                     index++;
                 }
             }
@@ -2058,11 +1819,11 @@ public class Game extends AbstractGame {
     }
 
     public void pickCharacter(Player player, Character character) {
-        boolean pickable = true;
-        if (player.getCharacter() == null) {
+        if (isUnlocked(character.getName())) {
+            boolean pickable = true;
             for (Player otherPlayer : players) {
                 if (otherPlayer.getId() != player.getId()) {
-                    if (otherPlayer.getCharacterChosen()) {
+                    if (otherPlayer.getCharacter() != null) {
                         if (otherPlayer.getCharacter().getName().equals(character.getName())) {
                             pickable = false;
                         }
@@ -2070,12 +1831,15 @@ public class Game extends AbstractGame {
                 }
             }
             if (pickable) {
+                eventsListener.addEvent(new EventCharacterPicked( 2*frames, String.format("Player %d picked: %s", player.getId(), character.getFullName())));
+                musicPlayer.addMusic("music/Character Picked.wav");
                 player.setCharacter(character);
-                playSound(character.playLine());
+                if (!musicPlayer.contains(character.playLine())) {
+                    musicPlayer.addMusic(character.playLine());
+                } else {
+                    musicPlayer.restart(character.playLine());
+                }
             }
-        }
-        else {
-            player.setCharacter(null);
         }
     }
 
@@ -2084,7 +1848,7 @@ public class Game extends AbstractGame {
         if (player.getSideCharacter() == null) {
             for (Player otherPlayer : players) {
                 if (otherPlayer.getId() != player.getId()) {
-                    if (otherPlayer.getSideCharacterChosen()) {
+                    if (otherPlayer.getSideCharacter() != null) {
                         if (otherPlayer.getSideCharacter().getName().equals(character.getName())) {
                             pickable = false;
                         }
@@ -2093,7 +1857,13 @@ public class Game extends AbstractGame {
             }
             if (pickable) {
                 player.setSideCharacter(character);
-                playSound(character.playLine());
+                if (!musicPlayer.contains(player.getSideCharacter().playLine())) {
+                    musicPlayer.addMusic(character.playLine());
+                }
+                else {
+                    musicPlayer.remove(player.getSideCharacter().playLine());
+                    musicPlayer.restart(character.playLine());
+                }
             }
         }
         else {
@@ -2103,31 +1873,27 @@ public class Game extends AbstractGame {
 
     public void pickMap(Player player, Map map) {
         if (player.getMapChosen() == null) {
-            soundEffectMusic.playMusic("music/Click.wav");
+            musicPlayer.addMusic("music/Click.wav");
             player.setMapChosen(map);
         }
     }
 
     public void drawCurrentHeight() {
+        Font gameFont = new FontSize(Fonts.DEJAVUSANS, 40).getFont();
         if (!settingsSingleton.isNight()) {
-            gameFont.drawString(String.format("%4.0f/%4.0fm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, new DrawOptions().setBlendColour(white));
+            gameFont.drawString(String.format("%4.0f/%4.0fm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, new DrawOptions().setBlendColour(ColourPresets.WHITE.toColour()));
         }
         else {
-            gameFont.drawString(String.format("%4.0f/%4.0fm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, new DrawOptions().setBlendColour(black));
+            gameFont.drawString(String.format("%4.0f/%4.0fm", map.getCurrentHeight()/10, map.getHeight()/10), Window.getWidth()/2 - 50, 0 + 50, new DrawOptions().setBlendColour(ColourPresets.BLACK.toColour()));
         }
-    }
-
-    public void startTransition() {
-        transitionTimer = 5 * frames;
     }
 
     public void checkCollisionTiles() {
         for (Player player: players) {
             if (!map.hasFinished()) {
+                Rectangle bottomRectangle = new Rectangle(0, Window.getHeight() + 40, Window.getWidth(), 20);
                 if ((player.getCharacter().getRectangle().intersects(bottomRectangle))) {
-                    if (!player.isDead()) {
-                        player.setDead();
-                    }
+                    player.getCharacter().setDead(true);
                     break;
                 }
             }
@@ -2151,19 +1917,17 @@ public class Game extends AbstractGame {
     }
 
     public void kill(Player player) {
-        if(!player.isDead()) {
-            player.setDead();
-        }
+        player.getCharacter().setDead(true);
     }
 
-    public void drawBoundaries() {
-        Drawing.drawRectangle(0, Window.getHeight() - 20, Window.getWidth(), 20, red);
+    public void drawCollisionBoundaries() {
+        Drawing.drawRectangle(0, Window.getHeight() - 20, Window.getWidth(), 20, ColourPresets.RED.toColour());
     }
 
     public void updatePlayerMovement(Input input) {
         for (Player player: players) {
             Character character = player.getCharacter();
-            if (!player.isDead()) {
+            if (!player.getCharacter().isDead()) {
                 if (character.canMove()) {
                     player.moveCharacter(input);
                 }
@@ -2181,9 +1945,9 @@ public class Game extends AbstractGame {
             }
         }
         for (PowerUp powerUp : powerUps) {
-                if (powerUp.canMove()) {
-                    powerUp.move();
-                }
+            if (powerUp.canMove()) {
+                powerUp.move();
+            }
             if (powerUp.getPos().y > Window.getHeight()) {
                 powerUpsToRemove.add(powerUp);
             }
@@ -2214,7 +1978,7 @@ public class Game extends AbstractGame {
             Rectangle obstacleRectangle = getBoundingBoxOf(obstacle.getImage(), obstacle.getPos());
             for (Player player : players) {
                 if (player.getCharacter().getRectangle().intersects(obstacleRectangle)) {
-                    if (!player.isDead()) {
+                    if (!player.getCharacter().isDead()) {
                         obstaclesToRemove.add(obstacle);
                         if (player.getCharacter().hasShield()) {
                             player.getCharacter().popShield();
@@ -2238,7 +2002,7 @@ public class Game extends AbstractGame {
         for (PowerUp powerUp: powerUps) {
             for (Player player : players) {
                 if (player.getCharacter().getRectangle().intersects(getBoundingBoxOf(powerUp.getImage(), powerUp.getPos()))) {
-                    if (!player.isDead()) {
+                    if (!player.getCharacter().isDead()) {
                         powerUp.gainPowerUp(player);
                         powerUpsToRemove.add(powerUp);
                         break;
@@ -2313,9 +2077,10 @@ public class Game extends AbstractGame {
             map.draw();
         }
         for (Player player : players) {
-            if (!player.isDead()) {
+            if (!player.getCharacter().isDead()) {
                 player.getCharacter().draw();
             }
+            Font gameFont = new Font(Fonts.DEJAVUSANS, 40);
             gameFont.drawString(String.format("P%s", player.getId()), player.getCharacter().getPos().x, player.getCharacter().getPos().y + 100);
         }
         for (PowerUp powerUp: powerUps) {
@@ -2326,7 +2091,8 @@ public class Game extends AbstractGame {
         }
         if (map.hasFinished()) {
             if (settingsSingleton.getGameState() == 6) {
-                titleFont.drawString("CLEAR! REACH THE TOP!", 16, FONT_SIZE, DO.setBlendColour(black));
+                Font titleFont = new Font(Fonts.DEJAVUSANS, 100);
+                titleFont.drawString("CLEAR! REACH THE TOP!", 16, 160, DO.setBlendColour(ColourPresets.BLACK.toColour()));
             }
         }
         else {
@@ -2335,42 +2101,20 @@ public class Game extends AbstractGame {
     }
 
     public void displayFailScreen() {
-        if (failed) {
-            failed = false;
-            buttonsToRemove.addAll(buttons);
-            buttons.add(new Button("Retry", "Continue?", FONT_SIZE,
-                    Window.getWidth(), 160,
-                    new Point(0, Window.getHeight() / 2)));
-            buttons.add(new Button("Back To Start", "Exit", FONT_SIZE,
-                    Window.getWidth(), 160,
-                    new Point(0, Window.getHeight() / 1.5)));
-            currentMusic = "music/Fail.wav";
-        }
+        buttonsToRemove.addAll(buttons);
+        buttons.add(new Button("Retry", "Continue?",
+                new FontSize(Fonts.DEJAVUSANS, 160),
+                new Rectangle(0, Window.getHeight() / 2, Window.getWidth(), 160),
+                ColourPresets.WHITE.toColour()));
+        buttons.add(new Button("Back To Start", "Exit",
+                new FontSize(Fonts.DEJAVUSANS, 160),
+                new Rectangle(0, Window.getHeight() / 1.5, Window.getWidth(), 160),
+                ColourPresets.WHITE.toColour()));
+        musicPlayer.setMainMusic("music/Fail.wav");
+
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.7));
+        Font victoryFont = new Font(Fonts.DEJAVUSANS, 110);
         victoryFont.drawString("YOU FAILED THE CLIMB!", 30, 110);
-    }
-
-    public void playSound(String filePath) {
-        Music sound = new Music();
-        musics.add(sound);
-        sound.playMusic(filePath);
-    }
-
-    public void updateSounds() {
-        ArrayList<Music> musicToRemove = new ArrayList<>();
-        for (Music music: musics) {
-            if (!music.clip.isActive()) {
-                musicToRemove.add(music);
-            }
-        }
-        musics.removeAll(musicToRemove);
-    }
-
-    public void resetMusic() {
-        for (Music music: musics) {
-            music.stopMusic();
-        }
-        musics.removeAll(musics);
     }
 
     public void addTileToCustomMap(String line) {
@@ -2424,7 +2168,8 @@ public class Game extends AbstractGame {
         int i = 1;
         for (StringDisplay stringDisplay: stringDisplays) {
             stringDisplay.draw();
-            gameFont.drawString(stringDisplay.getName(), Window.getWidth() - gameFont.getWidth(stringDisplay.getName()), 60*i);
+            FontSize gameFont = new FontSize(Fonts.DEJAVUSANS, 40);
+            gameFont.getFont().drawString(stringDisplay.getName(), Window.getWidth() - gameFont.getFont().getWidth(stringDisplay.getName()), 60*i);
         }
     }
 
@@ -2464,37 +2209,24 @@ public class Game extends AbstractGame {
         return playersFinished >= players.size();
     }
 
-    public void playIntro() {
-        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1, 1, 1, intro/(2*frames)));
-        intro += 2;
-        if (intro >= 2*frames) {
-            introFont.drawString("Made by Bill Nguyen", Window.getWidth()/2 - introFont.getWidth("Made by Bill Nguyen")/2, Window.getHeight()/2, DO.setBlendColour(new Colour(0,0,0,(intro - 2*frames)/(1*frames))));
-            if (intro == 2*frames) {
-                //soundEffectMusic.playMusic("music/Intro.wav");
-            }
-        }
-        if (intro >= 5*frames) {
-            settingsSingleton.setGameState(0);
-        }
-    }
-
     public void drawMapBackground() {
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1, 1, 1, 1));
-        ArrayList<Image> tileBackground = new ArrayList<>();
+        ArrayList<ImagePoint> tileBackground = new ArrayList<>();
         if ((java.time.LocalTime.now().getHour() > 18) || (java.time.LocalTime.now().getHour() < 4)) {
             for (int i = 0; i < 16; i++) {
-                tileBackground.add(new Image("res/Tiles/BasicTileNight.png"));
+                tileBackground.add(new ImagePoint("res/Tiles/BasicTileNight.png", new Point(0,0)));
             }
         } else {
             for (int i = 0; i < 16; i++) {
-                tileBackground.add(new Image("res/Tiles/BasicTile.png"));
+                tileBackground.add(new ImagePoint("res/Tiles/BasicTile.png", new Point(0,0)));
             }
         }
 
         int amountInRow = 0;
         int rows = 1;
-        for (Image image: tileBackground) {
-            image.drawFromTopLeft(amountInRow * image.getWidth(), Window.getHeight() - (rows * image.getHeight()));
+        for (ImagePoint image: tileBackground) {
+            image.setPos(amountInRow * image.getWidth(), Window.getHeight() - (rows * image.getHeight()));
+            image.draw();
             amountInRow++;
             if (amountInRow > 4) {
                 amountInRow = 0;
@@ -2505,28 +2237,6 @@ public class Game extends AbstractGame {
 
     public Rectangle getBoundingBoxOf(Image image, Point pos) {
         return image.getBoundingBoxAt(new Point(pos.x + image.getWidth()/2,  pos.y + image.getHeight()/2));
-    }
-
-    public void removeSound(Music music) {
-        musics.remove(music);
-    }
-
-    public boolean hasSound(String filePath) {
-        for (Music music: musics) {
-            if (music.musicPath.equals(filePath)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Music findSound(String filePath) {
-        for (Music music: musics) {
-            if (music.musicPath.equals(filePath)) {
-                return music;
-            }
-        }
-        return null;
     }
 
     public void updateExp() {
@@ -2546,7 +2256,7 @@ public class Game extends AbstractGame {
     public void gainExpOnObstacles() {
         for (Obstacle obstacle: obstacles) {
             Point obstacleCentre = new Point(obstacle.getPos().x + obstacle.getImage().getWidth()/2,
-            obstacle.getPos().y + obstacle.getImage().getHeight()/2);
+                    obstacle.getPos().y + obstacle.getImage().getHeight()/2);
             Drawing.drawRectangle(obstacleCentre, 10,10, new Colour(0,0,0));
             for (Player player: players) {
                 Point characterCentre = player.getCharacter().getPos();
@@ -2572,9 +2282,58 @@ public class Game extends AbstractGame {
         buttonsToAdd.clear();
         buttonsToRemove.clear();
     }
-    
+
     public void updateSliders() {
         sliders.removeAll(slidersToRemove);
         slidersToRemove.clear();
     }
+
+    public void rotateCharacter(String direction) {
+        musicPlayer.addMusic("music/CharacterNext.wav");
+        if (direction.equals("LEFT")) {
+            Character temp = allCharacters.get(allCharacters.size() - 1);
+            allCharacters.remove(allCharacters.size() - 1);
+            allCharacters.add(0, temp);
+        }
+        else if (direction.equals("RIGHT")) {
+            Character temp = allCharacters.get(0);
+            allCharacters.remove(0);
+            allCharacters.add(temp);
+        }
+    }
+
+    public void rotateSideCharacter(String direction) {
+        musicPlayer.addMusic("music/CharacterNext.wav");
+        if (direction.equals("LEFT")) {
+            SideCharacter temp = allSideCharacters.get(allSideCharacters.size() - 1);
+            allSideCharacters.remove(allSideCharacters.size() - 1);
+            allSideCharacters.add(0, temp);
+        }
+        else if (direction.equals("RIGHT")) {
+            SideCharacter temp = allSideCharacters.get(0);
+            allSideCharacters.remove(0);
+            allSideCharacters.add(temp);
+        }
+    }
+
+    public boolean isUnlocked(String characterName) {
+        for (Character character: characters) {
+            if (character.getName().equals(characterName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int getIDOfPlayerPicking() {
+        for (Player player: players) {
+            if (player.getId() <= settingsSingleton.getPlayers() + 1) {
+                if (player.getCharacter() == null) {
+                    return player.getId();
+                }
+            }
+        }
+        return -1;
+    }
+
 }

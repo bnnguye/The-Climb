@@ -1,5 +1,4 @@
 import bagel.Drawing;
-import bagel.Font;
 import bagel.Image;
 import bagel.Window;
 import bagel.util.Colour;
@@ -8,13 +7,13 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideGojo extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name = "Gojo";
     private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
+    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
+    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
 
     int radius = 0;
     private Point iconPos;
@@ -55,8 +54,8 @@ public class SideGojo extends SideCharacter{
             for (Player player: players) {
                 if (player.getId() != user.getId()) {
                     if (player.getCharacter().getPos().distanceTo(new Point(Window.getWidth()/2, Window.getHeight()/2)) < 100){
-                        if (!player.isDead()) {
-                            player.setDead();
+                        if (!player.getCharacter().isDead()) {
+                            player.getCharacter().setDead(true);
                         }
                     }
                 }
@@ -94,7 +93,7 @@ public class SideGojo extends SideCharacter{
         }
         if (timer > 6 * frames) {
             Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), new Colour(0,0,0,0.9));
-            Image gojo = new Image("res/charactersS/Gojo/NoblePhantasm2.png");
+            Image gojo = new Image("res/sidecharacters/Gojo/special2.png");
             gojo.drawFromTopLeft(0,0);
             if (radius < Window.getWidth()/1.5) {
                 Drawing.drawCircle(Window.getWidth()/2, Window.getHeight()/2, radius, new Colour(0,0,0));

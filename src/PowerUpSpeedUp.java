@@ -6,7 +6,7 @@ public class PowerUpSpeedUp extends PowerUp{
     private String name = "SpeedUp";
     private Point pos;
     Image image = new Image("res/PowerUp/SpeedUp.png");
-    private double speedTime = 3 * SettingsSingleton.getInstance().getFrames();
+    private double speedTime = 3 * SettingsSingleton.getInstance().getRefreshRate();
 
     public PowerUpSpeedUp() {
         pos = new Point(Window.getWidth() * Math.random(), -200);

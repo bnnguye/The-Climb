@@ -1,41 +1,40 @@
 Game
-Amount of times the game has been opened: 889
-Amount of games played in Easy Mode: 107
-Amount of games played in Hard Mode: 3039
-Amount of games played in Story Mode: 98
-Chizuru
-Played: 0
-Won: 0
-02
-Played: 1
-Won: 0
-Miku
-Played: 5
-Won: 3
-Mai
-Played: 4
-Won: 2
-Nino
-Played: 0
-Won: 0
-Futaba
-Played: 0
-Won: 0
-Ruka
-Played: 0
-Won: 0
-Aki
-Played: 0
-Won: 0
-Chika
-Played: 0
-Won: 0
-Emilia
-Played: 0
-Won: 0
-Asuna
-Played: 0
-Won: 0
-Raphtalia
+Amount of times the game has been opened: 0
+Amount of games played in VS: 0
+Amount of games played in Story Mode: 0
+CHIZURU MIZUHARA
+Played: 10
+Won: 10
+ZERO TWO
+Played: 10
+Won: 10
+MIKU NAKANO
+Played: 10
+Won: 10
+MAI SAKURAJIMA
+Played: 10
+Won: 10
+NINO NAKANO
+Played: 10
+Won: 10
+RAPHTALIA
+Played: 10
+Won: 10
+RUKA SARASHINA
+Played: 10
+Won: 10
+AKI ADAGAKI
+Played: 10
+Won: 10
+ASUNA YUUKI
+Played: 10
+Won: 10
+EMILIA
+Played: 10
+Won: 10
+CHIKA FUJIWARA
+Played: 10
+Won: 10
+NAO TOMORI
 Played: 0
 Won: 0

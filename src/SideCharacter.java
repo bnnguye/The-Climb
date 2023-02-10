@@ -1,11 +1,10 @@
 import bagel.Image;
-import bagel.Input;
 import bagel.util.Point;
 
 import java.util.ArrayList;
 
 public abstract class SideCharacter {
-    private final double frames = SettingsSingleton.getInstance().getFrames();
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name;
     private String soundPath;
     Image icon;

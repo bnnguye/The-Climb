@@ -1,6 +1,4 @@
 import bagel.Font;
-import bagel.Window;
-import bagel.util.Colour;
 import bagel.util.Point;
 
 public class StringDisplay {
@@ -12,14 +10,14 @@ public class StringDisplay {
     private Font font;
 
     public StringDisplay(String name, double time, int fontSize, Point point) {
-        this.time = time*SettingsSingleton.getInstance().getFrames();
+        this.time = time*SettingsSingleton.getInstance().getRefreshRate();
         this.name = name;
         this.font = new Font("res/fonts/DejaVuSans-Bold.ttf", fontSize);
         topLeft = point;
     }
 
     public StringDisplay(String name, boolean bool, int fontSize, Point point) {
-        this.time = time*SettingsSingleton.getInstance().getFrames();
+        this.time = time*SettingsSingleton.getInstance().getRefreshRate();
         this.name = name;
         this.font = new Font("res/fonts/DejaVuSans-Bold.ttf", fontSize);
         this.permanent = bool;

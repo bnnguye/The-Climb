@@ -8,13 +8,13 @@ import bagel.util.Rectangle;
 import java.util.ArrayList;
 
 public class SideZoro extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name = "Zoro";
     private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/Zoro/Icon.PNG", this.name));
+    Image icon = new Image(String.format("res/sidecharacters/Zoro/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
+    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
     double shakeTimer;
     private Point iconPos;
 
@@ -131,11 +131,11 @@ public class SideZoro extends SideCharacter{
 
                 for (Player player: players) {
                     if (player.getId() != user.getId()) {
-                        if(!player.isDead()) {
+                        if(!player.getCharacter().isDead()) {
                             for (Point point: hitbox) {
                                 Rectangle rectangle = new Rectangle(point, 5,5);
                                 if(player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(rectangle)) {
-                                    player.setDead();
+                                    player.getCharacter().setDead(true);
                                     break;
                                 }
                             }
@@ -191,10 +191,10 @@ public class SideZoro extends SideCharacter{
     public String getSoundPath() {return soundPath;}
 
     public void renderAbility() {
-        Image slashLeft = new Image("res/charactersS/Zoro/SlashLeft.png");
-        Image slashMiddle = new Image("res/charactersS/Zoro/SlashMiddle.png");
-        Image slashRight = new Image("res/charactersS/Zoro/SlashRight.png");
-        Image display = new Image("res/charactersS/Zoro/Activate.png");
+        Image slashLeft = new Image("res/sidecharacters/Zoro/SlashLeft.png");
+        Image slashMiddle = new Image("res/sidecharacters/Zoro/SlashMiddle.png");
+        Image slashRight = new Image("res/sidecharacters/Zoro/SlashRight.png");
+        Image display = new Image("res/sidecharacters/Zoro/Activate.png");
         if (timer > 3 *frames) {
             Colour darken = new Colour(0, 0, 0, 0.5);
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);

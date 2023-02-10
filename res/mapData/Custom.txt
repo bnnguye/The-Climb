@@ -10,5 +10,3 @@ Slow,Slow,Slow,Slow
 Slow,Slow,Slow,Slow
 Ice,Slow,Slow,Ice
 IceLeft,IceTop,IceTop,IceTop
-IceTop,IceTop,IceTop,IceTop
-IceTop,IceTop,IceTop,IceTop

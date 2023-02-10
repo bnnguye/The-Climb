@@ -9,17 +9,15 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Character {
-        private final double frames = SettingsSingleton.getInstance().getFrames();
-        private Player player;
+
+        private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+
         private String name;
-        private String soundPath;
-        private Point iconPos;
+        private String lastName = "";
+
         private Point pos = new Point(0,0);
         private Image image;
         private Rectangle rectangle;
-        private Image icon;
-        private Image selected;
-        private int[] stats = new int[2];
 
         private double timer = 0;
         private double alternateTimer = 1 * frames;
@@ -33,22 +31,22 @@ public class Character {
         private double speedUpTimer = 0;
         private double minimisedTimer = 0;
         private double stunTimer = 0;
-
-        private double hisokaTimer = 0;
         private boolean gojoAbility = false;
-        private boolean jotaroAbility = false;
+
+        private int lives;
+        private boolean dead = false;
 
 
-        public Character(CharacterNames name) {
-                this.name = name;
-                selected = new Image(String.format("res/characters/%s/Selected.png", name));
-                icon = new Image(String.format("res/characters/%s/Icon.png", name));
-                soundPath = String.format("music/%s.wav", name);
-                image = new Image(String.format("res/characters/%s/%s_Left.png", name, name));
+        public Character(String name) {
+                this.name = name.split(" ")[0];
+                if (name.split(" ").length > 1) {
+                        this.lastName = name.split(" ")[1];
+                }
+                image = new Image(String.format("res/characters/%s/Left.png", name));
         }
 
         public Image getIcon() {
-                return icon;
+                return new Image(String.format("res/characters/%s/Icon.png", name));
         }
 
         public Image getImage() {
@@ -57,6 +55,15 @@ public class Character {
 
         public String getName() {
                 return name;
+        }
+
+        public String getLastName() {return lastName;}
+
+        public String getFullName() {
+                if (lastName.equals("")) {
+                        return name;
+                }
+                return name + " " + lastName;
         }
 
         public void move(String key) {
@@ -109,19 +116,19 @@ public class Character {
                         }
                 } else {
                         moving = false;
-                        if (!GameSettingsSingleton.getInstance().getMap().hasFinished() && !GameSettingsSingleton.getInstance().getMap().getJotaroAbility()) {
+                        if (!GameSettingsSingleton.getInstance().getMap().hasFinished()) {
                                 pos = new Point(pos.x, pos.y + GameSettingsSingleton.getInstance().getMapSpeed());
                         }
                 }
         }
 
         public void draw() {
-                Image picture = new Image(String.format("res/characters/%s/%s_Left.png", name, name));
+                Image picture = new Image(String.format("res/characters/%s/Left.png", name, name));
                 if (timer < alternateTimer/2) {
-                        picture = new Image(String.format("res/characters/%s/%s_Left.png", name, name));
+                        picture = new Image(String.format("res/characters/%s/Left.png", name, name));
                 }
                 else if (timer > alternateTimer/2) {
-                        picture  = new Image(String.format("res/characters/%s/%s_Right.png", name, name));
+                        picture  = new Image(String.format("res/characters/%s/Right.png", name, name));
                 }
                 if (timer <= 0) {
                         timer = alternateTimer;
@@ -150,71 +157,27 @@ public class Character {
         public void setPosition(Point point) { pos = point;}
         public Point getPos() { return pos;}
 
-        public void setPlayer(Player player) { this.player = player;}
-        public Player getPlayer() {
-                return player;
-        }
-
         public void popShield() { shield = false;}
         public boolean hasShield() { return shield;}
 
-        public void resetTimer() {
+        public void reset() {
                 minimisedTimer = 0;
                 speedUpTimer = 0;
                 speedDownTimer = 0;
                 stunTimer = 0;
-                hisokaTimer = 0;
                 specialAbilityBar = 0;
                 moving = false;
                 shield = false;
                 gojoAbility = false;
-                jotaroAbility = false;
+                dead = false;
         }
 
         public String playLine() {
-                return soundPath;
+                return String.format("music/%s.wav", name);
         }
 
-        public Image getSelected() { return selected;}
-        public Point getIconPos() {return iconPos;}
-        public void setIconPos(Point point) { iconPos = point;}
+        public Image getSelected() { return new Image(String.format("res/characters/%s/Selected.png", name));}
 
-        public void setStats() {
-                String line;
-                String[] lineSplit;
-                try {
-                        Scanner scanner = new Scanner(new File("stats/Stats.txt"));
-                        while(scanner.hasNextLine()) {
-                                line = scanner.nextLine();
-                                if (line.equals(name)) {
-                                        break;
-                                }
-                        }
-                        if(scanner.hasNextLine()) {
-                                line = scanner.nextLine();
-                                lineSplit = line.split(" ");
-                                int played = Integer.parseInt(lineSplit[lineSplit.length - 1]);
-                                stats[0] = played;
-                        }
-                        if(scanner.hasNextLine()) {
-                                line = scanner.nextLine();
-                                lineSplit = line.split(" ");
-                                int won = Integer.parseInt(lineSplit[lineSplit.length - 1]);
-                                stats[1] = won;
-                        }
-                } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                }
-        }
-        public int[] getStats() { return stats;}
-        public void updateStats(boolean played, boolean won) {
-                if (played) {
-                        stats[0] ++;
-                }
-                if (won) {
-                        stats[1] ++;
-                }
-        }
         public void onIce() {
                 speedUpTimer += 1;
         }
@@ -235,28 +198,21 @@ public class Character {
                 stunTimer = 0;
                 speedDownTimer = 0;
                 shield = true;
-                hisokaTimer = 0;
-                jotaroAbility = false;
                 gojoAbility = false;
         }
-        public void setHisokaAbility(double timer) { hisokaTimer = timer;}
         public boolean isMinimised() {return minimisedTimer > 0;}
+        public boolean isDead() {
+                return this.dead;
+        }
         public void gotStunned() {stunTimer = frames;}
         public Rectangle getRectangle() {return rectangle;}
-        public void setJotaroAbility(boolean bool) {
-                jotaroAbility = bool;
-        }
 
-        public boolean canMove() {
-                return !(hisokaTimer > 0 || jotaroAbility || stunTimer > 0);
+        public boolean canMove() { return !(stunTimer > 0);
         }
 
         public void updateCharacter() {
                 if (stunTimer > 0) {
                         stunTimer--;
-                }
-                if (hisokaTimer > 0) {
-                        hisokaTimer--;
                 }
         }
 
@@ -272,4 +228,13 @@ public class Character {
         public void shield() {
                 shield = true;
         }
+
+        public void setDead(boolean bool) {
+                this.dead = bool;
+        }
+
+        public void setLives(int lives) {
+                this.lives = lives;
+        }
+        public int getLives() {return this.lives;}
 }

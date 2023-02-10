@@ -19,6 +19,12 @@ public class GameSettingsSingleton {
         return mapSpeed;
     }
     public void setMapSpeed(double mapSpeed) {
+        if (mapSpeed < 1) {
+            mapSpeed = 1;
+        }
+        else if (mapSpeed > 3) {
+            mapSpeed = 3;
+        }
         this.mapSpeed = mapSpeed;
     }
     public ObstaclesSettingsSingleton getObstaclesSettingsSingleton() {return obstaclesSettingsSingleton.getInstance();}

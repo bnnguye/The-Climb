@@ -1,5 +1,4 @@
 import bagel.Drawing;
-import bagel.Font;
 import bagel.Image;
 import bagel.Window;
 import bagel.util.Colour;
@@ -8,16 +7,14 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideYugi extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name = "Yugi";
     private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/Yugi/Icon.PNG", this.name));
+    Image icon = new Image(String.format("res/sidecharacters/Yugi/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
     int radius = 0;
-    Music music = new Music();
-    Music musicEnd = new Music();
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
+    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
     ArrayList<ExodiaPiece> exodiaPieces = new ArrayList<>();
     ArrayList<ExodiaPiece> exodiaPiecesCollected = new ArrayList<>();
     private Point iconPos;
@@ -36,7 +33,7 @@ public class SideYugi extends SideCharacter{
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
-            this.music.playMusic("music/Yugi.wav");
+            MusicPlayer.getInstance().addMusic("music/Yugi.wav");
             this.activating = true;
             exodiaPieces.clear();
             exodiaPiecesCollected.clear();
@@ -72,15 +69,15 @@ public class SideYugi extends SideCharacter{
                 if(!this.animating) {
                     this.animating = true;
                     timer = 31 * frames;
-                    musicEnd.playMusic("music/Exodia.wav");
+                    MusicPlayer.getInstance().addMusic("music/Exodia.wav");
                 }
             }
             if (this.animating) {
                 if (timer == 0) {
                     for (Player player: players) {
                         if (player.getId() != user.getId()) {
-                            if (!player.isDead()) {
-                                player.setDead();
+                            if (!player.getCharacter().isDead()) {
+                                player.getCharacter().setDead(true);
                             }
                         }
                     }
@@ -114,14 +111,14 @@ public class SideYugi extends SideCharacter{
         if (animating) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.9));
             if (timer > 24 * frames) {
-                Image yugi = new Image("res/charactersS/Yugi/Yugi.png");
+                Image yugi = new Image("res/sidecharacters/Yugi/Yugi.png");
                 yugi.drawFromTopLeft(0, 0);
             } else if (timer > 6 * frames) {
-                Image head = new Image("res/charactersS/Yugi/HeadImage.png");
-                Image leftArm = new Image("res/charactersS/Yugi/LeftArmImage.png");
-                Image rightArm = new Image("res/charactersS/Yugi/RightArmImage.png");
-                Image leftLeg = new Image("res/charactersS/Yugi/LeftLegImage.png");
-                Image rightLeg = new Image("res/charactersS/Yugi/RightLegImage.png");
+                Image head = new Image("res/sidecharacters/Yugi/HeadImage.png");
+                Image leftArm = new Image("res/sidecharacters/Yugi/LeftArmImage.png");
+                Image rightArm = new Image("res/sidecharacters/Yugi/RightArmImage.png");
+                Image leftLeg = new Image("res/sidecharacters/Yugi/LeftLegImage.png");
+                Image rightLeg = new Image("res/sidecharacters/Yugi/RightLegImage.png");
                 head.drawFromTopLeft(Window.getWidth() / 2 - head.getWidth() / 2, 0);
                 if (timer < 20 * frames) {
                     leftArm.drawFromTopLeft(Window.getWidth() / 2 + head.getWidth() / 2, 0);
@@ -136,8 +133,8 @@ public class SideYugi extends SideCharacter{
                     rightLeg.drawFromTopLeft(Window.getWidth() / 2 - rightLeg.getWidth(), head.getHeight());
                 }
             } else if (timer > 1 * frames) {
-                Image yugi = new Image("res/Renders/Yugi.png");
-                Image exodia = new Image("res/charactersS/Yugi/SpecialAbilityPoints.png");
+                Image yugi = new Image("res/renders/SideCharacters/Yugi.png");
+                Image exodia = new Image("res/sidecharacters/Yugi/Exodia.png");
                 exodia.drawFromTopLeft(0, 0);
                 yugi.drawFromTopLeft(0, 0);
             }

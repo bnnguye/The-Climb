@@ -5,12 +5,10 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public abstract class Obstacle {
-    private String name = "";
     Image image;
     private Point pos;
-    double speed;
     private boolean jotaroAbility = false;
-    private ArrayList<Integer> playersGainedEXP = new ArrayList<>();
+    private final ArrayList<Integer> playersGainedEXP = new ArrayList<>();
 
     public Obstacle() {
         pos = new Point(Window.getWidth() * Math.random(), -200);

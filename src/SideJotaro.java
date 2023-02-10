@@ -3,18 +3,17 @@ import bagel.Image;
 import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
-import bagel.util.Rectangle;
 
 import java.util.ArrayList;
 
 public class SideJotaro extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name = "Jotaro";
     private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
+    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
+    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
 
     int shakeTimer;
     ArrayList<PowerUp> powerUps;
@@ -46,40 +45,23 @@ public class SideJotaro extends SideCharacter{
                 this.animating = true;
             }
             else {
-                for (Player player: players) {
-                    if (player.getId() != user.getId()) {
-                        player.getCharacter().setJotaroAbility(true);
-                    }
-                    if (player.getSideCharacter().isActivating()) {
-                        if (player.getSideCharacter().getName().equals("Dio")) {
-                            player.getCharacter().setJotaroAbility(false);
-                        }
-                    }
-                }
                 for (Obstacle obstacle: obstacles) {
                     obstacle.setJotaroAbility(true);
                 }
                 for (PowerUp powerUp: powerUps) {
                     powerUp.setJotaroAbility(true);
                 }
-                map.setJotaroAbility(true);
                 this.animating = false;
             }
             timer--;
         }
         if (timer <= 0) {
-            for (Player player : players) {
-                if (player.getId() != user.getId()) {
-                    player.getCharacter().setJotaroAbility(false);
-                }
-            }
             for (Obstacle obstacle : obstacles) {
                 obstacle.setJotaroAbility(false);
             }
             for (PowerUp powerUp : powerUps) {
                 powerUp.setJotaroAbility(false);
             }
-            map.setJotaroAbility(false);
             this.activating = false;
         }
     }
@@ -95,8 +77,8 @@ public class SideJotaro extends SideCharacter{
         Colour darken = new Colour(0, 0, 0.2, 0.5);
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (timer > 3*frames) {
-            Image noblePhantasm = new Image("res/charactersS/Jotaro/SpecialAbilityPoints.png");
-            noblePhantasm.drawFromTopLeft(0,0);
+            Image special = new Image("res/sidecharacters/Jotaro/special.png");
+            special.drawFromTopLeft(0,0);
         }
     }
 

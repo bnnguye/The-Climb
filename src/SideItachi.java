@@ -1,6 +1,5 @@
 import bagel.Drawing;
 import bagel.Image;
-import bagel.Input;
 import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
@@ -8,13 +7,13 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideItachi extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name = "Itachi";
     private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
+    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
+    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
 
     private ArrayList<Obstacle> obstacles;
     private ArrayList<PowerUp> powerUps;
@@ -83,8 +82,8 @@ public class SideItachi extends SideCharacter{
         if (timer > 4*frames) {
             Colour darken = new Colour(0, 0, 0, 0.5);
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
-            Image noblePhantasm = new Image("res/charactersS/Itachi/SpecialAbilityPoints.png");
-            noblePhantasm.drawFromTopLeft(0,0);
+            Image special = new Image("res/sidecharacters/Itachi/special.png");
+            special.drawFromTopLeft(0,0);
         }
         else {
             for(Obstacle obstacle: obstacles) {

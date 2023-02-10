@@ -6,13 +6,13 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideHisoka extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name = "Hisoka";
     private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
+    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
     boolean activating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
+    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
 
     boolean shoot = false;
     ArrayList<ObstacleBungeeGum> bungeeGums;
@@ -61,8 +61,8 @@ public class SideHisoka extends SideCharacter{
                             if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos())
                                     .intersects(bg.getImage().getBoundingBoxAt(new Point(bg.getPos().x -
                                             bg.getImage().getWidth()/2, bg.getPos().y - bg.getImage().getHeight()/2)))) {
-                                if (!player.isDead()) {
-                                    player.getCharacter().setHisokaAbility(4 * frames);
+                                if (!player.getCharacter().isDead()) {
+                                    player.getCharacter().gotStunned();
                                     bgToRemove.add(bg);
                                 }
                             }
@@ -97,10 +97,10 @@ public class SideHisoka extends SideCharacter{
     public void renderAbility() {
         if (timer > 8*frames) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
-            Image noblePhantasm = new Image("res/charactersS/Hisoka/SpecialAbilityPoints.png");
+            Image special = new Image("res/sidecharacters/Hisoka/special.png");
             Colour darken = new Colour(0, 0, 0, 0.5);
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
-            noblePhantasm.drawFromTopLeft(0,0);
+            special.drawFromTopLeft(0,0);
         }
         else {
             for (ObstacleBungeeGum bg: bungeeGums) {

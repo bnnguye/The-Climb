@@ -31,7 +31,7 @@ public class Slider {
     }
 
     public void draw() {
-        double currentBar = 0;
+        double currentBar;
         double currentFrequency;
         Image sliderIndicator = new Image("res/misc/sliderIndicatorS.png");
         if (("obstacle").equalsIgnoreCase(type)) {

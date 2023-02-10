@@ -12,7 +12,6 @@ public class Map {
     Image mapPeek;
     double height;
     double currentHeight;
-    private boolean jotaroAbility = false;
 
     ArrayList<Tile> tiles = new ArrayList<>();
 
@@ -39,20 +38,18 @@ public class Map {
     }
 
     public void updateTiles(double shift) {
-        if (!jotaroAbility) {
-            currentHeight += shift;
-            ArrayList<Tile>tilesToRemove = new ArrayList<>();
-            for (Tile tile: tiles) {
-                for (CollisionBlock block: tile.getCollisionBlocks()) {
-                    block.updatePos(new Point (tile.getPos().x, tile.getPos().y + shift));
-                }
-                tile.setPos(new Point(tile.getPos().x, tile.getPos().y + shift));
-                if (tile.getPos().y > Window.getHeight()) {
-                    tilesToRemove.add(tile);
-                }
+        currentHeight += shift;
+        ArrayList<Tile>tilesToRemove = new ArrayList<>();
+        for (Tile tile: tiles) {
+            for (CollisionBlock block: tile.getCollisionBlocks()) {
+                block.updatePos(new Point (tile.getPos().x, tile.getPos().y + shift));
             }
-            tiles.removeAll(tilesToRemove);
+            tile.setPos(new Point(tile.getPos().x, tile.getPos().y + shift));
+            if (tile.getPos().y > Window.getHeight()) {
+                tilesToRemove.add(tile);
+            }
         }
+        tiles.removeAll(tilesToRemove);
     }
 
     public boolean hasFinished() {
@@ -62,7 +59,6 @@ public class Map {
         return false;
     }
     public void generateMap() {
-        jotaroAbility = false;
         tiles.clear();
         int currentBlocksInRow = 0;
         int currentRow = 0;
@@ -134,13 +130,5 @@ public class Map {
 
     public double getCurrentHeight() {
         return currentHeight;
-    }
-
-    public void setJotaroAbility(boolean bool) {
-        jotaroAbility = bool;
-    }
-
-    public boolean getJotaroAbility() {
-        return jotaroAbility;
     }
 }

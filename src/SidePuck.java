@@ -7,14 +7,14 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SidePuck extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name = "Puck";
     private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
+    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
     boolean activating = false;
     boolean animating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
+    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
 
     ArrayList<ObstacleShard> shards;
     ArrayList<ObstacleShard> shardsToRemove;
@@ -52,7 +52,7 @@ public class SidePuck extends SideCharacter{
                     if (shards.size() > 0) {
                         for (ObstacleShard obstacleShard : shards) {
                             if (obstacleShard.getImage().getBoundingBoxAt(obstacleShard.getPos()).intersects(player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()))) {
-                                player.setDead();
+                                player.getCharacter().setDead(true);
                             }
                             obstacleShard.move();
                             if (obstacleShard.getPos().y > Window.getHeight()) {
@@ -91,8 +91,8 @@ public class SidePuck extends SideCharacter{
     public void renderAbility() {
         if (timer > 3 * frames) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.8));
-            Image noblePhantasm = new Image(String.format("res/charactersS/%s/SpecialAbilityPoints.png", this.name));
-            noblePhantasm.drawFromTopLeft(0,0);
+            Image special = new Image(String.format("res/sidecharacters/%s/special.png", this.name));
+            special.drawFromTopLeft(0,0);
         }
         else {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 1, 0.5));

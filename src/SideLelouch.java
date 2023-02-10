@@ -8,14 +8,14 @@ import bagel.util.Rectangle;
 import java.util.ArrayList;
 
 public class SideLelouch extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name = "Lelouch";
     private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
+    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
     boolean activating = false;
     boolean animating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
+    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
     private Player user;
 
     boolean shoot = false;
@@ -53,8 +53,8 @@ public class SideLelouch extends SideCharacter{
             for (Player player: players) {
                 if((player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(horizontal)) || (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(vertical))) {
                     if (player.getId() != user.getId()) {
-                        if (!player.isDead()) {
-                            player.setDead();
+                        if (!player.getCharacter().isDead()) {
+                            player.getCharacter().setDead(true);
                         }
                     }
                 }
@@ -78,11 +78,11 @@ public class SideLelouch extends SideCharacter{
 
     public void renderAbility() {
         if (timer > 1 *frames) {
-            Image noblePhantasm = new Image("res/charactersS/Lelouch/SpecialAbilityPoints.png");
-            noblePhantasm.drawFromTopLeft(0,0);
+            Image special = new Image("res/sidecharacters/Lelouch/special.png");
+            special.drawFromTopLeft(0,0);
         }
         else {
-            Image eye = new Image("res/charactersS/Lelouch/Eye.png");
+            Image eye = new Image("res/sidecharacters/Lelouch/Eye.png");
             eye.drawFromTopLeft(0,0);
             Colour red = new Colour(0.8, 0, 0, 0.5);
             Drawing.drawRectangle(user.getCharacter().getPos().x, 0, 2, Window.getHeight(), red);

@@ -4,28 +4,22 @@ import bagel.Keys;
 import bagel.Window;
 import bagel.util.Point;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Player {
-    private static ArrayList<Player> players = new ArrayList<>();
-    private int id;
+    private final int id;
     private HashMap<String, Keys> controls = new HashMap<>();
-    private Point pos;
+    private Point cursorPos;
 
     private Character character = null;
     private SideCharacter sideCharacter = null;
-    private boolean characterChosen = false;
-    private boolean sideCharacterChosen = false;
-    private Map mapChosen = null;
 
-    private int lives;
-    private boolean dead = false;
+    private Map mapChosen = null;
 
     private static int noOfWins = 0;
 
     public Player(int id) {
-        pos = new Point(Window.getWidth()/2, Window.getHeight()/2);
+        cursorPos = new Point(Window.getWidth()/2, Window.getHeight()/2);
         this.id = id;
         if (id == 1) {
             controls.put("Up", Keys.W);
@@ -55,22 +49,11 @@ public class Player {
             controls.put("Right", Keys.SEMICOLON);
             controls.put("Primary", Keys.M);
         }
-        if ((id > 0) && (id < 5)) {
-            getInstance().add(this);
-        }
     }
 
-    public synchronized static ArrayList<Player> getInstance() {
-        if (players == null) {
-            players = new ArrayList<>();
-        }
-        return players;
-    }
-
-
-    public void setPos(Input input) {
-        double new_X = pos.x;
-        double new_Y = pos.y;
+    public void setCursorPos(Input input) {
+        double new_X = cursorPos.x;
+        double new_Y = cursorPos.y;
         if (input.isDown(controls.get("Up"))) {
             new_Y -= 10;
         }
@@ -84,7 +67,7 @@ public class Player {
             new_X += 10;
         }
         if (((0 < new_X) && (new_X < Window.getWidth())) && ((0 < new_Y) && (new_Y < Window.getHeight()))) {
-            this.pos = new Point(new_X, new_Y);
+            this.cursorPos = new Point(new_X, new_Y);
         }
     }
     public void moveCharacter(Input input) {
@@ -117,7 +100,7 @@ public class Player {
         }
     }
 
-    public Point getPos() { return this.pos;}
+    public Point getCursorPos() { return this.cursorPos;}
     public Image getCursor() { return new Image(String.format("res/cursors/P%s.png", this.id));}
     public int getId() { return this.id;}
     public Character getCharacter() {
@@ -130,43 +113,26 @@ public class Player {
         return this.mapChosen;
     }
     public int getNoOfWins() {return this.noOfWins;}
+    public Keys getControl(String control) {
+        return controls.get(control);
+    }
 
     public void setCharacter(Character character) {
         this.character = character;
     }
-
     public void setSideCharacter(SideCharacter character) {
         this.sideCharacter = character;
     }
-
-    public boolean getCharacterChosen() {return this.character != null;}
-    public boolean getSideCharacterChosen() {return this.sideCharacter != null;}
-    public boolean isDead() {
-        return this.dead;
-    }
-    public void setDead() {
-        this.dead = !this.dead;
+    public void setMapChosen(Map map) {
+        this.mapChosen = map;
     }
 
     public void reset() {
-        this.dead = false;
         this.character = null;
         this.sideCharacter = null;
         this.mapChosen = null;
     }
     public void recordWin() {
         this.noOfWins += 1;
-    }
-
-    public void setMapChosen(Map map) {
-        this.mapChosen = map;
-    }
-    public void setLives(int lives) {
-        this.lives = lives;
-    }
-    public int getLives() {return this.lives;}
-
-    public Keys getControl(String control) {
-        return controls.get(control);
     }
 }
