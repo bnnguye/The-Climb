@@ -296,23 +296,24 @@ public class Game extends AbstractGame {
                 double maxScale = 1;
                 int middleIndex = allCharacters.size() % 2 == 1 ?
                         allCharacters.size() / 2 + 1 : allCharacters.size() / 2;
-                double spacing = 270;
+                double spacing = Window.getHeight()/4;
 
                 for (Character character: allCharacters) {
                     ImagePoint characterRender = new ImagePoint(String.format("res/renders/Characters/%s.png", character.getFullName()),
                             new Point(0, 0), "CharacterRender");
                     characterRender.setScale(minScale);
                     if (index < middleIndex) {
-                        characterRender.setPos( (-(allCharacters.size() * spacing/2) + Window.getWidth()/2) + (spacing * (index - 1.5)),
-                                Window.getHeight() - (characterRender.getHeight() * characterRender.getScale()));
+                        characterRender.setPos( ((allCharacters.size() * spacing/2) - Window.getWidth())/2 - 490 + (spacing * (index - 1)),
+                                Window.getHeight()*3/4);
                     }
                     else if (middleIndex == index) {
                         characterRender.setScale(maxScale);
-                        characterRender.setPos(525, Window.getHeight()/8);
+                        characterRender.setPos(490, Window.getHeight()/8);
                     }
                     else {
-                        characterRender.setPos( (-(allCharacters.size() * spacing/2) + Window.getWidth()/2) + (spacing * (index + 0.5)),
-                                Window.getHeight() - (characterRender.getHeight() * characterRender.getScale()));
+                        System.out.println(character.getFullName());
+                        characterRender.setPos( Window.getWidth()/2 + (spacing * (index - middleIndex)),
+                                Window.getHeight()*3/4);
                     }
                     imagePointManagerSingleton.add(characterRender);
                     index++;

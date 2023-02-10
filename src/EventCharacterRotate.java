@@ -28,11 +28,12 @@ public class EventCharacterRotate extends EventInterface{
         double minHeight = Window.getHeight()*3/4;
         double sign = event.contains("LEFT") ? 1 : -1;
         double speed = sign * spacing;
+        double middleCharacterSpeed = event.contains("LEFT") ? 220 : 980;
         double shift = this.frames - currentTime + 1;
+        int middleCharacterIndex = characterRenders.size() % 2 == 1 ?
+                (characterRenders.size() / 2) + 1 : characterRenders.size() / 2;
+        int nextCharacterIndex = event.contains("LEFT")? middleCharacterIndex - 1: middleCharacterIndex + 1;
         if (shift >= 1) {
-            int middleCharacterIndex = characterRenders.size() % 2 == 1 ?
-                    (characterRenders.size() / 2)it + 1 : characterRenders.size() / 2;
-            int nextCharacterIndex = event.contains("LEFT")? middleCharacterIndex - 1: middleCharacterIndex + 1;
 
             ImagePoint nextCharacterImage = imagePointManagerSingleton.getImages().get(nextCharacterIndex);
             ImagePoint middleCharacterImage = imagePointManagerSingleton.getImages().get(middleCharacterIndex);
@@ -45,11 +46,13 @@ public class EventCharacterRotate extends EventInterface{
                     middleCharacterImage.getScale() - (middleCharacterImage.getScale() - minScale)/shift);
             // set positioning
             imagePointManagerSingleton.getImages().get(nextCharacterIndex).setPos(
-                    nextCharacterImage.getPos().x + 2*speed/calls, nextCharacterImage.getPos().y - (nextCharacterImage.getPos().y - maxHeight)/shift);
+                    nextCharacterImage.getPos().x + sign* Math.abs((540 - nextCharacterImage.getPos().x))/calls, nextCharacterImage.getPos().y - (nextCharacterImage.getPos().y - maxHeight)/shift);
 
             imagePointManagerSingleton.getImages().get(middleCharacterIndex).setPos(
-                    middleCharacterImage.getPos().x + speed/calls, middleCharacterImage.getPos().y + (minHeight - middleCharacterImage.getPos().y)/shift);
+                    middleCharacterImage.getPos().x + middleCharacterSpeed/calls,
+                    middleCharacterImage.getPos().y + (minHeight - middleCharacterImage.getPos().y)/shift);
 
+            System.out.println(nextCharacterImage.getPos());
 
             for (int i = 0; i < characterRenders.size(); i++ ) {
                 if (i != middleCharacterIndex && i != middleCharacterIndex) {
@@ -67,13 +70,13 @@ public class EventCharacterRotate extends EventInterface{
 
                 imagePointManagerSingleton.getImages().remove(0);
                 imagePointManagerSingleton.getImages().add(temp);
-                temp.setPos((-(characterRenders.size() * spacing/2) + Window.getWidth()/2) + spacing * (characterRenders.size()-0.5), minHeight);
+                temp.setPos(Window.getWidth()/2 + (spacing * (characterRenders.size() - middleCharacterIndex) - spacing), minHeight);
             } else {
                 ImagePoint temp = imagePointManagerSingleton.getImages()
                         .get(imagePointManagerSingleton.getImages().size() - 1);
                 imagePointManagerSingleton.getImages().remove(imagePointManagerSingleton.getImages().size() - 1);
                 imagePointManagerSingleton.getImages().add(0, temp);
-                temp.setPos((-(characterRenders.size() * spacing/2) + Window.getWidth()/2) + (spacing * -0.5) + 450, minHeight);
+                temp.setPos(((characterRenders.size() * spacing/2) - Window.getWidth())/2 - 490 - spacing, minHeight);
             }
         }
     }
