@@ -8,25 +8,33 @@ import java.util.ArrayList;
 
 public class SideYuu extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
-    private String name = "Yuu";
-    private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
+
+    private String name = "YUU OTASAKA";
+    private String power = "PLUNDER";
+    private String desc = "";
+
     boolean activating = false;
     boolean animating = false;
     double timer;
-    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
-    private Point iconPos;
+
     SideCharacter temporarySideCharacter;
 
     public String getName() {
         return this.name;
     }
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
+    public String getPower() { return this.power;}
+    public String getDesc() { return this.desc;}
+
     public boolean isActivating() {return this.activating;}
-    public String playLine() {return this.soundPath;}
+    public boolean isAnimating() {
+        return this.animating;
+    }
+    public void reset() {
+        this.activating = false;
+        this.animating = false;
+        timer = 0;
+    }
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if (!this.activating) {
@@ -62,42 +70,31 @@ public class SideYuu extends SideCharacter{
         timer--;
     }
 
-    public void reset() {
-        this.activating = false;
-        this.animating = false;
-        this.timer = 0;
-    }
-
-
-    public boolean isAnimating() {
-        return this.animating;
-    }
-
     public SideCharacter getSideCharacter(Player player) {
         SideCharacter playerCharacter = null;
-        if (player.getSideCharacter().getName().equals("Dio")) {
+        if (player.getSideCharacter().getName().equals("DIO BRANDO")) {
             playerCharacter = new SideDio();
         }
-        else if (player.getSideCharacter().getName().equals("AllMight")) {
+        else if (player.getSideCharacter().getName().equals("ALL MIGHT")) {
             playerCharacter = new SideAllMight();
         }
-        else if (player.getSideCharacter().getName().equals("Gojo")) {
+        else if (player.getSideCharacter().getName().equals("GOJO SATORU")) {
             playerCharacter = new SideGojo();
         }
-        else if (player.getSideCharacter().getName().equals("Hisoka")) {
+        else if (player.getSideCharacter().getName().equals("HISOKA MOROW")) {
             playerCharacter = new SideHisoka();
         }
-        else if (player.getSideCharacter().getName().equals("Itachi")) {
+        else if (player.getSideCharacter().getName().equals("ITACHI UCHIHA")) {
             playerCharacter = new SideItachi();
         }
-        else if (player.getSideCharacter().getName().equals("Jotaro")) {
+        else if (player.getSideCharacter().getName().equals("JOTARO KUJO")) {
             playerCharacter = new SideJotaro();
         }
-        else if (player.getSideCharacter().getName().equals("Lelouch")) {
+        else if (player.getSideCharacter().getName().equals("LELOUCH LAMPEROUGE")) {
             playerCharacter = new SideLelouch();
         }
-        else if (player.getSideCharacter().getName().equals("Puck")) {
-            playerCharacter = new SidePuck();
+        else if (player.getSideCharacter().getName().equals("SON GOKU")) {
+            playerCharacter = new SideGoku();
         }
         else if (player.getSideCharacter().getName().equals("Yugi")) {
             playerCharacter = new SideYugi();
@@ -139,7 +136,5 @@ public class SideYuu extends SideCharacter{
             }
         }
     }
-
-    public String getSoundPath() {return soundPath;}
 
 }

@@ -8,28 +8,33 @@ import java.util.ArrayList;
 
 public class SideYugi extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
-    private String name = "Yugi";
-    private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/sidecharacters/Yugi/Icon.PNG", this.name));
+
+    private String name = "YAMI YUGI";
+    private String power = "EXODIA";
+    private String desc = "";
+
     boolean activating = false;
     double timer;
-    int radius = 0;
-    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
+
     ArrayList<ExodiaPiece> exodiaPieces = new ArrayList<>();
     ArrayList<ExodiaPiece> exodiaPiecesCollected = new ArrayList<>();
-    private Point iconPos;
-
 
     public String getName() {
         return this.name;
     }
+    public String getPower() { return this.power;}
+    public String getDesc() { return this.desc;}
 
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
     public boolean isActivating() {return this.activating;}
-    public String playLine() {return this.soundPath;}
+    public boolean isAnimating() {
+        return this.animating;
+    }
+    public void reset() {
+        this.activating = false;
+        this.animating = false;
+        timer = 0;
+    }
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
@@ -89,19 +94,6 @@ public class SideYugi extends SideCharacter{
         }
     }
 
-    public void reset() {
-        this.activating = false;
-        this.animating = false;
-        this.timer = 0;
-        this.radius = 0;
-    }
-
-
-    public boolean isAnimating() {
-        return this.animating;
-    }
-
-
     public ArrayList<ExodiaPiece> getExodiaPiecesCollected() {return this.exodiaPiecesCollected;}
 
     public void renderAbility() {
@@ -140,5 +132,4 @@ public class SideYugi extends SideCharacter{
             }
         }
     }
-    public String getSoundPath() {return soundPath;}
 }

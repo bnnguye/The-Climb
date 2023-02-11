@@ -9,30 +9,38 @@ import java.util.ArrayList;
 
 public class SideLelouch extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
-    private String name = "Lelouch";
-    private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
+
+    private String name = "LELOUCH LAMPEROUGE";
+    private String power = "CODE GEASS";
+    private String desc = "";
+
     boolean activating = false;
     boolean animating = false;
     double timer;
-    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
-    private Player user;
 
     boolean shoot = false;
-    private Point iconPos;
-
+    private Player user;
 
     public String getName() {
         return this.name;
     }
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
+    public String getPower() { return this.power;}
+    public String getDesc() { return this.desc;}
+
     public boolean isActivating() {return this.activating;}
-    public String playLine() {return this.soundPath;}
+    public boolean isAnimating() {
+        return this.animating;
+    }
+    public void reset() {
+        this.activating = false;
+        this.animating = false;
+        this.timer = 0;
+        this.shoot = false;
+    }
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+        Character pCharacter = user.getCharacter();
         if(!this.activating) {
             this.user = user;
             this.activating = true;
@@ -65,17 +73,6 @@ public class SideLelouch extends SideCharacter{
 
     }
 
-    public void reset() {
-        this.activating = false;
-        this.animating = false;
-        this.timer = 0;
-        this.shoot = false;
-    }
-
-    public boolean isAnimating() {
-        return this.animating;
-    }
-
     public void renderAbility() {
         if (timer > 1 *frames) {
             Image special = new Image("res/sidecharacters/Lelouch/special.png");
@@ -89,5 +86,4 @@ public class SideLelouch extends SideCharacter{
             Drawing.drawRectangle(0, user.getCharacter().getPos().y, Window.getWidth(), 2, red);
         }
     }
-    public String getSoundPath() {return soundPath;}
 }

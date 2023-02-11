@@ -37,10 +37,10 @@ public class ImagePoint {
     public void draw() {
         if (filename != null) {
             if (flashing) {
-                DO.setBlendColour(1,1,1,0.8);
+                DO.setBlendColour(1,1,1,0.2);
             }
             else if (transparent) {
-                DO.setBlendColour(1,1,1,0.5);
+                DO.setBlendColour(1,1,1,0.3);
             }
             else if (darken) {
                 DO.setBlendColour(0,0,0,1);

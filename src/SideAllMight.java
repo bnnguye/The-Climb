@@ -1,30 +1,35 @@
 import bagel.Image;
-import bagel.util.Point;
 
 import java.util.ArrayList;
 
 public class SideAllMight extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
-    private String name = "AllMight";
-    private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
+
+    private String name = "ALL MIGHT";
+    private String power = "ONE FOR ALL";
+    private String desc = "All Might's One For All allows All Might to take over the opponents on the battlefield through his immense will and power." +
+            "Gain enhanced movement speed and invulnerability to objects flying from the sky for a brief period.";
+
     boolean activating = false;
     boolean animating = false;
     double timer;
-    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
-    private Point iconPos;
-
 
     public String getName() {
         return this.name;
     }
+    public String getPower() { return this.power;}
+    public String getDesc() { return this.desc;}
 
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
     public boolean isActivating() {return this.activating;}
-    public String playLine() {return this.soundPath;}
+    public boolean isAnimating() {
+        return this.animating;
+    }
+    public void reset() {
+        this.activating = false;
+        this.animating = false;
+        timer = 0;
+    }
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
@@ -45,21 +50,12 @@ public class SideAllMight extends SideCharacter{
         }
     }
 
-    public void reset() {
-        this.activating = false;
-        this.animating = false;
-        timer = 0;
-    }
-
     public void renderAbility() {
         if (timer > 8 * frames) {
             Image special = new Image(String.format("res/sidecharacters/%s/special.png", this.name));
             special.drawFromTopLeft(0,0);
         }
     }
-    public boolean isAnimating() {
-        return this.animating;
-    }
-    public String getSoundPath() {return soundPath;}
+
 }
 

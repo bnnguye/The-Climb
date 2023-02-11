@@ -9,31 +9,31 @@ import java.util.ArrayList;
 
 public class SideZoro extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
-    private String name = "Zoro";
-    private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/sidecharacters/Zoro/Icon.PNG", this.name));
+    private String name = "ZORO RORONOA";
+    private String power = "PURGATORY ONIGIRI";
+    private String desc = "";
+
+
     boolean activating = false;
     double timer;
-    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
     double shakeTimer;
-    private Point iconPos;
-
 
     public String getName() {
         return this.name;
     }
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
+    public String getPower() { return this.power;}
+    public String getDesc() { return this.desc;}
+
     public boolean isActivating() {return this.activating;}
+    public boolean isAnimating() {
+        return this.animating;
+    }
     public void reset() {
         this.activating = false;
         this.animating = false;
-        this.timer = 0;
-        shakeTimer = 500;
+        timer = 0;
     }
-    public String playLine() {return this.soundPath;}
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
@@ -161,11 +161,6 @@ public class SideZoro extends SideCharacter{
         }
     }
 
-
-    public boolean isAnimating() {
-        return this.animating;
-    }
-
     public void shakeImage(Map map) {
         if (shakeTimer == 3 *frames) {
             for (Tile tile: map.getTiles()) {
@@ -188,7 +183,6 @@ public class SideZoro extends SideCharacter{
         }
         shakeTimer --;
     }
-    public String getSoundPath() {return soundPath;}
 
     public void renderAbility() {
         Image slashLeft = new Image("res/sidecharacters/Zoro/SlashLeft.png");

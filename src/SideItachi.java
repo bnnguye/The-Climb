@@ -8,38 +8,40 @@ import java.util.ArrayList;
 
 public class SideItachi extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
-    private String name = "Itachi";
-    private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
+
+    private String name = "ITACHI UCHIHA";
+    private String power = "INFINITE TSUKUYOMI";
+    private String desc = "Itachi activates his unique ability \"Infinite Tsukuyomi\", sending all those who look into" +
+            " his left eye into a hallucination. Those strong enough will be sent into a state of confusion, while" +
+            "the rest have their lives in the hands of the shinobi.";
+
     boolean activating = false;
     double timer;
-    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
 
     private ArrayList<Obstacle> obstacles;
     private ArrayList<PowerUp> powerUps;
     private boolean left = true;
-    private Player user;
-    private Point iconPos;
 
     public String getName() {
         return this.name;
     }
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
+    public String getPower() { return this.power;}
+    public String getDesc() { return this.desc;}
+
     public boolean isActivating() {return this.activating;}
+    public boolean isAnimating() {
+        return this.animating;
+    }
     public void reset() {
         this.activating = false;
         this.animating = false;
-        this.timer = 0;
+        timer = 0;
     }
-    public String playLine() {return this.soundPath;}
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         this.obstacles = obstacles;
         this.powerUps = powerUps;
-        this.user = user;
         if (!this.activating) {
             timer = 8*frames;
             this.activating = true;
@@ -63,9 +65,6 @@ public class SideItachi extends SideCharacter{
         }
     }
 
-    public boolean isAnimating() {
-        return this.animating;
-    }
     public void setPowerUps(ArrayList<PowerUp> powerUps) {this.powerUps = powerUps;}
     public void setLeft(boolean left) {
         if (this.animating) {
@@ -108,7 +107,6 @@ public class SideItachi extends SideCharacter{
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         }
     }
-    public String getSoundPath() {return soundPath;}
 
 
 }

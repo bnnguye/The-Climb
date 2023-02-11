@@ -27,8 +27,8 @@ public class EventStartApp extends EventInterface {
     }
 
     public void process() {
-        int currentTime = TimeLogger.getInstance().getFrames();
-        int refreshRate = SettingsSingleton.getInstance().getRefreshRate();
+        double currentTime = TimeLogger.getInstance().getFrames();
+        double refreshRate = SettingsSingleton.getInstance().getRefreshRate();
         Drawing.drawRectangle(0,0, Window.getWidth(), Window.getHeight(), ColourPresets.WHITE.toColour());
         if (frames - currentTime <= 2.5 * refreshRate) {
             String string = "Made by Bill Nguyen";
@@ -37,9 +37,8 @@ public class EventStartApp extends EventInterface {
                     (Window.getWidth() - introFont.getFont().getWidth(string))/2, Window.getHeight()/2,
                     new DrawOptions().setBlendColour(ColourPresets.BLACK.toColour()));
         }
-        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1,1,1, 1 - 2*((double) currentTime - 2 * refreshRate)/(frames - 2 * refreshRate)));
+        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1,1,1, 1 - 2*( currentTime - 2 * refreshRate)/(frames - 2 * refreshRate)));
         if (frames <= currentTime) {
-            canInteract = true;
             SettingsSingleton.getInstance().setGameState(0);
         }
     }

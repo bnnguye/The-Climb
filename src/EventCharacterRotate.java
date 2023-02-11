@@ -13,7 +13,6 @@ public class EventCharacterRotate extends EventInterface{
     private double calls;
 
     public EventCharacterRotate(int frames, String event) {
-        System.out.println("Number of frames: " + frames);
         this.frames = frames + TimeLogger.getInstance().getFrames();
         this.calls = frames;
         this.event = event;
@@ -28,7 +27,7 @@ public class EventCharacterRotate extends EventInterface{
         double minHeight = Window.getHeight()*3/4;
         double sign = event.contains("LEFT") ? 1 : -1;
         double speed = sign * spacing;
-        double middleCharacterSpeed = event.contains("LEFT") ? 220 : 980;
+        double middleCharacterSpeed = event.contains("LEFT") ? 750 : 135;
         double shift = this.frames - currentTime + 1;
         int middleCharacterIndex = characterRenders.size() % 2 == 1 ?
                 (characterRenders.size() / 2) + 1 : characterRenders.size() / 2;
@@ -46,16 +45,14 @@ public class EventCharacterRotate extends EventInterface{
                     middleCharacterImage.getScale() - (middleCharacterImage.getScale() - minScale)/shift);
             // set positioning
             imagePointManagerSingleton.getImages().get(nextCharacterIndex).setPos(
-                    nextCharacterImage.getPos().x + sign* Math.abs((540 - nextCharacterImage.getPos().x))/calls, nextCharacterImage.getPos().y - (nextCharacterImage.getPos().y - maxHeight)/shift);
-
+                    nextCharacterImage.getPos().x + sign* Math.abs((540 - nextCharacterImage.getPos().x))/shift,
+                    nextCharacterImage.getPos().y - (nextCharacterImage.getPos().y - maxHeight)/shift);
             imagePointManagerSingleton.getImages().get(middleCharacterIndex).setPos(
-                    middleCharacterImage.getPos().x + middleCharacterSpeed/calls,
+                    middleCharacterImage.getPos().x + sign * middleCharacterSpeed/calls,
                     middleCharacterImage.getPos().y + (minHeight - middleCharacterImage.getPos().y)/shift);
 
-            System.out.println(nextCharacterImage.getPos());
-
             for (int i = 0; i < characterRenders.size(); i++ ) {
-                if (i != middleCharacterIndex && i != middleCharacterIndex) {
+                if (i != nextCharacterIndex && i != middleCharacterIndex) {
                     ImagePoint characterRender = characterRenders.get(i);
 
                     // update positions

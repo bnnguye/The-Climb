@@ -7,27 +7,35 @@ import java.util.ArrayList;
 
 public class SideHisoka extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
-    private String name = "Hisoka";
-    private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/sidecharacters/%s/Icon.PNG", this.name));
+
+    private String name = "HISOKA MOROW";
+    private String power = "BUNGEE GUM";
+    private String desc = "Hisoka Morow's signature move \"Bungee Gum\" allows him to trap his opponents by converting" +
+            " his aura into a sticky substance, freezing any character caught within its path for several seconds.";
+
     boolean activating = false;
+    boolean animating = false;
     double timer;
-    private Image selected = new Image(String.format("res/sidecharacters/%s/Selected.png", this.name));
 
     boolean shoot = false;
     ArrayList<ObstacleBungeeGum> bungeeGums;
-    private Point iconPos;
-
 
     public String getName() {
         return this.name;
     }
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
+    public String getPower() { return this.power;}
+    public String getDesc() { return this.desc;}
+
     public boolean isActivating() {return this.activating;}
-    public String playLine() {return this.soundPath;}
+    public boolean isAnimating() {
+        return this.animating;
+    }
+    public void reset() {
+        this.activating = false;
+        this.animating = false;
+        timer = 0;
+    }
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
@@ -83,17 +91,6 @@ public class SideHisoka extends SideCharacter{
         }
     }
 
-    public void reset() {
-        this.activating = false;
-        this.animating = false;
-        this.timer = 0;
-        this.shoot = false;
-    }
-
-    public boolean isAnimating() {
-        return this.animating;
-    }
-
     public void renderAbility() {
         if (timer > 8*frames) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
@@ -108,5 +105,4 @@ public class SideHisoka extends SideCharacter{
             }
         }
     }
-    public String getSoundPath() {return soundPath;}
 }

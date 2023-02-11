@@ -91,4 +91,32 @@ public class ImagePointManagerSingleton {
             image.draw();
         }
     }
+
+    public void drawCharacterSelection() {
+
+        int middleCharacterIndex = getAllCharacterImages().size() % 2 == 1 ?
+                (getAllCharacterImages().size() / 2) + 1 : getAllCharacterImages().size() / 2;
+
+        int i =  0;
+        for (ImagePoint characterRender: getAllCharacterImages()) {
+            if (middleCharacterIndex == i) {
+                characterRender.setTransparent(false);
+            }
+            else {
+                characterRender.setTransparent(true);
+            }
+            characterRender.draw();
+            i++;
+        }
+    }
+
+    private ArrayList<ImagePoint> getAllCharacterImages() {
+        ArrayList<ImagePoint> characterDisplays = new ArrayList<>();
+        for (ImagePoint image: getImages()) {
+            if ("CharacterRender".equals(image.getTag())) {
+                characterDisplays.add(image);
+            }
+        }
+        return characterDisplays;
+    }
 }
