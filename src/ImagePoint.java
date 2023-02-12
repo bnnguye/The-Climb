@@ -37,16 +37,13 @@ public class ImagePoint {
     public void draw() {
         if (filename != null) {
             if (flashing) {
-                DO.setBlendColour(1,1,1,0.2);
+                DO.setBlendColour(0.5, 0.5, 0.5,0.7);
             }
             else if (transparent) {
                 DO.setBlendColour(1,1,1,0.3);
             }
             else if (darken) {
                 DO.setBlendColour(0,0,0,1);
-            }
-            else {
-                DO.setBlendColour(1,1,1,1);
             }
             new Image(filename).drawFromTopLeft(pos.x - ((getWidth() * (1 - scale))/2), pos.y - ((getHeight() * (1 - scale))/2), DO);
         }
@@ -115,6 +112,10 @@ public class ImagePoint {
 
     public String getTag() {
         return this.tag;
+    }
+
+    public DrawOptions getDO() {
+        return DO;
     }
 
 }

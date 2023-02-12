@@ -81,7 +81,7 @@ public class EventSideCharacterRotate extends EventInterface{
     private void getAllCharacterImages() {
         ArrayList<ImagePoint> characterDisplays = new ArrayList<>();
         for (ImagePoint image: imagePointManagerSingleton.getImages()) {
-            if ("CharacterRender".equals(image.getTag())) {
+            if ("SideCharacterRender".equals(image.getTag())) {
                 characterDisplays.add(image);
             }
         }

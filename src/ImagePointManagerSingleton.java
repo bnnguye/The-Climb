@@ -92,15 +92,16 @@ public class ImagePointManagerSingleton {
         }
     }
 
-    public void drawCharacterSelection() {
+    public void drawImagesWithTag(String tag) {
 
-        int middleCharacterIndex = getAllCharacterImages().size() % 2 == 1 ?
-                (getAllCharacterImages().size() / 2) + 1 : getAllCharacterImages().size() / 2;
+        int middleCharacterIndex = getAllImagesWithTag(tag).size() % 2 == 1 ?
+                (getAllImagesWithTag(tag).size() / 2) + 1 : getAllImagesWithTag(tag).size() / 2;
 
         int i =  0;
-        for (ImagePoint characterRender: getAllCharacterImages()) {
+        for (ImagePoint characterRender: getAllImagesWithTag(tag)) {
             if (middleCharacterIndex == i) {
                 characterRender.setTransparent(false);
+                characterRender.getDO().setBlendColour(1,1,1,1);
             }
             else {
                 characterRender.setTransparent(true);
@@ -110,10 +111,10 @@ public class ImagePointManagerSingleton {
         }
     }
 
-    private ArrayList<ImagePoint> getAllCharacterImages() {
+    private ArrayList<ImagePoint> getAllImagesWithTag(String tag) {
         ArrayList<ImagePoint> characterDisplays = new ArrayList<>();
         for (ImagePoint image: getImages()) {
-            if ("CharacterRender".equals(image.getTag())) {
+            if (tag.equals(image.getTag())) {
                 characterDisplays.add(image);
             }
         }

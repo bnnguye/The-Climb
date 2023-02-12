@@ -112,11 +112,11 @@ public class SideYuu extends SideCharacter{
             if (player.getId() != user.getId()) {
                 if (closest == null) {
                     closest = player;
-                    closestDistance = (Math.abs(user.getCursorPos().x - player.getCursorPos().x) + Math.abs(user.getCursorPos().y - player.getCursorPos().y));
+                    closestDistance = (Math.abs(user.getCharacter().getPos().x - player.getCharacter().getPos().x) + Math.abs(user.getCharacter().getPos().y - player.getCharacter().getPos().y));
                 } else {
-                    if ((Math.abs(user.getCursorPos().x - player.getCursorPos().x) + Math.abs(user.getCursorPos().y - player.getCursorPos().y)) < closestDistance) {
+                    if ((Math.abs(user.getCharacter().getPos().x - player.getCharacter().getPos().x) + Math.abs(user.getCharacter().getPos().y - player.getCharacter().getPos().y)) < closestDistance) {
                         closest = player;
-                        closestDistance = (Math.abs(user.getCursorPos().x - player.getCursorPos().x) + Math.abs(user.getCursorPos().y - player.getCursorPos().y));
+                        closestDistance = (Math.abs(user.getCharacter().getPos().x - player.getCharacter().getPos().x) + Math.abs(user.getCharacter().getPos().y - player.getCharacter().getPos().y));
                     }
                 }
             }

@@ -123,12 +123,12 @@ public class Character {
         }
 
         public void draw() {
-                Image picture = new Image(String.format("res/characters/%s/Left.png", name, name));
+                Image picture = new Image(String.format("res/characters/%s/Left.png", getFullName()));
                 if (timer < alternateTimer/2) {
-                        picture = new Image(String.format("res/characters/%s/Left.png", name, name));
+                        picture = new Image(String.format("res/characters/%s/Left.png", getFullName()));
                 }
                 else if (timer > alternateTimer/2) {
-                        picture  = new Image(String.format("res/characters/%s/Right.png", name, name));
+                        picture  = new Image(String.format("res/characters/%s/Right.png", getFullName()));
                 }
                 if (timer <= 0) {
                         timer = alternateTimer;

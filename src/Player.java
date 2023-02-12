@@ -9,17 +9,13 @@ import java.util.HashMap;
 public class Player {
     private final int id;
     private HashMap<String, Keys> controls = new HashMap<>();
-    private Point cursorPos;
 
     private Character character = null;
     private SideCharacter sideCharacter = null;
 
     private Map mapChosen = null;
 
-    private static int noOfWins = 0;
-
     public Player(int id) {
-        cursorPos = new Point(Window.getWidth()/2, Window.getHeight()/2);
         this.id = id;
         if (id == 1) {
             controls.put("Up", Keys.W);
@@ -51,57 +47,38 @@ public class Player {
         }
     }
 
-    public void setCursorPos(Input input) {
-        double new_X = cursorPos.x;
-        double new_Y = cursorPos.y;
-        if (input.isDown(controls.get("Up"))) {
-            new_Y -= 10;
-        }
-        if (input.isDown(controls.get("Left"))) {
-            new_X -= 10;
-        }
-        if (input.isDown(controls.get("Down"))) {
-            new_Y += 10;
-        }
-        if (input.isDown(controls.get("Right"))) {
-            new_X += 10;
-        }
-        if (((0 < new_X) && (new_X < Window.getWidth())) && ((0 < new_Y) && (new_Y < Window.getHeight()))) {
-            this.cursorPos = new Point(new_X, new_Y);
-        }
-    }
     public void moveCharacter(Input input) {
-        if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Left")))) {
-            getCharacter().move("WA");
-        }
-        else if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Right")))) {
-            getCharacter().move("WD");
-        }
-        else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Left")))) {
-            getCharacter().move("SA");
-        }
-        else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Right")))) {
-            getCharacter().move("SD");
-        }
-        else if (input.isDown(controls.get("Right"))) {
-            getCharacter().move("D");
-        }
-        else if (input.isDown(controls.get("Up"))) {
-            getCharacter().move("W");
-        }
-        else if (input.isDown(controls.get("Left"))) {
-            getCharacter().move("A");
-        }
-        else if (input.isDown(controls.get("Down"))) {
-            getCharacter().move("S");
-        }
-        else {
-            getCharacter().move(null);
+        if (input != null) {
+            if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Left")))) {
+                getCharacter().move("WA");
+            }
+            else if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Right")))) {
+                getCharacter().move("WD");
+            }
+            else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Left")))) {
+                getCharacter().move("SA");
+            }
+            else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Right")))) {
+                getCharacter().move("SD");
+            }
+            else if (input.isDown(controls.get("Right"))) {
+                getCharacter().move("D");
+            }
+            else if (input.isDown(controls.get("Up"))) {
+                getCharacter().move("W");
+            }
+            else if (input.isDown(controls.get("Left"))) {
+                getCharacter().move("A");
+            }
+            else if (input.isDown(controls.get("Down"))) {
+                getCharacter().move("S");
+            }
+            else {
+                getCharacter().move(null);
+            }
         }
     }
 
-    public Point getCursorPos() { return this.cursorPos;}
-    public Image getCursor() { return new Image(String.format("res/cursors/P%s.png", this.id));}
     public int getId() { return this.id;}
     public Character getCharacter() {
         return this.character;
@@ -112,7 +89,6 @@ public class Player {
     public Map getMapChosen() {
         return this.mapChosen;
     }
-    public int getNoOfWins() {return this.noOfWins;}
     public Keys getControl(String control) {
         return controls.get(control);
     }
@@ -131,8 +107,5 @@ public class Player {
         this.character = null;
         this.sideCharacter = null;
         this.mapChosen = null;
-    }
-    public void recordWin() {
-        this.noOfWins += 1;
     }
 }

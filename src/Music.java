@@ -19,14 +19,12 @@ public class Music {
     void play() {
         try {
             File musicPath = new File(fileName);
-            if (musicPath.exists()) {
-                audioInput = AudioSystem.getAudioInputStream(musicPath);
-                clip = AudioSystem.getClip();
-                clip.open(audioInput);
-                clip.start();
-                if (clip != null) {
-                    gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-                }
+            audioInput = AudioSystem.getAudioInputStream(musicPath);
+            clip = AudioSystem.getClip();
+            clip.open(audioInput);
+            clip.start();
+            if (clip != null) {
+                gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
