@@ -228,7 +228,7 @@ public class Game extends AbstractGame {
                 menuTitle = "THE CLIMB";
                 imagePointManagerSingleton.getImages().clear();
                 imagePointManagerSingleton.setCurrentBackground("res/menu/MainMenu.PNG");
-                musicPlayer.setMainMusic("music/Giorno.wav");
+                musicPlayer.setMainMusic("music/Game Main Menu.wav");
             }
         }
         else if (settingsSingleton.getGameState() == 1) {
