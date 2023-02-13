@@ -1,8 +1,0 @@
-Basic,Basic,Basic,Basic
-Basic,Basic,BasicLeft,Basic
-Basic,Basic,BasicLeft,Basic
-Basic,Basic,Basic,Basic
-Basic,Basic,BasicLeft,Basic
-Basic,Basic,BasicLeft,Basic
-Basic,Basic,Basic,Basic
-Basic,Basic,Basic,Basic

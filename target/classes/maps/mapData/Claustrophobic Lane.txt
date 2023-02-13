@@ -1,0 +1,10 @@
+Basic,Basic,Basic,Basic
+Basic,Basic,Basic,Basic
+Basic,BasicLeft,Basic,BasicLeft
+Basic,BasicLeft,Basic,BasicLeft
+Basic,BasicLeft,Basic,BasicLeft
+Basic,BasicLeft,Basic,BasicLeft
+Basic,BasicLeft,Basic,BasicLeft
+Basic,BasicLeft,Basic,BasicLeft
+BasicLeft,Basic,BasicLeft,Basic
+Basic,Basic,BasicLeft,Basic

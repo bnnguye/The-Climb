@@ -7,5 +7,7 @@ public class EventGameStart extends  EventInterface {
 
     public void process() {
         FontSize countDownFont = new FontSize(Fonts.STORYTIME, 100);
+        Map map = GameSettingsSingleton.getInstance().getMap();
+
     }
 }

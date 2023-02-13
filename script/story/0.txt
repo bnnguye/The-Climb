@@ -1,0 +1,4 @@
+Nino: Do you remember how to climb?
+Mai: I think.
+Nino: Okay, let’s see how you do!
+Tutorial: For (P1/P2), press (W/^) to move up the Climb, (A/<) to move left, (D/>) to move right, and (S/v) to move down. Reach the top of the climb to progress!

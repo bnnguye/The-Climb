@@ -181,13 +181,16 @@ public class Game extends AbstractGame {
             else if (input.wasPressed(Keys.RIGHT)) {
                 scale += 0.01;
             }
-            ImagePoint test = new ImagePoint("res/renders/Characters/NAO TOMORI.png", new Point(0,0));
+            ImagePoint test = new ImagePoint("res/characters/NAO TOMORI/render.png", new Point(0,0));
             test.setFlashing(true);
             test.draw();
         }
 
         if (!canInteract) {
             input = null;
+        }
+        else {
+            currentMousePosition = input.getMousePosition();
         }
         for (Button button: buttons) {
             if (input != null) {
@@ -294,7 +297,7 @@ public class Game extends AbstractGame {
                 imagePointManagerSingleton.getImages().clear();
                 menuTitle = "";
                 if (settingsSingleton.getGameMode() == 1) {
-                    buttons.add(new Button("Game Settings", new Image("res/settings.png"), new Point(10,10)));
+                    buttons.add(new Button("Game Settings", new Image("res/misc/settings.png"), new Point(10,10)));
                 }
                 int index = 0;
                 double minScale = 0.275;
@@ -304,7 +307,7 @@ public class Game extends AbstractGame {
                 double spacing = Window.getHeight()/4;
 
                 for (Character character: allCharacters) {
-                    ImagePoint characterRender = new ImagePoint(String.format("res/renders/Characters/%s.png", character.getFullName()),
+                    ImagePoint characterRender = new ImagePoint(String.format("res/Characters/%s/render.png", character.getFullName()),
                             new Point(0, 0), "CharacterRender");
                     characterRender.setScale(minScale);
                     if (index < middleIndex) {
@@ -333,7 +336,7 @@ public class Game extends AbstractGame {
 
             Character currentCharacter = allCharacters.get(allCharacters.size() % 2 == 1 ?
                     allCharacters.size() / 2 + 1 : allCharacters.size() / 2);
-            imagePointManagerSingleton.setCurrentBackground((String.format("res/background/%s.png", currentCharacter.getFullName())));
+            imagePointManagerSingleton.setCurrentBackground((String.format("res/characters/%s/bg.png", currentCharacter.getFullName())));
 
             if (input != null && input.isDown(Keys.RIGHT)) {
                 eventsListener.addEvent(new EventCharacterRotate(frames/8, "Rotate LEFT"));
@@ -376,7 +379,7 @@ public class Game extends AbstractGame {
                 double spacing = Window.getHeight()/4;
 
                 for (SideCharacter character: allSideCharacters) {
-                    ImagePoint characterRender = new ImagePoint(String.format("res/renders/SideCharacters/%s.png", character.getName()),
+                    ImagePoint characterRender = new ImagePoint(String.format("res/SideCharacters/%s/render.png", character.getName()),
                             new Point(0, 0), "SideCharacterRender");
                     characterRender.setScale(minScale);
                     if (index < middleIndex) {
@@ -405,7 +408,7 @@ public class Game extends AbstractGame {
 
             SideCharacter currentCharacter = allSideCharacters.get(allSideCharacters.size() % 2 == 1 ?
                     allSideCharacters.size() / 2 + 1 : allSideCharacters.size() / 2);
-            imagePointManagerSingleton.setCurrentBackground((String.format("res/background/%s.png", currentCharacter.getName())));
+            imagePointManagerSingleton.setCurrentBackground((String.format("res/sidecharacters/%s/bg.png", currentCharacter.getName())));
 
             if (input != null && input.isDown(Keys.RIGHT)) {
                 eventsListener.addEvent(new EventSideCharacterRotate(frames/8, "Rotate LEFT"));
@@ -1073,7 +1076,7 @@ public class Game extends AbstractGame {
                 musicPlayer.setMainMusic(String.format("music/%sUnlock.wav", unlocked));
                 musicPlayer.addMusic(String.format("music/%sVoice.wav", unlocked));
                 new Font(Fonts.DEJAVUSANS, 100).drawString(String.format("NEW CHARACTER UNLOCKED: %s!", unlocked), 0, 100);
-                ImagePoint unlockedImage = new ImagePoint(String.format("res/renders/Characters/%s.png", unlocked),
+                ImagePoint unlockedImage = new ImagePoint(String.format("res/Characters/%s/render.png", unlocked),
                         new Point(Window.getWidth()/2, Window.getHeight()/2 + 300));
                 unlockedImage.draw();
                 if (input != null && input.wasPressed(MouseButtons.LEFT)) {
@@ -1101,19 +1104,19 @@ public class Game extends AbstractGame {
             }
 
             if (!addingTile) {
-                if (input != null && input.wasPressed(Keys.UP)) {
-                    updateTiles(100);
+                if (input != null && input.isDown(Keys.UP)) {
+                    updateTiles(15);
                     offset++;
                 }
-                if (input != null && input.wasPressed((Keys.DOWN))) {
+                if (input != null && input.isDown((Keys.DOWN))) {
                     if (offset > 0) {
-                        updateTiles(-100);
+                        updateTiles(-15);
                         offset--;
                     }
                 }
                 if (input != null && input.wasPressed(Keys.S)) {
                     if (customMapTiles.size()%4 != 0) {
-                        addDisplayString("Error: Cannot save map. Map not complete! (Row is not filled)", 5);
+                        addDisplayString("Error: Cannot save map. Map not complete! (Row is not filled)", 3 * frames);
                     }
                     else {
                         addDisplayString("Success: Map saved.", 5);
@@ -1231,9 +1234,6 @@ public class Game extends AbstractGame {
 
     public void render() {
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), ColourPresets.BLACK.toColour());
-        if (settingsSingleton.getGameState() == -1 ) {
-            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), ColourPresets.WHITE.toColour());
-        }
         if (settingsSingleton.getGameState() == 0) {
             imagePointManagerSingleton.getCurrentBackground().draw();
         }
@@ -1270,18 +1270,18 @@ public class Game extends AbstractGame {
                             - characterFont.getFont().getWidth(currentCharacter.getLastName())/2, Window.getHeight()/2);
                 }
             }
-            if (isPickable(currentCharacter) && imagePointManagerSingleton.get(String.format("res/renders/Characters/%s.png", currentCharacter.getFullName())) != null) {
-                imagePointManagerSingleton.get(String.format("res/renders/Characters/%s.png", currentCharacter.getFullName())).setTransparent(false);
+            if (isPickable(currentCharacter) && imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", currentCharacter.getFullName())) != null) {
+                imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", currentCharacter.getFullName())).setTransparent(false);
             }
             else {
-                if (imagePointManagerSingleton.get(String.format("res/renders/Characters/%s.png", currentCharacter.getFullName())) != null) {
-                    imagePointManagerSingleton.get(String.format("res/renders/Characters/%s.png", currentCharacter.getFullName())).setTransparent(true);
+                if (imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", currentCharacter.getFullName())) != null) {
+                    imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", currentCharacter.getFullName())).setTransparent(true);
                 }
             }
             drawBorders(currentCharacter);
 
-            ImagePoint shadow = new ImagePoint(String.format("res/renders/Characters/%s.png", currentCharacter.getFullName()),
-                    imagePointManagerSingleton.get(String.format("res/renders/Characters/%s.png", currentCharacter.getFullName())).getPos());
+            ImagePoint shadow = new ImagePoint(String.format("res/Characters/%s/render.png", currentCharacter.getFullName()),
+                    imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", currentCharacter.getFullName())).getPos());
             shadow.setPos(shadow.getPos().x - 50, shadow.getPos().y - 15);
             shadow.getDO().setBlendColour(0,0,0,0.7);
             shadow.draw();
@@ -1306,16 +1306,19 @@ public class Game extends AbstractGame {
             characterFont.draw(lastName, Window.getWidth()*4/5
                     - characterFont.getFont().getWidth(lastName)/2, Window.getHeight()/2);
             if (isPickable(currentCharacter)) {
-                imagePointManagerSingleton.get(String.format("res/renders/SideCharacters/%s.png", currentCharacter.getName())).setTransparent(false);
+                imagePointManagerSingleton.get(String.format("res/SideCharacters/%s/render.png", currentCharacter.getName())).setTransparent(false);
             }
             else {
-                imagePointManagerSingleton.get(String.format("res/renders/SideCharacters/%s.png", currentCharacter.getName())).setTransparent(true);
+                imagePointManagerSingleton.get(String.format("res/SideCharacters/%s/render.png", currentCharacter.getName())).setTransparent(true);
             }
             drawBorders(currentCharacter);
 
             imagePointManagerSingleton.drawImagesWithTag("SideCharacterRender");
         }
         else if (settingsSingleton.getGameState() == 6) {
+            if (!"Game".equals(settingsSingleton.getGameStateString())) {
+                eventsListener.addEvent(new EventGameStart(3 * frames, "Game Start!"));
+            }
             if (settingsSingleton.getGameMode() == 1) {
                 menuTitle = null;
                 drawGame();
@@ -1369,8 +1372,8 @@ public class Game extends AbstractGame {
             }
             else {
                 Player winner = settingsSingleton.getWinner();
-                Image characterImage = new Image(String.format("res/renders/Characters/%s.png", winner.getCharacter().getName()));
-                Image sideCharacterImage = new Image(String.format("res/renders/SideCharacters/%s.png", winner.getSideCharacter().getName()));
+                Image characterImage = new Image(String.format("res/Characters/%s/render.png", winner.getCharacter().getName()));
+                Image sideCharacterImage = new Image(String.format("res/SideCharacters/%s/render.png", winner.getSideCharacter().getName()));
                 characterImage.draw(Window.getWidth() - winnerTimer, Window.getHeight()/2 +200);
                 sideCharacterImage.draw(Window.getWidth() + characterImage.getWidth()/2, Window.getHeight()/2 + 200);
                 new Font(Fonts.DEJAVUSANS, 110).drawString(String.format("Player %d: %s is victorious!", settingsSingleton.getWinner().getId(), settingsSingleton.getWinner().getCharacter().getName()), 16, 100);
@@ -1383,10 +1386,10 @@ public class Game extends AbstractGame {
                     (float) (musicPlayer.getSound("music/Who.wav").getClip().getFrameLength() -
                             musicPlayer.getMainMusic().getClip().getFramePosition()) /
                             (float) musicPlayer.getSound("music/Who.wav").getClip().getFrameLength());
-            imagePointManagerSingleton.setCurrentBackground(String.format("res/background/%s.png", unlocked));
+            imagePointManagerSingleton.setCurrentBackground(String.format("res/Characters/%s/bg.png", unlocked));
             if (musicPlayer.getSound("music/Who.wav").hasEnded()) {
                 chooseCharacterFont.drawString(String.format("NEW CHARACTER UNLOCKED: %s!", unlocked), 0, 100);
-                ImagePoint unlockedImage = new ImagePoint(String.format("res/renders/Characters/%s.png", unlocked), new Point(Window.getWidth()/2, Window.getHeight()/2 + 300));
+                ImagePoint unlockedImage = new ImagePoint(String.format("res/Characters/%s/render.png", unlocked), new Point(Window.getWidth()/2, Window.getHeight()/2 + 300));
                 unlockedImage.draw();
             }
             else {
@@ -1596,7 +1599,7 @@ public class Game extends AbstractGame {
     }
 
     public void drawBorders(Character currentCharacter) {
-        Image border = new Image("res/Selected/Selected.png");
+        Image border = new Image("res/misc/Selected.png");
 
         double spacing = Window.getWidth()/6;
 
@@ -1608,7 +1611,7 @@ public class Game extends AbstractGame {
             double timeSpace = i > 1 ? 200 : 0;
             border.drawFromTopLeft(i * ((border.getWidth()*2/3) + spacing) + spacing/3 + timeSpace, 0);
             String name;
-            if (currentPlayer.getId() == getIDOfPlayerPicking()) {
+            if (currentPlayer.getId() == getIDOfPlayerPickingCharacter()) {
                 name = String.format("P%d\nSelecting...", currentPlayer.getId());
                 ImagePoint characterPeek = new ImagePoint(String.format("res/characters/%s/peek.png", currentCharacter.getFullName()),
                         new Point(i * ((border.getWidth()*2/3) + spacing) + spacing/3 + timeSpace, 0));
@@ -1636,7 +1639,7 @@ public class Game extends AbstractGame {
     }
 
     public void drawBorders(SideCharacter currentCharacter) {
-        Image border = new Image("res/Selected/Selected.png");
+        Image border = new Image("res/misc/Selected.png");
 
         double spacing = Window.getWidth()/6;
 
@@ -1648,7 +1651,7 @@ public class Game extends AbstractGame {
             double timeSpace = i > 1 ? 200 : 0;
             border.drawFromTopLeft(i * ((border.getWidth()*2/3) + spacing) + spacing/3 + timeSpace, 0);
             String name;
-            if (currentPlayer.getId() == getIDOfPlayerPicking()) {
+            if (currentPlayer.getId() == getIDOfPlayerPickingSideCharacter()) {
                 name = String.format("P%d\nSelecting...", currentPlayer.getId());
                 ImagePoint characterPeek = new ImagePoint(String.format("res/SideCharacters/%s/peek.png", currentCharacter.getName()),
                         new Point(i * ((border.getWidth()*2/3) + spacing) + spacing/3 + timeSpace, 0));
@@ -1751,8 +1754,8 @@ public class Game extends AbstractGame {
     }
 
     public void saveCustomMap() {
-        String tempFile = "res/mapData/Temp.txt";
-        String currentFile = "res/mapData/Custom.txt";
+        String tempFile = "res/maps/mapData/Temp.txt";
+        String currentFile = "res/maps/mapData/Custom.txt";
         File oldFile = new File(currentFile);
         File newFile = new File(tempFile);
         try {
@@ -1845,7 +1848,8 @@ public class Game extends AbstractGame {
                 if (!musicPlayer.contains(character.playLine())) {
                     musicPlayer.addMusic(character.playLine());
                 } else {
-                    musicPlayer.restart(character.playLine());
+                    musicPlayer.remove(character.playLine());
+                    musicPlayer.addMusic(character.playLine());
                 }
             }
         }
@@ -2190,7 +2194,7 @@ public class Game extends AbstractGame {
     public void updateDisplayStrings() {
         ArrayList<StringDisplay> stringDisplaysToRemove = new ArrayList<>();
         for (StringDisplay stringDisplay: stringDisplays) {
-            if (stringDisplay.getTime() < 0) {
+            if (stringDisplay.getTime() <= 0) {
                 stringDisplaysToRemove.add(stringDisplay);
             }
             else {
@@ -2344,10 +2348,21 @@ public class Game extends AbstractGame {
         return false;
     }
 
-    public int getIDOfPlayerPicking() {
+    public int getIDOfPlayerPickingCharacter() {
         for (Player player: players) {
             if (player.getId() <= settingsSingleton.getPlayers().size() + 1) {
                 if (player.getCharacter() == null) {
+                    return player.getId();
+                }
+            }
+        }
+        return -1;
+    }
+
+    public int getIDOfPlayerPickingSideCharacter() {
+        for (Player player: players) {
+            if (player.getId() <= settingsSingleton.getPlayers().size() + 1) {
+                if (player.getSideCharacter() == null) {
                     return player.getId();
                 }
             }

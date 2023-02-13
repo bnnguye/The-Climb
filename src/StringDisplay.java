@@ -10,7 +10,7 @@ public class StringDisplay {
     private Font font;
 
     public StringDisplay(String name, double time, int fontSize, Point point) {
-        this.time = time*SettingsSingleton.getInstance().getRefreshRate();
+        this.time = time;
         this.name = name;
         this.font = new Font("res/fonts/DejaVuSans-Bold.ttf", fontSize);
         topLeft = point;

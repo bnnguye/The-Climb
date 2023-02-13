@@ -45,10 +45,6 @@ public class Character {
                 image = new Image(String.format("res/characters/%s/Left.png", name));
         }
 
-        public Image getIcon() {
-                return new Image(String.format("res/characters/%s/Icon.png", name));
-        }
-
         public Image getImage() {
                 return image;
         }
@@ -175,8 +171,6 @@ public class Character {
         public String playLine() {
                 return String.format("music/%s.wav", name);
         }
-
-        public Image getSelected() { return new Image(String.format("res/characters/%s/Selected.png", name));}
 
         public void onIce() {
                 speedUpTimer += 1;
