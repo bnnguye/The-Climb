@@ -412,10 +412,10 @@ public class Game extends AbstractGame {
 
             if (input != null && input.isDown(Keys.RIGHT)) {
                 eventsListener.addEvent(new EventSideCharacterRotate(frames/8, "Rotate LEFT"));
-                rotateSideCharacter("LEFT");
+                rotateCharacter("LEFT");
             } else if (input != null && input.isDown(Keys.LEFT)) {
                 eventsListener.addEvent(new EventSideCharacterRotate(frames/8, "Rotate RIGHT"));
-                rotateSideCharacter("RIGHT");
+                rotateCharacter("RIGHT");
             }
 
             if (input != null && input.wasPressed(Keys.SPACE)) {
@@ -1651,7 +1651,7 @@ public class Game extends AbstractGame {
             double timeSpace = i > 1 ? 200 : 0;
             border.drawFromTopLeft(i * ((border.getWidth()*2/3) + spacing) + spacing/3 + timeSpace, 0);
             String name;
-            if (currentPlayer.getId() == getIDOfPlayerPickingSideCharacter()) {
+            if (currentPlayer.getId() == getIDOfPlayerPickingCharacter()) {
                 name = String.format("P%d\nSelecting...", currentPlayer.getId());
                 ImagePoint characterPeek = new ImagePoint(String.format("res/SideCharacters/%s/peek.png", currentCharacter.getName()),
                         new Point(i * ((border.getWidth()*2/3) + spacing) + spacing/3 + timeSpace, 0));
@@ -2217,42 +2217,6 @@ public class Game extends AbstractGame {
         }
     }
 
-    public boolean playersPassed() {
-        double playersFinished = 0;
-        for (Player player : players) {
-            if (player.getCharacter().getPos().distanceTo(new Point(player.getCharacter().getPos().x, 0)) < 10) {
-                playersFinished++;
-            }
-        }
-        return playersFinished >= players.size();
-    }
-
-    public void drawMapBackground() {
-        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1, 1, 1, 1));
-        ArrayList<ImagePoint> tileBackground = new ArrayList<>();
-        if ((java.time.LocalTime.now().getHour() > 18) || (java.time.LocalTime.now().getHour() < 4)) {
-            for (int i = 0; i < 16; i++) {
-                tileBackground.add(new ImagePoint("res/Tiles/BasicTileNight.png", new Point(0,0)));
-            }
-        } else {
-            for (int i = 0; i < 16; i++) {
-                tileBackground.add(new ImagePoint("res/Tiles/BasicTile.png", new Point(0,0)));
-            }
-        }
-
-        int amountInRow = 0;
-        int rows = 1;
-        for (ImagePoint image: tileBackground) {
-            image.setPos(amountInRow * image.getWidth(), Window.getHeight() - (rows * image.getHeight()));
-            image.draw();
-            amountInRow++;
-            if (amountInRow > 4) {
-                amountInRow = 0;
-                rows++;
-            }
-        }
-    }
-
     public Rectangle getBoundingBoxOf(Image image, Point pos) {
         return image.getBoundingBoxAt(new Point(pos.x + image.getWidth()/2,  pos.y + image.getHeight()/2));
     }
@@ -2309,28 +2273,30 @@ public class Game extends AbstractGame {
     public void rotateCharacter(String direction) {
         musicPlayer.addMusic("music/CharacterNext.wav");
         if (direction.equals("LEFT")) {
-            Character temp = allCharacters.get(allCharacters.size() - 1);
-            allCharacters.remove(allCharacters.size() - 1);
-            allCharacters.add(0, temp);
+            if (settingsSingleton.getGameState() == 3) {
+                System.out.println(allCharacters.get(0).getFullName());
+                Character temp = allCharacters.get(allCharacters.size() - 1);
+                allCharacters.remove(allCharacters.size() - 1);
+                System.out.println(allCharacters.get(0).getFullName());
+                allCharacters.add(0, temp);
+                System.out.println(allCharacters.get(0).getFullName());
+            } else if (settingsSingleton.getGameState() == 4) {
+                System.out.println("Left and 4");
+                SideCharacter temp = allSideCharacters.get(allSideCharacters.size() - 1);
+                allSideCharacters.remove(allSideCharacters.size() - 1);
+                allSideCharacters.add(0, temp);
+            }
         }
         else if (direction.equals("RIGHT")) {
-            Character temp = allCharacters.get(0);
-            allCharacters.remove(0);
-            allCharacters.add(temp);
-        }
-    }
-
-    public void rotateSideCharacter(String direction) {
-        musicPlayer.addMusic("music/CharacterNext.wav");
-        if (direction.equals("LEFT")) {
-            SideCharacter temp = allSideCharacters.get(allSideCharacters.size() - 1);
-            allSideCharacters.remove(allSideCharacters.size() - 1);
-            allSideCharacters.add(0, temp);
-        }
-        else if (direction.equals("RIGHT")) {
-            SideCharacter temp = allSideCharacters.get(0);
-            allSideCharacters.remove(0);
-            allSideCharacters.add(temp);
+            if (settingsSingleton.getGameState() == 3) {
+                Character temp = allCharacters.get(0);
+                allCharacters.remove(0);
+                allCharacters.add(temp);
+            } else if (settingsSingleton.getGameState() == 4) {
+                SideCharacter temp = allSideCharacters.get(0);
+                allSideCharacters.remove(0);
+                allSideCharacters.add(temp);
+            }
         }
     }
 
@@ -2349,21 +2315,21 @@ public class Game extends AbstractGame {
     }
 
     public int getIDOfPlayerPickingCharacter() {
-        for (Player player: players) {
-            if (player.getId() <= settingsSingleton.getPlayers().size() + 1) {
-                if (player.getCharacter() == null) {
-                    return player.getId();
+        if (settingsSingleton.getGameState() == 3) {
+            for (Player player: players) {
+                if (player.getId() <= settingsSingleton.getPlayers().size() + 1) {
+                    if (player.getCharacter() == null) {
+                        return player.getId();
+                    }
                 }
             }
         }
-        return -1;
-    }
-
-    public int getIDOfPlayerPickingSideCharacter() {
-        for (Player player: players) {
-            if (player.getId() <= settingsSingleton.getPlayers().size() + 1) {
-                if (player.getSideCharacter() == null) {
-                    return player.getId();
+        else if (settingsSingleton.getGameState() == 4) {
+            for (Player player: players) {
+                if (player.getId() <= settingsSingleton.getPlayers().size() + 1) {
+                    if (player.getSideCharacter() == null) {
+                        return player.getId();
+                    }
                 }
             }
         }
