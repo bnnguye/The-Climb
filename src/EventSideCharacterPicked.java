@@ -24,15 +24,15 @@ public class EventSideCharacterPicked extends EventInterface {
         charImage = imagePointManagerSingleton.getImages().get(middleCharacterIndex);
         int currentTime = TimeLogger.getInstance().getFrames();
         canInteract = false;
-        if ((frames - currentTime) % 2 == 0) {
+        if ((frames - currentTime) % 8 == 0) {
             charImage.setFlashing(true);
         }
-        else if ((frames - currentTime) % 1 == 0) {
+        else if ((frames - currentTime) % 4 == 0) {
             charImage.setFlashing(false);
         }
         if (frames - TimeLogger.getInstance().getFrames() == 0) {
             charImage.setFlashing(false);
-            canInteract = true;
+            charImage.setTransparent(true);
         }
     }
 

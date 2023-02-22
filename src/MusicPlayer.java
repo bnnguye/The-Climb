@@ -1,15 +1,16 @@
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MusicPlayer {
 
-    private double maxMainVol = 1.0d;
-    private double maxEffectVol = 1.0d;
+    private static double maxMainVol = 100d;
+    private static double maxEffectVol = 100d;
+    private static double mainVolume = 20d;
+    private static double effectVolume = 100d;
 
     private static MusicPlayer musicPlayer = null;
-    private final Music mainMusic = new Music("music/Silence.wav");
+    private static Music mainMusic = new Music("music/Silence.wav", mainVolume);
     private final ArrayList<Music> musics = new ArrayList<>();
-    private double mainVolume = 0.2d;
-    private double effectVolume = 1d;
 
 
     public synchronized static MusicPlayer getInstance() {
@@ -20,33 +21,29 @@ public class MusicPlayer {
     }
 
     public void addMusic(String fileName) {
-        musics.add(new Music(fileName));
-    }
-
-    public void addMusic(Music music) {
-        musics.add(music);
+        musics.add(new Music(fileName, effectVolume));
     }
 
     public void setMainMusic(String fileName) {
         if (!fileName.equalsIgnoreCase(mainMusic.getFileName())) {
-            mainMusic.changeMusic(fileName);
+            mainMusic.stop();
+            mainMusic = new Music(fileName, mainVolume);
+            mainMusic.setLoop(true);
         }
     }
 
-    public void update() {
+    public void update() throws IOException {
         ArrayList<Music> musicToRemove = new ArrayList<>();
         for (Music music: musics) {
-            if (music.getVolume() !=  effectVolume) {
-                music.setVolume(effectVolume);
-            }
+            music.setVolume(effectVolume);
             if (music.hasEnded()) {
                 musicToRemove.add(music);
             }
         }
         musics.removeAll(musicToRemove);
-        mainMusic.setVolume(mainVolume);
-        if (mainMusic.hasEnded()) {
-            mainMusic.play();
+
+        if (mainMusic.aboutToEnd()) {
+            mainMusic.restart();
         }
     }
 
@@ -73,8 +70,9 @@ public class MusicPlayer {
     }
 
     public void clear() {
+
         for (Music music: musics) {
-            music.getClip().stop();
+            music.stop();
         }
         musics.clear();
     }
@@ -120,7 +118,7 @@ public class MusicPlayer {
     public void remove(String fileName) {
         for (Music music: musics) {
             if (fileName.equalsIgnoreCase(music.getFileName())) {
-                music.stopMusic();
+                music.stop();
                 musics.remove(music);
                 return;
             }

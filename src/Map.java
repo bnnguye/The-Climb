@@ -38,6 +38,9 @@ public class Map {
     }
 
     public void updateTiles(double shift) {
+        if (currentHeight + shift < 0) {
+            shift = currentHeight;
+        }
         currentHeight += shift;
         ArrayList<Tile>tilesToRemove = new ArrayList<>();
         for (Tile tile: tiles) {
@@ -45,19 +48,15 @@ public class Map {
                 block.updatePos(new Point (tile.getPos().x, tile.getPos().y + shift));
             }
             tile.setPos(new Point(tile.getPos().x, tile.getPos().y + shift));
-            if (tile.getPos().y > Window.getHeight()) {
-                tilesToRemove.add(tile);
-            }
+//            if (tile.getPos().y > Window.getHeight()) {
+//                tilesToRemove.add(tile);
+//            }
         }
         tiles.removeAll(tilesToRemove);
     }
 
-    public boolean hasFinished() {
-        if (currentHeight > height) {
-            return true;
-        }
-        return false;
-    }
+    public boolean hasFinished() { return currentHeight > height; }
+
     public void generateMap() {
         tiles.clear();
         int currentBlocksInRow = 0;
@@ -115,6 +114,7 @@ public class Map {
         return tile;
     }
     public ArrayList<Tile> getTiles() {return tiles;}
+
     public ArrayList<Tile> getVisibleTiles() {
         ArrayList<Tile> visibleTiles = new ArrayList<>();
         for(Tile tile: this.tiles) {
@@ -130,5 +130,17 @@ public class Map {
 
     public double getCurrentHeight() {
         return currentHeight;
+    }
+
+    public void goToSummit() {
+        while(!hasFinished()) {
+            updateTiles(1);
+        }
+    }
+
+    public void descend() {
+        if (currentHeight > 0) {
+            updateTiles(-10);
+        }
     }
 }

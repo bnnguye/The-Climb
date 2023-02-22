@@ -93,31 +93,18 @@ public class ImagePointManagerSingleton {
     }
 
     public void drawImagesWithTag(String tag) {
-
-        int middleCharacterIndex = getAllImagesWithTag(tag).size() % 2 == 1 ?
-                (getAllImagesWithTag(tag).size() / 2) + 1 : getAllImagesWithTag(tag).size() / 2;
-
-        int i =  0;
         for (ImagePoint characterRender: getAllImagesWithTag(tag)) {
-            if (middleCharacterIndex == i) {
-                characterRender.setTransparent(false);
-                characterRender.getDO().setBlendColour(1,1,1,1);
-            }
-            else {
-                characterRender.setTransparent(true);
-            }
             characterRender.draw();
-            i++;
         }
     }
 
     private ArrayList<ImagePoint> getAllImagesWithTag(String tag) {
-        ArrayList<ImagePoint> characterDisplays = new ArrayList<>();
+        ArrayList<ImagePoint> taggedImages = new ArrayList<>();
         for (ImagePoint image: getImages()) {
             if (tag.equals(image.getTag())) {
-                characterDisplays.add(image);
+                taggedImages.add(image);
             }
         }
-        return characterDisplays;
+        return taggedImages;
     }
 }

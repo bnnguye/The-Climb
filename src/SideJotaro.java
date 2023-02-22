@@ -75,7 +75,7 @@ public class SideJotaro extends SideCharacter{
         Colour darken = new Colour(0, 0, 0.2, 0.5);
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (timer > 3*frames) {
-            Image special = new Image("res/sidecharacters/Jotaro/special.png");
+            Image special = new Image("res/sidecharacters/JOTARO KUJO/render.png");
             special.drawFromTopLeft(0,0);
         }
     }

@@ -42,7 +42,8 @@ public class Character {
                 if (name.split(" ").length > 1) {
                         this.lastName = name.split(" ")[1];
                 }
-                image = new Image(String.format("res/characters/%s/Left.png", name));
+                image = new Image(String.format("res/characters/%s/Left.png", getFullName()));
+                rectangle = image.getBoundingBoxAt(new Point(pos.x, pos.y));
         }
 
         public Image getImage() {
@@ -199,7 +200,7 @@ public class Character {
                 return this.dead;
         }
         public void gotStunned() {stunTimer = frames;}
-        public Rectangle getRectangle() {return rectangle;}
+        public Rectangle getRectangle() {return new Rectangle(pos.x, pos.y, this.rectangle.right()- this.rectangle.left(), this.rectangle.bottom() - this.rectangle.top());}
 
         public boolean canMove() { return !(stunTimer > 0);
         }

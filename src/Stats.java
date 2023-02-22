@@ -98,20 +98,32 @@ public class Stats {
         playersStats.set(winnerID, playersStats.get(winnerID) + 1);
         for (Player player: players) {
             if (player.getId() == winnerID) {
-                characterWon(player.getCharacter().getName());
+                characterWon(player.getCharacter().getFullName());
             }
-                characterPlayed(player.getCharacter().getName());
+                characterPlayed(player.getCharacter().getFullName());
         }
     }
 
-    public void characterWon(String name) {
-        Object[] characterStats = charactersStats.get(charactersStats.indexOf(name));
-        characterStats[2] = (Integer) characterStats[2] + 1;
+    public void characterWon(String fullName) {
+        for (Object[] stat: charactersStats) {
+            if (stat[0].equals(fullName)) {
+                Object[] newStats = stat;
+                newStats[2] = (int) stat[2] + 1;
+                charactersStats.set(charactersStats.indexOf(stat), newStats);
+                return;
+            }
+        }
     }
 
-    public void characterPlayed(String name) {
-        Object[] characterStats = charactersStats.get(charactersStats.indexOf(name));
-        characterStats[1] = (Integer) characterStats[1] + 1;
+    public void characterPlayed(String fullName) {
+        for (Object[] stat: charactersStats) {
+            if (stat[0].equals(fullName)) {
+                Object[] newStats = stat;
+                newStats[1] = (int) stat[1] + 1;
+                charactersStats.set(charactersStats.indexOf(stat), newStats);
+                return;
+            }
+        }
     }
 
     public void getGameStats() {
