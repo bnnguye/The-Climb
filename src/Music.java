@@ -28,7 +28,6 @@ public class Music {
         int currentFrameLength = clip.getFrameLength();
         clip.stop();
         clip.setFramePosition(currentFrameLength);
-        System.out.println("stopped " + fileName);
     }
 
     public void pause() {

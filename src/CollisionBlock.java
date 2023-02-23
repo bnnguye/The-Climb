@@ -1,9 +1,7 @@
 import bagel.Drawing;
-import bagel.Image;
 import bagel.util.Colour;
 import bagel.util.Point;
 import bagel.util.Rectangle;
-import org.w3c.dom.css.Rect;
 
 
 public class CollisionBlock {

@@ -1,14 +1,16 @@
+import bagel.Window;
+
 public class EventGameStart extends  EventInterface {
+
+    int refreshRate = SettingsSingleton.getInstance().getRefreshRate();
 
     private boolean init = false;
 
-    public EventGameStart(int frames, String event) {
-        this.frames = frames + TimeLogger.getInstance().getFrames();
-        this.event = event;
+    public EventGameStart() {
+        this.frames = (5 * refreshRate) + TimeLogger.getInstance().getFrames();
     }
 
     public void process() {
-        int refreshRate = SettingsSingleton.getInstance().getRefreshRate();
         int currentTime = TimeLogger.getInstance().getFrames();
         FontSize countDownFont = new FontSize(Fonts.STORYTIME, 100);
         Map map = GameSettingsSingleton.getInstance().getMap();
@@ -18,11 +20,18 @@ public class EventGameStart extends  EventInterface {
             init = true;
             map.goToSummit();
         }
-        else if (frames - currentTime < 5 * refreshRate) {
-            map.descend();
+        else if (frames - currentTime < 4 * refreshRate) {
+            if (map.currentHeight > 0) {
+                System.out.println(map.currentHeight);
+                map.descend();
+                this.frames++;
+            }
         }
-        if (frames - currentTime == 1 * refreshRate) {
+        if (frames - currentTime == 3 * refreshRate) {
             MusicPlayer.getInstance().addMusic("music/Start.wav");
+        }
+        if (frames - currentTime <= 3 * refreshRate) {
+            countDownFont.draw(String.format("4"), Window.getWidth()/2, Window.getHeight()/2);
         }
     }
 }

@@ -38,8 +38,9 @@ public class Map {
     }
 
     public void updateTiles(double shift) {
-        if (currentHeight + shift < 0) {
-            shift = currentHeight;
+        if (currentHeight <= 0 && shift < 0) {
+            currentHeight = 0;
+            shift = 0;
         }
         currentHeight += shift;
         ArrayList<Tile>tilesToRemove = new ArrayList<>();
@@ -139,8 +140,6 @@ public class Map {
     }
 
     public void descend() {
-        if (currentHeight > 0) {
-            updateTiles(-10);
-        }
+        updateTiles(-10);
     }
 }

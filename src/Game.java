@@ -9,7 +9,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.stream.IntStream;
 
 
 /** "The Climb" - A game created by Bill Nguyen **/
@@ -30,7 +29,7 @@ public class Game extends AbstractGame {
     private final ArrayList<Slider> sliders = buttonsSingleton.getSliders();
     private final ArrayList<Slider> slidersToRemove = buttonsSingleton.getSlidersToRemove();
     private final EventsListenerSingleton.EventsListener eventsListener = eventsListenerSingleton.getEventsListener();
-    private final ArrayList<Character> characters= new ArrayList<>();
+    private final ArrayList<Character> playableCharacters = new ArrayList<>();
     private final ArrayList<Character> allCharacters = new ArrayList<>();
     private final ArrayList<Player> players= settingsSingleton.getPlayers();
     private final ArrayList<Obstacle> obstacles= new ArrayList<>();
@@ -124,46 +123,19 @@ public class Game extends AbstractGame {
     }
 
     private void init() {
-        // initialize characters
-        characters.add(new Character(CharacterNames.CHIZURU));
-        characters.add(new Character(CharacterNames.ZEROTWO));
-        characters.add(new Character(CharacterNames.MIKU));
-        characters.add(new Character(CharacterNames.MAI));
 
         imagePointManagerSingleton.setCurrentBackground(null);
+        loadAllCharacters();
+        loadAllSideCharacters();
+        loadStarterCharacters();
+        loadPlayableMaps();
 
         // adds unlocked characters
         checkAchievements();
 
-        for (String character: new CharacterNames().getAllCharacterNames()) {
-            allCharacters.add(new Character(character));
-        }
-
-        allSideCharacters.addAll(Arrays.asList(
-                new SideHisoka(), new SideJotaro(), new SideDio(),
-                new SideYuu(), new SideYugi(), new SideGoku(), new SideZoro(),
-                new SideLelouch(), new SideAllMight(), new SideGojo(), new SideItachi()));
-
-        for (MapNames mapName: MapNames.values()) {
-            playableMaps.add(new Map(mapName.toString()));
-        }
-
-
-        allTiles.addAll(Arrays.asList(
-                new TileBasic(new Point(0,0)), new TileBasicLeft(new Point(0,0)) , new TileBasicTop(new Point(0,0)),
-                new TileIce(new Point(0,0)), new TileIceLeft(new Point(0,0)), new TileIceTop(new Point(0,0)),
-                new TileSlow(new Point(0,0)), new TileSlowLeft(new Point(0,0)), new TileSlowTop(new Point(0,0))));
-
-        allPowerUps.addAll(Arrays.asList(
-                new SpeedDown(), new PowerUpSpeedUp(),
-                new PowerUpMinimiser(),
-                new PowerUpShield(),
-                new PowerUpSpecialAbilityPoints()));
-
-        allObstacles.addAll(Arrays.asList(
-                new ObstacleBall(),
-                new ObstacleRock(),
-                new ObstacleStunBall()));
+        loadCustomMapConfigs();
+        loadPowerUpSettings();
+        loadObstacleSettings();
 
 
         stats.getGameStats();
@@ -174,7 +146,7 @@ public class Game extends AbstractGame {
     }
 
     @Override
-    protected void update(Input input) {
+    protected void update(Input input)  {
         currentMousePosition = input.getMousePosition();
 
         if (!canInteract) {
@@ -525,7 +497,7 @@ public class Game extends AbstractGame {
                     musicPlayer.setMainMusic(String.format("music/Fight%d.wav", Math.round(Math.random()*3)));
                     musicPlayer.clear();
                     settingsSingleton.setGameStateString("Game");
-                    eventsListener.addEvent(new EventGameStart(7  * frames, "Game start!"));
+                    eventsListener.addEvent(new EventGameStart());
                     canInteract = false;
                 }
                 if (canInteract) {
@@ -1273,6 +1245,7 @@ public class Game extends AbstractGame {
             Drawing.drawRectangle(new Point(0,Window.getHeight()*3/4), Window.getWidth(), Window.getHeight()/4, new Colour(0,0,0,0.8));
             if (canInteract) {
                 if (isUnlocked(currentCharacter.getName()) && isPickable(currentCharacter)) {
+                    drawShadowRender(currentCharacter.getFullName());
                     FontSize characterFont = new FontSize(Fonts.TCB, 120);
                     characterFont.draw(currentCharacter.getName(), Window.getWidth()/5
                             - characterFont.getFont().getWidth(currentCharacter.getName())/2, Window.getHeight()/2);
@@ -1281,9 +1254,15 @@ public class Game extends AbstractGame {
                 }
             }
             drawBorders(currentCharacter);
-
-            drawShadowRender(currentCharacter.getFullName());
-
+            for (Character character: allCharacters) {
+                if (!isUnlocked(character.getName())) {
+                    imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", character.getFullName())).setDarken(true);
+                    imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", character.getFullName())).setTransparent(false);
+                }
+                else {
+                    imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", character.getFullName())).setDarken(false);
+                }
+            }
             imagePointManagerSingleton.drawImagesWithTag("CharacterRender");
         }
         else if (settingsSingleton.getGameState() == 4 ) {
@@ -1448,11 +1427,11 @@ public class Game extends AbstractGame {
     }
 
     public void addToPlayableCharacter(String name) {
-        characters.add(new Character(name));
+        playableCharacters.add(new Character(name));
     }
 
     public boolean isPlayable(String name) {
-        for (Character character: characters) {
+        for (Character character: playableCharacters) {
             if (character.getFullName().equals(name)) {
                 return true;
             }
@@ -2281,7 +2260,7 @@ public class Game extends AbstractGame {
     }
 
     public boolean isUnlocked(String characterName) {
-        for (Character character: characters) {
+        for (Character character: playableCharacters) {
             if (character.getName().equals(characterName)) {
                 return true;
             }
@@ -2335,4 +2314,51 @@ public class Game extends AbstractGame {
         }
     }
 
+    public void loadAllCharacters() {
+        for (String character: new CharacterNames().getAllCharacterNames()) {
+            allCharacters.add(new Character(character));
+        }
+    }
+
+    public void loadStarterCharacters() {
+        playableCharacters.add(new Character(CharacterNames.CHIZURU));
+        playableCharacters.add(new Character(CharacterNames.ZEROTWO));
+        playableCharacters.add(new Character(CharacterNames.MIKU));
+        playableCharacters.add(new Character(CharacterNames.MAI));
+    }
+
+    public void loadAllSideCharacters() {
+        allSideCharacters.addAll(Arrays.asList(
+                new SideHisoka(), new SideJotaro(), new SideDio(),
+                new SideYuu(), new SideYugi(), new SideGoku(), new SideZoro(),
+                new SideLelouch(), new SideAllMight(), new SideGojo(), new SideItachi()));
+    }
+
+    public void loadPlayableMaps() {
+        for (MapNames mapName: MapNames.values()) {
+            playableMaps.add(new Map(mapName.toString()));
+        }
+    }
+
+    public void loadCustomMapConfigs() {
+        allTiles.addAll(Arrays.asList(
+                new TileBasic(new Point(0,0)), new TileBasicLeft(new Point(0,0)) , new TileBasicTop(new Point(0,0)),
+                new TileIce(new Point(0,0)), new TileIceLeft(new Point(0,0)), new TileIceTop(new Point(0,0)),
+                new TileSlow(new Point(0,0)), new TileSlowLeft(new Point(0,0)), new TileSlowTop(new Point(0,0))));
+    }
+
+    public void loadPowerUpSettings() {
+        allPowerUps.addAll(Arrays.asList(
+                new SpeedDown(), new PowerUpSpeedUp(),
+                new PowerUpMinimiser(),
+                new PowerUpShield(),
+                new PowerUpSpecialAbilityPoints()));
+    }
+
+    public void loadObstacleSettings() {
+        allObstacles.addAll(Arrays.asList(
+                new ObstacleBall(),
+                new ObstacleRock(),
+                new ObstacleStunBall()));
+    }
 }
