@@ -33,7 +33,7 @@ public class Character {
         private double stunTimer = 0;
         private boolean gojoAbility = false;
 
-        private int lives;
+        private int lives = 1;
         private boolean dead = false;
 
 
@@ -146,7 +146,7 @@ public class Character {
                         picture.draw(pos.x, pos.y);
                 }
                 if (shield) {
-                        Image bubble = new Image("res/bubble.png");
+                        Image bubble = new Image("res/misc/Shield_Selected.png");
                         bubble.draw(pos.x, pos.y);
                 }
         }
@@ -197,7 +197,7 @@ public class Character {
         }
         public boolean isMinimised() {return minimisedTimer > 0;}
         public boolean isDead() {
-                return this.dead;
+                return lives <= 0;
         }
         public void gotStunned() {stunTimer = frames;}
         public Rectangle getRectangle() {return new Rectangle(pos.x, pos.y, this.rectangle.right()- this.rectangle.left(), this.rectangle.bottom() - this.rectangle.top());}

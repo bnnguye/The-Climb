@@ -5,7 +5,7 @@ import bagel.util.Point;
 public class PowerUpSpeedUp extends PowerUp{
     private String name = "SpeedUp";
     private Point pos;
-    Image image = new Image("res/PowerUp/SpeedUp.png");
+    Image image = new Image("res/PowerUp/SpeedQuestion.png");
     private double speedTime = 3 * SettingsSingleton.getInstance().getRefreshRate();
 
     public PowerUpSpeedUp() {

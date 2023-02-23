@@ -37,6 +37,7 @@ public class MusicPlayer {
         for (Music music: musics) {
             music.setVolume(effectVolume);
             if (music.hasEnded()) {
+                System.out.println("Music ended: " + music.getFileName());
                 musicToRemove.add(music);
             }
         }
@@ -72,6 +73,7 @@ public class MusicPlayer {
     public void clear() {
 
         for (Music music: musics) {
+            System.out.println(music.getFileName());
             music.stop();
         }
         musics.clear();

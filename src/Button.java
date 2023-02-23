@@ -210,6 +210,12 @@ public class Button {
         else if (name.equalsIgnoreCase("Increase Map Speed")) {
             gameSettingsSingleton.setMapSpeed(gameSettingsSingleton.getMapSpeed() + 0.1);
         }
+        else if (name.equalsIgnoreCase("Decrease Map Speed")) {
+            gameSettingsSingleton.setLives(gameSettingsSingleton.getLives() - 1);
+        }
+        else if (name.equalsIgnoreCase("Increase Map Speed")) {
+            gameSettingsSingleton.setLives(gameSettingsSingleton.getLives() + 1);
+        }
     }
 
     public String getName() {

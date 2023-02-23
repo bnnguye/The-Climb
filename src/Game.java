@@ -8,6 +8,7 @@ import bagel.util.Rectangle;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 
@@ -274,32 +275,9 @@ public class Game extends AbstractGame {
                 if (settingsSingleton.getGameMode() == 1) {
                     buttons.add(new Button("Game Settings", new Image("res/misc/settings.png"), new Point(10,10)));
                 }
-                int index = 0;
-                double minScale = 0.275;
-                double maxScale = 1;
-                int middleIndex = allCharacters.size() % 2 == 1 ?
-                        allCharacters.size() / 2 + 1 : allCharacters.size() / 2;
-                double spacing = Window.getHeight()/4;
-
-                for (Character character: allCharacters) {
-                    ImagePoint characterRender = new ImagePoint(String.format("res/Characters/%s/render.png", character.getFullName()),
-                            new Point(0, 0), "CharacterRender");
-                    characterRender.setScale(minScale);
-                    if (index < middleIndex) {
-                        characterRender.setPos( ((allCharacters.size() * spacing/2) - Window.getWidth())/2 - 490 + (spacing * (index - 1)),
-                                Window.getHeight()*3/4);
-                    }
-                    else if (middleIndex == index) {
-                        characterRender.setScale(maxScale);
-                        characterRender.setPos(490, Window.getHeight()/8);
-                    }
-                    else {
-                        characterRender.setPos( Window.getWidth()/2 + (spacing * (index - middleIndex)),
-                                Window.getHeight()*3/4);
-                    }
-                    imagePointManagerSingleton.add(characterRender);
-                    index++;
-                }
+                sortCharacters();
+                adjustCharacterRotation();
+                loadCharacterRender();
             }
             Player currentPlayer = players.get(0);
             for (Player player: players) {
@@ -312,6 +290,12 @@ public class Game extends AbstractGame {
             Character currentCharacter = allCharacters.get(allCharacters.size() % 2 == 1 ?
                     allCharacters.size() / 2 + 1 : allCharacters.size() / 2);
             imagePointManagerSingleton.setCurrentBackground((String.format("res/characters/%s/bg.png", currentCharacter.getFullName())));
+            if (!isUnlocked(currentCharacter.getName())) {
+                imagePointManagerSingleton.getCurrentBackground().setTransparent(true);
+            }
+            else {
+                imagePointManagerSingleton.getCurrentBackground().setTransparent(false);
+            }
 
             if (input != null && input.isDown(Keys.RIGHT)) {
                 eventsListener.addEvent(new EventCharacterRotate(frames/8, "Rotate LEFT"));
@@ -332,7 +316,7 @@ public class Game extends AbstractGame {
                 }
             }
             if (picked) {
-                eventsListener.addEvent(new EventCharactersPicked(3 * frames, "All players have picked a character"));
+                eventsListener.addEvent(new EventCharactersPicked(1 * frames, "All players have picked a character"));
             }
 
             if (input != null && input.wasPressed(Keys.ESCAPE)) {
@@ -485,6 +469,7 @@ public class Game extends AbstractGame {
             }
             map = playableMaps.get(1);
             map.generateMap();
+            musicPlayer.clear();
             gameSettingsSingleton.setMap(map);
             settingsSingleton.setGameState(6);
         }
@@ -492,7 +477,7 @@ public class Game extends AbstractGame {
             if (settingsSingleton.getGameMode() == 1) {
                 if (!settingsSingleton.getGameStateString().equals("Game")) {
                     buttonsToRemove.addAll(buttons);
-                    setPlayersPosition();
+                    loadPlayers();
                     //musicPlayer.setMainMusic("music/Giorno.wav");
                     musicPlayer.setMainMusic(String.format("music/Fight%d.wav", Math.round(Math.random()*3)));
                     musicPlayer.clear();
@@ -1160,6 +1145,14 @@ public class Game extends AbstractGame {
                         new Image("res/arrows/RightArrow.png"),
                         new Point(Window.getWidth()/2 + 130, 200),
                         0.5));
+                buttons.add(new Button("Decrease Lives",
+                        new Image("res/arrows/LeftArrow.png"),
+                        new Point(Window.getWidth()/2 + 30, 400),
+                        0.5));
+                buttons.add(new Button("Increase Lives",
+                        new Image("res/arrows/RightArrow.png"),
+                        new Point(Window.getWidth()/2 + 130, 400),
+                        0.5));
                 new Font(Fonts.DEJAVUSANS, 100).drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + 100);
             }
             if (input != null && input.wasPressed(Keys.ESCAPE)) {
@@ -1460,6 +1453,7 @@ public class Game extends AbstractGame {
                 achievementLine.remove(achievementLine.size() - 1);
                 String existingChar = String.join(" ", achievementLine);
                 if (stats.hasPassedThreshold(existingChar, threshold)) {
+                    System.out.println(newCharacter);
                     addToPlayableCharacter(newCharacter);
                 }
             }
@@ -1578,7 +1572,7 @@ public class Game extends AbstractGame {
                     characterPeek.setTransparent(true);
                 }
                 else {
-                    characterPeek.setDarken(isUnlocked(currentCharacter.getName()));
+                    characterPeek.setDarken(true);
                 }
                 characterPeek.draw();
             }
@@ -1872,7 +1866,7 @@ public class Game extends AbstractGame {
             if (!map.hasFinished()) {
                 Rectangle bottomRectangle = new Rectangle(0, Window.getHeight() + 40, Window.getWidth(), 20);
                 if ((player.getCharacter().getRectangle().intersects(bottomRectangle))) {
-                    kill(player);
+                    player.getCharacter().setLives(0);
                     break;
                 }
             }
@@ -1887,7 +1881,7 @@ public class Game extends AbstractGame {
                 if (tile.getCollisionBlocks().size() > 0) {
                     for (CollisionBlock block : tile.getCollisionBlocks()) {
                         if (block.hasCollided(player.getCharacter().getRectangle())) {
-                            kill(player);
+                            player.getCharacter().setLives(0);
                         }
                     }
                 }
@@ -1896,7 +1890,7 @@ public class Game extends AbstractGame {
     }
 
     public void kill(Player player) {
-        player.getCharacter().setDead(true);
+        player.getCharacter().setLives(player.getCharacter().getLives() - 1);
     }
 
     public void drawCollisionBoundaries() {
@@ -2360,5 +2354,63 @@ public class Game extends AbstractGame {
                 new ObstacleBall(),
                 new ObstacleRock(),
                 new ObstacleStunBall()));
+    }
+
+    public void sortCharacters() {
+        ArrayList<Character> unlockedCharacters = new ArrayList<>();
+        ArrayList<Character> lockedCharacters = new ArrayList<>();
+        for (Character character: allCharacters) {
+            if (isUnlocked(character.getName())) {
+                unlockedCharacters.add(character);
+            }
+            else {
+                lockedCharacters.add(character);
+            }
+        }
+        allCharacters.clear();
+        allCharacters.addAll(unlockedCharacters);
+        allCharacters.addAll(lockedCharacters);
+    }
+    public void adjustCharacterRotation() {
+        int middleIndex = allCharacters.size() % 2 == 1 ?
+                allCharacters.size() / 2 + 1 : allCharacters.size() / 2;
+        while (!isUnlocked(allCharacters.get(middleIndex).getName())) {
+            rotateCharacter("LEFT");
+        }
+    }
+
+    public void loadCharacterRender() {
+        double spacing = Window.getHeight()/4;
+        int index = 0;
+        double minScale = 0.275;
+        double maxScale = 1;
+        int middleIndex = allCharacters.size() % 2 == 1 ? allCharacters.size() / 2 + 1 : allCharacters.size() / 2;
+
+        for (Character character: allCharacters) {
+            ImagePoint characterRender = new ImagePoint(String.format("res/Characters/%s/render.png", character.getFullName()),
+                    new Point(0, 0), "CharacterRender");
+            characterRender.setScale(minScale);
+            if (index < middleIndex) {
+                characterRender.setPos( ((allCharacters.size() * spacing/2) - Window.getWidth())/2 - 490 + (spacing * (index - 1)),
+                        Window.getHeight()*3/4);
+            }
+            else if (middleIndex == index) {
+                characterRender.setScale(maxScale);
+                characterRender.setPos(490, Window.getHeight()/8);
+            }
+            else {
+                characterRender.setPos( Window.getWidth()/2 + (spacing * (index - middleIndex)),
+                        Window.getHeight()*3/4);
+            }
+            imagePointManagerSingleton.add(characterRender);
+            index++;
+        }
+    }
+
+    public void loadPlayers() {
+        for (Player player: players) {
+            player.getCharacter().setLives(gameSettingsSingleton.getLives());
+        }
+        setPlayersPosition();
     }
 }

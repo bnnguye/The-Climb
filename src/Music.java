@@ -25,9 +25,9 @@ public class Music {
     }
 
     public void stop() {
-        int currentFrameLength = clip.getFrameLength();
-        clip.stop();
-        clip.setFramePosition(currentFrameLength);
+        this.clip.setFramePosition(this.clip.getFrameLength());
+        this.clip.stop();
+        System.out.println(this.clip.isActive());
     }
 
     public void pause() {
@@ -68,7 +68,7 @@ public class Music {
     }
 
     public boolean hasEnded() {
-        return !this.clip.isActive();
+        return this.clip.getFramePosition() >= this.clip.getFrameLength();
     }
 
     public void restart() {
