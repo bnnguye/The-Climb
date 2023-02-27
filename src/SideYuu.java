@@ -34,10 +34,11 @@ public class SideYuu extends SideCharacter{
         this.animating = false;
         timer = 0;
     }
-    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if (!this.activating) {
+            MusicPlayer.getInstance().addMusic("music/Yuu.wav");
             this.activating = true;
             this.timer = 2 * frames;
         }

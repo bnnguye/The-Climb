@@ -19,7 +19,6 @@ public abstract class SideCharacter {
     public abstract String getName();
     public abstract String getPower();
     public abstract String getDesc();
-    public abstract String getSoundPath();
 
     public abstract void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map);
 

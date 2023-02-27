@@ -256,6 +256,7 @@ public class Game extends AbstractGame {
                         ColourPresets.BLACK.toColour());
                 buttons.addAll(Arrays.asList(twoPlayerButton, threePlayerButton, fourPlayerButton));
                 settingsSingleton.setGameStateString("Players");
+                musicPlayer.clear();
                 imagePointManagerSingleton.getImages().clear();
                 imagePointManagerSingleton.setCurrentBackground("res/menu/playerMenu.PNG");
                 menuTitle = "PLAYERS";
@@ -494,7 +495,6 @@ public class Game extends AbstractGame {
                         }
                     }
                     else {
-                        // when top is reached, first one to touch top wins
                         for (Player player : players) {
                             if (player.getCharacter().getPos().distanceTo(
                                     new Point(player.getCharacter().getPos().x, 0)) < 10) {
@@ -505,30 +505,20 @@ public class Game extends AbstractGame {
                             }
                         }
                     }
-                    playingAnimation = false;
-                    boolean playingActivation = false;
+                    boolean playingAnimation = false;
                     boolean theWorld = false;
                     for (Player player: players) {
-                        if ("Yugi".equals(player.getSideCharacter().getName())) {
-                            player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
-                        }
-                        else {
-                            if (player.getCharacter().hasSpecialAbility()) {
-                                if (input != null && input.wasPressed(player.getControl("Primary"))) {
-                                    if (!player.getSideCharacter().isActivating()) {
-                                        player.getCharacter().useSpecialAbility();
-                                        player.getSideCharacter().activateAbility(player, players, obstacles, powerUps,
-                                                map);
-                                        musicPlayer.addMusic(player.getSideCharacter().getSoundPath());
-                                    }
-                                }
+                        if (player.getCharacter().hasSpecialAbility()) {
+                            if (input != null && input.wasPressed(player.getControl("Primary"))) {
+                                player.getCharacter().useSpecialAbility();
+                                player.getSideCharacter().activateAbility(player, players, obstacles, powerUps,
+                                        map);
                             }
-                            if (player.getSideCharacter().isActivating()) {
-                                musicPlayer.setMainVolume(0);
-                                playingActivation = true;
-                                if (Arrays.asList("Jotaro", "Dio").contains(player.getSideCharacter().getName())) {
-                                    theWorld = true;
-                                }
+                        }
+                        if (player.getSideCharacter().isActivating()) {
+                            musicPlayer.setMainVolume(0);
+                            if (Arrays.asList("Jotaro", "Dio").contains(player.getSideCharacter().getName())) {
+                                theWorld = true;
                             }
                         }
                         if (player.getSideCharacter().isAnimating()) {
@@ -536,7 +526,7 @@ public class Game extends AbstractGame {
                             playingAnimation = true;
                         }
                     }
-                    if ((!playingActivation) && (!playingAnimation)) {
+                    if (!playingAnimation) {
                         musicPlayer.setMainVolume(musicPlayer.getMaxMainVol());
                     }
                     if (!playingAnimation) {
@@ -1767,7 +1757,7 @@ public class Game extends AbstractGame {
                 characterDisplay.draw();
 
                 if (player.getCharacter().hasShield()) {
-                    ImagePoint shield = new ImagePoint("res/InGame/Shield_Selected.png",
+                    ImagePoint shield = new ImagePoint("res/misc/Shield_Selected.png",
                             new Point(characterDisplay.getWidth()/2 + playerIndex*Window.getWidth()/(players.size()),
                                     characterDisplay.getHeight()/2 + Window.getHeight() - characterDisplay.getHeight()));
                     shield.draw();
@@ -1836,11 +1826,6 @@ public class Game extends AbstractGame {
         if (isPickable(character)) {
             eventsListener.addEvent(new EventSideCharacterPicked( 1*frames, String.format("Player %d picked: %s", player.getId(), character.getName())));
             player.setSideCharacter(character);
-            if (!musicPlayer.contains(character.getSoundPath())) {
-                musicPlayer.addMusic(character.getSoundPath());
-            } else {
-                musicPlayer.restart(character.getSoundPath());
-            }
         }
     }
 

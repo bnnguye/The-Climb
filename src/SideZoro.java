@@ -33,11 +33,13 @@ public class SideZoro extends SideCharacter{
         this.animating = false;
         timer = 0;
     }
-    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
         if (!this.activating) {
+            MusicPlayer.getInstance().addMusic("music/Zoro.wav");
+
             timer = 5*frames;
             this.activating = true;
             shakeTimer = 3*frames;

@@ -137,17 +137,17 @@ public class Character {
                 if (minimisedTimer > 0) {
                         rectangle = new Rectangle(new Point(pos.x - image.getWidth()/4, pos.y - image.getHeight()/4), image.getWidth()/2, image.getHeight()/2);
                         //Drawing.drawRectangle(new Point(pos.x - image.getWidth()/4, pos.y - image.getHeight()/4), image.getWidth()/2, image.getHeight()/2, new Colour(0,0,0,0.5));
-                        picture.draw(pos.x, pos.y, new DrawOptions().setScale(0.5, 0.5));
+                        picture.drawFromTopLeft(pos.x, pos.y, new DrawOptions().setScale(0.5, 0.5));
                         minimisedTimer--;
                 }
                 else {
                         rectangle = new Rectangle(new Point(pos.x - image.getWidth()/2, pos.y - image.getHeight()/2), image.getWidth(), image.getHeight());
                         //Drawing.drawRectangle(new Point(pos.x - image.getWidth()/2, pos.y - image.getHeight()/2), image.getWidth(), image.getHeight(), new Colour(0,0,0,0.5));
-                        picture.draw(pos.x, pos.y);
+                        picture.drawFromTopLeft(pos.x, pos.y);
                 }
                 if (shield) {
                         Image bubble = new Image("res/misc/Shield_Selected.png");
-                        bubble.draw(pos.x, pos.y);
+                        bubble.drawFromTopLeft(pos.x, pos.y);
                 }
         }
 

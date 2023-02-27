@@ -29,10 +29,11 @@ public class SideGoku extends SideCharacter{
         this.animating = false;
         timer = 0;
     }
-    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if(!this.activating) {
+            MusicPlayer.getInstance().addMusic("music/Goku.wav");
             this.activating = true;
             this.timer = 10 * frames;
         }

@@ -37,11 +37,11 @@ public class SideLelouch extends SideCharacter{
         this.timer = 0;
         this.shoot = false;
     }
-    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
-        Character pCharacter = user.getCharacter();
         if(!this.activating) {
+            MusicPlayer.getInstance().addMusic("music/Lelouch.wav");
             this.user = user;
             this.activating = true;
             this.timer = 6 * frames;

@@ -28,7 +28,7 @@ public class SideDio extends SideCharacter{
     public boolean isAnimating() {
         return this.animating;
     }
-    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
     public void setPowerUps(ArrayList<PowerUp> powerUps) {this.powerUps = powerUps;}
     public void reset() {
         this.activating = false;
@@ -39,6 +39,7 @@ public class SideDio extends SideCharacter{
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if (!this.activating) {
+            MusicPlayer.getInstance().addMusic("music/Dio.wav");
             timer = 5*frames;
             this.activating = true;
         }
