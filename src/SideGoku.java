@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class SideGoku extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
 
-    private String name = "SON GOKU";
+    private String name = CharacterNames.GOKU;
     private String power = "ULTRA INSTINCT";
     private String desc = "Son Goku reaches his final evolution \"Ultra Instinct\", becoming ...TBA";
 
@@ -19,6 +19,8 @@ public class SideGoku extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {

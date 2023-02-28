@@ -159,7 +159,7 @@ public class Game extends AbstractGame {
             }
             if (input != null && input.wasPressed(MouseButtons.LEFT)) {
                 if (button.isHovering()) {
-                    musicPlayer.addMusic("music/Click.wav");
+                    new Music("music/Click.wav", MusicPlayer.getInstance().getMaxEffectVol());
                     button.playAction();
                 }
             }
@@ -517,7 +517,7 @@ public class Game extends AbstractGame {
                         }
                         if (player.getSideCharacter().isActivating()) {
                             musicPlayer.setMainVolume(0);
-                            if (Arrays.asList("Jotaro", "Dio").contains(player.getSideCharacter().getName())) {
+                            if ((player.getSideCharacter().getName().equals(CharacterNames.DIO)) || player.getSideCharacter().getName().equals(CharacterNames.JOTARO)) {
                                 theWorld = true;
                             }
                         }
@@ -528,8 +528,6 @@ public class Game extends AbstractGame {
                     }
                     if (!playingAnimation) {
                         musicPlayer.setMainVolume(musicPlayer.getMaxMainVol());
-                    }
-                    if (!playingAnimation) {
                         updateExp();
                         if (!theWorld) {
                             updatePlayerMovement(input);
@@ -541,7 +539,7 @@ public class Game extends AbstractGame {
                         else {
                             for (Player player: players) {
                                 if (player.getSideCharacter().isActivating() &&
-                                        Arrays.asList("Jotaro", "Dio").contains(player.getSideCharacter().getName())) {
+                                        Arrays.asList(CharacterNames.JOTARO, CharacterNames.DIO).contains(player.getSideCharacter().getName())) {
                                     player.moveCharacter(input);
                                 }
                             }
@@ -1018,7 +1016,6 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 8) {
             String musicWho = "music/Who.wav";
-
             if (!settingsSingleton.getGameStateString().equals("Unlocked")) {
                 musicPlayer.clear();
                 musicPlayer.setMainMusic("music/Silence.wav");
@@ -1227,12 +1224,18 @@ public class Game extends AbstractGame {
             Drawing.drawRectangle(new Point(0,0), Window.getWidth(), Window.getHeight()/4 - 30, new Colour(0,0,0,0.8));
             Drawing.drawRectangle(new Point(0,Window.getHeight()*3/4), Window.getWidth(), Window.getHeight()/4, new Colour(0,0,0,0.8));
             if (canInteract) {
+                FontSize characterFont = new FontSize(Fonts.TCB, 120);
                 if (isUnlocked(currentCharacter.getName()) && isPickable(currentCharacter)) {
                     drawShadowRender(currentCharacter.getFullName());
-                    FontSize characterFont = new FontSize(Fonts.TCB, 120);
                     characterFont.draw(currentCharacter.getName(), Window.getWidth()/5
                             - characterFont.getFont().getWidth(currentCharacter.getName())/2, Window.getHeight()/2);
                     characterFont.draw(currentCharacter.getLastName(), Window.getWidth()*4/5
+                            - characterFont.getFont().getWidth(currentCharacter.getLastName())/2, Window.getHeight()/2);
+                }
+                else if (!isUnlocked(currentCharacter.getName())) {
+                    characterFont.draw("???", Window.getWidth()/5
+                            - characterFont.getFont().getWidth(currentCharacter.getName())/2, Window.getHeight()/2);
+                    characterFont.draw("???", Window.getWidth()*4/5
                             - characterFont.getFont().getWidth(currentCharacter.getLastName())/2, Window.getHeight()/2);
                 }
             }
@@ -1303,10 +1306,17 @@ public class Game extends AbstractGame {
             }
             else {
                 Player winner = settingsSingleton.getWinner();
-                Image characterImage = new Image(String.format("res/Characters/%s/render.png", winner.getCharacter().getFullName()));
-                Image sideCharacterImage = new Image(String.format("res/SideCharacters/%s/render.png", winner.getSideCharacter().getName()));
-                characterImage.draw(Window.getWidth() - winnerTimer, Window.getHeight()/2 +200);
-                sideCharacterImage.draw(Window.getWidth() + characterImage.getWidth()/2, Window.getHeight()/2 + 200);
+                ImagePoint characterImage = new ImagePoint(
+                        String.format("res/Characters/%s/render.png", winner.getCharacter().getFullName()),
+                        new Point(0,0));
+                ImagePoint sideCharacterImage = new ImagePoint(
+                        String.format("res/SideCharacters/%s/render.png", winner.getSideCharacter().getName()),
+                        new Point(0,0));
+                characterImage.setPos(Window.getWidth()/2 - characterImage.getWidth()/2, Window.getHeight() - characterImage.getHeight());
+                sideCharacterImage.setPos(Window.getWidth()/2, Window.getHeight() - sideCharacterImage.getHeight());
+                sideCharacterImage.draw();
+                characterImage.draw();
+
                 new Font(Fonts.DEJAVUSANS, 110).drawString(String.format("Player %d: %s is victorious!", settingsSingleton.getWinner().getId(), settingsSingleton.getWinner().getCharacter().getName()), 16, 100);
 
             }
@@ -1826,6 +1836,11 @@ public class Game extends AbstractGame {
         if (isPickable(character)) {
             eventsListener.addEvent(new EventSideCharacterPicked( 1*frames, String.format("Player %d picked: %s", player.getId(), character.getName())));
             player.setSideCharacter(character);
+            if (!musicPlayer.contains(character.getSoundPath())) {
+                musicPlayer.addMusic(character.getSoundPath());
+            } else {
+                musicPlayer.restart(character.getSoundPath());
+            }
         }
     }
 
@@ -1888,6 +1903,9 @@ public class Game extends AbstractGame {
             if (!player.getCharacter().isDead()) {
                 if (character.canMove()) {
                     player.moveCharacter(input);
+                }
+                if (!map.hasFinished() && !character.isMoving()) {
+                    character.slide();
                 }
             }
         }

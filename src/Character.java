@@ -74,8 +74,9 @@ public class Character {
                         currentSpeed = speed*2;
                         speedUpTimer--;
                 }
-
+                moving = false;
                 if (key != null) {
+                        moving = true;
                         double new_X = pos.x;
                         double new_Y = pos.y;
                         if (key.equals("WA")) {
@@ -110,11 +111,6 @@ public class Character {
                         if (((0 < new_X) && (new_X < Window.getWidth())) && ((0 < new_Y) && (new_Y < Window.getHeight()))) {
                                 pos = newPoint;
                                 moving = true;
-                        }
-                } else {
-                        moving = false;
-                        if (!GameSettingsSingleton.getInstance().getMap().hasFinished()) {
-                                pos = new Point(pos.x, pos.y + GameSettingsSingleton.getInstance().getMapSpeed());
                         }
                 }
         }
@@ -211,6 +207,10 @@ public class Character {
                 }
         }
 
+        public void slide() {
+                pos = new Point(pos.x, pos.y + GameSettingsSingleton.getInstance().getMapSpeed());
+        }
+
         public void speedUp() {
                 speedUpTimer = 3 * frames;
         }
@@ -232,4 +232,5 @@ public class Character {
                 this.lives = lives;
         }
         public int getLives() {return this.lives;}
+        public boolean isMoving() {return moving;}
 }

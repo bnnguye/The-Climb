@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class SideItachi extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
 
-    private String name = "ITACHI UCHIHA";
+    private String name = CharacterNames.ITACHI;
     private String power = "INFINITE TSUKUYOMI";
     private String desc = "Itachi activates his unique ability \"Infinite Tsukuyomi\", sending all those who look into" +
             " his left eye into a hallucination. Those strong enough will be sent into a state of confusion, while" +
@@ -27,6 +27,8 @@ public class SideItachi extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {

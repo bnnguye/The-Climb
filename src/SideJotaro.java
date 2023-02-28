@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class SideJotaro extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
 
-    private String name = "JOTARO KUJO";
+    private String name = CharacterNames.JOTARO;
     private String power = "STAR PLATINUM: THE WORLD";
     private String desc = "Jotaro call his Stand \"Star Platinum\" out and uses his ultimate ability, \"The World\"," +
             "stopping time in its tracks for 5 seconds. This unique ability was curated within the Kujo blood, however" +
@@ -26,6 +26,8 @@ public class SideJotaro extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {
@@ -40,7 +42,7 @@ public class SideJotaro extends SideCharacter{
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if (!this.activating) {
-            MusicPlayer.getInstance().addMusic("music/Jotaro.wav");
+            MusicPlayer.getInstance().addMusic("music/JOTARO KUJO.wav");
             timer = 5*frames;
             this.activating = true;
         }
@@ -73,11 +75,11 @@ public class SideJotaro extends SideCharacter{
     public void setPowerUps(ArrayList<PowerUp> powerUps) {this.powerUps = powerUps;}
 
     public void renderAbility() {
-        Colour darken = new Colour(0, 0, 0.2, 0.5);
+        Colour darken = new Colour(0, 0, 0.1, 0.7);
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (timer > 3*frames) {
             Image special = new Image("res/sidecharacters/JOTARO KUJO/render.png");
-            special.drawFromTopLeft(0,0);
+            special.drawFromTopLeft(Window.getWidth()/2 - special.getWidth()/2,Window.getHeight() - special.getHeight());
         }
     }
 

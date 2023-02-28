@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class SideZoro extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
-    private String name = "ZORO RORONOA";
+    private String name = CharacterNames.ZORO;
     private String power = "PURGATORY ONIGIRI";
     private String desc = "";
 
@@ -23,6 +23,8 @@ public class SideZoro extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {

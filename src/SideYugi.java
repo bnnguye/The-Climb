@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class SideYugi extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
 
-    private String name = "YAMI YUGI";
+    private String name = CharacterNames.YUGI;
     private String power = "EXODIA";
     private String desc = "";
 
@@ -24,6 +24,8 @@ public class SideYugi extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {

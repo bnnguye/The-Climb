@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class SideYuu extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
 
-    private String name = "YUU OTASAKA";
+    private String name = CharacterNames.YUU;
     private String power = "PLUNDER";
     private String desc = "";
 
@@ -24,6 +24,8 @@ public class SideYuu extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {

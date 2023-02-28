@@ -1,6 +1,4 @@
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -17,6 +15,20 @@ public class CharacterNames {
      public static final String ASUNA = "ASUNA YUUKI";
      public static final String EMILIA = "EMILIA";
      public static final String CHIKA = "CHIKA FUJIWARA";
+
+     public static final String JOTARO = "JOTARO KUJO";
+     public static final String DIO = "DIO BRANDO";
+     public static final String GOKU = "SON GOKU";
+     public static final String ALLMIGHT = "ALL MIGHT";
+     public static final String ZORO = "RORONOA ZORO";
+     public static final String YUGI = "YAMI YUGI";
+     public static final String HISOKA = "HISOKA MOROW";
+     public static final String ITACHI = "ITACHI UCHIHA";
+     public static final String GOJO = "GOJO SATORU";
+     public static final String LELOUCH = "LELOUCH LAMPEROUGE";
+     public static final String YUU = "YUU OTASAKA";
+
+
 
      public List<String> getAllCharacterNames() {
           return Arrays.asList(

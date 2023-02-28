@@ -22,7 +22,6 @@ public class EventGameStart extends  EventInterface {
         }
         else if (frames - currentTime < 4 * refreshRate) {
             if (map.currentHeight > 0) {
-                System.out.println(map.currentHeight);
                 map.descend();
                 this.frames++;
             }
@@ -31,7 +30,7 @@ public class EventGameStart extends  EventInterface {
             MusicPlayer.getInstance().addMusic("music/Start.wav");
         }
         if (frames - currentTime <= 3 * refreshRate) {
-            countDownFont.draw(String.format("%d", (frames - currentTime)/refreshRate), Window.getWidth()/2, Window.getHeight()/2);
+            countDownFont.draw(String.format("%d", (frames - currentTime)/refreshRate + 1), Window.getWidth()/2, Window.getHeight()/2);
         }
     }
 }

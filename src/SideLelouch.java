@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class SideLelouch extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
 
-    private String name = "LELOUCH LAMPEROUGE";
+    private String name = CharacterNames.LELOUCH;
     private String power = "CODE GEASS";
     private String desc = "";
 
@@ -26,6 +26,8 @@ public class SideLelouch extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {

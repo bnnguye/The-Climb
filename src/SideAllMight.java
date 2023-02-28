@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class SideAllMight extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
 
-    private String name = "ALL MIGHT";
+    private String name = CharacterNames.ALLMIGHT;
     private String power = "ONE FOR ALL";
     private String desc = "All Might's One For All allows All Might to take over the opponents on the battlefield through his immense will and power." +
             "Gain enhanced movement speed and invulnerability to objects flying from the sky for a brief period.";
@@ -19,6 +19,8 @@ public class SideAllMight extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
+
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {

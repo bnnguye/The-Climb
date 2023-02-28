@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class SideHisoka extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
 
-    private String name = "HISOKA MOROW";
+    private String name = CharacterNames.HISOKA;
     private String power = "BUNGEE GUM";
     private String desc = "Hisoka Morow's signature move \"Bungee Gum\" allows him to trap his opponents by converting" +
             " his aura into a sticky substance, freezing any character caught within its path for several seconds.";
@@ -25,6 +25,7 @@ public class SideHisoka extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class SideDio extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
 
-    private String name = "DIO BRANDO";
+    private String name = CharacterNames.DIO;
     private String power = "THE WORLD";
     private String desc = "";
 
@@ -24,6 +24,9 @@ public class SideDio extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/%s.wav");}
+
+
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {
         return this.animating;
@@ -39,8 +42,8 @@ public class SideDio extends SideCharacter{
 
     public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
         if (!this.activating) {
-            MusicPlayer.getInstance().addMusic("music/Dio.wav");
-            timer = 5*frames;
+            MusicPlayer.getInstance().addMusic("music/DIO BRANDO.wav");
+            timer = 5 * frames;
             this.activating = true;
         }
         else {
@@ -73,7 +76,7 @@ public class SideDio extends SideCharacter{
         Colour darken = new Colour(0, 0, 0.2, 0.5);
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (timer > 3*frames) {
-             Image special = new Image("res/sidecharacters/Dio/special.png");
+             Image special = new Image("res/sidecharacters/DIO BRANDO/special.png");
              special.drawFromTopLeft(0,0);
         }
     }

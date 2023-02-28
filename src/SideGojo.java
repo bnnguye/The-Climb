@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class SideGojo extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
-    private String name = "GOJO SATORU";
+    private String name = CharacterNames.GOJO;
     private String power = "MUGEN";
     private String desc = "Gojo Satoru's ability \"Mugen (Infinity)\" is the neutral form of Gojo's base ability" +
             "\"Mukagen (Limitless)\". When activated, Gojo invokes a gravitational hold in the middle of the battlefield." +
@@ -25,6 +25,8 @@ public class SideGojo extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/%s.wav", this.name.split(" ")[0]);}
+
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {

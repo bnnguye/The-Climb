@@ -22,7 +22,7 @@ public class Map {
     }
 
     public void draw() {
-        for(Tile tile: tiles) {
+        for(Tile tile: getVisibleTiles()) {
             if ((tile.getPos().y < Window.getHeight() + tile.getImage().getHeight()) && (tile.getPos().y > -tile.getImage().getHeight())) {
                 tile.draw();
             }
@@ -38,7 +38,7 @@ public class Map {
     }
 
     public void updateTiles(double shift) {
-        if (currentHeight <= 0) {
+        if (currentHeight < 0) {
             currentHeight = 0d;
             shift = 0d;
         }
@@ -49,9 +49,6 @@ public class Map {
                 block.updatePos(new Point (tile.getPos().x, tile.getPos().y + shift));
             }
             tile.setPos(new Point(tile.getPos().x, tile.getPos().y + shift));
-//            if (tile.getPos().y > Window.getHeight()) {
-//                tilesToRemove.add(tile);
-//            }
         }
         tiles.removeAll(tilesToRemove);
     }
