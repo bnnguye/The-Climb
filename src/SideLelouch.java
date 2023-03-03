@@ -26,8 +26,7 @@ public class SideLelouch extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
-    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
-
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {
@@ -41,9 +40,9 @@ public class SideLelouch extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         if(!this.activating) {
-            MusicPlayer.getInstance().addMusic("music/Lelouch.wav");
+            MusicPlayer.getInstance().addMusic(getSoundPath());
             this.user = user;
             this.activating = true;
             this.timer = 6 * frames;
@@ -60,11 +59,11 @@ public class SideLelouch extends SideCharacter{
         if (this.timer <= 0) {
             Rectangle vertical = new Rectangle(user.getCharacter().getPos().x, 0, 2, Window.getHeight());
             Rectangle horizontal = new Rectangle(0, user.getCharacter().getPos().y, Window.getWidth(), 2);
-            for (Player player: players) {
+            for (Player player: SettingsSingleton.getInstance().getPlayers()) {
                 if((player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(horizontal)) || (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(vertical))) {
                     if (player.getId() != user.getId()) {
                         if (!player.getCharacter().isDead()) {
-                            player.getCharacter().setDead(true);
+                            player.getCharacter().setLives(0);
                         }
                     }
                 }
@@ -77,11 +76,11 @@ public class SideLelouch extends SideCharacter{
 
     public void renderAbility() {
         if (timer > 1 *frames) {
-            Image special = new Image("res/sidecharacters/Lelouch/special.png");
+            Image special = new Image("res/sidecharacters/Lelouch Lamperouge/special.png");
             special.drawFromTopLeft(0,0);
         }
         else {
-            Image eye = new Image("res/sidecharacters/Lelouch/Eye.png");
+            Image eye = new Image("res/sidecharacters/Lelouch Lamperouge/Eye.png");
             eye.drawFromTopLeft(0,0);
             Colour red = new Colour(0.8, 0, 0, 0.5);
             Drawing.drawRectangle(user.getCharacter().getPos().x, 0, 2, Window.getHeight(), red);

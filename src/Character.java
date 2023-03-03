@@ -166,7 +166,7 @@ public class Character {
         }
 
         public String playLine() {
-                return String.format("music/%s.wav", name);
+                return String.format("music/characters/%s/Voice.wav", getFullName());
         }
 
         public void onIce() {
@@ -222,10 +222,6 @@ public class Character {
         }
         public void shield() {
                 shield = true;
-        }
-
-        public void setDead(boolean bool) {
-                this.dead = bool;
         }
 
         public void setLives(int lives) {

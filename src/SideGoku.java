@@ -19,8 +19,7 @@ public class SideGoku extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
-    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
-
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {
@@ -33,9 +32,9 @@ public class SideGoku extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         if(!this.activating) {
-            MusicPlayer.getInstance().addMusic("music/Goku.wav");
+            MusicPlayer.getInstance().addMusic(getSoundPath());
             this.activating = true;
             this.timer = 10 * frames;
         }

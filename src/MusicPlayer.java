@@ -9,8 +9,9 @@ public class MusicPlayer {
     private static double effectVolume = 100d;
 
     private static MusicPlayer musicPlayer = null;
-    private static Music mainMusic = new Music("music/Silence.wav", mainVolume);
+    private static Music mainMusic = new Music("music/misc/Silence.wav", mainVolume);
     private final ArrayList<Music> musics = new ArrayList<>();
+    private final ArrayList<Music> musicsEnded = new ArrayList<>();
 
 
     public synchronized static MusicPlayer getInstance() {
@@ -37,6 +38,7 @@ public class MusicPlayer {
         for (Music music: musics) {
             music.setVolume(effectVolume);
             if (music.hasEnded()) {
+                musicsEnded.add(music);
                 musicToRemove.add(music);
             }
         }
@@ -123,5 +125,14 @@ public class MusicPlayer {
                 return;
             }
         }
+    }
+
+    public boolean hasEnded(String fileName) {
+        for (Music music: musicsEnded) {
+            if (music.getFileName().equals(fileName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

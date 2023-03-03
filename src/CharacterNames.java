@@ -26,7 +26,7 @@ public class CharacterNames {
      public static final String ITACHI = "ITACHI UCHIHA";
      public static final String GOJO = "GOJO SATORU";
      public static final String LELOUCH = "LELOUCH LAMPEROUGE";
-     public static final String YUU = "YUU OTASAKA";
+     public static final String YUU = "YUU OTOSAKA";
 
 
 

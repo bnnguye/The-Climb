@@ -73,7 +73,7 @@ public class Button {
         DO.setScale(scale, scale);
         if (box.intersects(point)) {
             if (!hovering) {
-                MusicPlayer.getInstance().addMusic("music/Hover.wav");
+                MusicPlayer.getInstance().addMusic("music/misc/Hover.wav");
             }
             DO.setBlendColour(opaque());
             DO.setScale(scale * 1.2, scale * 1.2);

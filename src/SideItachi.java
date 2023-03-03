@@ -27,8 +27,7 @@ public class SideItachi extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
-    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
-
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {
@@ -41,9 +40,10 @@ public class SideItachi extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         this.obstacles = obstacles;
         this.powerUps = powerUps;
+        MusicPlayer.getInstance().addMusic(getSoundPath());
         if (!this.activating) {
             timer = 8*frames;
             this.activating = true;
@@ -54,7 +54,7 @@ public class SideItachi extends SideCharacter{
             }
             else {
                 this.animating = false;
-                for (Player player: players) {
+                for (Player player: SettingsSingleton.getInstance().getPlayers()) {
                     if (player.getId() != user.getId()) {
                         player.getCharacter().onSlow();
                     }

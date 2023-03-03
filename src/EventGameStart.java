@@ -27,7 +27,7 @@ public class EventGameStart extends  EventInterface {
             }
         }
         if (frames - currentTime == 3 * refreshRate) {
-            MusicPlayer.getInstance().addMusic("music/Start.wav");
+            MusicPlayer.getInstance().addMusic("music/misc/Start.wav");
         }
         if (frames - currentTime <= 3 * refreshRate) {
             countDownFont.draw(String.format("%d", (frames - currentTime)/refreshRate + 1), Window.getWidth()/2, Window.getHeight()/2);

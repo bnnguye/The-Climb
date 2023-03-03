@@ -21,7 +21,7 @@ public abstract class SideCharacter {
     public abstract String getDesc();
     public abstract String getSoundPath();
 
-    public abstract void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map);
+    public abstract void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps);
 
     public abstract void renderAbility();
 }

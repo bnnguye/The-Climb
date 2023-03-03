@@ -23,8 +23,7 @@ public class SideZoro extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
-    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
-
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {
@@ -37,10 +36,10 @@ public class SideZoro extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
         if (!this.activating) {
-            MusicPlayer.getInstance().addMusic("music/Zoro.wav");
+            MusicPlayer.getInstance().addMusic(getSoundPath());
 
             timer = 5*frames;
             this.activating = true;
@@ -51,7 +50,7 @@ public class SideZoro extends SideCharacter{
                 this.animating = true;
             }
             else {
-                shakeImage(map);
+                shakeImage(GameSettingsSingleton.getInstance().getMap());
                 this.animating = false;
                 ArrayList<Point> hitbox = new ArrayList<>();
                 // bottomleft-topright
@@ -133,13 +132,13 @@ public class SideZoro extends SideCharacter{
                 hitbox.add(new Point(1835.00, 577.00));
                 hitbox.add(new Point(1910.00, 609.00));
 
-                for (Player player: players) {
+                for (Player player: SettingsSingleton.getInstance().getPlayers()) {
                     if (player.getId() != user.getId()) {
                         if(!player.getCharacter().isDead()) {
                             for (Point point: hitbox) {
                                 Rectangle rectangle = new Rectangle(point, 5,5);
                                 if(player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(rectangle)) {
-                                    player.getCharacter().setDead(true);
+                                    player.getCharacter().setLives(0);
                                     break;
                                 }
                             }
@@ -189,10 +188,10 @@ public class SideZoro extends SideCharacter{
     }
 
     public void renderAbility() {
-        Image slashLeft = new Image("res/sidecharacters/Zoro/SlashLeft.png");
-        Image slashMiddle = new Image("res/sidecharacters/Zoro/SlashMiddle.png");
-        Image slashRight = new Image("res/sidecharacters/Zoro/SlashRight.png");
-        Image display = new Image("res/sidecharacters/Zoro/Activate.png");
+        Image slashLeft = new Image("res/sidecharacters/RORONOA ZORO/SlashLeft.png");
+        Image slashMiddle = new Image("res/sidecharacters/RORONOA ZORO/SlashMiddle.png");
+        Image slashRight = new Image("res/sidecharacters/RORONOA ZORO/SlashRight.png");
+        Image display = new Image("res/sidecharacters/RORONOA ZORO/Activate.png");
         if (timer > 3 *frames) {
             Colour darken = new Colour(0, 0, 0, 0.5);
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);

@@ -25,8 +25,7 @@ public class SideGojo extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
-    public String getSoundPath() {return String.format("music/%s.wav", this.name.split(" ")[0]);}
-
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {
@@ -39,9 +38,9 @@ public class SideGojo extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         if(!this.activating) {
-            MusicPlayer.getInstance().addMusic("music/Gojo.wav");
+            MusicPlayer.getInstance().addMusic(getSoundPath());
             this.activating = true;
             this.timer = 8 * frames;
         }
@@ -51,12 +50,12 @@ public class SideGojo extends SideCharacter{
         }
         else {
             this.animating = false;
-            warp(players, user);
-            for (Player player: players) {
+            warp(SettingsSingleton.getInstance().getPlayers(), user);
+            for (Player player: SettingsSingleton.getInstance().getPlayers()) {
                 if (player.getId() != user.getId()) {
                     if (player.getCharacter().getPos().distanceTo(new Point(Window.getWidth()/2, Window.getHeight()/2)) < 100){
                         if (!player.getCharacter().isDead()) {
-                            player.getCharacter().setDead(true);
+                            player.getCharacter().setLives(0);
                         }
                     }
                 }
@@ -94,7 +93,7 @@ public class SideGojo extends SideCharacter{
         }
         if (timer > 6 * frames) {
             Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), new Colour(0,0,0,0.9));
-            Image gojo = new Image("res/sidecharacters/Gojo/special2.png");
+            Image gojo = new Image(String.format("res/sidecharacters/%s/NoblePhantasm2.png", getName()));
             gojo.drawFromTopLeft(0,0);
             if (radius < Window.getWidth()/1.5) {
                 Drawing.drawCircle(Window.getWidth()/2, Window.getHeight()/2, radius, new Colour(0,0,0));

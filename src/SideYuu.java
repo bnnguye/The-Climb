@@ -24,8 +24,7 @@ public class SideYuu extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
-    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
-
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {
@@ -38,7 +37,7 @@ public class SideYuu extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         if (!this.activating) {
             MusicPlayer.getInstance().addMusic("music/Yuu.wav");
             this.activating = true;
@@ -48,9 +47,9 @@ public class SideYuu extends SideCharacter{
             this.animating = true;
         }
         else if (timer == 0) {
-            temporarySideCharacter = getSideCharacter(findClosest(user, players));
+            temporarySideCharacter = getSideCharacter(findClosest(user, SettingsSingleton.getInstance().getPlayers()));
             if (temporarySideCharacter != null) {
-                temporarySideCharacter.activateAbility(user, players, obstacles, powerUps, map);
+                temporarySideCharacter.activateAbility(user, obstacles, powerUps);
             }
             else {
                 this.activating = false;
@@ -61,7 +60,7 @@ public class SideYuu extends SideCharacter{
                 this.activating = false;
             }
             else {
-                temporarySideCharacter.activateAbility(user, players, obstacles, powerUps, map);
+                temporarySideCharacter.activateAbility(user, obstacles, powerUps);
                 if (!temporarySideCharacter.isAnimating()) {
                     this.animating = false;
                 }
@@ -75,34 +74,34 @@ public class SideYuu extends SideCharacter{
 
     public SideCharacter getSideCharacter(Player player) {
         SideCharacter playerCharacter = null;
-        if (player.getSideCharacter().getName().equals("DIO BRANDO")) {
+        if (player.getSideCharacter().getName().equals(CharacterNames.DIO)) {
             playerCharacter = new SideDio();
         }
-        else if (player.getSideCharacter().getName().equals("ALL MIGHT")) {
+        else if (player.getSideCharacter().getName().equals(CharacterNames.ALLMIGHT)) {
             playerCharacter = new SideAllMight();
         }
-        else if (player.getSideCharacter().getName().equals("GOJO SATORU")) {
+        else if (player.getSideCharacter().getName().equals(CharacterNames.GOJO)) {
             playerCharacter = new SideGojo();
         }
-        else if (player.getSideCharacter().getName().equals("HISOKA MOROW")) {
+        else if (player.getSideCharacter().getName().equals(CharacterNames.HISOKA)) {
             playerCharacter = new SideHisoka();
         }
-        else if (player.getSideCharacter().getName().equals("ITACHI UCHIHA")) {
+        else if (player.getSideCharacter().getName().equals(CharacterNames.ITACHI)) {
             playerCharacter = new SideItachi();
         }
-        else if (player.getSideCharacter().getName().equals("JOTARO KUJO")) {
+        else if (player.getSideCharacter().getName().equals(CharacterNames.JOTARO)) {
             playerCharacter = new SideJotaro();
         }
-        else if (player.getSideCharacter().getName().equals("LELOUCH LAMPEROUGE")) {
+        else if (player.getSideCharacter().getName().equals(CharacterNames.LELOUCH)) {
             playerCharacter = new SideLelouch();
         }
-        else if (player.getSideCharacter().getName().equals("SON GOKU")) {
+        else if (player.getSideCharacter().getName().equals(CharacterNames.GOKU)) {
             playerCharacter = new SideGoku();
         }
-        else if (player.getSideCharacter().getName().equals("Yugi")) {
+        else if (player.getSideCharacter().getName().equals(CharacterNames.YUGI)) {
             playerCharacter = new SideYugi();
         }
-        else if (player.getSideCharacter().getName().equals("Zoro")) {
+        else if (player.getSideCharacter().getName().equals(CharacterNames.ZORO)) {
             playerCharacter = new SideZoro();
         }
         return playerCharacter;

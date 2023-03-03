@@ -24,7 +24,7 @@ public class SideDio extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
-    public String getSoundPath() {return String.format("music/%s.wav");}
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
 
 
     public boolean isActivating() {return this.activating;}
@@ -40,7 +40,7 @@ public class SideDio extends SideCharacter{
         shakeTimer = 500;
     }
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         if (!this.activating) {
             MusicPlayer.getInstance().addMusic("music/DIO BRANDO.wav");
             timer = 5 * frames;

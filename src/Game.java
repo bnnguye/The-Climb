@@ -159,7 +159,7 @@ public class Game extends AbstractGame {
             }
             if (input != null && input.wasPressed(MouseButtons.LEFT)) {
                 if (button.isHovering()) {
-                    new Music("music/Click.wav", MusicPlayer.getInstance().getMaxEffectVol());
+                    new Music("music/misc/Click.wav", MusicPlayer.getInstance().getMaxEffectVol());
                     button.playAction();
                 }
             }
@@ -207,7 +207,7 @@ public class Game extends AbstractGame {
                 menuTitle = "THE CLIMB";
                 imagePointManagerSingleton.getImages().clear();
                 imagePointManagerSingleton.setCurrentBackground("res/menu/MainMenu.PNG");
-                musicPlayer.setMainMusic("music/Game Main Menu.wav");
+                musicPlayer.setMainMusic("music/misc/Game Main Menu.wav");
             }
         }
         else if (settingsSingleton.getGameState() == 1) {
@@ -480,7 +480,7 @@ public class Game extends AbstractGame {
                     buttonsToRemove.addAll(buttons);
                     loadPlayers();
                     //musicPlayer.setMainMusic("music/Giorno.wav");
-                    musicPlayer.setMainMusic(String.format("music/Fight%d.wav", Math.round(Math.random()*3)));
+                    musicPlayer.setMainMusic(String.format("music/battle/Fight%d.wav", Math.round(Math.random()*3)));
                     musicPlayer.clear();
                     settingsSingleton.setGameStateString("Game");
                     eventsListener.addEvent(new EventGameStart());
@@ -508,11 +508,13 @@ public class Game extends AbstractGame {
                     boolean playingAnimation = false;
                     boolean theWorld = false;
                     for (Player player: players) {
+                        if (player.getSideCharacter().getName().equals(CharacterNames.YUGI)) {
+                            player.getSideCharacter().activateAbility(player, obstacles, powerUps);
+                        }
                         if (player.getCharacter().hasSpecialAbility()) {
                             if (input != null && input.wasPressed(player.getControl("Primary"))) {
                                 player.getCharacter().useSpecialAbility();
-                                player.getSideCharacter().activateAbility(player, players, obstacles, powerUps,
-                                        map);
+                                player.getSideCharacter().activateAbility(player, obstacles, powerUps);
                             }
                         }
                         if (player.getSideCharacter().isActivating()) {
@@ -972,7 +974,7 @@ public class Game extends AbstractGame {
             else {
                 if (settingsSingleton.getGameStateString().equalsIgnoreCase("Game Finished")) {
                     settingsSingleton.setGameStateString("Retry or Menu?");
-                    musicPlayer.setMainMusic("music/Fail.wav");
+                    musicPlayer.setMainMusic("music/misc/Fail.wav");
                     stats.updateGameStats(players);
                     musicPlayer.addMusic(settingsSingleton.getWinner().getCharacter().playLine());
                     buttonsToRemove.addAll(buttons);
@@ -1014,29 +1016,24 @@ public class Game extends AbstractGame {
                 }
             }
         }
-        else if (settingsSingleton.getGameState() == 8) {
-            String musicWho = "music/Who.wav";
+        if (settingsSingleton.getGameState() == 8) {
+            String musicWho = "music/misc/Who.wav";
             if (!settingsSingleton.getGameStateString().equals("Unlocked")) {
                 musicPlayer.clear();
-                musicPlayer.setMainMusic("music/Silence.wav");
+                musicPlayer.setMainMusic("music/misc/Silence.wav");
                 musicPlayer.addMusic(musicWho);
                 settingsSingleton.setGameStateString("Unlocked");
             }
             if (musicPlayer.getSound(musicWho) != null && musicPlayer.getSound(musicWho).hasEnded()) {
-                musicPlayer.setMainMusic(String.format("music/%sUnlock.wav", unlocked));
-                musicPlayer.addMusic(String.format("music/%sVoice.wav", unlocked));
-                new Font(Fonts.DEJAVUSANS, 100).drawString(String.format("NEW CHARACTER UNLOCKED: %s!", unlocked), 0, 100);
-                ImagePoint unlockedImage = new ImagePoint(String.format("res/Characters/%s/render.png", unlocked),
-                        new Point(Window.getWidth()/2, Window.getHeight()/2 + 300));
-                unlockedImage.draw();
+                musicPlayer.setMainMusic(String.format("music/characters/%s/UnlockTheme.wav", unlocked));
+                musicPlayer.addMusic(String.format("music/characters/%s/UnlockVoice.wav", unlocked));
+            }
+            if (musicPlayer.hasEnded(musicWho)) {
                 if (input != null && input.wasPressed(MouseButtons.LEFT)) {
                     musicPlayer.clear();
-                    musicPlayer.setMainMusic("music/Fail.wav");
+                    musicPlayer.setMainMusic("music/misc/Game Main Menu.wav");
                     settingsSingleton.setGameState(0);
                 }
-            }
-            else {
-                Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), ColourPresets.BLACK.toColour());
             }
         }
         else if (settingsSingleton.getGameState() == 9) {
@@ -1147,17 +1144,17 @@ public class Game extends AbstractGame {
             }
         }
         else if (settingsSingleton.getGameState() == 11) {
+            if (input != null && input.wasPressed(Keys.ESCAPE)) {
+                settingsSingleton.setGameState(6);
+            }
+        }
+        else if (settingsSingleton.getGameState() == 12) {
             if (!settingsSingleton.getGameStateString().equals("Tutorial")) {
                 settingsSingleton.setGameStateString("Tutorial");
                 map = new Map("Training Ground");
                 map.generateMap();
 
             }
-            if (input != null && input.wasPressed(Keys.ESCAPE)) {
-                settingsSingleton.setGameState(6);
-            }
-        }
-        else if (settingsSingleton.getGameState() == 12) {
         }
 
         try {
@@ -1180,10 +1177,10 @@ public class Game extends AbstractGame {
         if (settingsSingleton.getGameState() == -100) {
             settingsSingleton.setPlayers(2);
             players.get(0).setCharacter(new Character(CharacterNames.MIKU));
-            players.get(0).setSideCharacter(new SideJotaro());
+            players.get(0).setSideCharacter(new SideGojo());
             players.get(0).getCharacter().gainSpecialAbilityBar(500);
             players.get(1).setCharacter(new Character(CharacterNames.MAI));
-            players.get(1).setSideCharacter(new SideDio());
+            players.get(1).setSideCharacter(new SideZoro());
             players.get(1).getCharacter().gainSpecialAbilityBar(500);
             map = new Map("Spooky Spikes");
             map.generateMap();
@@ -1285,9 +1282,6 @@ public class Game extends AbstractGame {
                 drawGame();
                 displayCharacterStats(players);
                 if(!map.hasFinished()) {
-                    if(!playingAnimation) {
-                        drawCollisionBoundaries();
-                    }
                 }
                 else {
                     if (!playingAnimation) {
@@ -1323,14 +1317,20 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 8) {
             Font chooseCharacterFont = new Font(Fonts.DEJAVUSANS, 100);
-            Colour black = new Colour(0, 0, 0,
-                    (float) (musicPlayer.getSound("music/Who.wav").getFrameLength() -
-                            musicPlayer.getSound("music/Who.wav").getFramePosition()) /
-                            (float) musicPlayer.getSound("music/Who.wav").getFrameLength());
+            Colour black = new Colour(0,0,0,0);
             imagePointManagerSingleton.setCurrentBackground(String.format("res/Characters/%s/bg.png", unlocked));
-            if (musicPlayer.getSound("music/Who.wav").hasEnded()) {
-                chooseCharacterFont.drawString(String.format("NEW CHARACTER UNLOCKED: %s!", unlocked), 0, 100);
-                ImagePoint unlockedImage = new ImagePoint(String.format("res/Characters/%s/render.png", unlocked), new Point(Window.getWidth()/2, Window.getHeight()/2 + 300));
+            imagePointManagerSingleton.getCurrentBackground().draw();
+
+            if (musicPlayer.getSound("music/misc/Who.wav") != null) {
+                black = new Colour(0, 0, 0,
+                        (float) (musicPlayer.getSound("music/misc/Who.wav").getFrameLength() -
+                                musicPlayer.getSound("music/misc/Who.wav").getFramePosition()) /
+                                (float) musicPlayer.getSound("music/misc/Who.wav").getFrameLength());
+            }
+            if (musicPlayer.hasEnded("music/misc/Who.wav")) {
+                chooseCharacterFont.drawString("NEW CHARACTER UNLOCKED!", Window.getWidth()/2 - chooseCharacterFont.getWidth("NEW CHARACTER UNLOCKED")/2, 100);
+                ImagePoint unlockedImage = new ImagePoint(String.format("res/Characters/%s/render.png", unlocked), new Point(0,0));
+                unlockedImage.setPos(Window.getWidth()/2 - unlockedImage.getWidth()/2, Window.getHeight() - unlockedImage.getHeight());
                 unlockedImage.draw();
             }
             else {
@@ -1752,18 +1752,21 @@ public class Game extends AbstractGame {
         if (canInteract) {
             int playerIndex = 0;
             for (Player player: players) {
-                ImagePoint characterDisplay = new ImagePoint(String.format("res/characters/%s/inGame.png", player.getCharacter().getFullName()), new Point(0,0));
-                characterDisplay.setPos(playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - characterDisplay.getHeight());
+                ImagePoint characterDisplay = new ImagePoint(String.format("res/characters/%s/Peek.png", player.getCharacter().getFullName()), new Point(0,0));
                 characterDisplay.setScale(1);
-                Colour border = new Colour(0, 0, 0, 0.3);
+                characterDisplay.setPos(playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - (characterDisplay.getHeight() * (characterDisplay.getScale())) );
+                Colour borderC = new Colour(0, 0, 0, 0);
                 if (player.getCharacter().getSpecialAbilityBar() >= 100) {
-                    border = new Colour(255, 255, 0, 0.5);
+                    borderC = new Colour(255, 255, 0, 0.5);
                 }
                 if (player.getCharacter().isMinimised()) {
-                    characterDisplay.setScale(0.5);
+                    characterDisplay.setScale(0.25);
+                    characterDisplay.setPos(new Point(characterDisplay.getPos().x, Window.getHeight() - (characterDisplay.getHeight() * (characterDisplay.getScale())) + 0.27 ));
                 }
 
-                Drawing.drawRectangle(characterDisplay.getWidth() + playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - characterDisplay.getHeight(), 200, characterDisplay.getHeight(), border);
+                Image border = new Image("res/misc/Selected.png");
+                border.drawFromTopLeft(characterDisplay.getPos().x, characterDisplay.getPos().y);
+                Drawing.drawRectangle(characterDisplay.getWidth() + playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - characterDisplay.getHeight(), 200, characterDisplay.getHeight(), borderC);
                 characterDisplay.draw();
 
                 if (player.getCharacter().hasShield()) {
@@ -1798,7 +1801,7 @@ public class Game extends AbstractGame {
         if (isUnlocked(character.getName())) {
             if (isPickable(character)) {
                 eventsListener.addEvent(new EventCharacterPicked( 1*frames, String.format("Player %d picked: %s", player.getId(), character.getFullName())));
-                musicPlayer.addMusic("music/Character Picked.wav");
+                musicPlayer.addMusic("music/misc/Character Picked.wav");
                 player.setCharacter(character);
                 if (!musicPlayer.contains(character.playLine())) {
                     musicPlayer.addMusic(character.playLine());
@@ -1846,7 +1849,7 @@ public class Game extends AbstractGame {
 
     public void pickMap(Player player, Map map) {
         if (player.getMapChosen() == null) {
-            musicPlayer.addMusic("music/Click.wav");
+            musicPlayer.addMusic("music/misc/Click.wav");
             player.setMapChosen(map);
         }
     }
@@ -1893,10 +1896,6 @@ public class Game extends AbstractGame {
         player.getCharacter().setLives(player.getCharacter().getLives() - 1);
     }
 
-    public void drawCollisionBoundaries() {
-        Drawing.drawRectangle(0, Window.getHeight() - 20, Window.getWidth(), 20, ColourPresets.RED.toColour());
-    }
-
     public void updatePlayerMovement(Input input) {
         for (Player player: players) {
             Character character = player.getCharacter();
@@ -1936,7 +1935,7 @@ public class Game extends AbstractGame {
     public void updateAbilities() {
         for (Player player: players) {
             if (player.getSideCharacter().isActivating()) {
-                player.getSideCharacter().activateAbility(player, players, obstacles, powerUps, map);
+                player.getSideCharacter().activateAbility(player, obstacles, powerUps);
             }
         }
     }
@@ -2088,7 +2087,7 @@ public class Game extends AbstractGame {
                 new FontSize(Fonts.DEJAVUSANS, 160),
                 new Rectangle(0, Window.getHeight() / 1.5, Window.getWidth(), 160),
                 ColourPresets.WHITE.toColour()));
-        musicPlayer.setMainMusic("music/Fail.wav");
+        musicPlayer.setMainMusic("music/misc/Fail.wav");
 
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.7));
         Font victoryFont = new Font(Fonts.DEJAVUSANS, 110);
@@ -2231,7 +2230,7 @@ public class Game extends AbstractGame {
     }
 
     public void rotateCharacter(String direction) {
-        musicPlayer.addMusic("music/CharacterNext.wav");
+        musicPlayer.addMusic("music/misc/CharacterNext.wav");
         if (direction.equals("LEFT")) {
             if (settingsSingleton.getGameState() == 3) {
                 Character temp = allCharacters.get(allCharacters.size() - 1);

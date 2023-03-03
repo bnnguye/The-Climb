@@ -24,8 +24,7 @@ public class SideYugi extends SideCharacter{
     }
     public String getPower() { return this.power;}
     public String getDesc() { return this.desc;}
-    public String getSoundPath() {return String.format("music/%s.wav", this.name);}
-
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
 
     public boolean isActivating() {return this.activating;}
     public boolean isAnimating() {
@@ -38,9 +37,11 @@ public class SideYugi extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
+        Map map = GameSettingsSingleton.getInstance().getMap();
+        ArrayList<Player> players = SettingsSingleton.getInstance().getPlayers();
         if(!this.activating) {
-            MusicPlayer.getInstance().addMusic("music/Yugi.wav");
+            MusicPlayer.getInstance().addMusic(getSoundPath());
             this.activating = true;
             exodiaPieces.clear();
             exodiaPiecesCollected.clear();
@@ -84,7 +85,7 @@ public class SideYugi extends SideCharacter{
                     for (Player player: players) {
                         if (player.getId() != user.getId()) {
                             if (!player.getCharacter().isDead()) {
-                                player.getCharacter().setDead(true);
+                                player.getCharacter().setLives(0);
                             }
                         }
                     }
