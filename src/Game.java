@@ -104,9 +104,6 @@ public class Game extends AbstractGame {
 //    private String currentMode;
     private String menuTitle = "";
 
-    double scale = 1;
-    double volumeTest = 0;
-
     Point currentMousePosition;
 
     // Game Settings variables
@@ -1331,6 +1328,10 @@ public class Game extends AbstractGame {
                 chooseCharacterFont.drawString("NEW CHARACTER UNLOCKED!", Window.getWidth()/2 - chooseCharacterFont.getWidth("NEW CHARACTER UNLOCKED")/2, 100);
                 ImagePoint unlockedImage = new ImagePoint(String.format("res/Characters/%s/render.png", unlocked), new Point(0,0));
                 unlockedImage.setPos(Window.getWidth()/2 - unlockedImage.getWidth()/2, Window.getHeight() - unlockedImage.getHeight());
+                if (imagePointManagerSingleton.get(unlockedImage.getFilename()) == null) {
+                    imagePointManagerSingleton.add(unlockedImage);
+                }
+                drawShadowRender(unlocked);
                 unlockedImage.draw();
             }
             else {
@@ -1760,12 +1761,11 @@ public class Game extends AbstractGame {
                     borderC = new Colour(255, 255, 0, 0.5);
                 }
                 if (player.getCharacter().isMinimised()) {
-                    characterDisplay.setScale(0.25);
-                    characterDisplay.setPos(new Point(characterDisplay.getPos().x, Window.getHeight() - (characterDisplay.getHeight() * (characterDisplay.getScale())) + 0.27 ));
+                    new FontSize(Fonts.AGENCYB, 30).draw("MINI!", characterDisplay.getPos().x, characterDisplay.getPos().y);
                 }
 
                 Image border = new Image("res/misc/Selected.png");
-                border.drawFromTopLeft(characterDisplay.getPos().x, characterDisplay.getPos().y);
+                border.drawFromTopLeft(characterDisplay.getPos().x, Window.getHeight() - border.getHeight() );
                 Drawing.drawRectangle(characterDisplay.getWidth() + playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - characterDisplay.getHeight(), 200, characterDisplay.getHeight(), borderC);
                 characterDisplay.draw();
 
@@ -2291,23 +2291,15 @@ public class Game extends AbstractGame {
         return -1;
     }
 
-    public void generateBalls() {
-        if (Math.random() > 0.98) {
-
-        }
-    }
-
     public void drawShadowRender(String charName) {
         double xOffset = -(currentMousePosition.x - Window.getWidth()/2)/Window.getWidth()*100;
         double yOffset = -(currentMousePosition.y - Window.getHeight()/2)/Window.getHeight()*100;
-        if (imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", charName)) != null) {
-            ImagePoint shadow = new ImagePoint(String.format("res/Characters/%s/render.png", charName),
-                    imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", charName)).getPos());
-            shadow.setPos(shadow.getPos().x + xOffset, shadow.getPos().y + yOffset);
-            shadow.setTransparent(true);
-            shadow.setDarken(true);
-            shadow.draw();
-        }
+        ImagePoint shadow = new ImagePoint(String.format("res/Characters/%s/render.png", charName),
+                imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", charName)).getPos());
+        shadow.setPos(shadow.getPos().x + xOffset, shadow.getPos().y + yOffset);
+        shadow.setTransparent(true);
+        shadow.setDarken(true);
+        shadow.draw();
     }
 
     public void loadAllCharacters() {

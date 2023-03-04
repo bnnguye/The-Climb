@@ -34,7 +34,6 @@ public class Character {
         private boolean gojoAbility = false;
 
         private int lives = 1;
-        private boolean dead = false;
 
 
         public Character(String name) {
@@ -162,7 +161,6 @@ public class Character {
                 moving = false;
                 shield = false;
                 gojoAbility = false;
-                dead = false;
         }
 
         public String playLine() {

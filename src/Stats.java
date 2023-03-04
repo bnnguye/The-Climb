@@ -16,6 +16,7 @@ public class Stats {
     int[] statTracker = new int[3];
 
     public Stats() {
+        gameOpened();
         loadPlayerStats();
         loadCharacterStats();
         getGameStats();
@@ -91,6 +92,8 @@ public class Stats {
             charactersStats.add(characterStats);
         }
     }
+
+    public void gameOpened() { statTracker[0] += 1;}
 
     public void updateGameStats(ArrayList<Player> players) {
         statTracker[settingsSingleton.getGameMode() + 1] = statTracker[settingsSingleton.getGameMode() + 1] + 1;

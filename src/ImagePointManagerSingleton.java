@@ -93,8 +93,8 @@ public class ImagePointManagerSingleton {
     }
 
     public void drawImagesWithTag(String tag) {
-        for (ImagePoint characterRender: getAllImagesWithTag(tag)) {
-            characterRender.draw();
+        for (ImagePoint taggedImages: getAllImagesWithTag(tag)) {
+            taggedImages.draw();
         }
     }
 
