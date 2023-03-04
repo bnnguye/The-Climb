@@ -5,4 +5,5 @@ public final class Fonts {
     public static final String CONFORMABLE = "res/fonts/Conformable.otf";
     public static final String TCB = "res/fonts/TCB_____.TTF";
     public static final String AGENCYB = "res/fonts/AGENCYB.TTF";
+    public static final String TITANONE = "res/fonts/TitanOne-Regular.ttf";
 }

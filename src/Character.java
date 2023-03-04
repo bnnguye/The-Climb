@@ -221,6 +221,9 @@ public class Character {
         public void shield() {
                 shield = true;
         }
+        public boolean isSpedUp() {return speedUpTimer > 0;}
+        public boolean isSpedDown() {return speedDownTimer > 0;}
+
 
         public void setLives(int lives) {
                 this.lives = lives;

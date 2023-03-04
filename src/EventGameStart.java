@@ -1,3 +1,4 @@
+import bagel.DrawOptions;
 import bagel.Window;
 
 public class EventGameStart extends  EventInterface {
@@ -12,7 +13,7 @@ public class EventGameStart extends  EventInterface {
 
     public void process() {
         int currentTime = TimeLogger.getInstance().getFrames();
-        FontSize countDownFont = new FontSize(Fonts.STORYTIME, 250);
+        FontSize countDownFont = new FontSize(Fonts.DEJAVUSANS, 250);
         Map map = GameSettingsSingleton.getInstance().getMap();
         canInteract = false;
 
@@ -30,7 +31,8 @@ public class EventGameStart extends  EventInterface {
             MusicPlayer.getInstance().addMusic("music/misc/Start.wav");
         }
         if (frames - currentTime <= 3 * refreshRate) {
-            countDownFont.draw(String.format("%d", (frames - currentTime)/refreshRate + 1), Window.getWidth()/2, Window.getHeight()/2);
+
+            countDownFont.getFont().drawString(String.format("%d", (frames - currentTime)/refreshRate + 1), Window.getWidth()/2 - countDownFont.getFont().getWidth(String.format("%d", (frames - currentTime)/refreshRate + 1))/2, Window.getHeight()/2, new DrawOptions().setBlendColour(ColourPresets.BLACK.toColour()));
         }
     }
 }

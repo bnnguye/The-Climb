@@ -1282,7 +1282,8 @@ public class Game extends AbstractGame {
                 }
                 else {
                     if (!playingAnimation) {
-                        new Font(Fonts.DEJAVUSANS, 100).drawString("CLEAR! REACH THE TOP!", 16, 160, DO.setBlendColour(ColourPresets.BLACK.toColour()));
+                        FontSize tempFont = new FontSize(Fonts.AGENCYB, 100);
+                        tempFont.draw("REACH THE TOP!", Window.getWidth()/2 - tempFont.getFont().getWidth("REACH THE TOP!")/2, 160);
                     }
                 }
                 renderAbilities();
@@ -1754,11 +1755,9 @@ public class Game extends AbstractGame {
             int playerIndex = 0;
             for (Player player: players) {
                 ImagePoint characterDisplay = new ImagePoint(String.format("res/characters/%s/Peek.png", player.getCharacter().getFullName()), new Point(0,0));
-                characterDisplay.setScale(1);
-                characterDisplay.setPos(playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - (characterDisplay.getHeight() * (characterDisplay.getScale())) );
-                Colour borderC = new Colour(0, 0, 0, 0);
+                characterDisplay.setPos(playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - (characterDisplay.getHeight()));
                 if (player.getCharacter().getSpecialAbilityBar() >= 100) {
-                    borderC = new Colour(255, 255, 0, 0.5);
+                    new FontSize(Fonts.TITANONE, 30).getFont().drawString("Power Ready!", characterDisplay.getPos().x, characterDisplay.getPos().y, new DrawOptions().setBlendColour(247d/255, 251d/255, 142d/255));
                 }
                 if (player.getCharacter().isMinimised()) {
                     new FontSize(Fonts.AGENCYB, 30).draw("MINI!", characterDisplay.getPos().x, characterDisplay.getPos().y);
@@ -1766,14 +1765,37 @@ public class Game extends AbstractGame {
 
                 Image border = new Image("res/misc/Selected.png");
                 border.drawFromTopLeft(characterDisplay.getPos().x, Window.getHeight() - border.getHeight() );
-                Drawing.drawRectangle(characterDisplay.getWidth() + playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - characterDisplay.getHeight(), 200, characterDisplay.getHeight(), borderC);
                 characterDisplay.draw();
 
+                int buffs = 0;
+
                 if (player.getCharacter().hasShield()) {
-                    ImagePoint shield = new ImagePoint("res/misc/Shield_Selected.png",
-                            new Point(characterDisplay.getWidth()/2 + playerIndex*Window.getWidth()/(players.size()),
-                                    characterDisplay.getHeight()/2 + Window.getHeight() - characterDisplay.getHeight()));
-                    shield.draw();
+                    ImagePoint shieldIcon = new ImagePoint("res/misc/Shield.png", new Point(0,0));
+                    shieldIcon.setPos(new Point(characterDisplay.getPos().x + buffs * 50,
+                                    Window.getHeight() - shieldIcon.getHeight()));
+                    shieldIcon.draw();
+                    buffs++;
+                }
+                if (player.getCharacter().isMinimised()) {
+                    ImagePoint miniIcon = new ImagePoint("res/PowerUp/Minimiser.png", new Point(0,0));
+                    miniIcon.setPos(new Point(characterDisplay.getPos().x + buffs * 50,
+                            Window.getHeight() - miniIcon.getHeight()));
+                    miniIcon.draw();
+                    buffs++;
+                }
+                if (player.getCharacter().isSpedUp()) {
+                    ImagePoint speedIcon = new ImagePoint("res/PowerUp/SpeedUp.png", new Point(0,0));
+                    speedIcon.setPos(new Point(characterDisplay.getPos().x + buffs * 50,
+                            Window.getHeight() - speedIcon.getHeight()));
+                    speedIcon.draw();
+                    buffs++;
+                }
+                if (player.getCharacter().isSpedDown()) {
+                    ImagePoint slowIcon = new ImagePoint("res/PowerUp/SpeedDown.png", new Point(0,0));
+                    slowIcon.setPos(new Point(characterDisplay.getPos().x + buffs * 50,
+                            Window.getHeight() - slowIcon.getHeight()));
+                    slowIcon.draw();
+                    buffs++;
                 }
 
                 if (!player.getSideCharacter().getName().equals("Yugi")) {
@@ -2066,13 +2088,7 @@ public class Game extends AbstractGame {
         for (Obstacle obstacle: obstacles) {
             obstacle.getImage().drawFromTopLeft(obstacle.getPos().x, obstacle.getPos().y);
         }
-        if (map.hasFinished()) {
-            if (settingsSingleton.getGameState() == 6) {
-                Font titleFont = new Font(Fonts.DEJAVUSANS, 100);
-                titleFont.drawString("CLEAR! REACH THE TOP!", 16, 160, DO.setBlendColour(ColourPresets.BLACK.toColour()));
-            }
-        }
-        else {
+        if (!map.hasFinished()) {
             drawCurrentHeight();
         }
     }
