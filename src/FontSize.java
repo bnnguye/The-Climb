@@ -1,3 +1,4 @@
+import bagel.DrawOptions;
 import bagel.Font;
 
 public class FontSize {
@@ -20,5 +21,9 @@ public class FontSize {
 
     public void draw(String string, double x, double y) {
         font.drawString(string, x, y);
+    }
+
+    public void draw(String string, double x, double y, DrawOptions DO) {
+        font.drawString(string, x, y, DO);
     }
 }

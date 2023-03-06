@@ -11,7 +11,11 @@ public class SideDio extends SideCharacter{
 
     private String name = CharacterNames.DIO;
     private String power = "THE WORLD";
-    private String desc = "";
+    private String desc = "Dio's stand \"The World\", is a supernatural \n" +
+            "ability, that allows the user to stop the tracks\n" +
+            "of time for a few seconds, freezing all objects\n" +
+            "on the entire battlefield. However, there exists a\n" +
+            "special individual that rivals this demonic power.";
 
     boolean activating = false;
     double timer;

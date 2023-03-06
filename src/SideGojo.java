@@ -10,9 +10,12 @@ public class SideGojo extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name = CharacterNames.GOJO;
     private String power = "MUGEN";
-    private String desc = "Gojo Satoru's ability \"Mugen (Infinity)\" is the neutral form of Gojo's base ability" +
-            "\"Mukagen (Limitless)\". When activated, Gojo invokes a gravitational hold in the middle of the battlefield." +
-            "During this time, players will be slowed and gravitate towards the center.";
+    private String desc = "Gojo Satoru's ability \"Mugen (Infinity)\" is the neutral form\n" +
+            "of Gojo's base ability " +
+            "\"Mukagen (Limitless)\". When activated, Gojo invokes\n" +
+            "a gravitational hold in the middle of the battlefield." +
+            "During this time,\n" +
+            "players will be slowed and gravitate towards the center.";
 
     boolean activating = false;
     boolean animating = false;

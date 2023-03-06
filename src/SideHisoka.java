@@ -10,8 +10,9 @@ public class SideHisoka extends SideCharacter{
 
     private String name = CharacterNames.HISOKA;
     private String power = "BUNGEE GUM";
-    private String desc = "Hisoka Morow's signature move \"Bungee Gum\" allows him to trap his opponents by converting" +
-            " his aura into a sticky substance, freezing any character caught within its path for several seconds.";
+    private String desc = "Hisoka Morow's signature move \"Bungee Gum\" allows him\n" +
+            "to trap his opponents by converting his aura into a sticky substance,\n" +
+            "freezing any character caught within its path for several seconds.";
 
     boolean activating = false;
     boolean animating = false;
