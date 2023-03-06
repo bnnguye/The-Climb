@@ -64,6 +64,8 @@ public class Game extends AbstractGame {
     private Tile tile3;
     private int offset = 0;
 
+    private boolean toggleInfo = false;
+
 
     private boolean playingAnimation = false;
     private String unlocked;
@@ -328,6 +330,7 @@ public class Game extends AbstractGame {
                 imagePointManagerSingleton.getImages().clear();
                 buttonsToRemove.addAll(buttons);
                 slidersToRemove.addAll(sliders);
+                toggleInfo = false;
                 int index = 0;
                 double minScale = 0.275;
                 double maxScale = 1;
@@ -1757,12 +1760,10 @@ public class Game extends AbstractGame {
                 ImagePoint characterDisplay = new ImagePoint(String.format("res/characters/%s/Peek.png", player.getCharacter().getFullName()), new Point(0,0));
                 characterDisplay.setPos(playerIndex*Window.getWidth()/(players.size()), Window.getHeight() - (characterDisplay.getHeight()));
                 if (player.getCharacter().getSpecialAbilityBar() >= 100) {
-                    new FontSize(Fonts.TITANONE, 30).getFont().drawString("Power Ready!", characterDisplay.getPos().x, characterDisplay.getPos().y, new DrawOptions().setBlendColour(247d/255, 251d/255, 142d/255));
+                    new FontSize(Fonts.TITANONE, 30).getFont().drawString("Power Ready!",
+                            characterDisplay.getPos().x, characterDisplay.getPos().y,
+                            new DrawOptions().setBlendColour(247d/255, 251d/255, 142d/255));
                 }
-                if (player.getCharacter().isMinimised()) {
-                    new FontSize(Fonts.AGENCYB, 30).draw("MINI!", characterDisplay.getPos().x, characterDisplay.getPos().y);
-                }
-
                 Image border = new Image("res/misc/Selected.png");
                 border.drawFromTopLeft(characterDisplay.getPos().x, Window.getHeight() - border.getHeight() );
                 characterDisplay.draw();
