@@ -401,6 +401,9 @@ public class Game extends AbstractGame {
                     }
                 }
             }
+            if (input != null && input.wasPressed(Keys.I)) {
+                toggleInfo = !toggleInfo;
+            }
         }
         else if (settingsSingleton.getGameState() == 5) { // Map
             if (!settingsSingleton.getGameStateString().equals("MAP")) {
@@ -1184,7 +1187,7 @@ public class Game extends AbstractGame {
             players.get(1).setCharacter(new Character(CharacterNames.MAI));
             players.get(1).setSideCharacter(new SideZoro());
             players.get(1).getCharacter().gainSpecialAbilityBar(500);
-            map = new Map("The Park");
+            map = new Map("Park");
             map.generateMap();
             gameSettingsSingleton.setMap(map);
             settingsSingleton.setGameMode(1);
@@ -1283,6 +1286,8 @@ public class Game extends AbstractGame {
                 Drawing.drawRectangle(new Point(0,0), Window.getWidth(), Window.getHeight()/4 - 30, new Colour(0,0,0));
                 Drawing.drawRectangle(new Point(0,Window.getHeight()*3/4), Window.getWidth(), Window.getHeight()/4, new Colour(0,0,0));
                 // draw string display, load it via event
+                StringDisplay characterInfo = new StringDisplay();
+                if (!stringDisplays.contains())
                 imagePointManagerSingleton.get(String.format("res/SideCharacters/%s/render.png", currentCharacter.getName())).draw();
 
             }

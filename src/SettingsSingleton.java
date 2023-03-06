@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class SettingsSingleton {
 
-    private final int refreshRate = 144;
+    private final int refreshRate = 60;
     private static SettingsSingleton single_instance = null;
     private static int gameState = -1;
     private static int gameMode = 0;
