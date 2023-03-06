@@ -96,7 +96,7 @@ public class SideHisoka extends SideCharacter{
     public void renderAbility() {
         if (timer > 8*frames) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
-            Image special = new Image("res/sidecharacters/Hisoka/special.png");
+            Image special = new Image("res/sidecharacters/Hisoka Morow/special.png");
             Colour darken = new Colour(0, 0, 0, 0.5);
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
             special.drawFromTopLeft(0,0);

@@ -193,7 +193,7 @@ public class Character {
         public boolean isDead() {
                 return lives <= 0;
         }
-        public void gotStunned() {stunTimer = frames;}
+        public void gotStunned() {stunTimer = 3 * frames;}
         public Rectangle getRectangle() {return new Rectangle(pos.x, pos.y, this.rectangle.right()- this.rectangle.left(), this.rectangle.bottom() - this.rectangle.top());}
 
         public boolean canMove() { return !(stunTimer > 0);

@@ -40,7 +40,7 @@ public class SideYuu extends SideCharacter{
 
     public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         if (!this.activating) {
-            MusicPlayer.getInstance().addMusic("music/Yuu.wav");
+            MusicPlayer.getInstance().addMusic("music/sidecharacters/YUU OTOSAKA/YUU OTOSAKA.wav");
             this.activating = true;
             this.timer = 2 * frames;
         }

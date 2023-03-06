@@ -137,6 +137,5 @@ public class Map {
 
     public void descend() {
         updateTiles(-20);
-        System.out.println(currentHeight);
     }
 }

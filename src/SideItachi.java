@@ -44,7 +44,9 @@ public class SideItachi extends SideCharacter{
     public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         this.obstacles = obstacles;
         this.powerUps = powerUps;
-        MusicPlayer.getInstance().addMusic(getSoundPath());
+        if (!MusicPlayer.getInstance().contains(getSoundPath()) && !MusicPlayer.getInstance().hasEnded(getSoundPath())) {
+            MusicPlayer.getInstance().addMusic(getSoundPath());
+        }
         if (!this.activating) {
             timer = 8*frames;
             this.activating = true;
@@ -69,7 +71,7 @@ public class SideItachi extends SideCharacter{
     }
 
     public void setPowerUps(ArrayList<PowerUp> powerUps) {this.powerUps = powerUps;}
-    public void setLeft(boolean left) {
+    public void setDecoyOnLeft(boolean left) {
         if (this.animating) {
             if (left) {
                 this.left = true;
@@ -84,7 +86,7 @@ public class SideItachi extends SideCharacter{
         if (timer > 4*frames) {
             Colour darken = new Colour(0, 0, 0, 0.5);
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
-            Image special = new Image("res/sidecharacters/Itachi/special.png");
+            Image special = new Image("res/sidecharacters/ITACHI UCHIHA/special.png");
             special.drawFromTopLeft(0,0);
         }
         else {

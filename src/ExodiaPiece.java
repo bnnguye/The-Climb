@@ -9,7 +9,7 @@ public class ExodiaPiece {
 
     public ExodiaPiece(String name, Point pos) {
         this.name = name;
-        this.image = new Image(String.format("res/sidecharacters/Yugi/Cards/%s.png", this.name));
+        this.image = new Image(String.format("res/sidecharacters/YAMI YUGI/Cards/%s.png", this.name));
         this.pos = pos;
     }
 

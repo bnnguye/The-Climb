@@ -1197,12 +1197,12 @@ public class Game extends AbstractGame {
         if (settingsSingleton.getGameState() == -100) {
             settingsSingleton.setPlayers(2);
             players.get(0).setCharacter(new Character(CharacterNames.MIKU));
-            players.get(0).setSideCharacter(new SideGojo());
+            players.get(0).setSideCharacter(new SideYugi());
             players.get(0).getCharacter().gainSpecialAbilityBar(500);
             players.get(1).setCharacter(new Character(CharacterNames.MAI));
-            players.get(1).setSideCharacter(new SideZoro());
+            players.get(1).setSideCharacter(new SideYuu());
             players.get(1).getCharacter().gainSpecialAbilityBar(500);
-            map = new Map("Park");
+            map = new Map("Training Ground");
             map.generateMap();
             gameSettingsSingleton.setMap(map);
             settingsSingleton.setGameMode(1);

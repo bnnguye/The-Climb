@@ -40,6 +40,9 @@ public class SideAllMight extends SideCharacter{
         if(!this.activating) {
             this.activating = true;
             this.timer = 10 * frames;
+            if (!MusicPlayer.getInstance().contains(getSoundPath()) && !MusicPlayer.getInstance().hasEnded(getSoundPath())) {
+                MusicPlayer.getInstance().addMusic(getSoundPath());
+            }
         }
 
         if (this.timer > 8*frames) {
