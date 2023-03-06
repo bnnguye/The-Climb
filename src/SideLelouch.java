@@ -11,8 +11,12 @@ public class SideLelouch extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
 
     private String name = CharacterNames.LELOUCH;
-    private String power = "CODE GEASS";
-    private String desc = "";
+    private String power = "GEASS";
+    private String desc = "Lelouch's Geass, bestowed upon him by C.C., gives him \n" +
+            "\"The Power of Absolute Obedience\", allowing him to command\n" +
+            "his targets at will, granted they are within his scope of vision.\n" +
+            "When his ability is cast and his opponents are within his line of sight,\n" +
+            "they will die immediately.";
 
     boolean activating = false;
     boolean animating = false;

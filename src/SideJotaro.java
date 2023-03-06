@@ -11,7 +11,7 @@ public class SideJotaro extends SideCharacter{
 
     private String name = CharacterNames.JOTARO;
     private String power = "STAR PLATINUM: THE WORLD";
-    private String desc = "Jotaro call his Stand \"Star Platinum\" out and uses his ultimate\n" +
+    private String desc = "Jotaro calls his Stand \"Star Platinum\" out and uses his ultimate\n" +
             "ability, \"The World\", stopping time in its tracks for several seconds.\n" +
             "This unique ability was curated within the Kujo blood, however rumors\n" +
             "say a certain vampire has honed this ability as well,\n" +

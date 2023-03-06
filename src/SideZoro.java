@@ -11,7 +11,8 @@ public class SideZoro extends SideCharacter{
     private final double frames = SettingsSingleton.getInstance().getRefreshRate();
     private String name = CharacterNames.ZORO;
     private String power = "PURGATORY ONIGIRI";
-    private String desc = "";
+    private String desc = "Zoro strikes the battlefield with three slashes,\n" +
+            "eliminating all objects and opponents at the end of his sword attacks.";
 
 
     boolean activating = false;

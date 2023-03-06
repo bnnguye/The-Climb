@@ -12,9 +12,9 @@ public class SideItachi extends SideCharacter{
     private String name = CharacterNames.ITACHI;
     private String power = "INFINITE TSUKUYOMI";
     private String desc = "Itachi activates his unique ability \"Infinite Tsukuyomi\"\n," +
-            " sending all those who look into his left eye into a hallucination.\n" +
-            " Those strong enough will be sent into a state of confusion, while\n" +
-            "the rest have their lives in the hands of the shinobi.";
+            "sending all those who look into his left eye into a hallucination.\n" +
+            "Those strong enough will be sent into a state of confusion, while\n" +
+            "the rest have their lives taken by the hands of the shinobi.";
 
     boolean activating = false;
     double timer;

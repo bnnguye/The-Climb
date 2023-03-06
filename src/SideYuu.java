@@ -11,7 +11,8 @@ public class SideYuu extends SideCharacter{
 
     private String name = CharacterNames.YUU;
     private String power = "PLUNDER";
-    private String desc = "";
+    private String desc = "Yuu's ability \"Plunder\", allows him to take control of his nearest\n" +
+            "opponent briefly, copying their ability and using it as his own.";
 
     boolean activating = false;
     boolean animating = false;

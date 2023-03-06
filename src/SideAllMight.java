@@ -8,7 +8,7 @@ public class SideAllMight extends SideCharacter{
     private String name = CharacterNames.ALLMIGHT;
     private String power = "ONE FOR ALL";
     private String desc = "All Might's One For All allows All Might to take over\n" +
-            " the opponents on the battlefield through his immense will \n" +
+            "the opponents on the battlefield through his immense will \n" +
             "and power. Gain enhanced movement speed and invulnerability\n" +
             " to objects flying " +
             "from the sky for a brief period.";

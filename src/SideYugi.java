@@ -11,7 +11,11 @@ public class SideYugi extends SideCharacter{
 
     private String name = CharacterNames.YUGI;
     private String power = "EXODIA";
-    private String desc = "";
+    private String desc = "Yugi's deck was given to him by his grandpa, which has\n" +
+            "no bad cards. Specifically, it contains the (5) pieces of Exodia.\n" +
+            "At the start of the game, Yugi transforms, and thus starts\n" +
+            "finding the pieces of Exodia. When all 5 are in his hands,\n" +
+            "Exodia is summoned and obliterates his opponents!";
 
     boolean activating = false;
     double timer;
