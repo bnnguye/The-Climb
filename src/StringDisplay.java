@@ -9,6 +9,8 @@ public class StringDisplay {
     private boolean permanent = false;
     private Font font;
 
+    public String tag = "N/A";
+
     public StringDisplay(String name, double time, int fontSize, Point point) {
         this.time = time;
         this.name = name;
@@ -21,6 +23,23 @@ public class StringDisplay {
         this.name = name;
         this.font = new Font("res/fonts/DejaVuSans-Bold.ttf", fontSize);
         this.permanent = bool;
+        topLeft = point;
+    }
+
+    public StringDisplay(String name, double time, int fontSize, Point point, String tag) {
+        this.time = time;
+        this.name = name;
+        this.font = new Font("res/fonts/DejaVuSans-Bold.ttf", fontSize);
+        this.tag = tag;
+        topLeft = point;
+    }
+
+    public StringDisplay(String name, boolean bool, int fontSize, Point point, String tag) {
+        this.time = time*SettingsSingleton.getInstance().getRefreshRate();
+        this.name = name;
+        this.font = new Font("res/fonts/DejaVuSans-Bold.ttf", fontSize);
+        this.permanent = bool;
+        this.tag = tag;
         topLeft = point;
     }
 

@@ -358,6 +358,9 @@ public class Game extends AbstractGame {
                 }
             }
 
+            SideCharacter currentCharacter = allSideCharacters.get(allSideCharacters.size() % 2 == 1 ?
+                    allSideCharacters.size() / 2 + 1 : allSideCharacters.size() / 2);
+
             if (!toggleInfo) {
                 Player currentPlayer = players.get(0);
                 for (Player player: players) {
@@ -366,9 +369,6 @@ public class Game extends AbstractGame {
                         break;
                     }
                 }
-
-                SideCharacter currentCharacter = allSideCharacters.get(allSideCharacters.size() % 2 == 1 ?
-                        allSideCharacters.size() / 2 + 1 : allSideCharacters.size() / 2);
                 imagePointManagerSingleton.setCurrentBackground((String.format("res/sidecharacters/%s/bg.png", currentCharacter.getName())));
 
                 if (input != null && input.isDown(Keys.RIGHT)) {
@@ -399,6 +399,18 @@ public class Game extends AbstractGame {
                         player.setSideCharacter(null);
                         player.setCharacter(null);
                     }
+                }
+            }
+            else {
+                // draw string display, load it via event
+                if (!exists(currentCharacter.getDesc())) {
+                    stringDisplays.add(new StringDisplay(currentCharacter.getDesc(), true, 30, new Point(50, 50)));
+                }
+                if (!exists(currentCharacter.getName())) {
+                    stringDisplays.add(new StringDisplay(currentCharacter.getName(), true, 30, new Point(0,0)));
+                }
+                if (!exists(currentCharacter.getPower())) {
+                    stringDisplays.add(new StringDisplay(currentCharacter.getPower(), true, 30, new Point(30,30)));
                 }
             }
             if (input != null && input.wasPressed(Keys.I)) {
@@ -1285,9 +1297,6 @@ public class Game extends AbstractGame {
             else {
                 Drawing.drawRectangle(new Point(0,0), Window.getWidth(), Window.getHeight()/4 - 30, new Colour(0,0,0));
                 Drawing.drawRectangle(new Point(0,Window.getHeight()*3/4), Window.getWidth(), Window.getHeight()/4, new Colour(0,0,0));
-                // draw string display, load it via event
-                StringDisplay characterInfo = new StringDisplay();
-                if (!stringDisplays.contains())
                 imagePointManagerSingleton.get(String.format("res/SideCharacters/%s/render.png", currentCharacter.getName())).draw();
 
             }
@@ -2441,5 +2450,14 @@ public class Game extends AbstractGame {
             player.getCharacter().setLives(gameSettingsSingleton.getLives());
         }
         setPlayersPosition();
+    }
+
+    public boolean exists(String string) {
+        for (StringDisplay stringDisplay: stringDisplays) {
+            if (stringDisplay.getName().equals(string)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
