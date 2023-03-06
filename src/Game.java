@@ -67,6 +67,7 @@ public class Game extends AbstractGame {
     private boolean toggleInfo = false;
 
 
+    private boolean toggleInfo = false;
     private boolean playingAnimation = false;
     private String unlocked;
     private boolean canInteract = eventsListenerSingleton.isCanInteract();
@@ -358,46 +359,64 @@ public class Game extends AbstractGame {
                     index++;
                 }
             }
-            Player currentPlayer = players.get(0);
-            for (Player player: players) {
-                if (player.getSideCharacter() == null) {
-                    currentPlayer = player;
-                    break;
-                }
-            }
 
             SideCharacter currentCharacter = allSideCharacters.get(allSideCharacters.size() % 2 == 1 ?
                     allSideCharacters.size() / 2 + 1 : allSideCharacters.size() / 2);
-            imagePointManagerSingleton.setCurrentBackground((String.format("res/sidecharacters/%s/bg.png", currentCharacter.getName())));
 
-            if (input != null && input.isDown(Keys.RIGHT)) {
-                eventsListener.addEvent(new EventSideCharacterRotate(frames/8, "Rotate LEFT"));
-                rotateCharacter("LEFT");
-            } else if (input != null && input.isDown(Keys.LEFT)) {
-                eventsListener.addEvent(new EventSideCharacterRotate(frames/8, "Rotate RIGHT"));
-                rotateCharacter("RIGHT");
-            }
-
-            if (input != null && input.wasPressed(Keys.SPACE)) {
-                pickSideCharacter(currentPlayer, currentCharacter);
-            }
-
-            boolean picked = true;
-            for (Player player: players) {
-                if (player.getSideCharacter() == null) {
-                    picked = false;
-                }
-            }
-            if (picked) {
-                eventsListener.addEvent(new EventSideCharactersPicked(3 * frames, "All players have picked a side character"));
-            }
-
-            if (input != null && input.wasPressed(Keys.ESCAPE)) {
-                settingsSingleton.setGameState(3);
+            if (!toggleInfo) {
+                Player currentPlayer = players.get(0);
                 for (Player player: players) {
-                    player.setSideCharacter(null);
-                    player.setCharacter(null);
+                    if (player.getSideCharacter() == null) {
+                        currentPlayer = player;
+                        break;
+                    }
                 }
+                imagePointManagerSingleton.setCurrentBackground((String.format("res/sidecharacters/%s/bg.png", currentCharacter.getName())));
+
+                if (input != null && input.isDown(Keys.RIGHT)) {
+                    eventsListener.addEvent(new EventSideCharacterRotate(frames/8, "Rotate LEFT"));
+                    rotateCharacter("LEFT");
+                } else if (input != null && input.isDown(Keys.LEFT)) {
+                    eventsListener.addEvent(new EventSideCharacterRotate(frames/8, "Rotate RIGHT"));
+                    rotateCharacter("RIGHT");
+                }
+
+                if (input != null && input.wasPressed(Keys.SPACE)) {
+                    pickSideCharacter(currentPlayer, currentCharacter);
+                }
+
+                boolean picked = true;
+                for (Player player: players) {
+                    if (player.getSideCharacter() == null) {
+                        picked = false;
+                    }
+                }
+                if (picked) {
+                    eventsListener.addEvent(new EventSideCharactersPicked(3 * frames, "All players have picked a side character"));
+                }
+
+                if (input != null && input.wasPressed(Keys.ESCAPE)) {
+                    settingsSingleton.setGameState(3);
+                    for (Player player: players) {
+                        player.setSideCharacter(null);
+                        player.setCharacter(null);
+                    }
+                }
+            }
+            else {
+                // draw string display, load it via event
+                if (!exists(currentCharacter.getDesc())) {
+                    stringDisplays.add(new StringDisplay(currentCharacter.getDesc(), true, 30, new Point(50, 50)));
+                }
+                if (!exists(currentCharacter.getName())) {
+                    stringDisplays.add(new StringDisplay(currentCharacter.getName(), true, 30, new Point(0,0)));
+                }
+                if (!exists(currentCharacter.getPower())) {
+                    stringDisplays.add(new StringDisplay(currentCharacter.getPower(), true, 30, new Point(30,30)));
+                }
+            }
+            if (input != null && input.wasPressed(Keys.I)) {
+                toggleInfo = !toggleInfo;
             }
         }
         else if (settingsSingleton.getGameState() == 5) { // Map
@@ -1182,7 +1201,7 @@ public class Game extends AbstractGame {
             players.get(1).setCharacter(new Character(CharacterNames.MAI));
             players.get(1).setSideCharacter(new SideZoro());
             players.get(1).getCharacter().gainSpecialAbilityBar(500);
-            map = new Map("Spooky Spikes");
+            map = new Map("Park");
             map.generateMap();
             gameSettingsSingleton.setMap(map);
             settingsSingleton.setGameMode(1);
@@ -1256,25 +1275,33 @@ public class Game extends AbstractGame {
             Drawing.drawRectangle(new Point(0,0), Window.getWidth(), Window.getHeight()/4 - 30, new Colour(0,0,0,0.8));
             Drawing.drawRectangle(new Point(0,Window.getHeight()*3/4), Window.getWidth(), Window.getHeight()/4, new Colour(0,0,0,0.8));
 
-            if (isPickable(currentCharacter) && isUnlocked(currentCharacter.getName())) {
-                FontSize characterFont = new FontSize(Fonts.TCB, 120);
-                String firstName = currentCharacter.getName().split(" ")[0];
-                String lastName = "";
-                if (currentCharacter.getName().split(" ").length > 1) {
-                    lastName = currentCharacter.getName().split(" ")[1];
+            if (!toggleInfo) {
+                if (isPickable(currentCharacter) && isUnlocked(currentCharacter.getName())) {
+                    FontSize characterFont = new FontSize(Fonts.TCB, 120);
+                    String firstName = currentCharacter.getName().split(" ")[0];
+                    String lastName = "";
+                    if (currentCharacter.getName().split(" ").length > 1) {
+                        lastName = currentCharacter.getName().split(" ")[1];
+                    }
+                    characterFont.draw(firstName, Window.getWidth()/5
+                            - characterFont.getFont().getWidth(firstName)/2, Window.getHeight()/2);
+                    characterFont.draw(lastName, Window.getWidth()*4/5
+                            - characterFont.getFont().getWidth(lastName)/2, Window.getHeight()/2);
                 }
-                characterFont.draw(firstName, Window.getWidth()/5
-                        - characterFont.getFont().getWidth(firstName)/2, Window.getHeight()/2);
-                characterFont.draw(lastName, Window.getWidth()*4/5
-                        - characterFont.getFont().getWidth(lastName)/2, Window.getHeight()/2);
-            }
 
-            if (isPickable(currentCharacter)) {
-                imagePointManagerSingleton.get(String.format("res/SideCharacters/%s/render.png", currentCharacter.getName())).setTransparent(false);
-            }
-            drawBorders(currentCharacter);
+                if (isPickable(currentCharacter)) {
+                    imagePointManagerSingleton.get(String.format("res/SideCharacters/%s/render.png", currentCharacter.getName())).setTransparent(false);
+                }
+                drawBorders(currentCharacter);
 
-            imagePointManagerSingleton.drawImagesWithTag("SideCharacterRender");
+                imagePointManagerSingleton.drawImagesWithTag("SideCharacterRender");
+            }
+            else {
+                Drawing.drawRectangle(new Point(0,0), Window.getWidth(), Window.getHeight()/4 - 30, new Colour(0,0,0));
+                Drawing.drawRectangle(new Point(0,Window.getHeight()*3/4), Window.getWidth(), Window.getHeight()/4, new Colour(0,0,0));
+                imagePointManagerSingleton.get(String.format("res/SideCharacters/%s/render.png", currentCharacter.getName())).draw();
+
+            }
         }
         else if (settingsSingleton.getGameState() == 6) {
             if (settingsSingleton.getGameMode() == 1) {
@@ -2423,5 +2450,14 @@ public class Game extends AbstractGame {
             player.getCharacter().setLives(gameSettingsSingleton.getLives());
         }
         setPlayersPosition();
+    }
+
+    public boolean exists(String string) {
+        for (StringDisplay stringDisplay: stringDisplays) {
+            if (stringDisplay.getName().equals(string)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
