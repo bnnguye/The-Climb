@@ -528,9 +528,6 @@ public class Game extends AbstractGame {
                     boolean playingAnimation = false;
                     boolean theWorld = false;
                     for (Player player: players) {
-                        if (player.getSideCharacter().getName().equals(CharacterNames.YUGI)) {
-                            player.getSideCharacter().activateAbility(player, obstacles, powerUps);
-                        }
                         if (player.getCharacter().hasSpecialAbility()) {
                             if (input != null && input.wasPressed(player.getControl("Primary"))) {
                                 player.getCharacter().useSpecialAbility();
@@ -1825,7 +1822,7 @@ public class Game extends AbstractGame {
                     buffs++;
                 }
 
-                if (!player.getSideCharacter().getName().equals("Yugi")) {
+                if (!player.getSideCharacter().getName().equals(CharacterNames.YUGI)) {
                     ImagePoint sideCharacter = new ImagePoint(String.format("res/sideCharacters/%s/inGame.png", player.getSideCharacter().getName()),
                             new Point(0,0));
                     sideCharacter.setPos(characterDisplay.getWidth() + playerIndex*Window.getWidth()/players.size(),
