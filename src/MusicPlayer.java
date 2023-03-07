@@ -72,7 +72,6 @@ public class MusicPlayer {
     }
 
     public void clear() {
-
         for (Music music: musics) {
             music.stop();
         }

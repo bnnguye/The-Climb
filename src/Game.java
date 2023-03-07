@@ -66,7 +66,6 @@ public class Game extends AbstractGame {
 
     private boolean toggleInfo = false;
 
-    private boolean playingAnimation = false;
     private String unlocked;
     private boolean canInteract = eventsListenerSingleton.isCanInteract();
 
@@ -507,24 +506,6 @@ public class Game extends AbstractGame {
                     canInteract = false;
                 }
                 if (canInteract) {
-                    if(!map.hasFinished()) {
-                        if(!playingAnimation) {
-                            musicPlayer.setMainVolume(musicPlayer.getMaxMainVol());
-                            spawnObstacles();
-                            spawnPowerUps();
-                        }
-                    }
-                    else {
-                        for (Player player : players) {
-                            if (player.getCharacter().getPos().distanceTo(
-                                    new Point(player.getCharacter().getPos().x, 0)) < 10) {
-                                settingsSingleton.setGameState(7);
-                                settingsSingleton.setWinner(player);
-                                settingsSingleton.setGameStateString("Game Finished");
-                                break;
-                            }
-                        }
-                    }
                     boolean playingAnimation = false;
                     boolean theWorld = false;
                     for (Player player: players) {
@@ -543,6 +524,24 @@ public class Game extends AbstractGame {
                         if (player.getSideCharacter().isAnimating()) {
                             musicPlayer.setMainVolume(0);
                             playingAnimation = true;
+                        }
+                    }
+                    if(!map.hasFinished()) {
+                        if(!playingAnimation) {
+                            musicPlayer.setMainVolume(musicPlayer.getMaxMainVol());
+                            spawnObstacles();
+                            spawnPowerUps();
+                        }
+                    }
+                    else {
+                        for (Player player : players) {
+                            if (player.getCharacter().getPos().distanceTo(
+                                    new Point(player.getCharacter().getPos().x, 0)) < 10) {
+                                settingsSingleton.setGameState(7);
+                                settingsSingleton.setWinner(player);
+                                settingsSingleton.setGameStateString("Game Finished");
+                                break;
+                            }
                         }
                     }
                     if (!playingAnimation) {
@@ -964,6 +963,7 @@ public class Game extends AbstractGame {
 //            }
         }
         else if (settingsSingleton.getGameState() == 7) {
+            musicPlayer.getMainMusic().setVolume(musicPlayer.getMaxMainVol());
             if (settingsSingleton.getGameMode() == 0) {
                 if (settingsSingleton.getGameStateString().equals("Continue")) {
                     musicPlayer.restart(null);
@@ -1307,10 +1307,8 @@ public class Game extends AbstractGame {
                 if(!map.hasFinished()) {
                 }
                 else {
-                    if (!playingAnimation) {
-                        FontSize tempFont = new FontSize(Fonts.AGENCYB, 100);
-                        tempFont.draw("REACH THE TOP!", Window.getWidth()/2 - tempFont.getFont().getWidth("REACH THE TOP!")/2, 160);
-                    }
+                    FontSize tempFont = new FontSize(Fonts.AGENCYB, 100);
+                    tempFont.draw("REACH THE TOP!", Window.getWidth()/2 - tempFont.getFont().getWidth("REACH THE TOP!")/2, 160);
                 }
                 renderAbilities();
             }

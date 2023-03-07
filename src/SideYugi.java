@@ -63,22 +63,21 @@ public class SideYugi extends SideCharacter{
 
         else {
             ArrayList<ExodiaPiece> exodiaPiecesToRemove = new ArrayList<>();
-            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, (5 - exodiaPieces.size()) * 0.03));
             for (ExodiaPiece exodiaPiece : exodiaPieces) {
                 exodiaPiece.move();
-                if (exodiaPiece.getImage().getBoundingBoxAt(exodiaPiece.getPos()).intersects(user.getCharacter().getImage().getBoundingBoxAt(user.getCharacter().getPos()))) {
+                if (exodiaPiece.getImage().getBoundingBoxAt(new Point(exodiaPiece.getPos().x - exodiaPiece.getImage().getWidth()/2, exodiaPiece.getPos().y - exodiaPiece.getImage().getHeight()/2)).intersects(user.getCharacter().getImage().getBoundingBoxAt(user.getCharacter().getPos()))) {
                     exodiaPiecesToRemove.add(exodiaPiece);
                     exodiaPiecesCollected.add(exodiaPiece);
                 }
                 for (Player player : players) {
                     if (player.getId() != user.getId()) {
-                        if (exodiaPiece.getImage().getBoundingBoxAt(exodiaPiece.getPos()).intersects(player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()))) {
+                        if (exodiaPiece.getImage().getBoundingBoxAt(new Point(exodiaPiece.getPos().x - exodiaPiece.getImage().getWidth()/2, exodiaPiece.getPos().y - exodiaPiece.getImage().getHeight()/2)).intersects(player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()))) {
                             exodiaPiece.setPos(new Point(exodiaPiece.getPos().x, Window.getHeight() + 200));
                         }
                     }
                 }
                 if (exodiaPiece.getPos().y > Window.getHeight()) {
-                    exodiaPiece.setPos(new Point(exodiaPiece.getPos().x, -Window.getHeight() - map.getCurrentHeight() - Math.random() * (map.getHeight() - map.getCurrentHeight())));
+                    exodiaPiece.setPos(new Point(exodiaPiece.getPos().x, -2*Window.getHeight()));
                 }
             }
             exodiaPieces.removeAll(exodiaPiecesToRemove);
@@ -112,9 +111,9 @@ public class SideYugi extends SideCharacter{
 
     public void renderAbility() {
         for (ExodiaPiece exodiaPiece : exodiaPieces) {
-            System.out.println(exodiaPiece.getPos());
             exodiaPiece.getImage().draw(exodiaPiece.getPos().x, exodiaPiece.getPos().y);
         }
+        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, (5 - exodiaPieces.size()) * 0.03));
         if (animating) {
             if (exodiaPiecesCollected.size() != 5) {
                 Image moto = new Image("res/sidecharacters/YAMI YUGI/Moto.png");
