@@ -589,9 +589,6 @@ public class Game extends AbstractGame {
                             }
                         }
                     }
-                    if (input != null && input.wasPressed(Keys.ESCAPE)) {
-                        settingsSingleton.setGameState(11);
-                    }
                 }
             }
 //            else {
@@ -962,6 +959,9 @@ public class Game extends AbstractGame {
 //                    }
 //                }
 //            }
+            if (input != null && input.wasPressed(Keys.ESCAPE)) {
+                settingsSingleton.setGameState(11);
+            }
         }
         else if (settingsSingleton.getGameState() == 7) {
             musicPlayer.getMainMusic().setVolume(musicPlayer.getMaxMainVol());
@@ -1034,7 +1034,7 @@ public class Game extends AbstractGame {
                 }
             }
         }
-        if (settingsSingleton.getGameState() == 8) {
+        else if (settingsSingleton.getGameState() == 8) {
             String musicWho = "music/misc/Who.wav";
             musicPlayer.getMainMusic().setVolume(musicPlayer.getMaxMainVol());
             if (!settingsSingleton.getGameStateString().equals("Unlocked")) {
@@ -1061,7 +1061,7 @@ public class Game extends AbstractGame {
                 map = new Map("Custom");
                 map.generateMap();
                 customMapTiles.removeAll(customMapTiles);
-                for (Tile tile: map.getTiles()) {
+                for (Tile tile : map.getTiles()) {
                     customMapTiles.add(tile);
                 }
                 buttonsToRemove.addAll(buttons);
@@ -1069,6 +1069,7 @@ public class Game extends AbstractGame {
                 imagePointManagerSingleton.setCurrentBackground(null);
                 menuTitle = null;
             }
+            System.out.println(offset);
 
             if (!addingTile) {
                 if (input != null && input.isDown(Keys.UP)) {
@@ -1097,6 +1098,12 @@ public class Game extends AbstractGame {
                 if (input != null && input.wasPressed(Keys.R)) {
                     if (customMapTiles.size() > 0) {
                         customMapTiles.remove(customMapTiles.size() - 1);
+                    }
+                }
+                if (input != null && input.wasPressed(Keys.D)) {
+                    while (offset > 0) {
+                        updateTiles(-15);
+                        offset--;
                     }
                 }
                 if (input != null && input.wasPressed(Keys.ESCAPE)) {
@@ -1373,7 +1380,7 @@ public class Game extends AbstractGame {
                 tile.draw();
             }
             if (!addingTile) {
-                playerFont.drawString("S: Save and Exit ESC: Exit without Saving Arrow Keys: Navigate\nA: Add, R: Remove last block", 100, 50);
+                playerFont.drawString("S: Save and Exit | ESC: Exit without Saving | Arrow Keys: Navigate\nA: Add | R: Remove last block | D: Jump to start", 100, 50);
             }
             else {
                 Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), ColourPresets.DARK.toColour());
@@ -1482,7 +1489,6 @@ public class Game extends AbstractGame {
                 achievementLine.remove(achievementLine.size() - 1);
                 String existingChar = String.join(" ", achievementLine);
                 if (stats.hasPassedThreshold(existingChar, threshold)) {
-                    System.out.println(newCharacter);
                     addToPlayableCharacter(newCharacter);
                 }
             }
