@@ -86,6 +86,7 @@ public class SideYugi extends SideCharacter{
                     this.animating = true;
                     timer = 18 * frames;
                     MusicPlayer.getInstance().addMusic("music/sidecharacters/YAMI YUGI/Exodia.wav");
+                    MusicPlayer.getInstance().setMainVolume(0);
                 }
                 if (timer == 0) {
                     for (Player player : players) {
@@ -97,6 +98,7 @@ public class SideYugi extends SideCharacter{
                     }
                     this.animating = false;
                     this.activating = false;
+                    MusicPlayer.getInstance().setMainVolume(MusicPlayer.getInstance().getMaxMainVol());
                 }
             }
         }

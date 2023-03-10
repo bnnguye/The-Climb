@@ -205,6 +205,7 @@ public class Game extends AbstractGame {
                 imagePointManagerSingleton.getImages().clear();
                 imagePointManagerSingleton.setCurrentBackground("res/menu/MainMenu.PNG");
                 musicPlayer.setMainMusic("music/misc/Game Main Menu.wav");
+                musicPlayer.getMainMusic().setVolume(musicPlayer.getMaxMainVol());
             }
         }
         else if (settingsSingleton.getGameState() == 1) {
@@ -964,36 +965,31 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 7) {
             musicPlayer.getMainMusic().setVolume(musicPlayer.getMaxMainVol());
+            for (Player player : players) {
+                player.getCharacter().reset();
+                if (player.getSideCharacter() != null) {
+                    player.getSideCharacter().reset();
+                }
+            }
+            powerUps.removeAll(powerUps);
+            obstacles.removeAll(obstacles);
             if (settingsSingleton.getGameMode() == 0) {
                 if (settingsSingleton.getGameStateString().equals("Continue")) {
                     musicPlayer.restart(null);
                     buttonsToRemove.addAll(buttons);
                     settingsSingleton.setGameState(6);
                     map.generateMap();
-                    for (Player player : players) {
-                        player.getCharacter().reset();
-                    }
-                    setPlayersPosition();
-                    powerUps.removeAll(powerUps);
-                    obstacles.removeAll(obstacles);
                 }
                 else if (settingsSingleton.getGameStateString().equals("Menu")) {
                     settingsSingleton.setGameState(0);
-                    for (Player player : players) {
-                        player.getCharacter().reset();
-                        player.reset();
-                    }
-                    setPlayersPosition();
-                    powerUps.removeAll(powerUps);
-                    obstacles.removeAll(obstacles);
                 }
             }
             else {
                 if (settingsSingleton.getGameStateString().equalsIgnoreCase("Game Finished")) {
                     settingsSingleton.setGameStateString("Retry or Menu?");
                     musicPlayer.setMainMusic("music/misc/Fail.wav");
-                    stats.updateGameStats(players);
                     musicPlayer.addMusic(settingsSingleton.getWinner().getCharacter().playLine());
+                    stats.updateGameStats(players);
                     buttonsToRemove.addAll(buttons);
                     buttons.add(new Button("Back To Start", "Main Menu",
                             new FontSize(Fonts.DEJAVUSANS, 160),
@@ -1015,6 +1011,10 @@ public class Game extends AbstractGame {
                         }
                     } else if (settingsSingleton.getGameStateString().equals("Menu")) {
                         for (Player player : players) {
+                            player.getCharacter().reset();
+                            if (player.getSideCharacter() != null) {
+                                player.getSideCharacter().reset();
+                            }
                             player.reset();
                         }
                         map = null;
@@ -1026,16 +1026,19 @@ public class Game extends AbstractGame {
                         }
                     }
                     musicPlayer.clear();
-                    buttonsToRemove.addAll(buttons);
-                    obstacles.removeAll(obstacles);
-                    powerUps.removeAll(powerUps);
+                    buttonsToRemove.clear();
+                    buttons.clear();
+                    obstacles.clear();
+                    powerUps.clear();
                     stats.saveStats();
                 }
             }
         }
         if (settingsSingleton.getGameState() == 8) {
             String musicWho = "music/misc/Who.wav";
+            musicPlayer.getMainMusic().setVolume(musicPlayer.getMaxMainVol());
             if (!settingsSingleton.getGameStateString().equals("Unlocked")) {
+                musicPlayer.getMainMusic().setVolume(musicPlayer.getMaxMainVol());
                 musicPlayer.clear();
                 musicPlayer.setMainMusic("music/misc/Silence.wav");
                 musicPlayer.addMusic(musicWho);
@@ -1197,7 +1200,7 @@ public class Game extends AbstractGame {
             players.get(0).setSideCharacter(new SideYugi());
             players.get(0).getCharacter().gainSpecialAbilityBar(500);
             players.get(1).setCharacter(new Character(CharacterNames.MAI));
-            players.get(1).setSideCharacter(new SideYuu());
+            players.get(1).setSideCharacter(new SideDio());
             players.get(1).getCharacter().gainSpecialAbilityBar(500);
             map = new Map("Training Ground");
             map.generateMap();

@@ -49,9 +49,7 @@ public class MusicPlayer {
         }
     }
 
-    public void setMainVolume(double volume) {
-        mainVolume = volume > maxMainVol ? maxMainVol : volume;
-    }
+    public void setMainVolume(double volume) { mainVolume = volume > maxMainVol ? maxMainVol : volume; }
 
     public void setEffectVolume(double volume) {
         effectVolume = volume > maxEffectVol ? maxEffectVol : volume;

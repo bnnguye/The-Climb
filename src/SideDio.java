@@ -46,7 +46,7 @@ public class SideDio extends SideCharacter{
 
     public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         if (!this.activating) {
-            MusicPlayer.getInstance().addMusic("music/DIO BRANDO.wav");
+            MusicPlayer.getInstance().addMusic("music/sidecharacters/DIO BRANDO/DIO BRANDO.wav");
             timer = 5 * frames;
             this.activating = true;
         }
