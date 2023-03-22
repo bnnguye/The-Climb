@@ -1,9 +1,7 @@
-import bagel.Drawing;
-import bagel.Image;
-import bagel.Input;
-import bagel.MouseButtons;
+import bagel.*;
 import bagel.util.Colour;
 import bagel.util.Point;
+import bagel.util.Rectangle;
 
 public class SliderVolume extends Slider {
 
@@ -12,11 +10,14 @@ public class SliderVolume extends Slider {
     private final String name;
     private final String type = "Volume";
     private Point topLeft;
+    private final Rectangle slide;
     private final double maxBSize = 1220;
+    private int width = 50;
 
     public SliderVolume(String name, Point pos) {
         this.name = name;
         this.topLeft = pos;
+        this.slide = new Rectangle(topLeft, maxBSize, width);
     }
 
     public String getName() {
@@ -24,54 +25,64 @@ public class SliderVolume extends Slider {
     }
 
     public void draw() {
-        double currentFrequency;
-        double minimumFrequency = 0;
-        double maxFrequency;
-        if (name.equals("mainVolume")) {
-            currentFrequency = musicPlayer.getMainVolume();
-            maxFrequency = musicPlayer.getMaxMainVol();
-        }
-        else {
-            currentFrequency = musicPlayer.getEffectVolume();
-            maxFrequency = musicPlayer.getMaxEffectVol();
-        }
-        double currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
+        double currentBar = (currentFrequency() - minimumFrequency())/(maxFrequency() - minimumFrequency()) * maxBSize;
 
         Image sliderIndicator = new Image("res/misc/sliderIndicatorS.png");
-        double width = 50;
 
         Drawing.drawRectangle(topLeft, maxBSize, width, new Colour(0, 0, 0, 0.5));
         Drawing.drawRectangle(topLeft, currentBar, width, new Colour((1 - currentBar/maxBSize), 1, currentBar/maxBSize, currentBar/maxBSize));
         sliderIndicator.drawFromTopLeft(currentBar + topLeft.x - sliderIndicator.getWidth()/2, topLeft.y - 10);
-        new FontSize(Fonts.DEJAVUSANS, width).draw(name, topLeft.x, topLeft.y);
+        new FontSize(Fonts.DEJAVUSANS, width).draw(name, topLeft.x, topLeft.y - 10, new DrawOptions().setBlendColour(Colour.BLACK));
     }
 
     public void interact(Input input) {
+        System.out.println("Effect: " + musicPlayer.getEffectVolume() + ", Main: " + musicPlayer.getMainVolume());
         double mouseX = input.getMouseX();
         if (input.isDown(MouseButtons.LEFT)) {
             if (slide.intersects(input.getMousePosition())) {
                 if (mouseX > topLeft.x + maxBSize) {
                     mouseX = topLeft.x + maxBSize;
                 }
-                double newFrequency = ((mouseX - topLeft.x)/maxBSize)*(maxFrequency - minimumFrequency) + minimumFrequency;
-                if (newFrequency > maxFrequency) {
-                    newFrequency = maxFrequency;
+                double newFrequency = ((mouseX - topLeft.x)/maxBSize)*(maxFrequency() - minimumFrequency()) + minimumFrequency();
+                if (newFrequency > maxFrequency()) {
+                    newFrequency = maxFrequency();
                 }
-                else if (newFrequency < minimumFrequency) {
-                    newFrequency = minimumFrequency;
+                else if (newFrequency < minimumFrequency()) {
+                    newFrequency = minimumFrequency();
                 }
-                obstaclesSettingsSingleton.changeFrequency(name, newFrequency);
-            }
-        }
-        if (input.wasPressed(MouseButtons.LEFT)) {
-            if (logo.getBoundingBoxAt(new Point(topLeft.x - logo.getWidth()/2
-                    , topLeft.y + logo.getHeight()/2)).intersects(input.getMousePosition())) {
-                obstaclesSettingsSingleton.toggle(name);
+                if (name.equals("Main Volume")) {
+                    musicPlayer.setMainVolume(newFrequency);
+                }
+                else {
+                    musicPlayer.setEffectVolume(newFrequency);
+                }
             }
         }
     }
 
     public void setPos(double x, double y) {
         this.topLeft = new Point(x, y);
+    }
+
+    private double currentFrequency() {
+        if (name.equals("Main Volume")) {
+            return musicPlayer.getMainVolume();
+        }
+        else {
+            return musicPlayer.getEffectVolume();
+        }
+    }
+
+    private double maxFrequency() {
+        if (name.equals("Main Volume")) {
+            return musicPlayer.getMaxMainVol();
+        }
+        else {
+            return musicPlayer.getMaxEffectVol();
+        }
+    }
+
+    private double minimumFrequency() {
+        return 0;
     }
 }

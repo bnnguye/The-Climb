@@ -175,6 +175,7 @@ public class Game extends AbstractGame {
         if (settingsSingleton.getGameState() == 0) {
             if (!"Main Menu".equals(settingsSingleton.getGameStateString())) {
                 settingsSingleton.setGameStateString("Main Menu");
+                sliders.clear();
                 musicPlayer.clear();
                 musicPlayer.clearEnded();
                 buttons.clear();
@@ -203,7 +204,7 @@ public class Game extends AbstractGame {
                 ));
                 menuTitle = "";
                 imagePointManagerSingleton.getImages().clear();
-                imagePointManagerSingleton.setCurrentBackground("res/menu/MainMenu.PNG");
+                imagePointManagerSingleton.setCurrentBackground("res/menu/main/mainmenu plain.png");
                 musicPlayer.setMainMusic("music/misc/Game Main Menu.wav");
                 musicPlayer.getMainMusic().setVolume(musicPlayer.getMaxMainVol());
             }
@@ -1192,8 +1193,11 @@ public class Game extends AbstractGame {
                 menuTitle = "SETTINGS";
                 buttons.clear();
                 sliders.clear();
-                sliders.add(new SliderVolume("Main Volume", new Point(0,0)));
-                sliders.add(new SliderVolume("Effect Volume", new Point(0,0)));
+                sliders.add(new SliderVolume("Main Volume", new Point(Window.getWidth() / 7, Window.getHeight() / 4 + 100)));
+                sliders.add(new SliderVolume("Effect Volume", new Point(Window.getWidth() / 7, Window.getHeight() / 3 + 150)));
+            }
+            if (input != null && input.wasPressed(Keys.ESCAPE)) {
+                settingsSingleton.setGameState(0);
             }
 
 
@@ -1207,7 +1211,7 @@ public class Game extends AbstractGame {
         updateDisplayStrings();
         updateTime();
         updateButtons();
-        updateSliders();
+        updateSliders(input);
         render();
         eventsListener.updateEvents();
         canInteract = eventsListener.canInteract();
@@ -1234,6 +1238,8 @@ public class Game extends AbstractGame {
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), ColourPresets.BLACK.toColour());
         if (settingsSingleton.getGameState() == 0) {
             imagePointManagerSingleton.getCurrentBackground().draw();
+            new ImagePoint(("res/menu/main/boyandgirl.png"), new Point(1108, 24)).draw();
+            new ImagePoint("res/menu/main/name.png", new Point(148, 87)).draw();
             for (Button button: buttons) {
                 if (button.isHovering()) {
                     Drawing.drawRectangle(new Point(0, button.getPosition().y + 30), Window.getWidth(), button.getWidth() - 30, new Colour(0,0,0,0.05));
@@ -1451,6 +1457,10 @@ public class Game extends AbstractGame {
             drawGame();
             playerFont.drawString("PAUSE", (Window.getWidth() - playerFont.getWidth("PAUSE"))/2, Window.getHeight()/2 - 50);
             playerFont.drawString("Press ESC to resume", (Window.getWidth() - playerFont.getWidth("Press ESC to res"))/2, Window.getHeight()/2);
+        }
+        else if (settingsSingleton.getGameState() == 14) {
+            imagePointManagerSingleton.getCurrentBackground().draw();
+            new ImagePoint("res/menu/main/name.png", new Point(148, 87)).draw();
         }
         drawButtons();
         drawSliders();
@@ -2136,7 +2146,10 @@ public class Game extends AbstractGame {
         buttonsToRemove.clear();
     }
 
-    public void updateSliders() {
+    public void updateSliders(Input input) {
+        for (Slider slider: sliders) {
+            slider.interact(input);
+        }
         sliders.removeAll(slidersToRemove);
         slidersToRemove.clear();
     }

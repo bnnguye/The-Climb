@@ -14,13 +14,17 @@ public class SliderPowerUp extends Slider {
 
     private Image logo;
     private String name;
-    private String type;
+    private String type = "PowerUp";
     private Rectangle slide;
     private Point topLeft;
     private final double minimumFrequency = 0.002;
     private final double maxFrequency = 0.005;
     private final double maxBSize = 1220;
 
+    public SliderPowerUp(String name, Point topLeft) {
+        this.name = name;
+        this.topLeft = topLeft;
+    }
 
     public String getName() {
         return name;

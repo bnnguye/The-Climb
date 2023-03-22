@@ -215,6 +215,9 @@ public class Button {
         else if (name.equalsIgnoreCase("Increase Map Speed")) {
             gameSettingsSingleton.setLives(gameSettingsSingleton.getLives() + 1);
         }
+        else if (name.equals("SETTINGS")) {
+            settingsSingleton.setGameState(14);
+        }
     }
 
     public String getName() {
@@ -226,18 +229,18 @@ public class Button {
 
     public void addPowerUpSliders() {
         sliders.addAll(Arrays.asList(
-                new SliderObstacle("Minimiser", "PowerUp", new Point(400, 300)),
-                new SliderObstacle("SpeedUp", "PowerUp", new Point(400, 400)),
-                new SliderObstacle("SpeedDown", "PowerUp", new Point(400, 500)),
-                new SliderObstacle("Shield", "PowerUp", new Point(400, 600)),
-                new SliderObstacle("SpecialAbilityPoints", "PowerUp", new Point(400, 700))));
+                new SliderPowerUp("Minimiser", new Point(400, 300)),
+                new SliderPowerUp("SpeedUp", new Point(400, 400)),
+                new SliderPowerUp("SpeedDown", new Point(400, 500)),
+                new SliderPowerUp("Shield", new Point(400, 600)),
+                new SliderPowerUp("SpecialAbilityPoints", new Point(400, 700))));
     }
 
     public void addObstacleSliders() {
         sliders.addAll(Arrays.asList(
-                new SliderObstacle("Ball", "obstacle", new Point(400, 300)),
-                new SliderObstacle("Rock", "obstacle", new Point(400, 400)),
-                new SliderObstacle("StunBall", "obstacle", new Point(400, 500))));
+                new SliderObstacle("Ball", new Point(400, 300)),
+                new SliderObstacle("Rock", new Point(400, 400)),
+                new SliderObstacle("StunBall", new Point(400, 500))));
     }
 
     public Colour translucent(Colour colour) { return new Colour(colour.r, colour.g, colour.b, 0.5);
