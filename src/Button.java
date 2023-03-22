@@ -226,18 +226,18 @@ public class Button {
 
     public void addPowerUpSliders() {
         sliders.addAll(Arrays.asList(
-                new Slider("Minimiser", "PowerUp", new Point(400, 300)),
-                new Slider("SpeedUp", "PowerUp", new Point(400, 400)),
-                new Slider("SpeedDown", "PowerUp", new Point(400, 500)),
-                new Slider("Shield", "PowerUp", new Point(400, 600)),
-                new Slider("SpecialAbilityPoints", "PowerUp", new Point(400, 700))));
+                new SliderObstacle("Minimiser", "PowerUp", new Point(400, 300)),
+                new SliderObstacle("SpeedUp", "PowerUp", new Point(400, 400)),
+                new SliderObstacle("SpeedDown", "PowerUp", new Point(400, 500)),
+                new SliderObstacle("Shield", "PowerUp", new Point(400, 600)),
+                new SliderObstacle("SpecialAbilityPoints", "PowerUp", new Point(400, 700))));
     }
 
     public void addObstacleSliders() {
         sliders.addAll(Arrays.asList(
-                new Slider("Ball", "obstacle", new Point(400, 300)),
-                new Slider("Rock", "obstacle", new Point(400, 400)),
-                new Slider("StunBall", "obstacle", new Point(400, 500))));
+                new SliderObstacle("Ball", "obstacle", new Point(400, 300)),
+                new SliderObstacle("Rock", "obstacle", new Point(400, 400)),
+                new SliderObstacle("StunBall", "obstacle", new Point(400, 500))));
     }
 
     public Colour translucent(Colour colour) { return new Colour(colour.r, colour.g, colour.b, 0.5);

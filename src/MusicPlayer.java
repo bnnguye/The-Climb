@@ -105,6 +105,10 @@ public class MusicPlayer {
         return maxEffectVol;
     }
 
+    public double getMainVolume() { return mainVolume;}
+
+    public double getEffectVolume() { return effectVolume;}
+
     public boolean contains(String fileName) {
         for (Music music: musics) {
             if (fileName.equalsIgnoreCase(music.getFileName())) {
