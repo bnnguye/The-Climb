@@ -132,4 +132,8 @@ public class MusicPlayer {
         }
         return false;
     }
+
+    public void clearEnded() {
+        musicsEnded.clear();
+    }
 }

@@ -7,7 +7,7 @@ public class TileSlowLeft extends Tile {
 
     ArrayList<CollisionBlock> collisionBlocks = new ArrayList<>();
     private Point pos;
-    Image image = new Image("res/Tiles/BasicTile.png");
+    Image image = new Image("res/Tiles/SlowTile.png");
     private String name = "SlowLeft";
     String type = "Slow";
 

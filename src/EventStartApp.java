@@ -30,14 +30,19 @@ public class EventStartApp extends EventInterface {
         double currentTime = TimeLogger.getInstance().getFrames();
         double refreshRate = SettingsSingleton.getInstance().getRefreshRate();
         Drawing.drawRectangle(0,0, Window.getWidth(), Window.getHeight(), ColourPresets.WHITE.toColour());
-        if (frames - currentTime <= 2.5 * refreshRate) {
+        if (frames - currentTime <= 3.5 * refreshRate) {
             String string = "Made by Bill Nguyen";
             FontSize introFont = new FontSize(Fonts.STORYTIME, 80);
             introFont.getFont().drawString(string,
                     (Window.getWidth() - introFont.getFont().getWidth(string))/2, Window.getHeight()/2,
                     new DrawOptions().setBlendColour(ColourPresets.BLACK.toColour()));
         }
-        Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1,1,1, 1 - 2*( currentTime - 2 * refreshRate)/(frames - 2 * refreshRate)));
+        if (frames - currentTime > 1 * refreshRate) {
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1,1,1, 1 - 2*( currentTime - 0.5 * refreshRate)/(frames - 0.5 * refreshRate)));
+        }
+        else if (frames - currentTime < 1 * refreshRate){
+            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1,1,1, 2*( currentTime - 1.5 * refreshRate)/(frames - 1.5 * refreshRate)));
+        }
         if (frames <= currentTime) {
             SettingsSingleton.getInstance().setGameState(0);
         }

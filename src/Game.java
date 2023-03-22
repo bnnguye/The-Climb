@@ -56,7 +56,7 @@ public class Game extends AbstractGame {
     private final ArrayList<Map> playableMaps= new ArrayList<>();
     private Map map;
     private final ArrayList<Tile> allTiles= new ArrayList<>();
-    private final ArrayList<Tile> customMapTiles= new ArrayList<>();
+    private static ArrayList<Tile> customMapTiles= new ArrayList<>();
     private boolean addingTile = false;
     private int page = 0;
     private Tile tile1;
@@ -177,31 +177,32 @@ public class Game extends AbstractGame {
             if (!"Main Menu".equals(settingsSingleton.getGameStateString())) {
                 settingsSingleton.setGameStateString("Main Menu");
                 musicPlayer.clear();
+                musicPlayer.clearEnded();
                 buttons.clear();
                 buttons.addAll(Arrays.asList(
                         new Button("PLAY", null,
-                                new FontSize(Fonts.DEJAVUSANS, 160),
-                                new Rectangle(0, 280, Window.getWidth(), 160),
-                                ColourPresets.WHITE.toColour()),
+                                new FontSize(Fonts.DEJAVUSANS, 80),
+                                new Rectangle(350, 400, Window.getWidth(), 80),
+                                ColourPresets.BLACK.toColour()),
                         new Button("TUTORIAL", null,
-                                new FontSize(Fonts.DEJAVUSANS, 160),
-                                new Rectangle(0, 280 + 160, Window.getWidth(), 160),
-                                ColourPresets.WHITE.toColour()),
+                                new FontSize(Fonts.DEJAVUSANS, 80),
+                                new Rectangle(350, 400 + 80, Window.getWidth(), 80),
+                                ColourPresets.BLACK.toColour()),
                         new Button("CREATE MAP", null,
-                                new FontSize(Fonts.DEJAVUSANS, 160),
-                                new Rectangle(0, 280 + 320, Window.getWidth(), 160),
-                                ColourPresets.WHITE.toColour()),
+                                new FontSize(Fonts.DEJAVUSANS, 80),
+                                new Rectangle(350, 400 + 80 * 2, Window.getWidth(), 80),
+                                ColourPresets.BLACK.toColour()),
                         new Button("SETTINGS", null,
-                                new FontSize(Fonts.DEJAVUSANS, 160),
-                                new Rectangle(0, 280 + 3*160, Window.getWidth(), 160),
-                                ColourPresets.WHITE.toColour()),
+                                new FontSize(Fonts.DEJAVUSANS, 80),
+                                new Rectangle(350, 400 + 80 * 3, Window.getWidth(), 80),
+                                ColourPresets.BLACK.toColour()),
                         new Button("EXIT", null,
-                                new FontSize(Fonts.DEJAVUSANS, 160),
-                                new Rectangle(0, 280 + 4*160, Window.getWidth(),
-                                        160),
-                                ColourPresets.WHITE.toColour())
+                                new FontSize(Fonts.DEJAVUSANS, 80),
+                                new Rectangle(350, 400 + 80 * 4, Window.getWidth(),
+                                        80),
+                                ColourPresets.BLACK.toColour())
                 ));
-                menuTitle = "THE CLIMB";
+                menuTitle = "";
                 imagePointManagerSingleton.getImages().clear();
                 imagePointManagerSingleton.setCurrentBackground("res/menu/MainMenu.PNG");
                 musicPlayer.setMainMusic("music/misc/Game Main Menu.wav");
@@ -991,7 +992,7 @@ public class Game extends AbstractGame {
                     musicPlayer.addMusic(settingsSingleton.getWinner().getCharacter().playLine());
                     stats.updateGameStats(players);
                     buttonsToRemove.addAll(buttons);
-                    buttons.add(new Button("Back To Start", "Main Menu",
+                    buttons.add(new Button("Back", "Back",
                             new FontSize(Fonts.DEJAVUSANS, 160),
                             new Rectangle(0, Window.getHeight() / 1.5 + 160, Window.getWidth(), 160),
                             ColourPresets.WHITE.toColour()));
@@ -1000,7 +1001,7 @@ public class Game extends AbstractGame {
                             new Rectangle(0, Window.getHeight() / 2 + 160, Window.getWidth(), 160),
                             ColourPresets.WHITE.toColour()));
                 }
-                else if (Arrays.asList("Retry", "Menu").contains(settingsSingleton.getGameStateString())) {
+                else if (Arrays.asList("Retry", "Back").contains(settingsSingleton.getGameStateString())) {
                     if (settingsSingleton.getGameStateString().equals("Retry")) {
                         buttonsToRemove.addAll(buttons);
                         map.generateMap();
@@ -1009,7 +1010,7 @@ public class Game extends AbstractGame {
                             player.getCharacter().reset();
                             player.getSideCharacter().reset();
                         }
-                    } else if (settingsSingleton.getGameStateString().equals("Menu")) {
+                    } else if (settingsSingleton.getGameStateString().equals("Back")) {
                         for (Player player : players) {
                             player.getCharacter().reset();
                             if (player.getSideCharacter() != null) {
@@ -1022,7 +1023,7 @@ public class Game extends AbstractGame {
                         if (unlocked != null) {
                             settingsSingleton.setGameState(8);
                         } else {
-                            settingsSingleton.setGameState(0);
+                            settingsSingleton.setGameState(3);
                         }
                     }
                     musicPlayer.clear();
@@ -1060,7 +1061,7 @@ public class Game extends AbstractGame {
             if (!settingsSingleton.getGameStateString().equals("Create Your Own Map")) {
                 map = new Map("Custom");
                 map.generateMap();
-                customMapTiles.removeAll(customMapTiles);
+                customMapTiles.clear();
                 for (Tile tile : map.getTiles()) {
                     customMapTiles.add(tile);
                 }
@@ -1069,7 +1070,6 @@ public class Game extends AbstractGame {
                 imagePointManagerSingleton.setCurrentBackground(null);
                 menuTitle = null;
             }
-            System.out.println(offset);
 
             if (!addingTile) {
                 if (input != null && input.isDown(Keys.UP)) {
@@ -1183,6 +1183,21 @@ public class Game extends AbstractGame {
 
             }
         }
+        else if (settingsSingleton.getGameState() == 13) {
+            int noOfLevels = 4;
+
+        }
+        else if (settingsSingleton.getGameState() == 14) {
+            if (!settingsSingleton.getGameStateString().equals("SETTINGS")) {
+                settingsSingleton.setGameStateString("SETTINGS");
+                menuTitle = "SETTINGS";
+                buttons.clear();
+                sliders.clear();
+                sliders.add(new Slider("Main Volume", "mainVolume", new Point(0,0)));
+            }
+
+
+        }
 
         try {
             musicPlayer.update();
@@ -1222,6 +1237,12 @@ public class Game extends AbstractGame {
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), ColourPresets.BLACK.toColour());
         if (settingsSingleton.getGameState() == 0) {
             imagePointManagerSingleton.getCurrentBackground().draw();
+            for (Button button: buttons) {
+                if (button.isHovering()) {
+                    Drawing.drawRectangle(new Point(0, button.getPosition().y + 30), Window.getWidth(), button.getWidth() - 30, new Colour(0,0,0,0.05));
+                    break;
+                }
+            }
         }
         if (settingsSingleton.getGameState() == 1) {
             imagePointManagerSingleton.draw();
@@ -1265,12 +1286,14 @@ public class Game extends AbstractGame {
             }
             drawBorders(currentCharacter);
             for (Character character: allCharacters) {
-                if (!isUnlocked(character.getName())) {
+                if (!isUnlocked(character.getName()) && imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", character.getFullName())) != null) {
                     imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", character.getFullName())).setDarken(true);
                     imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", character.getFullName())).setTransparent(false);
                 }
                 else {
-                    imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", character.getFullName())).setDarken(false);
+                    if (imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", character.getFullName())) != null) {
+                        imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", character.getFullName())).setDarken(false);
+                    }
                 }
             }
             imagePointManagerSingleton.drawImagesWithTag("CharacterRender");
@@ -1742,13 +1765,11 @@ public class Game extends AbstractGame {
     }
 
     public void saveCustomMap() {
-        String tempFile = "res/maps/mapData/Temp.txt";
         String currentFile = "res/maps/mapData/Custom.txt";
         File oldFile = new File(currentFile);
-        File newFile = new File(tempFile);
         try {
-
-            FileWriter fw = new FileWriter(tempFile, false);
+            oldFile.createNewFile();
+            FileWriter fw = new FileWriter(oldFile, false);
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter pw = new PrintWriter(bw);
 
@@ -1768,10 +1789,8 @@ public class Game extends AbstractGame {
 
             pw.flush();
             pw.close();
-            oldFile.delete();
-            File dump = new File(currentFile);
-            newFile.renameTo(dump);
-
+            bw.close();
+            fw.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -1954,7 +1973,12 @@ public class Game extends AbstractGame {
             Character character = player.getCharacter();
             if (!player.getCharacter().isDead()) {
                 if (character.canMove()) {
-                    player.moveCharacter(input);
+                    if (player.getClass().isInstance(Computer.class)) {
+                        player.moveComputer(obstacles);
+                    }
+                    else {
+                        player.moveCharacter(input);
+                    }
                 }
                 if (!map.hasFinished() && !character.isMoving()) {
                     character.slide();
@@ -2338,12 +2362,14 @@ public class Game extends AbstractGame {
     public void drawShadowRender(String charName) {
         double xOffset = -(currentMousePosition.x - Window.getWidth()/2)/Window.getWidth()*100;
         double yOffset = -(currentMousePosition.y - Window.getHeight()/2)/Window.getHeight()*100;
-        ImagePoint shadow = new ImagePoint(String.format("res/Characters/%s/render.png", charName),
-                imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", charName)).getPos());
-        shadow.setPos(shadow.getPos().x + xOffset, shadow.getPos().y + yOffset);
-        shadow.setTransparent(true);
-        shadow.setDarken(true);
-        shadow.draw();
+         if (imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", charName)) != null) {
+             ImagePoint shadow = new ImagePoint(String.format("res/Characters/%s/render.png", charName),
+                     imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", charName)).getPos());
+             shadow.setPos(shadow.getPos().x + xOffset, shadow.getPos().y + yOffset);
+             shadow.setTransparent(true);
+             shadow.setDarken(true);
+             shadow.draw();
+         }
     }
 
     public void loadAllCharacters() {

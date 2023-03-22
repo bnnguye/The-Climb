@@ -52,6 +52,10 @@ public class Slider {
                 sliderIndicator.drawFromTopLeft(currentBar + topLeft.x - sliderIndicator.getWidth()/2, topLeft.y - 10);
             }
         }
+        else if ("mainVolume".equals(type)) {
+            currentFrequency = MusicPlayer.getInstance().getMainMusic().getVolume();
+            currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
+        }
         logo.drawFromTopLeft(topLeft.x - logo.getWidth(), topLeft.y);
     }
 

@@ -1,6 +1,0 @@
-Ice,Ice,Ice,Ice
-Ice,Ice,Ice,Ice
-Ice,Ice,Ice,Ice
-Basic,Basic,Basic,Basic
-BasicTop,BasicTop,Basic,Basic
-Basic,Basic,Basic,Basic

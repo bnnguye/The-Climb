@@ -34,4 +34,9 @@ public abstract class Obstacle {
     public void updatePlayersGainedEXP(Integer playerId) {
         playersGainedEXP.add(playerId);
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

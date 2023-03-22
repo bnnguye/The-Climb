@@ -4,6 +4,7 @@ import bagel.Keys;
 import bagel.Window;
 import bagel.util.Point;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Player {
@@ -50,34 +51,36 @@ public class Player {
     public void moveCharacter(Input input) {
         if (input != null) {
             if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Left")))) {
-                getCharacter().move("WA");
+                getCharacter().move(Controls.WA);
             }
             else if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Right")))) {
-                getCharacter().move("WD");
+                getCharacter().move(Controls.WD);
             }
             else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Left")))) {
-                getCharacter().move("SA");
+                getCharacter().move(Controls.SA);
             }
             else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Right")))) {
-                getCharacter().move("SD");
+                getCharacter().move(Controls.SD);
             }
             else if (input.isDown(controls.get("Right"))) {
-                getCharacter().move("D");
+                getCharacter().move(Controls.D);
             }
             else if (input.isDown(controls.get("Up"))) {
-                getCharacter().move("W");
+                getCharacter().move(Controls.W);
             }
             else if (input.isDown(controls.get("Left"))) {
-                getCharacter().move("A");
+                getCharacter().move(Controls.A);
             }
             else if (input.isDown(controls.get("Down"))) {
-                getCharacter().move("S");
+                getCharacter().move(Controls.S);
             }
             else {
                 getCharacter().move(null);
             }
         }
     }
+
+    public void moveComputer(ArrayList<Obstacle> obstacleArrayList) {}
 
     public int getId() { return this.id;}
     public Character getCharacter() {

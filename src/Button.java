@@ -99,9 +99,8 @@ public class Button {
 
     public boolean isHovering() {return hovering;}
     public void playAction() {
-        int frames = TimeLogger.getInstance().getFrames();
-        if (name.equalsIgnoreCase("Back To Start")) {
-            settingsSingleton.setGameStateString("Menu");
+        if (name.equalsIgnoreCase("Back")) {
+            settingsSingleton.setGameStateString("Back");
         }
         else if (name.equalsIgnoreCase("Back")) {
             settingsSingleton.setGameState(1);
@@ -246,6 +245,17 @@ public class Button {
 
     public Colour opaque() {
         return new Colour(colour.r, colour.g, colour.b, 1);
+    }
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public double getWidth() {
+        if (image != null) {
+            return image.getWidth();
+        }
+        return font.getSize();
     }
 
 }

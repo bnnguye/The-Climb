@@ -62,7 +62,7 @@ public class Character {
                 return name + " " + lastName;
         }
 
-        public void move(String key) {
+        public void move(Controls key) {
                 double currentSpeed = speed;
 
                 if (speedDownTimer > 0 || gojoAbility) {
@@ -78,32 +78,32 @@ public class Character {
                         moving = true;
                         double new_X = pos.x;
                         double new_Y = pos.y;
-                        if (key.equals("WA")) {
+                        if (key.equals(Controls.WA)) {
                                 new_Y -= currentSpeed;
                                 new_X -= currentSpeed;
                         }
-                        if (key.equals("WD")) {
+                        if (key.equals(Controls.WD)) {
                                 new_Y -= currentSpeed;
                                 new_X += currentSpeed;
                         }
-                        if (key.equals("SA")) {
+                        if (key.equals(Controls.SA)) {
                                 new_Y += currentSpeed;
                                 new_X -= currentSpeed;
                         }
-                        if (key.equals("SD")) {
+                        if (key.equals(Controls.SD)) {
                                 new_Y += currentSpeed;
                                 new_X += currentSpeed;
                         }
-                        if (key.equals("W")) {
+                        if (key.equals(Controls.W)) {
                                 new_Y -= currentSpeed;
                         }
-                        if (key.equals("A")) {
+                        if (key.equals(Controls.A)) {
                                 new_X -= currentSpeed;
                         }
-                        if (key.equals("S")) {
+                        if (key.equals(Controls.S)) {
                                 new_Y += currentSpeed;
                         }
-                        if (key.equals("D")) {
+                        if (key.equals(Controls.D)) {
                                 new_X += currentSpeed;
                         }
                         Point newPoint = new Point(new_X, new_Y);
@@ -230,4 +230,9 @@ public class Character {
         }
         public int getLives() {return this.lives;}
         public boolean isMoving() {return moving;}
+
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+                return super.clone();
+        }
 }
