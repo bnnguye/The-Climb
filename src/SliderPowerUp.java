@@ -20,10 +20,13 @@ public class SliderPowerUp extends Slider {
     private final double minimumFrequency = 0.002;
     private final double maxFrequency = 0.005;
     private final double maxBSize = 1220;
+    private int width = 50;
 
     public SliderPowerUp(String name, Point topLeft) {
+        this.logo = new Image(String.format("res/PowerUp/%s.png", name));
         this.name = name;
         this.topLeft = topLeft;
+        this.slide = new Rectangle(topLeft, maxBSize, width);
     }
 
     public String getName() {
@@ -36,15 +39,10 @@ public class SliderPowerUp extends Slider {
         Image sliderIndicator = new Image("res/misc/sliderIndicatorS.png");
         currentFrequency = powerUpsSettingsSingleton.getFrequency(name);
         currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
-        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(name)) {
+        if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(name)) {
             Drawing.drawRectangle(topLeft, maxBSize, logo.getHeight(), new Colour(0, 0, 0, 0.5));
             Drawing.drawRectangle(topLeft, currentBar, logo.getHeight(), new Colour((1 - currentBar/maxBSize), 1, currentBar/maxBSize, currentBar/maxBSize));
             sliderIndicator.drawFromTopLeft(currentBar + topLeft.x - sliderIndicator.getWidth()/2, topLeft.y - 10);
-        }
-
-        else if ("mainVolume".equals(type)) {
-            currentFrequency = MusicPlayer.getInstance().getMainMusic().getVolume();
-            currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
         }
         logo.drawFromTopLeft(topLeft.x - logo.getWidth(), topLeft.y);
     }

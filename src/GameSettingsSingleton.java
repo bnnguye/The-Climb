@@ -45,6 +45,8 @@ public class GameSettingsSingleton {
     }
 
     public void setLives(int lives) {
-        this.lives = lives;
+        if (lives > 0) {
+            this.lives = lives;
+        }
     }
 }

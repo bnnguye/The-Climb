@@ -155,7 +155,7 @@ public class Game extends AbstractGame {
             }
             if (input != null && input.wasPressed(MouseButtons.LEFT)) {
                 if (button.isHovering()) {
-                    new Music("music/misc/Click.wav", MusicPlayer.getInstance().getMaxEffectVol());
+                    new Music("music/misc/Click.wav", MusicPlayer.getInstance().getEffectVolume());
                     button.playAction();
                 }
             }
@@ -1137,34 +1137,16 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 10) {
             if (!settingsSingleton.getGameStateString().equals("Game Settings")) {
-                gameSettingsSingleton.setPage(0);
                 settingsSingleton.setGameStateString("Game Settings");
-                buttonsToRemove.addAll(buttons);
-                buttons.add(new Button("Left Arrow",
-                        new Image("res/arrows/LeftArrow.png"),
-                        new Point(600, 0),
-                        0.5));
-                buttons.add(new Button("Right Arrow",
-                        new Image("res/arrows/RightArrow.png"),
-                        new Point(Window.getWidth() - 750, 0),
-                        0.5));
-                buttons.add(new Button("Decrease Map Speed",
-                        new Image("res/arrows/LeftArrow.png"),
-                        new Point(Window.getWidth()/2 + 30, 200),
-                        0.5));
-                buttons.add(new Button("Increase Map Speed",
-                        new Image("res/arrows/RightArrow.png"),
-                        new Point(Window.getWidth()/2 + 130, 200),
-                        0.5));
-                buttons.add(new Button("Decrease Lives",
-                        new Image("res/arrows/LeftArrow.png"),
-                        new Point(Window.getWidth()/2 + 30, 400),
-                        0.5));
-                buttons.add(new Button("Increase Lives",
-                        new Image("res/arrows/RightArrow.png"),
-                        new Point(Window.getWidth()/2 + 130, 400),
-                        0.5));
-                new Font(Fonts.DEJAVUSANS, 100).drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + 100);
+            }
+            if (gameSettingsSingleton.getPage() == 0) {
+                menuTitle = "General";
+            }
+            if (gameSettingsSingleton.getPage() == 1) {
+                menuTitle = "PowerUps";
+            }
+            else if (gameSettingsSingleton.getPage() == 2) {
+                menuTitle = "Obstacles";
             }
             if (input != null && input.wasPressed(Keys.ESCAPE)) {
                 settingsSingleton.setGameState(3);
@@ -1434,23 +1416,18 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 10) {
             Font titleFont = new Font(Fonts.DEJAVUSANS, 100);
             Font gameFont = new Font(Fonts.DEJAVUSANS, 40);
-            imagePointManagerSingleton.setCurrentBackground(null);
-            Drawing.drawRectangle(0,0, Window.getWidth(), Window.getHeight(), new Colour(0,0,0, 0.2));
+            imagePointManagerSingleton.getCurrentBackground().draw();
 
             if (gameSettingsSingleton.getPage() == 0) {
                 menuTitle = "General";
-                titleFont.drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300 + 0);
+                new Font(Fonts.DEJAVUSANS, 100).drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300);
+                new Font(Fonts.DEJAVUSANS, 100).drawString(String.format("Lives: %d", gameSettingsSingleton.getLives()), 100, 500);
             }
             else if (gameSettingsSingleton.getPage() == 1 || gameSettingsSingleton.getPage() == 2) {
-                if (gameSettingsSingleton.getPage() == 1) {
-                    menuTitle = "PowerUps";
-                }
-                else if (gameSettingsSingleton.getPage() == 2) {
-                    menuTitle = "Obstacles";
-                }
                 gameFont.drawString("Drag the slider across to increase/decrease the spawn rate!", titleFont.getWidth("SETTINGS"), 150, new DrawOptions().setBlendColour(0,0,0, 0.7));
                 gameFont.drawString("Click the icon to toggle on/off", titleFont.getWidth("SETTINGS"), 190, new DrawOptions().setBlendColour(0,0,0, 0.7));
             }
+            drawSliders();
         }
         else if (settingsSingleton.getGameState() == 11) {
             Font playerFont = new Font(Fonts.DEJAVUSANS, 40);

@@ -43,6 +43,7 @@ public class MusicPlayer {
             }
         }
         musics.removeAll(musicToRemove);
+        mainMusic.setVolume(mainVolume);
 
         if (mainMusic.aboutToEnd()) {
             mainMusic.restart();

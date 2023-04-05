@@ -117,6 +117,34 @@ public class Button {
         }
         else if (name.equalsIgnoreCase("Game Settings")) {
             settingsSingleton.setGameState(10);
+            gameSettingsSingleton.setPage(0);
+
+            buttonsToRemove.addAll(buttons);
+            slidersToRemove.addAll(sliders);
+            buttonsToAdd.add(new Button("Left Arrow",
+                    new Image("res/arrows/LeftArrow.png"),
+                    new Point(600, 0),
+                    0.5));
+            buttonsToAdd.add(new Button("Right Arrow",
+                    new Image("res/arrows/RightArrow.png"),
+                    new Point(Window.getWidth() - 750, 0),
+                    0.5));
+                buttonsToAdd.add(new Button("Decrease Map Speed",
+                        new Image("res/arrows/LeftArrow.png"),
+                        new Point(Window.getWidth() / 2 + 30, 200),
+                        0.5));
+                buttonsToAdd.add(new Button("Increase Map Speed",
+                        new Image("res/arrows/RightArrow.png"),
+                        new Point(Window.getWidth() / 2 + 130, 200),
+                        0.5));
+                buttonsToAdd.add(new Button("Decrease Lives",
+                        new Image("res/arrows/LeftArrow.png"),
+                        new Point(Window.getWidth() / 2 + 30, 400),
+                        0.5));
+                buttonsToAdd.add(new Button("Increase Lives",
+                        new Image("res/arrows/RightArrow.png"),
+                        new Point(Window.getWidth() / 2 + 130, 400),
+                        0.5));
         }
         else if (name.equalsIgnoreCase("Left Arrow")) {
             if (gameSettingsSingleton.getPage() > 0) {
@@ -139,6 +167,14 @@ public class Button {
                     buttonsToAdd.add(new Button("Increase Map Speed",
                             new Image("res/arrows/RightArrow.png"),
                             new Point(Window.getWidth()/2 + 130, 200),
+                            0.5));
+                    buttonsToAdd.add(new Button("Decrease Lives",
+                            new Image("res/arrows/LeftArrow.png"),
+                            new Point(Window.getWidth()/2 + 30, 400),
+                            0.5));
+                    buttonsToAdd.add(new Button("Increase Lives",
+                            new Image("res/arrows/RightArrow.png"),
+                            new Point(Window.getWidth()/2 + 130, 400),
                             0.5));
                 }
                 else if (gameSettingsSingleton.getPage() == 1) {
@@ -209,10 +245,10 @@ public class Button {
         else if (name.equalsIgnoreCase("Increase Map Speed")) {
             gameSettingsSingleton.setMapSpeed(gameSettingsSingleton.getMapSpeed() + 0.1);
         }
-        else if (name.equalsIgnoreCase("Decrease Map Speed")) {
+        else if (name.equalsIgnoreCase("Decrease Lives")) {
             gameSettingsSingleton.setLives(gameSettingsSingleton.getLives() - 1);
         }
-        else if (name.equalsIgnoreCase("Increase Map Speed")) {
+        else if (name.equalsIgnoreCase("Increase Lives")) {
             gameSettingsSingleton.setLives(gameSettingsSingleton.getLives() + 1);
         }
         else if (name.equals("SETTINGS")) {
