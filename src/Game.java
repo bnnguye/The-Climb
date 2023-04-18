@@ -205,9 +205,10 @@ public class Game extends AbstractGame {
                 menuTitle = "";
                 imagePointManagerSingleton.getImages().clear();
                 imagePointManagerSingleton.setCurrentBackground("res/menu/main/mainmenu plain.png");
-                musicPlayer.setMainMusic("music/misc/Game Main Menu.wav");
+                musicPlayer.setMainMusic("music/misc/Silence.wav");
                 musicPlayer.getMainMusic().setVolume(musicPlayer.getMaxMainVol());
             }
+            updateDemo(input);
         }
         else if (settingsSingleton.getGameState() == 1) {
             String storyMenuFileName = "res/menu/StoryMenu.png";
@@ -420,73 +421,12 @@ public class Game extends AbstractGame {
                 stringDisplays.clear();
             }
         }
-        else if (settingsSingleton.getGameState() == 5) { // Map
+        else if (settingsSingleton.getGameState() == 5)     { // Map
             if (!settingsSingleton.getGameStateString().equals("MAP")) {
                 buttonsToRemove.addAll(buttons);
                 menuTitle = "Which Climb?";
                 imagePointManagerSingleton.setCurrentBackground(null);
                 settingsSingleton.setGameStateString("MAP");
-//            }
-//            ArrayList<Map> mapsChosen = new ArrayList<>();
-//            for (Player player : players) {
-//                player.getCharacter().setPosition(player.getCursorPos());
-//                player.setCursorPos(input);
-//                int spacer = 300;
-//                int row = 1;
-//                int currentIcon = 2;
-//                for (Map map : playableMaps) {
-//                    if (map.getMapPeek().getBoundingBoxAt(new Point(-425 + map.getMapPeek().getWidth() * currentIcon +
-//                            (row - 1) *400, -50 + spacer * row)).intersects(player.getCursorPos())) {
-//                        if(input != null && input.wasPressed(player.getControl("Primary"))) {
-//                            pickMap(player, map);
-//                        }
-//                    }
-//                    currentIcon++;
-//                    if (currentIcon > 5) {
-//                        currentIcon = 1;
-//                        if (row < 2) {
-//                            row++;
-//                        }
-//                    }
-//                }
-//            }
-//            boolean allPlayersChoseMap = true;
-//            for (Player player: players) {
-//                if (player.getMapChosen() == null) {
-//                    allPlayersChoseMap = false;
-//                    break;
-//                }
-//                else {
-//                    if (!mapsChosen.contains(player.getMapChosen())) {
-//                        mapsChosen.add(player.getMapChosen());
-//                    }
-//                }
-//            }
-//            if (allPlayersChoseMap) {
-//                int playerMap = (int) Math.round(Math.random()*(players.size()-1)) + 1;
-//                for (Player player: players) {
-//                    if (player.getId() == playerMap) {
-//                        for (Map mapChosen: playableMaps) {
-//                            if (mapChosen.getName().equals(player.getMapChosen().getName())) {
-//                                map = mapChosen;
-//                                map.generateMap();
-//                                gameSettingsSingleton.setMap(map);
-//                                break;
-//                            }
-//                        }
-//                        break;
-//                    }
-//                }
-//                settingsSingleton.setGameState(6);
-//            }
-//
-//            if (input != null && input.wasPressed(Keys.ESCAPE)) {
-//                for (Player player : players) {
-//                    player.setMapChosen(null);
-//                    player.setSideCharacter(null);
-//                    settingsSingleton.setGameState(4);
-//                }
-//            }
             }
             map = playableMaps.get(1);
             map.generateMap();
@@ -1220,6 +1160,7 @@ public class Game extends AbstractGame {
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), ColourPresets.BLACK.toColour());
         if (settingsSingleton.getGameState() == 0) {
             imagePointManagerSingleton.getCurrentBackground().draw();
+            drawGame();
             new ImagePoint(("res/menu/main/boyandgirl.png"), new Point(1108, 24)).draw();
             new ImagePoint("res/menu/main/name.png", new Point(148, 87)).draw();
             for (Button button: buttons) {
@@ -1870,9 +1811,10 @@ public class Game extends AbstractGame {
     public void updatePlayerMovement(Input input) {
         for (Player player: players) {
             Character character = player.getCharacter();
+            System.out.println(character.getFullName());
             if (!player.getCharacter().isDead()) {
                 if (character.canMove()) {
-                    if (player.getClass().isInstance(Computer.class)) {
+                    if (player.getClass().equals(Computer.class)) {
                         player.moveComputer(obstacles);
                     }
                     else {
@@ -2455,5 +2397,45 @@ public class Game extends AbstractGame {
              shadow.setDarken(true);
              shadow.draw();
          }
+    }
+
+    public void updateDemo(Input input) {
+        if (map != null) {
+            map.updateTiles(gameSettingsSingleton.getMapSpeed());
+            if (map.hasFinished()) {
+                map.generateMap();
+            }
+        }
+        else {
+            map = new Map("Park");
+            map.generateMap();
+        }
+
+        if (players.size() == 0) {
+            players.add(new Computer(0));
+            players.get(0).setCharacter(new Character(CharacterNames.CHIZURU));
+            players.get(0).setSideCharacter(new SideJotaro());
+            players.add(new Computer(1));
+            players.get(1).setCharacter(new Character(CharacterNames.MAI));
+            players.get(1).setSideCharacter(new SideDio());
+            setPlayersPosition();
+        }
+        boolean notDead = false;
+        for (Player player: players) {
+            if (!player.getCharacter().isDead()) {
+                notDead = true;
+            }
+        }
+        if (!notDead) {
+            map.generateMap();
+            players.clear();
+        }
+        updatePlayerMovement(input);
+        checkCollisionTiles();
+        checkCollisionObstacles();
+        checkCollisionPowerUps();
+        updateObjects();
+        spawnPowerUps();
+        spawnObstacles();
     }
 }

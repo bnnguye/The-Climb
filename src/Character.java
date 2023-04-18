@@ -230,9 +230,4 @@ public class Character {
         }
         public int getLives() {return this.lives;}
         public boolean isMoving() {return moving;}
-
-        @Override
-        public Object clone() throws CloneNotSupportedException {
-                return super.clone();
-        }
 }
