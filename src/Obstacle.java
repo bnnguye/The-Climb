@@ -39,4 +39,6 @@ public abstract class Obstacle {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    public double getX() {return this.pos.x;}
 }

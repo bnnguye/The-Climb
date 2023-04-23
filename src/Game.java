@@ -175,6 +175,7 @@ public class Game extends AbstractGame {
         if (settingsSingleton.getGameState() == 0) {
             if (!"Main Menu".equals(settingsSingleton.getGameStateString())) {
                 settingsSingleton.setGameStateString("Main Menu");
+                players.clear();
                 sliders.clear();
                 musicPlayer.clear();
                 musicPlayer.clearEnded();
@@ -204,7 +205,6 @@ public class Game extends AbstractGame {
                 ));
                 menuTitle = "";
                 imagePointManagerSingleton.getImages().clear();
-                imagePointManagerSingleton.setCurrentBackground("res/menu/main/mainmenu plain.png");
                 musicPlayer.setMainMusic("music/misc/Silence.wav");
                 musicPlayer.getMainMusic().setVolume(musicPlayer.getMaxMainVol());
             }
@@ -237,6 +237,7 @@ public class Game extends AbstractGame {
 
             if (input != null && input.wasPressed(Keys.ESCAPE)) {
                 settingsSingleton.setGameState(0);
+                players.clear();
             }
         }
         else if (settingsSingleton.getGameState() == 2) {
@@ -270,6 +271,8 @@ public class Game extends AbstractGame {
                 settingsSingleton.setGameStateString("Character");
                 buttonsToRemove.addAll(buttons);
                 slidersToRemove.addAll(sliders);
+                obstacles.clear();
+                powerUps.clear();
                 imagePointManagerSingleton.setCurrentBackground(null);
                 imagePointManagerSingleton.getImages().clear();
                 menuTitle = "";
@@ -1079,6 +1082,7 @@ public class Game extends AbstractGame {
             if (!settingsSingleton.getGameStateString().equals("Game Settings")) {
                 settingsSingleton.setGameStateString("Game Settings");
             }
+            updateDemo(input);
             if (gameSettingsSingleton.getPage() == 0) {
                 menuTitle = "General";
             }
@@ -1161,8 +1165,9 @@ public class Game extends AbstractGame {
         if (settingsSingleton.getGameState() == 0) {
             imagePointManagerSingleton.getCurrentBackground().draw();
             drawGame();
-            new ImagePoint(("res/menu/main/boyandgirl.png"), new Point(1108, 24)).draw();
-            new ImagePoint("res/menu/main/name.png", new Point(148, 87)).draw();
+//            new ImagePoint(("res/menu/main/mainmenu plain.png"), new Point(0,0)).draw();
+////            new ImagePoint(("res/menu/main/boyandgirl.png"), new Point(1108, 24)).draw();
+//            new ImagePoint("res/menu/main/name.png", new Point(148, 87)).draw();
             for (Button button: buttons) {
                 if (button.isHovering()) {
                     Drawing.drawRectangle(new Point(0, button.getPosition().y + 30), Window.getWidth(), button.getWidth() - 30, new Colour(0,0,0,0.05));
@@ -1357,8 +1362,8 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 10) {
             Font titleFont = new Font(Fonts.DEJAVUSANS, 100);
             Font gameFont = new Font(Fonts.DEJAVUSANS, 40);
-            imagePointManagerSingleton.getCurrentBackground().draw();
-
+            drawGame();
+            Drawing.drawRectangle(0,0,Window.getWidth(), Window.getHeight(), ColourPresets.DARK.toColour());
             if (gameSettingsSingleton.getPage() == 0) {
                 menuTitle = "General";
                 new Font(Fonts.DEJAVUSANS, 100).drawString(String.format("Map Speed: %1.2f", gameSettingsSingleton.getMapSpeed()), 100, 300);
@@ -1811,7 +1816,6 @@ public class Game extends AbstractGame {
     public void updatePlayerMovement(Input input) {
         for (Player player: players) {
             Character character = player.getCharacter();
-            System.out.println(character.getFullName());
             if (!player.getCharacter().isDead()) {
                 if (character.canMove()) {
                     if (player.getClass().equals(Computer.class)) {
