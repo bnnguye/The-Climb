@@ -34,7 +34,7 @@ public class SettingsSingleton {
     public void setPlayers(int num) {
         players.clear();
         players.add(new Player(1));
-        players.add(new Player(2));
+        players.add(new Computer(2));
         if (num == 3) {
             players.add(new Player(3));
         }

@@ -3,16 +3,14 @@ import bagel.util.Point;
 import bagel.util.Rectangle;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Computer extends Player {
 
-    private final int lookAheadXSeconds = SettingsSingleton.getInstance().getRefreshRate();
+    private final int lookAheadXSeconds = SettingsSingleton.getInstance().getRefreshRate() - 40;
 
     private ArrayList<Controls> moves = new ArrayList<>();
 
     private Character character = null;
-    private SideCharacter sideCharacter = null;
 
     public Computer(int id) {
         super(id);
@@ -28,7 +26,12 @@ public class Computer extends Player {
             moves.remove(0);
         }
         else {
-            character.move(Controls.W);
+            Map map = GameSettingsSingleton.getInstance().getMap();
+            if (map != null) {
+                if (map.getHeight() - map.getCurrentHeight() < Window.getHeight() || Window.getHeight() - character.getPos().y < 200) {
+                    character.move(Controls.W);
+                }
+            }
         }
     }
 
@@ -39,21 +42,23 @@ public class Computer extends Player {
             ArrayList<CollisionBlock> collisionBlocks; // next level of computer
 
             Rectangle closestSafeSpot = getClosestSafeSpot(getSafeSpots(obstacles));
-            System.out.println("Safe spots: " + getSafeSpots(obstacles).size());
             if (closestSafeSpot != null) {
                 loadMovesToClosestSafeSpot(closestSafeSpot);
+            }
+        }
+        else {
+            for (int i = 0; i < lookAheadXSeconds; i++) {
+                moves.add(null);
             }
         }
     }
 
     private void loadMovesToClosestSafeSpot(Rectangle closestSafeSpot) {
-        System.out.println("Current character position: " + this.character.getPos());
         Character character = new Character(CharacterNames.CHIZURU);
         character.setPosition(this.character.getPos());
 
-        while (Math.abs(character.getPos().x - closestSafeSpot.centre().x) > 10 || moves.size() < lookAheadXSeconds) {
-            System.out.println("Character pos: " + character.getPos());
-            System.out.println("Safe spot centre: " + closestSafeSpot.centre());
+        while (Math.abs(character.getPos().x - closestSafeSpot.centre().x) > 10 && moves.size() < lookAheadXSeconds) {
+            System.out.println("sTUCK IN WHIEL LOOP: move.size(): " + moves.size());
             if (character.getPos().x < closestSafeSpot.centre().x) {
                 moves.add(Controls.D);
                 character.move(Controls.D);
@@ -61,6 +66,9 @@ public class Computer extends Player {
             else if (character.getPos().x > closestSafeSpot.centre().x) {
                 moves.add(Controls.A);
                 character.move(Controls.A);
+            }
+            else {
+                moves.add(null);
             }
         }
     }
@@ -83,7 +91,7 @@ public class Computer extends Player {
 
         double horizontalIndex = 0;
         for (Rectangle dangerSpot: sortedDangerSpots) {
-            safeSpots.add(new Rectangle(horizontalIndex, 0, horizontalIndex, dangerSpot.left()));
+            safeSpots.add(new Rectangle(new Point(horizontalIndex, 0), horizontalIndex + dangerSpot.left(), 0));
             horizontalIndex = dangerSpot.right();
             System.out.println("danger spot left" + dangerSpot.left() + ", horizontal index: " + horizontalIndex);
         }

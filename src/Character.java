@@ -63,6 +63,9 @@ public class Character {
         }
 
         public void move(Controls key) {
+                if (key == null) {
+                        return;
+                }
                 double currentSpeed = speed;
 
                 if (speedDownTimer > 0 || gojoAbility) {

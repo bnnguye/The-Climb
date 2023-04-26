@@ -1151,7 +1151,7 @@ public class Game extends AbstractGame {
             players.get(1).setCharacter(new Character(CharacterNames.MAI));
             players.get(1).setSideCharacter(new SideDio());
             players.get(1).getCharacter().gainSpecialAbilityBar(500);
-            map = new Map("Training Ground");
+            map = new Map("Park");
             map.generateMap();
             gameSettingsSingleton.setMap(map);
             settingsSingleton.setGameMode(1);
