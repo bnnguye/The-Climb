@@ -6,7 +6,8 @@ import java.util.ArrayList;
 
 public class Computer extends Player {
 
-    private final int lookAheadXSeconds = SettingsSingleton.getInstance().getRefreshRate() - 40;
+    private final int updateRate = 50;
+    private final int moveSize = 144;
 
     private ArrayList<Controls> moves = new ArrayList<>();
 
@@ -46,18 +47,13 @@ public class Computer extends Player {
                 loadMovesToClosestSafeSpot(closestSafeSpot);
             }
         }
-        else {
-            for (int i = 0; i < lookAheadXSeconds; i++) {
-                moves.add(null);
-            }
-        }
     }
 
     private void loadMovesToClosestSafeSpot(Rectangle closestSafeSpot) {
         Character character = new Character(CharacterNames.CHIZURU);
         character.setPosition(this.character.getPos());
 
-        while (Math.abs(character.getPos().x - closestSafeSpot.centre().x) > 10 && moves.size() < lookAheadXSeconds) {
+        while (Math.abs(character.getPos().x - closestSafeSpot.centre().x) > 10 && moves.size() < updateRate) {
             System.out.println("sTUCK IN WHIEL LOOP: move.size(): " + moves.size());
             if (character.getPos().x < closestSafeSpot.centre().x) {
                 moves.add(Controls.D);
@@ -81,7 +77,7 @@ public class Computer extends Player {
         for (Obstacle obstacle: obstacles) {
             Obstacle mockObstacle = new ObstacleRock();
             mockObstacle.setPos(obstacle.getPos());
-            for (int i = 0; i < lookAheadXSeconds; i++) {
+            for (int i = 0; i < updateRate; i++) {
                 mockObstacle.move();
             }
             dangerSpots.add(mockObstacle.getImage().getBoundingBoxAt(mockObstacle.getPos()));

@@ -2333,24 +2333,24 @@ public class Game extends AbstractGame {
     public void drawGame() {
         if (map != null) {
             map.draw();
-        }
-        if (canInteract) {
-            for (Player player : players) {
-                if (!player.getCharacter().isDead()) {
-                    player.getCharacter().draw();
-                    Font gameFont = new Font(Fonts.DEJAVUSANS, 40);
-                    gameFont.drawString(String.format("P%s", player.getId()), player.getCharacter().getPos().x, player.getCharacter().getPos().y + 100);
+            if (canInteract) {
+                for (Player player : players) {
+                    if (!player.getCharacter().isDead()) {
+                        player.getCharacter().draw();
+                        Font gameFont = new Font(Fonts.DEJAVUSANS, 40);
+                        gameFont.drawString(String.format("P%s", player.getId()), player.getCharacter().getPos().x, player.getCharacter().getPos().y + 100);
+                    }
                 }
             }
-        }
-        for (PowerUp powerUp: powerUps) {
-            powerUp.getImage().drawFromTopLeft(powerUp.getPos().x, powerUp.getPos().y);
-        }
-        for (Obstacle obstacle: obstacles) {
-            obstacle.getImage().drawFromTopLeft(obstacle.getPos().x, obstacle.getPos().y);
-        }
-        if (!map.hasFinished()) {
-            drawCurrentHeight();
+            for (PowerUp powerUp: powerUps) {
+                powerUp.getImage().drawFromTopLeft(powerUp.getPos().x, powerUp.getPos().y);
+            }
+            for (Obstacle obstacle: obstacles) {
+                obstacle.getImage().drawFromTopLeft(obstacle.getPos().x, obstacle.getPos().y);
+            }
+            if (!map.hasFinished()) {
+                drawCurrentHeight();
+            }
         }
     }
 
