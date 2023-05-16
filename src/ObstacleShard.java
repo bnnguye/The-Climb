@@ -11,7 +11,7 @@ public class ObstacleShard {
         return image;
     }
 
-    Image image = new Image("res/charactersS/Puck/Shard.png");
+    Image image = new Image("res/sidecharacters/Puck/Shard.png");
 
     public ObstacleShard() {
         this.pos = new Point(Math.random()* Window.getWidth(), -200);

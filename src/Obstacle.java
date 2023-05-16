@@ -5,12 +5,10 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public abstract class Obstacle {
-    private String name = "";
     Image image;
     private Point pos;
-    double speed;
     private boolean jotaroAbility = false;
-    private ArrayList<Integer> playersGainedEXP = new ArrayList<>();
+    private final ArrayList<Integer> playersGainedEXP = new ArrayList<>();
 
     public Obstacle() {
         pos = new Point(Window.getWidth() * Math.random(), -200);
@@ -36,4 +34,11 @@ public abstract class Obstacle {
     public void updatePlayersGainedEXP(Integer playerId) {
         playersGainedEXP.add(playerId);
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    public double getX() {return this.pos.x;}
 }

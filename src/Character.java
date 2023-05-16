@@ -1,28 +1,23 @@
 import bagel.DrawOptions;
-import bagel.Drawing;
 import bagel.Image;
 import bagel.Window;
-import bagel.util.Colour;
 import bagel.util.Point;
 import bagel.util.Rectangle;
-import org.lwjgl.system.windows.RECT;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Character {
-        private final double frames = SettingsSingleton.getInstance().getFrames();
-        private Player player;
+
+        private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+
         private String name;
-        private String soundPath;
-        private Point iconPos;
+        private String lastName = "";
+
         private Point pos = new Point(0,0);
         private Image image;
         private Rectangle rectangle;
-        private Image icon;
-        private Image selected;
-        private int[] stats = new int[2];
 
         private double timer = 0;
         private double alternateTimer = 1 * frames;
@@ -36,22 +31,18 @@ public class Character {
         private double speedUpTimer = 0;
         private double minimisedTimer = 0;
         private double stunTimer = 0;
-
-        private double hisokaTimer = 0;
         private boolean gojoAbility = false;
-        private boolean jotaroAbility = false;
+
+        private int lives = 1;
 
 
         public Character(String name) {
-                this.name = name;
-                selected = new Image(String.format("res/characters/%s/Selected.png", name));
-                icon = new Image(String.format("res/characters/%s/Icon.png", name));
-                soundPath = String.format("music/%s.wav", name);
-                image = new Image(String.format("res/characters/%s/%s_Left.png", name, name));
-        }
-
-        public Image getIcon() {
-                return icon;
+                this.name = name.split(" ")[0];
+                if (name.split(" ").length > 1) {
+                        this.lastName = name.split(" ")[1];
+                }
+                image = new Image(String.format("res/characters/%s/Left.png", getFullName()));
+                rectangle = image.getBoundingBoxAt(new Point(pos.x, pos.y));
         }
 
         public Image getImage() {
@@ -62,7 +53,19 @@ public class Character {
                 return name;
         }
 
-        public void move(String key) {
+        public String getLastName() {return lastName;}
+
+        public String getFullName() {
+                if (lastName.equals("")) {
+                        return name;
+                }
+                return name + " " + lastName;
+        }
+
+        public void move(Controls key) {
+                if (key == null) {
+                        return;
+                }
                 double currentSpeed = speed;
 
                 if (speedDownTimer > 0 || gojoAbility) {
@@ -73,36 +76,37 @@ public class Character {
                         currentSpeed = speed*2;
                         speedUpTimer--;
                 }
-
+                moving = false;
                 if (key != null) {
+                        moving = true;
                         double new_X = pos.x;
                         double new_Y = pos.y;
-                        if (key.equals("WA")) {
+                        if (key.equals(Controls.WA)) {
                                 new_Y -= currentSpeed;
                                 new_X -= currentSpeed;
                         }
-                        if (key.equals("WD")) {
+                        if (key.equals(Controls.WD)) {
                                 new_Y -= currentSpeed;
                                 new_X += currentSpeed;
                         }
-                        if (key.equals("SA")) {
+                        if (key.equals(Controls.SA)) {
                                 new_Y += currentSpeed;
                                 new_X -= currentSpeed;
                         }
-                        if (key.equals("SD")) {
+                        if (key.equals(Controls.SD)) {
                                 new_Y += currentSpeed;
                                 new_X += currentSpeed;
                         }
-                        if (key.equals("W")) {
+                        if (key.equals(Controls.W)) {
                                 new_Y -= currentSpeed;
                         }
-                        if (key.equals("A")) {
+                        if (key.equals(Controls.A)) {
                                 new_X -= currentSpeed;
                         }
-                        if (key.equals("S")) {
+                        if (key.equals(Controls.S)) {
                                 new_Y += currentSpeed;
                         }
-                        if (key.equals("D")) {
+                        if (key.equals(Controls.D)) {
                                 new_X += currentSpeed;
                         }
                         Point newPoint = new Point(new_X, new_Y);
@@ -110,21 +114,16 @@ public class Character {
                                 pos = newPoint;
                                 moving = true;
                         }
-                } else {
-                        moving = false;
-                        if (!GameSettingsSingleton.getInstance().getMap().hasFinished() && !GameSettingsSingleton.getInstance().getMap().getJotaroAbility()) {
-                                pos = new Point(pos.x, pos.y + GameSettingsSingleton.getInstance().getMapSpeed());
-                        }
                 }
         }
 
         public void draw() {
-                Image picture = new Image(String.format("res/characters/%s/%s_Left.png", name, name));
+                Image picture = new Image(String.format("res/characters/%s/Left.png", getFullName()));
                 if (timer < alternateTimer/2) {
-                        picture = new Image(String.format("res/characters/%s/%s_Left.png", name, name));
+                        picture = new Image(String.format("res/characters/%s/Left.png", getFullName()));
                 }
                 else if (timer > alternateTimer/2) {
-                        picture  = new Image(String.format("res/characters/%s/%s_Right.png", name, name));
+                        picture  = new Image(String.format("res/characters/%s/Right.png", getFullName()));
                 }
                 if (timer <= 0) {
                         timer = alternateTimer;
@@ -136,88 +135,41 @@ public class Character {
                 if (minimisedTimer > 0) {
                         rectangle = new Rectangle(new Point(pos.x - image.getWidth()/4, pos.y - image.getHeight()/4), image.getWidth()/2, image.getHeight()/2);
                         //Drawing.drawRectangle(new Point(pos.x - image.getWidth()/4, pos.y - image.getHeight()/4), image.getWidth()/2, image.getHeight()/2, new Colour(0,0,0,0.5));
-                        picture.draw(pos.x, pos.y, new DrawOptions().setScale(0.5, 0.5));
+                        picture.drawFromTopLeft(pos.x, pos.y, new DrawOptions().setScale(0.5, 0.5));
                         minimisedTimer--;
                 }
                 else {
                         rectangle = new Rectangle(new Point(pos.x - image.getWidth()/2, pos.y - image.getHeight()/2), image.getWidth(), image.getHeight());
                         //Drawing.drawRectangle(new Point(pos.x - image.getWidth()/2, pos.y - image.getHeight()/2), image.getWidth(), image.getHeight(), new Colour(0,0,0,0.5));
-                        picture.draw(pos.x, pos.y);
+                        picture.drawFromTopLeft(pos.x, pos.y);
                 }
                 if (shield) {
-                        Image bubble = new Image("res/bubble.png");
-                        bubble.draw(pos.x, pos.y);
+                        Image bubble = new Image("res/misc/Shield_Selected.png");
+                        bubble.drawFromTopLeft(pos.x, pos.y);
                 }
         }
 
         public void setPosition(Point point) { pos = point;}
         public Point getPos() { return pos;}
 
-        public void setPlayer(Player player) { this.player = player;}
-        public Player getPlayer() {
-                return player;
-        }
-
         public void popShield() { shield = false;}
         public boolean hasShield() { return shield;}
 
-        public void resetTimer() {
+        public void reset() {
                 minimisedTimer = 0;
                 speedUpTimer = 0;
                 speedDownTimer = 0;
                 stunTimer = 0;
-                hisokaTimer = 0;
                 specialAbilityBar = 0;
                 moving = false;
                 shield = false;
                 gojoAbility = false;
-                jotaroAbility = false;
         }
 
         public String playLine() {
-                return soundPath;
+                return String.format("music/characters/%s/Voice.wav", getFullName());
         }
 
-        public Image getSelected() { return selected;}
-        public Point getIconPos() {return iconPos;}
-        public void setIconPos(Point point) { iconPos = point;}
-
-        public void setStats() {
-                String line;
-                String[] lineSplit;
-                try {
-                        Scanner scanner = new Scanner(new File("stats/Stats.txt"));
-                        while(scanner.hasNextLine()) {
-                                line = scanner.nextLine();
-                                if (line.equals(name)) {
-                                        break;
-                                }
-                        }
-                        if(scanner.hasNextLine()) {
-                                line = scanner.nextLine();
-                                lineSplit = line.split(" ");
-                                int played = Integer.parseInt(lineSplit[lineSplit.length - 1]);
-                                stats[0] = played;
-                        }
-                        if(scanner.hasNextLine()) {
-                                line = scanner.nextLine();
-                                lineSplit = line.split(" ");
-                                int won = Integer.parseInt(lineSplit[lineSplit.length - 1]);
-                                stats[1] = won;
-                        }
-                } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                }
-        }
-        public int[] getStats() { return stats;}
-        public void updateStats(boolean played, boolean won) {
-                if (played) {
-                        stats[0] ++;
-                }
-                if (won) {
-                        stats[1] ++;
-                }
-        }
         public void onIce() {
                 speedUpTimer += 1;
         }
@@ -238,29 +190,26 @@ public class Character {
                 stunTimer = 0;
                 speedDownTimer = 0;
                 shield = true;
-                hisokaTimer = 0;
-                jotaroAbility = false;
                 gojoAbility = false;
         }
-        public void setHisokaAbility(double timer) { hisokaTimer = timer;}
         public boolean isMinimised() {return minimisedTimer > 0;}
-        public void gotStunned() {stunTimer = frames;}
-        public Rectangle getRectangle() {return rectangle;}
-        public void setJotaroAbility(boolean bool) {
-                jotaroAbility = bool;
+        public boolean isDead() {
+                return lives <= 0;
         }
+        public void gotStunned() {stunTimer = 3 * frames;}
+        public Rectangle getRectangle() {return new Rectangle(pos.x, pos.y, this.rectangle.right()- this.rectangle.left(), this.rectangle.bottom() - this.rectangle.top());}
 
-        public boolean canMove() {
-                return !(hisokaTimer > 0 || jotaroAbility || stunTimer > 0);
+        public boolean canMove() { return !(stunTimer > 0);
         }
 
         public void updateCharacter() {
                 if (stunTimer > 0) {
                         stunTimer--;
                 }
-                if (hisokaTimer > 0) {
-                        hisokaTimer--;
-                }
+        }
+
+        public void slide() {
+                pos = new Point(pos.x, pos.y + GameSettingsSingleton.getInstance().getMapSpeed());
         }
 
         public void speedUp() {
@@ -275,4 +224,13 @@ public class Character {
         public void shield() {
                 shield = true;
         }
+        public boolean isSpedUp() {return speedUpTimer > 0;}
+        public boolean isSpedDown() {return speedDownTimer > 0;}
+
+
+        public void setLives(int lives) {
+                this.lives = lives;
+        }
+        public int getLives() {return this.lives;}
+        public boolean isMoving() {return moving;}
 }

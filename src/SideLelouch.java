@@ -8,32 +8,45 @@ import bagel.util.Rectangle;
 import java.util.ArrayList;
 
 public class SideLelouch extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
-    private String name = "Lelouch";
-    private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+
+    private String name = CharacterNames.LELOUCH;
+    private String power = "GEASS";
+    private String desc = "Lelouch's Geass, bestowed upon him by C.C., gives him \n" +
+            "\"The Power of Absolute Obedience\", allowing him to command\n" +
+            "his targets at will, granted they are within his scope of vision.\n" +
+            "When his ability is cast and his opponents are within his line of sight,\n" +
+            "they will die immediately.";
+
     boolean activating = false;
     boolean animating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
-    private Player user;
 
     boolean shoot = false;
-    private Point iconPos;
-
+    private Player user;
 
     public String getName() {
         return this.name;
     }
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
-    public boolean isActivating() {return this.activating;}
-    public String playLine() {return this.soundPath;}
+    public String getPower() { return this.power;}
+    public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+    public boolean isActivating() {return this.activating;}
+    public boolean isAnimating() {
+        return this.animating;
+    }
+    public void reset() {
+        this.activating = false;
+        this.animating = false;
+        this.timer = 0;
+        this.shoot = false;
+    }
+
+
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         if(!this.activating) {
+            MusicPlayer.getInstance().addMusic(getSoundPath());
             this.user = user;
             this.activating = true;
             this.timer = 6 * frames;
@@ -50,11 +63,11 @@ public class SideLelouch extends SideCharacter{
         if (this.timer <= 0) {
             Rectangle vertical = new Rectangle(user.getCharacter().getPos().x, 0, 2, Window.getHeight());
             Rectangle horizontal = new Rectangle(0, user.getCharacter().getPos().y, Window.getWidth(), 2);
-            for (Player player: players) {
+            for (Player player: SettingsSingleton.getInstance().getPlayers()) {
                 if((player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(horizontal)) || (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(vertical))) {
                     if (player.getId() != user.getId()) {
-                        if (!player.isDead()) {
-                            player.setDead();
+                        if (!player.getCharacter().isDead()) {
+                            player.getCharacter().setLives(0);
                         }
                     }
                 }
@@ -65,29 +78,17 @@ public class SideLelouch extends SideCharacter{
 
     }
 
-    public void reset() {
-        this.activating = false;
-        this.animating = false;
-        this.timer = 0;
-        this.shoot = false;
-    }
-
-    public boolean isAnimating() {
-        return this.animating;
-    }
-
     public void renderAbility() {
         if (timer > 1 *frames) {
-            Image noblePhantasm = new Image("res/charactersS/Lelouch/SpecialAbilityPoints.png");
-            noblePhantasm.drawFromTopLeft(0,0);
+            Image special = new Image("res/sidecharacters/Lelouch Lamperouge/special.png");
+            special.drawFromTopLeft(0,0);
         }
         else {
-            Image eye = new Image("res/charactersS/Lelouch/Eye.png");
+            Image eye = new Image("res/sidecharacters/Lelouch Lamperouge/Eye.png");
             eye.drawFromTopLeft(0,0);
             Colour red = new Colour(0.8, 0, 0, 0.5);
             Drawing.drawRectangle(user.getCharacter().getPos().x, 0, 2, Window.getHeight(), red);
             Drawing.drawRectangle(0, user.getCharacter().getPos().y, Window.getWidth(), 2, red);
         }
     }
-    public String getSoundPath() {return soundPath;}
 }

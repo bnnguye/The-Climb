@@ -5,7 +5,7 @@ import bagel.util.Point;
 public class SpeedDown extends PowerUp{
     private String name = "SpeedDown";
     private Point pos;
-    Image image = new Image("res/PowerUp/SpeedDown.png");
+    Image image = new Image("res/PowerUp/SpeedQuestion.png");
 
     public SpeedDown() {
         pos = new Point(Window.getWidth() * Math.random(), -200);

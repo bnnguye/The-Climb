@@ -3,7 +3,7 @@ import bagel.util.Point;
 
 public class ObstacleArrow{
     private Point position;
-    private Image image = new Image("res/charactersS/Senkuu/Arrow.png");
+    private Image image = new Image("res/sidecharacters/Senkuu/Arrow.png");
     private double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public ObstacleArrow(Point point) {

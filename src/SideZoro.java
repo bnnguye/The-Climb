@@ -8,36 +8,40 @@ import bagel.util.Rectangle;
 import java.util.ArrayList;
 
 public class SideZoro extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
-    private String name = "Zoro";
-    private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/Zoro/Icon.PNG", this.name));
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+    private String name = CharacterNames.ZORO;
+    private String power = "PURGATORY ONIGIRI";
+    private String desc = "Zoro strikes the battlefield with three slashes,\n" +
+            "eliminating all objects and opponents at the end of his sword attacks.";
+
+
     boolean activating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
     double shakeTimer;
-    private Point iconPos;
-
 
     public String getName() {
         return this.name;
     }
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
+    public String getPower() { return this.power;}
+    public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
+
     public boolean isActivating() {return this.activating;}
+    public boolean isAnimating() {
+        return this.animating;
+    }
     public void reset() {
         this.activating = false;
         this.animating = false;
-        this.timer = 0;
-        shakeTimer = 500;
+        timer = 0;
     }
-    public String playLine() {return this.soundPath;}
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
         if (!this.activating) {
+            MusicPlayer.getInstance().addMusic(getSoundPath());
+
             timer = 5*frames;
             this.activating = true;
             shakeTimer = 3*frames;
@@ -47,7 +51,7 @@ public class SideZoro extends SideCharacter{
                 this.animating = true;
             }
             else {
-                shakeImage(map);
+                shakeImage(GameSettingsSingleton.getInstance().getMap());
                 this.animating = false;
                 ArrayList<Point> hitbox = new ArrayList<>();
                 // bottomleft-topright
@@ -129,13 +133,13 @@ public class SideZoro extends SideCharacter{
                 hitbox.add(new Point(1835.00, 577.00));
                 hitbox.add(new Point(1910.00, 609.00));
 
-                for (Player player: players) {
+                for (Player player: SettingsSingleton.getInstance().getPlayers()) {
                     if (player.getId() != user.getId()) {
-                        if(!player.isDead()) {
+                        if(!player.getCharacter().isDead()) {
                             for (Point point: hitbox) {
                                 Rectangle rectangle = new Rectangle(point, 5,5);
                                 if(player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(rectangle)) {
-                                    player.setDead();
+                                    player.getCharacter().setLives(0);
                                     break;
                                 }
                             }
@@ -161,11 +165,6 @@ public class SideZoro extends SideCharacter{
         }
     }
 
-
-    public boolean isAnimating() {
-        return this.animating;
-    }
-
     public void shakeImage(Map map) {
         if (shakeTimer == 3 *frames) {
             for (Tile tile: map.getTiles()) {
@@ -188,13 +187,12 @@ public class SideZoro extends SideCharacter{
         }
         shakeTimer --;
     }
-    public String getSoundPath() {return soundPath;}
 
     public void renderAbility() {
-        Image slashLeft = new Image("res/charactersS/Zoro/SlashLeft.png");
-        Image slashMiddle = new Image("res/charactersS/Zoro/SlashMiddle.png");
-        Image slashRight = new Image("res/charactersS/Zoro/SlashRight.png");
-        Image display = new Image("res/charactersS/Zoro/Activate.png");
+        Image slashLeft = new Image("res/sidecharacters/RORONOA ZORO/SlashLeft.png");
+        Image slashMiddle = new Image("res/sidecharacters/RORONOA ZORO/SlashMiddle.png");
+        Image slashRight = new Image("res/sidecharacters/RORONOA ZORO/SlashRight.png");
+        Image display = new Image("res/sidecharacters/RORONOA ZORO/Activate.png");
         if (timer > 3 *frames) {
             Colour darken = new Colour(0, 0, 0, 0.5);
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);

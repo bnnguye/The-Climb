@@ -3,41 +3,47 @@ import bagel.Image;
 import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
-import bagel.util.Rectangle;
 
 import java.util.ArrayList;
 
 public class SideJotaro extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
-    private String name = "Jotaro";
-    private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+
+    private String name = CharacterNames.JOTARO;
+    private String power = "STAR PLATINUM: THE WORLD";
+    private String desc = "Jotaro calls his Stand \"Star Platinum\" out and uses his ultimate\n" +
+            "ability, \"The World\", stopping time in its tracks for several seconds.\n" +
+            "This unique ability was curated within the Kujo blood, however rumors\n" +
+            "say a certain vampire has honed this ability as well,\n" +
+            "with goals of someday taking over the world.";
+
+
     boolean activating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
 
-    int shakeTimer;
     ArrayList<PowerUp> powerUps;
-    private Point iconPos;
 
     public String getName() {
         return this.name;
     }
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
+    public String getPower() { return this.power;}
+    public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
+
     public boolean isActivating() {return this.activating;}
+    public boolean isAnimating() {
+        return this.animating;
+    }
     public void reset() {
         this.activating = false;
         this.animating = false;
-        this.timer = 0;
-        shakeTimer = 500;
+        timer = 0;
     }
-    public String playLine() {return this.soundPath;}
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         if (!this.activating) {
+            MusicPlayer.getInstance().addMusic(getSoundPath());
             timer = 5*frames;
             this.activating = true;
         }
@@ -46,60 +52,37 @@ public class SideJotaro extends SideCharacter{
                 this.animating = true;
             }
             else {
-                for (Player player: players) {
-                    if (player.getId() != user.getId()) {
-                        player.getCharacter().setJotaroAbility(true);
-                    }
-                    if (player.getSideCharacter().isActivating()) {
-                        if (player.getSideCharacter().getName().equals("Dio")) {
-                            player.getCharacter().setJotaroAbility(false);
-                        }
-                    }
-                }
                 for (Obstacle obstacle: obstacles) {
                     obstacle.setJotaroAbility(true);
                 }
                 for (PowerUp powerUp: powerUps) {
                     powerUp.setJotaroAbility(true);
                 }
-                map.setJotaroAbility(true);
                 this.animating = false;
             }
             timer--;
         }
         if (timer <= 0) {
-            for (Player player : players) {
-                if (player.getId() != user.getId()) {
-                    player.getCharacter().setJotaroAbility(false);
-                }
-            }
             for (Obstacle obstacle : obstacles) {
                 obstacle.setJotaroAbility(false);
             }
             for (PowerUp powerUp : powerUps) {
                 powerUp.setJotaroAbility(false);
             }
-            map.setJotaroAbility(false);
             this.activating = false;
         }
     }
 
-
-
-    public boolean isAnimating() {
-        return this.animating;
-    }
     public void setPowerUps(ArrayList<PowerUp> powerUps) {this.powerUps = powerUps;}
 
     public void renderAbility() {
-        Colour darken = new Colour(0, 0, 0.2, 0.5);
+        Colour darken = new Colour(0, 0, 0.1, 0.7);
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (timer > 3*frames) {
-            Image noblePhantasm = new Image("res/charactersS/Jotaro/SpecialAbilityPoints.png");
-            noblePhantasm.drawFromTopLeft(0,0);
+            Image special = new Image("res/sidecharacters/JOTARO KUJO/render.png");
+            special.drawFromTopLeft(Window.getWidth()/2 - special.getWidth()/2,Window.getHeight() - special.getHeight());
         }
     }
 
-    public String getSoundPath() {return soundPath;}
 
 }

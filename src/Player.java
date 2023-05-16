@@ -8,24 +8,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Player {
-    private static ArrayList<Player> players = new ArrayList<>();
-    private int id;
+    private final int id;
     private HashMap<String, Keys> controls = new HashMap<>();
-    private Point pos;
 
     private Character character = null;
     private SideCharacter sideCharacter = null;
-    private boolean characterChosen = false;
-    private boolean sideCharacterChosen = false;
+
     private Map mapChosen = null;
 
-    private int lives;
-    private boolean dead = false;
-
-    private static int noOfWins = 0;
-
     public Player(int id) {
-        pos = new Point(Window.getWidth()/2, Window.getHeight()/2);
         this.id = id;
         if (id == 1) {
             controls.put("Up", Keys.W);
@@ -55,70 +46,42 @@ public class Player {
             controls.put("Right", Keys.SEMICOLON);
             controls.put("Primary", Keys.M);
         }
-        if ((id > 0) && (id < 5)) {
-            getInstance().add(this);
-        }
     }
 
-    public synchronized static ArrayList<Player> getInstance() {
-        if (players == null) {
-            players = new ArrayList<>();
-        }
-        return players;
-    }
-
-
-    public void setPos(Input input) {
-        double new_X = pos.x;
-        double new_Y = pos.y;
-        if (input.isDown(controls.get("Up"))) {
-            new_Y -= 10;
-        }
-        if (input.isDown(controls.get("Left"))) {
-            new_X -= 10;
-        }
-        if (input.isDown(controls.get("Down"))) {
-            new_Y += 10;
-        }
-        if (input.isDown(controls.get("Right"))) {
-            new_X += 10;
-        }
-        if (((0 < new_X) && (new_X < Window.getWidth())) && ((0 < new_Y) && (new_Y < Window.getHeight()))) {
-            this.pos = new Point(new_X, new_Y);
-        }
-    }
     public void moveCharacter(Input input) {
-        if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Left")))) {
-            getCharacter().move("WA");
-        }
-        else if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Right")))) {
-            getCharacter().move("WD");
-        }
-        else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Left")))) {
-            getCharacter().move("SA");
-        }
-        else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Right")))) {
-            getCharacter().move("SD");
-        }
-        else if (input.isDown(controls.get("Right"))) {
-            getCharacter().move("D");
-        }
-        else if (input.isDown(controls.get("Up"))) {
-            getCharacter().move("W");
-        }
-        else if (input.isDown(controls.get("Left"))) {
-            getCharacter().move("A");
-        }
-        else if (input.isDown(controls.get("Down"))) {
-            getCharacter().move("S");
-        }
-        else {
-            getCharacter().move(null);
+        if (input != null) {
+            if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Left")))) {
+                getCharacter().move(Controls.WA);
+            }
+            else if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Right")))) {
+                getCharacter().move(Controls.WD);
+            }
+            else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Left")))) {
+                getCharacter().move(Controls.SA);
+            }
+            else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Right")))) {
+                getCharacter().move(Controls.SD);
+            }
+            else if (input.isDown(controls.get("Right"))) {
+                getCharacter().move(Controls.D);
+            }
+            else if (input.isDown(controls.get("Up"))) {
+                getCharacter().move(Controls.W);
+            }
+            else if (input.isDown(controls.get("Left"))) {
+                getCharacter().move(Controls.A);
+            }
+            else if (input.isDown(controls.get("Down"))) {
+                getCharacter().move(Controls.S);
+            }
+            else {
+                getCharacter().move(null);
+            }
         }
     }
 
-    public Point getPos() { return this.pos;}
-    public Image getCursor() { return new Image(String.format("res/cursors/P%s.png", this.id));}
+    public void moveComputer(ArrayList<Obstacle> obstacleArrayList) {}
+
     public int getId() { return this.id;}
     public Character getCharacter() {
         return this.character;
@@ -129,44 +92,23 @@ public class Player {
     public Map getMapChosen() {
         return this.mapChosen;
     }
-    public int getNoOfWins() {return this.noOfWins;}
+    public Keys getControl(String control) {
+        return controls.get(control);
+    }
 
     public void setCharacter(Character character) {
         this.character = character;
     }
-
     public void setSideCharacter(SideCharacter character) {
         this.sideCharacter = character;
     }
-
-    public boolean getCharacterChosen() {return this.character != null;}
-    public boolean getSideCharacterChosen() {return this.sideCharacter != null;}
-    public boolean isDead() {
-        return this.dead;
-    }
-    public void setDead() {
-        this.dead = !this.dead;
-    }
-
-    public void reset() {
-        this.dead = false;
-        this.character = null;
-        this.sideCharacter = null;
-        this.mapChosen = null;
-    }
-    public void recordWin() {
-        this.noOfWins += 1;
-    }
-
     public void setMapChosen(Map map) {
         this.mapChosen = map;
     }
-    public void setLives(int lives) {
-        this.lives = lives;
-    }
-    public int getLives() {return this.lives;}
 
-    public Keys getControl(String control) {
-        return controls.get(control);
+    public void reset() {
+        this.character = null;
+        this.sideCharacter = null;
+        this.mapChosen = null;
     }
 }

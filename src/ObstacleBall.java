@@ -9,7 +9,7 @@ public class ObstacleBall extends Obstacle {
     private double speed = 6 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public ObstacleBall() {
-        this.pos = new Point(Window.getWidth() * Math.random(), -200);
+        this.pos = new Point(Window.getWidth() * Math.random(), -600);
     }
 
 

@@ -6,31 +6,41 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideHisoka extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
-    private String name = "Hisoka";
-    private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+
+    private String name = CharacterNames.HISOKA;
+    private String power = "BUNGEE GUM";
+    private String desc = "Hisoka Morow's signature move \"Bungee Gum\" allows him\n" +
+            "to trap his opponents by converting his aura into a sticky substance,\n" +
+            "freezing any character caught within its path for several seconds.";
+
     boolean activating = false;
+    boolean animating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
 
     boolean shoot = false;
     ArrayList<ObstacleBungeeGum> bungeeGums;
-    private Point iconPos;
-
 
     public String getName() {
         return this.name;
     }
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
+    public String getPower() { return this.power;}
+    public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
     public boolean isActivating() {return this.activating;}
-    public String playLine() {return this.soundPath;}
+    public boolean isAnimating() {
+        return this.animating;
+    }
+    public void reset() {
+        this.activating = false;
+        this.animating = false;
+        timer = 0;
+    }
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         if(!this.activating) {
+            MusicPlayer.getInstance().addMusic(getSoundPath());
             this.activating = true;
             this.timer = 10 * frames;
             bungeeGums = new ArrayList<>();
@@ -56,13 +66,13 @@ public class SideHisoka extends SideCharacter{
                 ArrayList<ObstacleBungeeGum> bgToRemove = new ArrayList<>();
                 for (ObstacleBungeeGum bg: bungeeGums) {
                     bg.move();
-                    for(Player player: players) {
+                    for(Player player: SettingsSingleton.getInstance().getPlayers()) {
                         if (player.getId() != user.getId()) {
                             if (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos())
                                     .intersects(bg.getImage().getBoundingBoxAt(new Point(bg.getPos().x -
                                             bg.getImage().getWidth()/2, bg.getPos().y - bg.getImage().getHeight()/2)))) {
-                                if (!player.isDead()) {
-                                    player.getCharacter().setHisokaAbility(4 * frames);
+                                if (!player.getCharacter().isDead()) {
+                                    player.getCharacter().gotStunned();
                                     bgToRemove.add(bg);
                                 }
                             }
@@ -83,24 +93,13 @@ public class SideHisoka extends SideCharacter{
         }
     }
 
-    public void reset() {
-        this.activating = false;
-        this.animating = false;
-        this.timer = 0;
-        this.shoot = false;
-    }
-
-    public boolean isAnimating() {
-        return this.animating;
-    }
-
     public void renderAbility() {
         if (timer > 8*frames) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
-            Image noblePhantasm = new Image("res/charactersS/Hisoka/SpecialAbilityPoints.png");
+            Image special = new Image("res/sidecharacters/Hisoka Morow/special.png");
             Colour darken = new Colour(0, 0, 0, 0.5);
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
-            noblePhantasm.drawFromTopLeft(0,0);
+            special.drawFromTopLeft(0,0);
         }
         else {
             for (ObstacleBungeeGum bg: bungeeGums) {
@@ -108,5 +107,4 @@ public class SideHisoka extends SideCharacter{
             }
         }
     }
-    public String getSoundPath() {return soundPath;}
 }

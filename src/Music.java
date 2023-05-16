@@ -1,64 +1,87 @@
 import javax.sound.sampled.*;
 import java.io.File;
-import java.io.IOException;
 
 public class Music {
-    File musicPath;
+    private String fileName;
     private AudioInputStream audioInput;
-    Clip clip;
-    FloatControl gainControl;
+    private Clip clip;
+    private FloatControl gainControl;
 
-
-    void playMusic(String musicLocation) {
+    public Music(String fileName, double volume) {
+        this.fileName = fileName;
         try {
+            File musicPath = new File(fileName);
+            audioInput = AudioSystem.getAudioInputStream(musicPath);
+            clip = AudioSystem.getClip();
+            clip.open(audioInput);
+            clip.start();
             if (clip != null) {
                 gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            }
-            this.musicPath = new File(musicLocation);
-
-            if (musicPath.exists()) {
-                audioInput = AudioSystem.getAudioInputStream(musicPath);
-                this.clip = AudioSystem.getClip();
-                this.clip.open(audioInput);
-                this.clip.start();
+                gainControl.setValue(20f * (float) Math.log10(volume/86.0));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    public void stopMusic() {
+
+    public void stop() {
+        this.clip.setFramePosition(this.clip.getFrameLength());
+        this.clip.stop();
+    }
+
+    public void pause() {
         if (clip.isActive()) {
+            int currentFrameLength = clip.getFrameLength();
             clip.stop();
+            clip.setFramePosition(currentFrameLength);
         }
     }
 
-    public void run(String filePath) {
-        try {
-            AudioInputStream input = AudioSystem.getAudioInputStream(new File(filePath));
-            this.clip = AudioSystem.getClip();
-            this.clip.open(input);
-            this.clip.loop(Clip.LOOP_CONTINUOUSLY);
-            this.clip.start();
-            if (clip != null) {
-                gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            }
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void resume() {
+        if (clip != null) {
+            clip.start();
         }
     }
 
-    public float getVolume() {
-        FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-        return (float) Math.pow(10f, gainControl.getValue() / 20f);
+    public double getVolume() {
+        return Math.exp(gainControl.getValue() / 20f) * 86.0;
     }
 
-    public void setVolume(float volume) {
-        if (volume < 0f || volume > 1f)
-            throw new IllegalArgumentException("Volume not valid: " + volume);
-        gainControl.setValue(20f * (float) Math.log10(volume));
+    public void setVolume(double volume) {
+        if (volume/100.0 > 1) {
+            volume = 100.0;
+        }
+        else if (volume < 0) {
+            volume = 0;
+        }
+//        System.out.println("Volume: " + volume/100.0 + ", Adj: " + (20f * (float) Math.log10(volume/86.0)));
+        gainControl.setValue(20f * (float) Math.log10(volume/86.0));
     }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public boolean aboutToEnd() {
+        return this.clip.getFrameLength() - clip.getFramePosition() < 1000;
+    }
+
+    public boolean hasEnded() {
+        return this.clip.getFramePosition() >= this.clip.getFrameLength();
+    }
+
+    public void restart() {
+        clip.setFramePosition(0);
+    }
+
+    public int getFrameLength() {return clip.getFrameLength();}
+
+    public int getFramePosition() {return clip.getFramePosition();}
+
+    public void setLoop(boolean bool) {
+        if (bool) {
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        }
+    }
+
 }

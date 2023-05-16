@@ -1,0 +1,9 @@
+Ice,Ice,Ice,Ice
+Basic,Basic,Basic,Basic
+BasicTop,BasicTop,Basic,Basic
+Basic,Basic,BasicLeft,Basic
+Basic,Basic,Basic,Basic
+BasicLeft,BasicTop,BasicLeft,IceLeft
+IceTop,IceTop,IceTop,Basic
+Ice,Ice,Ice,Ice
+Basic,Basic,Basic,BasicTop

@@ -1,6 +1,5 @@
 import bagel.Drawing;
 import bagel.Image;
-import bagel.Input;
 import bagel.Window;
 import bagel.util.Colour;
 import bagel.util.Point;
@@ -8,39 +7,46 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideItachi extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getFrames();
-    private String name = "Itachi";
-    private String soundPath = String.format("music/%s.wav", this.name);
-    Image icon = new Image(String.format("res/charactersS/%s/Icon.PNG", this.name));
+    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+
+    private String name = CharacterNames.ITACHI;
+    private String power = "INFINITE TSUKUYOMI";
+    private String desc = "Itachi activates his unique ability \"Infinite Tsukuyomi\"\n," +
+            "sending all those who look into his left eye into a hallucination.\n" +
+            "Those strong enough will be sent into a state of confusion, while\n" +
+            "the rest have their lives taken by the hands of the shinobi.";
+
     boolean activating = false;
     double timer;
-    private Image selected = new Image(String.format("res/charactersS/%s/Selected.png", this.name));
 
     private ArrayList<Obstacle> obstacles;
     private ArrayList<PowerUp> powerUps;
     private boolean left = true;
-    private Player user;
-    private Point iconPos;
 
     public String getName() {
         return this.name;
     }
-    public Image getIcon() {return this.icon;}
-    public void setIconPos(Point point) {this.iconPos = point;}
-    public Point getIconPos() {return this.iconPos;}
-    public Image getSelected() {return this.selected;}
+    public String getPower() { return this.power;}
+    public String getDesc() { return this.desc;}
+    public String getSoundPath() {return String.format("music/sidecharacters/%s/%s.wav", this.name, this.name);}
+
     public boolean isActivating() {return this.activating;}
+    public boolean isAnimating() {
+        return this.animating;
+    }
     public void reset() {
         this.activating = false;
         this.animating = false;
-        this.timer = 0;
+        timer = 0;
     }
-    public String playLine() {return this.soundPath;}
 
-    public void activateAbility(Player user, ArrayList<Player> players, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps, Map map) {
+
+    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
         this.obstacles = obstacles;
         this.powerUps = powerUps;
-        this.user = user;
+        if (!MusicPlayer.getInstance().contains(getSoundPath()) && !MusicPlayer.getInstance().hasEnded(getSoundPath())) {
+            MusicPlayer.getInstance().addMusic(getSoundPath());
+        }
         if (!this.activating) {
             timer = 8*frames;
             this.activating = true;
@@ -51,7 +57,7 @@ public class SideItachi extends SideCharacter{
             }
             else {
                 this.animating = false;
-                for (Player player: players) {
+                for (Player player: SettingsSingleton.getInstance().getPlayers()) {
                     if (player.getId() != user.getId()) {
                         player.getCharacter().onSlow();
                     }
@@ -64,11 +70,8 @@ public class SideItachi extends SideCharacter{
         }
     }
 
-    public boolean isAnimating() {
-        return this.animating;
-    }
     public void setPowerUps(ArrayList<PowerUp> powerUps) {this.powerUps = powerUps;}
-    public void setLeft(boolean left) {
+    public void setDecoyOnLeft(boolean left) {
         if (this.animating) {
             if (left) {
                 this.left = true;
@@ -83,8 +86,8 @@ public class SideItachi extends SideCharacter{
         if (timer > 4*frames) {
             Colour darken = new Colour(0, 0, 0, 0.5);
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
-            Image noblePhantasm = new Image("res/charactersS/Itachi/SpecialAbilityPoints.png");
-            noblePhantasm.drawFromTopLeft(0,0);
+            Image special = new Image("res/sidecharacters/ITACHI UCHIHA/special.png");
+            special.drawFromTopLeft(0,0);
         }
         else {
             for(Obstacle obstacle: obstacles) {
@@ -109,7 +112,6 @@ public class SideItachi extends SideCharacter{
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         }
     }
-    public String getSoundPath() {return soundPath;}
 
 
 }
