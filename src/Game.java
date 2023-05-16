@@ -1165,9 +1165,11 @@ public class Game extends AbstractGame {
         if (settingsSingleton.getGameState() == 0) {
             imagePointManagerSingleton.getCurrentBackground().draw();
             drawGame();
+            Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), new Colour(0,0,0,0.4));
+
 //            new ImagePoint(("res/menu/main/mainmenu plain.png"), new Point(0,0)).draw();
-////            new ImagePoint(("res/menu/main/boyandgirl.png"), new Point(1108, 24)).draw();
-//            new ImagePoint("res/menu/main/name.png", new Point(148, 87)).draw();
+            new ImagePoint(("res/menu/main/boyandgirl.png"), new Point(1108, 24)).draw();
+            new ImagePoint("res/menu/main/name.png", new Point(148, 87)).draw();
             for (Button button: buttons) {
                 if (button.isHovering()) {
                     Drawing.drawRectangle(new Point(0, button.getPosition().y + 30), Window.getWidth(), button.getWidth() - 30, new Colour(0,0,0,0.05));
@@ -1818,7 +1820,7 @@ public class Game extends AbstractGame {
             Character character = player.getCharacter();
             if (!player.getCharacter().isDead()) {
                 if (character.canMove()) {
-                    if (player.getClass().equals(Computer.class)) {
+                    if (player.getClass().equals(ComputerEasy.class) || player.getClass().equals(ComputerHard.class)) {
                         player.moveComputer(obstacles);
                     }
                     else {
@@ -2358,7 +2360,7 @@ public class Game extends AbstractGame {
         buttonsToRemove.addAll(buttons);
         buttons.add(new Button("Retry", "Continue?",
                 new FontSize(Fonts.DEJAVUSANS, 160),
-                new Rectangle(0, Window.getHeight() / 2, Window.getWidth(), 160),
+                new Rectangle(0, Window.getHeight()/2, Window.getWidth(), 160),
                 ColourPresets.WHITE.toColour()));
         buttons.add(new Button("Back To Start", "Exit",
                 new FontSize(Fonts.DEJAVUSANS, 160),
@@ -2416,10 +2418,10 @@ public class Game extends AbstractGame {
         }
 
         if (players.size() == 0) {
-            players.add(new Computer(0));
+            players.add(new ComputerEasy(0));
             players.get(0).setCharacter(new Character(CharacterNames.CHIZURU));
             players.get(0).setSideCharacter(new SideJotaro());
-            players.add(new Computer(1));
+            players.add(new ComputerHard(1));
             players.get(1).setCharacter(new Character(CharacterNames.MAI));
             players.get(1).setSideCharacter(new SideDio());
             setPlayersPosition();

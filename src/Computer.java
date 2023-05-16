@@ -1,10 +1,11 @@
+import Enums.ComputerType;
 import bagel.Window;
 import bagel.util.Point;
 import bagel.util.Rectangle;
 
 import java.util.ArrayList;
 
-public class Computer extends Player {
+public abstract class Computer extends Player {
 
     private final int updateRate = 50;
     private final int moveSize = 144;
@@ -36,25 +37,13 @@ public class Computer extends Player {
         }
     }
 
-    public void loadMoves(ArrayList<Obstacle> obstacles) {
-        if (obstacles.size() > 0) {
-            // update computer move every second, so computer is holding an input for one second
-            Map map = GameSettingsSingleton.getInstance().getMap();
-            ArrayList<CollisionBlock> collisionBlocks; // next level of computer
+    abstract void loadMoves(ArrayList<Obstacle> obstacles);
 
-            Rectangle closestSafeSpot = getClosestSafeSpot(getSafeSpots(obstacles));
-            if (closestSafeSpot != null) {
-                loadMovesToClosestSafeSpot(closestSafeSpot);
-            }
-        }
-    }
-
-    private void loadMovesToClosestSafeSpot(Rectangle closestSafeSpot) {
+    protected void loadMovesToSafeSpot(Rectangle closestSafeSpot) {
         Character character = new Character(CharacterNames.CHIZURU);
         character.setPosition(this.character.getPos());
 
         while (Math.abs(character.getPos().x - closestSafeSpot.centre().x) > 10 && moves.size() < updateRate) {
-            System.out.println("sTUCK IN WHIEL LOOP: move.size(): " + moves.size());
             if (character.getPos().x < closestSafeSpot.centre().x) {
                 moves.add(Controls.D);
                 character.move(Controls.D);
@@ -69,7 +58,7 @@ public class Computer extends Player {
         }
     }
 
-    private ArrayList<Rectangle> getSafeSpots(ArrayList<Obstacle> obstacles) {
+    protected ArrayList<Rectangle> getSafeSpots(ArrayList<Obstacle> obstacles) {
         System.out.println("Obstacles: " + obstacles.size());
         ArrayList<Rectangle> dangerSpots = new ArrayList<>();
         ArrayList<Rectangle> safeSpots = new ArrayList<>();
@@ -102,7 +91,7 @@ public class Computer extends Player {
         return this.character;
     }
 
-    public ArrayList<Rectangle> sort(ArrayList<Rectangle> obstacles) {
+    private ArrayList<Rectangle> sort(ArrayList<Rectangle> obstacles) {
         obstacles.sort((o1, o2)-> compareTo(o1.left(), o2.left()));
         return obstacles;
     }
@@ -111,7 +100,7 @@ public class Computer extends Player {
         return x1 >= x2 ? (int) x2 : (int) x1;
     }
 
-    private Rectangle getClosestSafeSpot(ArrayList<Rectangle> safeSpots) {
+    protected Rectangle getClosestSafeSpot(ArrayList<Rectangle> safeSpots) {
         Rectangle closestSpot = null;
         for (Rectangle safeSpot: safeSpots) {
             if (closestSpot == null) {
