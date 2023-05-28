@@ -3,7 +3,7 @@ import bagel.Window;
 import bagel.util.Point;
 
 public class PowerUpSpecialAbilityPoints extends PowerUp {
-    private String name = "Special Ability";
+    private String name = "SpecialAbilityPoints";
     private Point pos;
     Image image = new Image("res/PowerUp/SpecialAbilityPoints.png");
 

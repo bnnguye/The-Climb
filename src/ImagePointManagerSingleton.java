@@ -107,4 +107,9 @@ public class ImagePointManagerSingleton {
         }
         return taggedImages;
     }
+
+    public boolean imageWithExistsWithTag(String tag) {
+        ArrayList<ImagePoint> taggedImages = getAllImagesWithTag(tag);
+        return taggedImages.size() != 0;
+    }
 }

@@ -4,13 +4,16 @@ import bagel.util.Point;
 import bagel.util.Rectangle;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public abstract class Computer extends Player {
 
-    private final int updateRate = 50;
-    private final int moveSize = 144;
+    /// updateRate refreshes moveList to adapt to newly spawned obstacles
+    private final int updateRate = 144;
 
-    private ArrayList<Controls> moves = new ArrayList<>();
+    private final ArrayList<Controls> moves = new ArrayList<>();
+
+    public ArrayList<Rectangle> safeSpots = null;
 
     private Character character = null;
 
@@ -20,19 +23,24 @@ public abstract class Computer extends Player {
 
     @Override
     public void moveComputer(ArrayList<Obstacle> obstacles) {
-        if (moves.size() == 0) {
+        Map map = GameSettingsSingleton.getInstance().getMap();
+
+        if (moves.size() < updateRate) {
+            moves.clear();
             loadMoves(obstacles);
         }
         if (moves.size() > 0) {
-            character.move(moves.get(0));
+            if (map.getHeight() - map.getCurrentHeight() < 50 || Window.getHeight() - character.getPos().y < 200) {
+                character.move(addW(moves.get(0)));
+            }
+            else {
+                character.move(moves.get(0));
+            }
             moves.remove(0);
         }
         else {
-            Map map = GameSettingsSingleton.getInstance().getMap();
-            if (map != null) {
-                if (map.getHeight() - map.getCurrentHeight() < Window.getHeight() || Window.getHeight() - character.getPos().y < 200) {
-                    character.move(Controls.W);
-                }
+            if (map.getHeight() - map.getCurrentHeight() < 50 || Window.getHeight() - character.getPos().y < 200) {
+                character.move(Controls.W);
             }
         }
     }
@@ -43,23 +51,27 @@ public abstract class Computer extends Player {
         Character character = new Character(CharacterNames.CHIZURU);
         character.setPosition(this.character.getPos());
 
-        while (Math.abs(character.getPos().x - closestSafeSpot.centre().x) > 10 && moves.size() < updateRate) {
+        while (Math.abs(character.getPos().x - closestSafeSpot.centre().x) > character.getSpeed()*2) {
+            if (Math.abs(character.getPos().x - closestSafeSpot.centre().x) <= character.getSpeed()*2) {
+                moves.add(null);
+                character.move(null);
+            }
             if (character.getPos().x < closestSafeSpot.centre().x) {
                 moves.add(Controls.D);
                 character.move(Controls.D);
             }
-            else if (character.getPos().x > closestSafeSpot.centre().x) {
+            else {
                 moves.add(Controls.A);
                 character.move(Controls.A);
             }
-            else {
-                moves.add(null);
+
+            if (moves.size() > 144) {
+                break;
             }
         }
     }
 
     protected ArrayList<Rectangle> getSafeSpots(ArrayList<Obstacle> obstacles) {
-        System.out.println("Obstacles: " + obstacles.size());
         ArrayList<Rectangle> dangerSpots = new ArrayList<>();
         ArrayList<Rectangle> safeSpots = new ArrayList<>();
 
@@ -73,13 +85,32 @@ public abstract class Computer extends Player {
         }
 
         ArrayList<Rectangle> sortedDangerSpots = sort(dangerSpots);
-
-        double horizontalIndex = 0;
-        for (Rectangle dangerSpot: sortedDangerSpots) {
-            safeSpots.add(new Rectangle(new Point(horizontalIndex, 0), horizontalIndex + dangerSpot.left(), 0));
-            horizontalIndex = dangerSpot.right();
-            System.out.println("danger spot left" + dangerSpot.left() + ", horizontal index: " + horizontalIndex);
+        Rectangle lastR = null;
+        for (Rectangle rectangle: sortedDangerSpots) {
+            if (lastR == null) {
+                lastR = rectangle;
+            }
+            else {
+                if (rectangle.left() < lastR.left()) {
+                    System.out.println("SORTING IS WRONG; currentRectangle.left(): " + rectangle.left() + ", lastR.left(): " + lastR.left());
+                }
+            }
         }
+
+        Rectangle lastDangerSpot = null;
+        for (Rectangle dangerSpot: sortedDangerSpots) {
+            if (lastDangerSpot == null) {
+                safeSpots.add(new Rectangle(new Point(0, 0), dangerSpot.left(), 0));
+            }
+            else {
+                if (!dangerSpot.intersects(lastDangerSpot) && !(dangerSpot.left() - lastDangerSpot.right() < 0)) {
+                    safeSpots.add(new Rectangle(new Point(lastDangerSpot.right(), 0), dangerSpot.left() - lastDangerSpot.right(), 0));
+                }
+            }
+            lastDangerSpot = dangerSpot;
+        }
+
+        this.safeSpots = safeSpots;
 
         return safeSpots;
     }
@@ -92,12 +123,14 @@ public abstract class Computer extends Player {
     }
 
     private ArrayList<Rectangle> sort(ArrayList<Rectangle> obstacles) {
-        obstacles.sort((o1, o2)-> compareTo(o1.left(), o2.left()));
-        return obstacles;
-    }
+        obstacles.sort(new Comparator<Rectangle>() {
+            @Override
+            public int compare(Rectangle o1, Rectangle o2) {
+                return Double.compare(o1.left(), o2.left());
+            }
+        });
 
-    private int compareTo(double x1, double x2) {
-        return x1 >= x2 ? (int) x2 : (int) x1;
+        return obstacles;
     }
 
     protected Rectangle getClosestSafeSpot(ArrayList<Rectangle> safeSpots) {
@@ -107,12 +140,31 @@ public abstract class Computer extends Player {
                 closestSpot = safeSpot;
             }
             else {
-                if (this.getCharacter().getPos().distanceTo(safeSpot.centre()) < this.getCharacter().getPos().distanceTo(closestSpot.centre())) {
+                if (character.getRectangle().intersects(safeSpot)) {
+                    closestSpot = safeSpot;
+                    return closestSpot;
+                }
+                if ((Math.abs(character.getPos().x - safeSpot.left()) < Math.abs(character.getPos().x - closestSpot.left())) ||
+                        (Math.abs(character.getPos().x - safeSpot.right()) < Math.abs(character.getPos().x - closestSpot.right()))) {
                     closestSpot = safeSpot;
                 }
             }
         }
+//        System.out.println("Closest spot: " + closestSpot);
         return closestSpot;
+    }
+
+    private Controls addW(Controls move) {
+        if (move.equals(Controls.A)) {
+            return Controls.WA;
+        }
+        else if (move.equals(Controls.D)) {
+            return Controls.WD;
+        }
+        else if (move == null) {
+            return Controls.W;
+        }
+        return move;
     }
 
 }

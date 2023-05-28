@@ -6,7 +6,6 @@ public class EventCharacterPicked extends EventInterface {
 
     ArrayList<ImagePoint> characterRenders;
 
-    private String currentCharacterPicked;
     ImagePoint charImage;
     private boolean canInteract = true;
 
@@ -14,7 +13,6 @@ public class EventCharacterPicked extends EventInterface {
         int currentTime = TimeLogger.getInstance().getFrames();
         this.frames = frames + currentTime;
         this.event = event;
-        currentCharacterPicked = event.split(" ")[event.split(" ").length - 1];
     }
 
     public void process() {

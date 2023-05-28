@@ -62,12 +62,8 @@ public class Character {
                 return name + " " + lastName;
         }
 
-        public void move(Controls key) {
-                if (key == null) {
-                        return;
-                }
-                double currentSpeed = speed;
-
+        public double getSpeed() {
+                double currentSpeed = this.speed;
                 if (speedDownTimer > 0 || gojoAbility) {
                         currentSpeed = speed/5*3;
                         speedDownTimer--;
@@ -76,6 +72,14 @@ public class Character {
                         currentSpeed = speed*2;
                         speedUpTimer--;
                 }
+                return currentSpeed;
+        }
+
+        public void move(Controls key) {
+                if (key == null) {
+                        return;
+                }
+                double currentSpeed = getSpeed();
                 moving = false;
                 if (key != null) {
                         moving = true;

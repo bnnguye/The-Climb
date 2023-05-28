@@ -123,11 +123,11 @@ public class Button {
             slidersToRemove.addAll(sliders);
             buttonsToAdd.add(new Button("Left Arrow",
                     new Image("res/arrows/LeftArrow.png"),
-                    new Point(600, 0),
+                    new Point(450, 0),
                     0.5));
             buttonsToAdd.add(new Button("Right Arrow",
                     new Image("res/arrows/RightArrow.png"),
-                    new Point(Window.getWidth() - 750, 0),
+                    new Point(Window.getWidth() - 600, 0),
                     0.5));
                 buttonsToAdd.add(new Button("Decrease Map Speed",
                         new Image("res/arrows/LeftArrow.png"),
@@ -153,11 +153,11 @@ public class Button {
                 slidersToRemove.addAll(sliders);
                 buttonsToAdd.add(new Button("Left Arrow",
                         new Image("res/arrows/LeftArrow.png"),
-                        new Point(600, 0),
+                        new Point(450, 0),
                         0.5));
                 buttonsToAdd.add(new Button("Right Arrow",
                         new Image("res/arrows/RightArrow.png"),
-                        new Point(Window.getWidth() - 750, 0),
+                        new Point(Window.getWidth() - 600, 0),
                         0.5));
                 if (gameSettingsSingleton.getPage() == 0) {
                     buttonsToAdd.add(new Button("Decrease Map Speed",
@@ -203,11 +203,11 @@ public class Button {
                 slidersToRemove.addAll(sliders);
                 buttonsToAdd.add(new Button("Left Arrow",
                         new Image("res/arrows/LeftArrow.png"),
-                        new Point(600, 0),
+                        new Point(450, 0),
                         0.5));
                 buttonsToAdd.add(new Button("Right Arrow",
                         new Image("res/arrows/RightArrow.png"),
-                        new Point(Window.getWidth() - 750, 0),
+                        new Point(Window.getWidth() - 600, 0),
                         0.5));
                 if (gameSettingsSingleton.getPage() == 1) {
                     addPowerUpSliders();

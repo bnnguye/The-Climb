@@ -4,13 +4,6 @@ import java.util.ArrayList;
 
 public class ComputerHard extends Computer {
 
-    private final int updateRate = 50;
-    private final int moveSize = 144;
-
-    private ArrayList<Controls> moves = new ArrayList<>();
-
-    private Character character = null;
-
     public ComputerHard(int id) {
         super(id);
     }
