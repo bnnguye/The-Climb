@@ -17,7 +17,7 @@ public class Music {
             clip.start();
             if (clip != null) {
                 gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-                gainControl.setValue(20f * (float) Math.log10(volume/86.0));
+                setVolume(volume);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

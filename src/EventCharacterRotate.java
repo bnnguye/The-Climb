@@ -12,9 +12,10 @@ public class EventCharacterRotate extends EventInterface{
     private final double maxScale = 1;
     private double calls;
 
-    public EventCharacterRotate(int frames, String event) {
-        this.frames = frames + TimeLogger.getInstance().getFrames();
-        this.calls = frames;
+    public EventCharacterRotate(String event) {
+        int duration = SettingsSingleton.getInstance().getRefreshRate()/8;
+        this.frames = duration + TimeLogger.getInstance().getFrames();
+        this.calls = duration;
         this.event = event;
     }
 

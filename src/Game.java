@@ -139,7 +139,6 @@ public class Game extends AbstractGame {
 //        currentMode = currentStory >= currentScene ? "Scene" : "Story";
 
         eventsListener.addEvent(new EventStartApp(5 * frames / 2, "Game initiated"));
-        musicPlayer.getMainMusic().setVolume(musicPlayer.getMaxMainVol());
     }
 
     @Override
@@ -208,7 +207,7 @@ public class Game extends AbstractGame {
                 menuTitle = "";
                 imagePointManagerSingleton.getImages().clear();
                 musicPlayer.setMainMusic("music/Battle/Giorno.wav");
-                musicPlayer.getMainMusic().setVolume(musicPlayer.getMaxMainVol());
+                musicPlayer.getMainMusic().setVolume(musicPlayer.getMainVolume());
                 eventsListener.addEvent(new EventGameStateZero());
                 ImagePoint frontCover = new ImagePoint(String.format("res/characters/%s/Render.png", allCharacters.get((int) (Math.random() * allCharacters.size())).getFullName()), new Point(1000,24), "frontCover");
                 if (!imagePointManagerSingleton.imageWithExistsWithTag("frontCover")) {
@@ -285,7 +284,8 @@ public class Game extends AbstractGame {
                 imagePointManagerSingleton.getImages().clear();
                 menuTitle = "";
                 if (settingsSingleton.getGameMode() == 1) {
-                    buttons.add(new Button("Game Settings", new Image("res/misc/settings.png"), new Point(10,10)));
+                    Image settingsImage = new Image("res/misc/settings.png");
+                    buttons.add(new Button("Game Settings", settingsImage, new Point((Window.getWidth() - settingsImage.getWidth())/2,20)));
                 }
                 sortCharacters();
                 adjustCharacterRotation();
@@ -308,10 +308,10 @@ public class Game extends AbstractGame {
             }
 
             if (input != null && input.isDown(Keys.RIGHT)) {
-                eventsListener.addEvent(new EventCharacterRotate(frames/8, "Rotate LEFT"));
+                eventsListener.addEvent(new EventCharacterRotate("Rotate LEFT"));
                 rotateCharacter("LEFT");
             } else if (input != null && input.isDown(Keys.LEFT)) {
-                eventsListener.addEvent(new EventCharacterRotate(frames/8, "Rotate RIGHT"));
+                eventsListener.addEvent(new EventCharacterRotate("Rotate RIGHT"));
                 rotateCharacter("RIGHT");
             }
 
@@ -384,10 +384,10 @@ public class Game extends AbstractGame {
                 imagePointManagerSingleton.setCurrentBackground((String.format("res/sidecharacters/%s/bg.png", currentCharacter.getName())));
 
                 if (input != null && input.isDown(Keys.RIGHT)) {
-                    eventsListener.addEvent(new EventSideCharacterRotate(frames/8, "Rotate LEFT"));
+                    eventsListener.addEvent(new EventSideCharacterRotate("Rotate LEFT"));
                     rotateCharacter("LEFT");
                 } else if (input != null && input.isDown(Keys.LEFT)) {
-                    eventsListener.addEvent(new EventSideCharacterRotate(frames/8, "Rotate RIGHT"));
+                    eventsListener.addEvent(new EventSideCharacterRotate("Rotate RIGHT"));
                     rotateCharacter("RIGHT");
                 }
 
@@ -435,15 +435,38 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 5)     { // Map
             if (!settingsSingleton.getGameStateString().equals("MAP")) {
                 buttonsToRemove.addAll(buttons);
-                menuTitle = "Which Climb?";
                 imagePointManagerSingleton.setCurrentBackground(null);
                 settingsSingleton.setGameStateString("MAP");
+                loadMapRender();
             }
-            gameSettingsSingleton.setMap(playableMaps.get(1));
-            gameSettingsSingleton.getMap().generateMap();
-            musicPlayer.clear();
-            gameSettingsSingleton.setMap(gameSettingsSingleton.getMap());
-            settingsSingleton.setGameState(6);
+
+            if (input != null && input.isDown(Keys.LEFT)) {
+                rotateMap("RIGHT");
+                eventsListener.addEvent(new EventMapRotate("RIGHT"));
+            }
+            else if (input != null && input.isDown(Keys.RIGHT)) {
+                rotateMap("LEFT");
+                eventsListener.addEvent(new EventMapRotate("LEFT"));
+            }
+
+            if (input != null && input.wasPressed(Keys.ESCAPE)) {
+                for (Player player: players) {
+                    player.setSideCharacter(null);
+                }
+                settingsSingleton.setGameState(4);
+            }
+
+            boolean allPlayersChosen = true;
+            for (Player player: players) {
+                if (player.getMapChosen() == null) {
+                    allPlayersChosen = false;
+                }
+            }
+
+
+            if (allPlayersChosen) {
+                settingsSingleton.setGameState(6);
+            }
         }
         else if (settingsSingleton.getGameState() == 6) {
             if (settingsSingleton.getGameMode() == 1) {
@@ -1171,10 +1194,11 @@ public class Game extends AbstractGame {
         if (settingsSingleton.getGameState() == 0) {
             imagePointManagerSingleton.getCurrentBackground().draw();
             drawGame();
-            Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), new Colour(0,0,0,0.4));
+            Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), new Colour(0,0,0,0.6));
 
             ImagePoint leftCover = imagePointManagerSingleton.get("res/menu/main/leftcover.png");
             ImagePoint rightCover = imagePointManagerSingleton.get("res/menu/main/rightcover.png");
+
 
             if (leftCover != null) {
                 leftCover.draw();
@@ -1279,6 +1303,16 @@ public class Game extends AbstractGame {
                 Drawing.drawRectangle(0,0, Window.getWidth(), Window.getHeight(), new Colour(0,0,0,0.5));
                 imagePointManagerSingleton.get(String.format("res/SideCharacters/%s/render.png", currentCharacter.getName())).draw();
             }
+        }
+        else if (settingsSingleton.getGameState() == 5) {
+
+            int middleIndex = playableMaps.size() % 2 == 1 ? playableMaps.size() / 2 + 1 : playableMaps.size() / 2;
+
+            new Image(String.format("res/maps/mapPeeks/%s.png", playableMaps.get(middleIndex).getName())).drawFromTopLeft(0,0);
+            Drawing.drawRectangle(0,0, Window.getWidth(), Window.getHeight(), new Colour(0,0,0,0.8));
+            imagePointManagerSingleton.drawImagesWithTag("MapRender");
+            new FontSize(Fonts.TITANONE, 75).draw(playableMaps.get(middleIndex).getName(), 1200,Window.getHeight()/2);
+            drawMapPicked();
         }
         else if (settingsSingleton.getGameState() == 6) {
             if (settingsSingleton.getGameMode() == 1) {
@@ -2360,7 +2394,9 @@ public class Game extends AbstractGame {
     }
 
     public void drawGame() {
-        gameSettingsSingleton.getMap().draw();
+        if (gameSettingsSingleton.getMap() != null) {
+            gameSettingsSingleton.getMap().draw();
+        }
         if (canInteract) {
             for (Player player : players) {
                 if (!player.getCharacter().isDead()) {
@@ -2484,5 +2520,67 @@ public class Game extends AbstractGame {
         spawnObstacles();
         spawnPowerUps();
         updateObjects();
+    }
+
+    public void loadMapRender() {
+        double spacing = 50;
+        int index = 0;
+        double minScale = 0.2;
+        double maxScale = 0.30;
+        int middleIndex = playableMaps.size() % 2 == 1 ? playableMaps.size() / 2 + 1 : playableMaps.size() / 2;
+
+        for (Map map: playableMaps) {
+            System.out.println("Index: " + index + ", " + map.getName());
+            ImagePoint mapRender = new ImagePoint(String.format("res/maps/mapPeeks/%s.png", map.getName()),
+                    new Point(0, 0), "MapRender");
+            mapRender.setScale(minScale);
+            mapRender.setPos(Window.getWidth()/2 - (minScale*mapRender.getWidth()/2), (index * spacing) - (playableMaps.size() * (mapRender.getHeight() + spacing)));
+            mapRender.setScale(minScale);
+
+            if (index < middleIndex) {
+                mapRender.setPos(Window.getWidth()/2 - (minScale*mapRender.getWidth()/2) + ((middleIndex - index) * 200),
+                        (-playableMaps.size()/2.0 + index + 2) * (spacing + (mapRender.getHeight()*mapRender.getScale())) - 150);
+                mapRender.setTransparent(true);
+            }
+            else if (middleIndex == index) {
+                mapRender.setScale(maxScale);
+                mapRender.setPos(Window.getWidth()/2 - (maxScale*mapRender.getWidth()/2),
+                        Window.getHeight()/2 - (mapRender.getHeight()*mapRender.getScale()/2));
+            }
+            else {
+                mapRender.setPos(Window.getWidth()/2 - (minScale*mapRender.getWidth()/2) - ((middleIndex - index) * 200),
+                        (-playableMaps.size()/2.0 + index + 2) * (spacing + (mapRender.getHeight()*mapRender.getScale())) - 50);
+                mapRender.setTransparent(true);
+
+            }
+            System.out.println(mapRender.getPos());
+            imagePointManagerSingleton.add(mapRender);
+            index++;
+        }
+    }
+
+    public void rotateMap(String direction) {
+        if (direction.equals("LEFT")) {
+            Map temp = playableMaps.get(0);
+            playableMaps.remove(0);
+            playableMaps.add(temp);
+        }
+        else if (direction.equals("RIGHT")) {
+            Map temp = playableMaps.get(playableMaps.size() - 1);
+            playableMaps.remove(temp);
+            playableMaps.add(0, temp);
+        }
+    }
+
+    public void drawMapPicked() {
+        int picked = 0;
+        int middleIndex = playableMaps.size() % 2 == 1 ? playableMaps.size() / 2 + 1 : playableMaps.size() / 2;
+        for (Player player: players) {
+            if (player.getMapChosen() != null && player.getMapChosen().getName().equals(playableMaps.get(middleIndex).getName())) {
+                ImagePoint playerPicked = new ImagePoint(String.format("res/characters/%s/Peek.png", player.getCharacter().getFullName()), new Point(0,0));
+                playerPicked.setPos(new Point(558 - (picked * playerPicked.getWidth()), Window.getHeight()/2));
+                picked ++;
+            }
+        }
     }
 }
