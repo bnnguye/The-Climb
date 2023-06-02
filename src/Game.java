@@ -144,6 +144,9 @@ public class Game extends AbstractGame {
     @Override
     protected void update(Input input)  {
         currentMousePosition = input.getMousePosition();
+        if (input.wasPressed(MouseButtons.LEFT)) {
+            System.out.println(currentMousePosition);
+        }
 
         if (!canInteract) {
             input = null;
@@ -326,7 +329,7 @@ public class Game extends AbstractGame {
                 }
             }
             if (picked) {
-                eventsListener.addEvent(new EventCharactersPicked(1 * frames, "All players have picked a character"));
+                eventsListener.addEvent(new EventCharactersPicked(frames, "All players have picked a character"));
             }
 
             if (input != null && input.wasPressed(Keys.ESCAPE)) {
@@ -432,7 +435,7 @@ public class Game extends AbstractGame {
                 stringDisplays.clear();
             }
         }
-        else if (settingsSingleton.getGameState() == 5)     { // Map
+        else if (settingsSingleton.getGameState() == 5) { // Map
             if (!settingsSingleton.getGameStateString().equals("MAP")) {
                 buttonsToRemove.addAll(buttons);
                 imagePointManagerSingleton.setCurrentBackground(null);
@@ -441,12 +444,12 @@ public class Game extends AbstractGame {
             }
 
             if (input != null && input.isDown(Keys.LEFT)) {
-                rotateMap("RIGHT");
-                eventsListener.addEvent(new EventMapRotate("RIGHT"));
+                rotateMap("UP");
+                eventsListener.addEvent(new EventMapRotate("UP"));
             }
             else if (input != null && input.isDown(Keys.RIGHT)) {
-                rotateMap("LEFT");
-                eventsListener.addEvent(new EventMapRotate("LEFT"));
+                rotateMap("DOWN");
+                eventsListener.addEvent(new EventMapRotate("DOWN"));
             }
 
             if (input != null && input.wasPressed(Keys.ESCAPE)) {
@@ -464,9 +467,9 @@ public class Game extends AbstractGame {
             }
 
 
-            if (allPlayersChosen) {
-                settingsSingleton.setGameState(6);
-            }
+//            if (allPlayersChosen) {
+//                settingsSingleton.setGameState(6);
+//            }
         }
         else if (settingsSingleton.getGameState() == 6) {
             if (settingsSingleton.getGameMode() == 1) {
@@ -2351,7 +2354,6 @@ public class Game extends AbstractGame {
                     slowIcon.setPos(new Point(characterDisplay.getPos().x + buffs * 50,
                             Window.getHeight() - slowIcon.getHeight()));
                     slowIcon.draw();
-                    buffs++;
                 }
 
                 if (!player.getSideCharacter().getName().equals(CharacterNames.YUGI)) {
@@ -2523,10 +2525,11 @@ public class Game extends AbstractGame {
     }
 
     public void loadMapRender() {
+        double xOffset = 400;
         double spacing = 50;
         int index = 0;
         double minScale = 0.2;
-        double maxScale = 0.30;
+        double maxScale = 0.3;
         int middleIndex = playableMaps.size() % 2 == 1 ? playableMaps.size() / 2 + 1 : playableMaps.size() / 2;
 
         for (Map map: playableMaps) {
@@ -2534,38 +2537,32 @@ public class Game extends AbstractGame {
             ImagePoint mapRender = new ImagePoint(String.format("res/maps/mapPeeks/%s.png", map.getName()),
                     new Point(0, 0), "MapRender");
             mapRender.setScale(minScale);
-            mapRender.setPos(Window.getWidth()/2 - (minScale*mapRender.getWidth()/2), (index * spacing) - (playableMaps.size() * (mapRender.getHeight() + spacing)));
-            mapRender.setScale(minScale);
-
-            if (index < middleIndex) {
-                mapRender.setPos(Window.getWidth()/2 - (minScale*mapRender.getWidth()/2) + ((middleIndex - index) * 200),
-                        (-playableMaps.size()/2.0 + index + 2) * (spacing + (mapRender.getHeight()*mapRender.getScale())) - 150);
-                mapRender.setTransparent(true);
-            }
-            else if (middleIndex == index) {
+            mapRender.setTransparent(true);
+            if (middleIndex == index) {
                 mapRender.setScale(maxScale);
-                mapRender.setPos(Window.getWidth()/2 - (maxScale*mapRender.getWidth()/2),
-                        Window.getHeight()/2 - (mapRender.getHeight()*mapRender.getScale()/2));
+                mapRender.setTransparent(false);
             }
-            else {
-                mapRender.setPos(Window.getWidth()/2 - (minScale*mapRender.getWidth()/2) - ((middleIndex - index) * 200),
-                        (-playableMaps.size()/2.0 + index + 2) * (spacing + (mapRender.getHeight()*mapRender.getScale())) - 50);
-                mapRender.setTransparent(true);
 
-            }
-            System.out.println(mapRender.getPos());
+            double yOffset = index > middleIndex ? maxScale*mapRender.getHeight() - minScale*mapRender.getHeight() : 0;
+
+
+            mapRender.setPos(Window.getWidth()/2 - (maxScale*mapRender.getWidth()/2) +
+                            (Math.abs(middleIndex - index) * xOffset),
+                    (Window.getHeight()/2 - (maxScale*mapRender.getHeight()/2) + yOffset +
+                            (index - middleIndex) * (spacing + (mapRender.getHeight()*mapRender.getScale()))));
+
             imagePointManagerSingleton.add(mapRender);
             index++;
         }
     }
 
     public void rotateMap(String direction) {
-        if (direction.equals("LEFT")) {
+        if (direction.equals("UP")) {
             Map temp = playableMaps.get(0);
             playableMaps.remove(0);
             playableMaps.add(temp);
         }
-        else if (direction.equals("RIGHT")) {
+        else if (direction.equals("DOWN")) {
             Map temp = playableMaps.get(playableMaps.size() - 1);
             playableMaps.remove(temp);
             playableMaps.add(0, temp);

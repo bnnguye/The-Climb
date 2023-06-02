@@ -66,14 +66,13 @@ public class EventCharacterRotate extends EventInterface{
             if (event.contains("RIGHT")) {
                 ImagePoint temp = imagePointManagerSingleton.getImages().get(0);
 
-                imagePointManagerSingleton.getImages().remove(0);
-                imagePointManagerSingleton.getImages().add(temp);
+                imagePointManagerSingleton.remove(0);
+                imagePointManagerSingleton.add(temp);
                 temp.setPos(Window.getWidth()/2 + (spacing * (characterRenders.size() - middleCharacterIndex) - spacing), minHeight);
             } else {
-                ImagePoint temp = imagePointManagerSingleton.getImages()
-                        .get(imagePointManagerSingleton.getImages().size() - 1);
-                imagePointManagerSingleton.getImages().remove(imagePointManagerSingleton.getImages().size() - 1);
-                imagePointManagerSingleton.getImages().add(0, temp);
+                ImagePoint temp = imagePointManagerSingleton.get(imagePointManagerSingleton.getImages().size() - 1);
+                imagePointManagerSingleton.remove(imagePointManagerSingleton.getImages().size() - 1);
+                imagePointManagerSingleton.add(0, temp);
                 temp.setPos(((characterRenders.size() * spacing/2) - Window.getWidth())/2 - 490 - spacing, minHeight);
             }
         }

@@ -34,7 +34,7 @@ public class EventsListenerSingleton {
                 if (!event.isCanInteract()) {
                     canInteract = false;
                 }
-                if (event.getFrames() < TimeLogger.getInstance().getFrames()) {
+                if (event.getFrames() <= TimeLogger.getInstance().getFrames()) {
                     finishedEvents.add(event);
                     eventsToRemove.add(event);
                 }

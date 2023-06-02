@@ -124,4 +124,8 @@ public class ImagePoint {
         return DO;
     }
 
+    public void move(double x, double y) {
+        this.pos = new Point(pos.x + x, pos.y + y);
+    }
+
 }

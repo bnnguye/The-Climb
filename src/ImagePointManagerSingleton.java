@@ -112,4 +112,29 @@ public class ImagePointManagerSingleton {
         ArrayList<ImagePoint> taggedImages = getAllImagesWithTag(tag);
         return taggedImages.size() != 0;
     }
+
+    public void remove(ImagePoint imagePoint) {
+        images.remove(imagePoint);
+    }
+
+    public void remove(int index) {
+        images.remove(index);
+    }
+
+    public ImagePoint get(int index) {
+        return images.get(index);
+    }
+
+    public ImagePoint get(ImagePoint imagePoint) {
+        for (ImagePoint imagePoint1: images) {
+            if (imagePoint == imagePoint1) {
+                return imagePoint1;
+            }
+        }
+        return imagePoint;
+    }
+
+    public void add(int index, ImagePoint imagePoint) {
+        images.add(index, imagePoint);
+    }
 }
