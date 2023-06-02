@@ -8,7 +8,7 @@ public class EventCharactersPicked extends EventInterface {
     }
 
     public void process() {
-        if (frames - TimeLogger.getInstance().getFrames() < 1) {
+        if (frames - TimeLogger.getInstance().getFrames() == 1) {
             SettingsSingleton.getInstance().setGameState(4);
         }
     }

@@ -19,8 +19,6 @@ public class EventMapRotate extends EventInterface {
         if (mapImages == null) {
             getAllMapImages();
         }
-
-        double sign = event.contains("DOWN") ? -1 : 1;
         double spacing = 50;
         int index = 0;
         double minScale = 0.2;
@@ -48,7 +46,6 @@ public class EventMapRotate extends EventInterface {
             }
 
             mapRender.move(xOffset / duration, yOffset / duration);
-
             index++;
         }
 
@@ -57,7 +54,6 @@ public class EventMapRotate extends EventInterface {
 
             if (event.contains("DOWN")) {
                 ImagePoint temp = imagePointManagerSingleton.get(mapImages.get(mapImages.size()-1));
-                double yOffset = maxScale*temp.getHeight() - minScale*temp.getHeight();
                 imagePointManagerSingleton.remove(temp);
                 imagePointManagerSingleton.add(0, temp);
                 temp.setPos(Window.getWidth()/2 - (maxScale*temp.getWidth()/2) + (middleIndex * xOffset),

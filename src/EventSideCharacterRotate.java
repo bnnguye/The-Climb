@@ -29,7 +29,7 @@ public class EventSideCharacterRotate extends EventInterface{
         double sign = event.contains("LEFT") ? 1 : -1;
         double speed = sign * spacing;
         double middleCharacterSpeed = event.contains("LEFT") ? 750 : 135;
-        double shift = this.frames - currentTime + 1;
+        double shift = this.frames - currentTime;
         int middleCharacterIndex = characterRenders.size() % 2 == 1 ?
                 (characterRenders.size() / 2) + 1 : characterRenders.size() / 2;
         int nextCharacterIndex = event.contains("LEFT")? middleCharacterIndex - 1: middleCharacterIndex + 1;
@@ -62,7 +62,7 @@ public class EventSideCharacterRotate extends EventInterface{
             }
         }
         // last frame
-        if (frames - currentTime < 1) {
+        if (frames - currentTime == 1) {
             if (event.contains("RIGHT")) {
                 ImagePoint temp = imagePointManagerSingleton.getImages().get(0);
 

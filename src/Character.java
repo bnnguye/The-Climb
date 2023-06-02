@@ -76,9 +76,6 @@ public class Character {
         }
 
         public void move(Controls key) {
-                if (key == null) {
-                        return;
-                }
                 double currentSpeed = getSpeed();
                 moving = false;
                 if (key != null) {
@@ -234,6 +231,9 @@ public class Character {
 
         public void setLives(int lives) {
                 this.lives = lives;
+        }
+        public void reduceLive() {
+                this.lives--;
         }
         public int getLives() {return this.lives;}
         public boolean isMoving() {return moving;}
