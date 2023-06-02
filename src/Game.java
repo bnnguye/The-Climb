@@ -468,6 +468,7 @@ public class Game extends AbstractGame {
             if (input != null && input.wasPressed(Keys.ESCAPE)) {
                 for (Player player: players) {
                     player.setSideCharacter(null);
+                    player.setMapChosen(null);
                 }
                 settingsSingleton.setGameState(4);
             }
@@ -481,6 +482,10 @@ public class Game extends AbstractGame {
 
 
             if (allPlayersChosen) {
+                int random = (int) Math.round(Math.random() * players.size());
+                Map mapChosen = players.get(random).getMapChosen();
+                gameSettingsSingleton.setMap(mapChosen);
+                gameSettingsSingleton.getMap().generateMap();
                 settingsSingleton.setGameState(6);
             }
         }
@@ -565,7 +570,6 @@ public class Game extends AbstractGame {
                     for (Player player : players) {
                         if (player.getCharacter().isDead()) {
                             deathCounter++;
-                            System.out.println("Player " + player.getId() +": Dead");
                         }
                     }
                     if (settingsSingleton.getPlayers().size() - deathCounter < 2) {
@@ -977,7 +981,10 @@ public class Game extends AbstractGame {
                 if (settingsSingleton.getGameStateString().equalsIgnoreCase("Game Finished")) {
                     settingsSingleton.setGameStateString("Retry or Menu?");
                     musicPlayer.setMainMusic("music/misc/Fail.wav");
-                    musicPlayer.addMusic(settingsSingleton.getWinner().getCharacter().playLine());
+                    if (settingsSingleton.getWinner() != null) {
+                        musicPlayer.addMusic(settingsSingleton.getWinner().getCharacter().playLine());
+
+                    }
                     stats.updateGameStats(players);
                     buttonsToRemove.addAll(buttons);
                     buttons.add(new Button("Back", "Back",
@@ -1000,10 +1007,6 @@ public class Game extends AbstractGame {
                         }
                     } else if (settingsSingleton.getGameStateString().equals("Back")) {
                         for (Player player : players) {
-                            player.getCharacter().reset();
-                            if (player.getSideCharacter() != null) {
-                                player.getSideCharacter().reset();
-                            }
                             player.reset();
                         }
                         gameSettingsSingleton.setMap(null);
@@ -1325,7 +1328,13 @@ public class Game extends AbstractGame {
             new Image(String.format("res/maps/mapPeeks/%s.png", playableMaps.get(middleIndex).getName())).drawFromTopLeft(0,0);
             Drawing.drawRectangle(0,0, Window.getWidth(), Window.getHeight(), new Colour(0,0,0,0.8));
             imagePointManagerSingleton.drawImagesWithTag("MapRender");
-            new FontSize(Fonts.TITANONE, 75).draw(playableMaps.get(middleIndex).getName(), 1200,Window.getHeight()/2);
+            String mapName = "";
+            for (String word: playableMaps.get(middleIndex).getName().split(" ")) {
+                mapName += word + '\n';
+            }
+            new FontSize(Fonts.TITANONE, 90).draw(mapName, 1275,Window.getHeight()/2);
+            new ImagePoint("res/menu/bar.png", new Point(0,0)).draw();
+
             drawMapPicked();
         }
         else if (settingsSingleton.getGameState() == 6) {
@@ -1351,19 +1360,22 @@ public class Game extends AbstractGame {
             }
             else {
                 Player winner = settingsSingleton.getWinner();
-                ImagePoint characterImage = new ImagePoint(
-                        String.format("res/Characters/%s/render.png", winner.getCharacter().getFullName()),
-                        new Point(0,0));
-                ImagePoint sideCharacterImage = new ImagePoint(
-                        String.format("res/SideCharacters/%s/render.png", winner.getSideCharacter().getName()),
-                        new Point(0,0));
-                characterImage.setPos(Window.getWidth()/2 - characterImage.getWidth()/2, Window.getHeight() - characterImage.getHeight());
-                sideCharacterImage.setPos(Window.getWidth()/2, Window.getHeight() - sideCharacterImage.getHeight());
-                sideCharacterImage.draw();
-                characterImage.draw();
-
-                new Font(Fonts.DEJAVUSANS, 110).drawString(String.format("Player %d: %s is victorious!", settingsSingleton.getWinner().getId(), settingsSingleton.getWinner().getCharacter().getName()), 16, 100);
-
+                if (winner == null) {
+                    new Font(Fonts.DEJAVUSANS, 110).drawString("DRAW!", 16, 100);
+                }
+                else {
+                    ImagePoint characterImage = new ImagePoint(
+                            String.format("res/Characters/%s/render.png", winner.getCharacter().getFullName()),
+                            new Point(0,0));
+                    ImagePoint sideCharacterImage = new ImagePoint(
+                            String.format("res/SideCharacters/%s/render.png", winner.getSideCharacter().getName()),
+                            new Point(0,0));
+                    characterImage.setPos(Window.getWidth()/2 - characterImage.getWidth()/2, Window.getHeight() - characterImage.getHeight());
+                    sideCharacterImage.setPos(Window.getWidth()/2, Window.getHeight() - sideCharacterImage.getHeight());
+                    sideCharacterImage.draw();
+                    characterImage.draw();
+                    new Font(Fonts.DEJAVUSANS, 110).drawString(String.format("Player %d: %s is victorious!", settingsSingleton.getWinner().getId(), settingsSingleton.getWinner().getCharacter().getName()), 16, 100);
+                }
             }
         }
         else if (settingsSingleton.getGameState() == 8) {
@@ -1852,7 +1864,7 @@ public class Game extends AbstractGame {
     public void pickMap(Player player, Map map) {
         if (player.getMapChosen() == null) {
             musicPlayer.addMusic("music/misc/Click.wav");
-            player.setMapChosen(gameSettingsSingleton.getMap());
+            player.setMapChosen(map);
         }
     }
 
@@ -2424,7 +2436,7 @@ public class Game extends AbstractGame {
         for (Obstacle obstacle: obstacles) {
             obstacle.getImage().drawFromTopLeft(obstacle.getPos().x, obstacle.getPos().y);
         }
-        if (!gameSettingsSingleton.getMap().hasFinished()) {
+        if (gameSettingsSingleton.getMap() != null && !gameSettingsSingleton.getMap().hasFinished()) {
             drawCurrentHeight();
         }
     }
@@ -2579,13 +2591,24 @@ public class Game extends AbstractGame {
     }
 
     public void drawMapPicked() {
+        int notPicked = 0;
         int picked = 0;
         int middleIndex = playableMaps.size() % 2 == 1 ? playableMaps.size() / 2 + 1 : playableMaps.size() / 2;
+        ImagePoint middleMapRender = imagePointManagerSingleton.get(String.format("res/maps/mapPeeks/%s.png", playableMaps.get(middleIndex).getName()));
         for (Player player: players) {
+            ImagePoint playerAvatar = new ImagePoint(String.format("res/characters/%s/Peek.png", player.getCharacter().getFullName()), new Point(0,0));
             if (player.getMapChosen() != null && player.getMapChosen().getName().equals(playableMaps.get(middleIndex).getName())) {
-                ImagePoint playerPicked = new ImagePoint(String.format("res/characters/%s/Peek.png", player.getCharacter().getFullName()), new Point(0,0));
-                playerPicked.setPos(new Point(558 - (picked * playerPicked.getWidth()), Window.getHeight()/2));
+                playerAvatar.setScale(0.5);
+                playerAvatar.setPos(middleMapRender.getPos().x + middleMapRender.getWidth()*middleMapRender.getScale() - ((1 + picked) * playerAvatar.getWidth()*playerAvatar.getScale()),
+                        middleMapRender.getPos().y + middleMapRender.getHeight()*middleMapRender.getScale() - playerAvatar.getHeight()*playerAvatar.getScale());
+                playerAvatar.draw();
                 picked ++;
+            }
+            else if (player.getMapChosen() == null) {
+                playerAvatar.setScale(0.3);
+                playerAvatar.setPos(Window.getWidth()/3 - ((1 + notPicked) * playerAvatar.getWidth()*playerAvatar.getScale()), Window.getHeight()/2 - playerAvatar.getHeight()*playerAvatar.getScale()/2);
+                playerAvatar.draw();
+                notPicked ++;
             }
         }
     }
