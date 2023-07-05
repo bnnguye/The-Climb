@@ -28,6 +28,7 @@ public class CharacterNames {
      public static final String LELOUCH = "LELOUCH LAMPEROUGE";
      public static final String YUU = "YUU OTOSAKA";
 
+     public static final String BILL = "BILL NGUYEN";
 
 
      public List<String> getAllCharacterNames() {
@@ -35,5 +36,15 @@ public class CharacterNames {
                   CHIZURU, ZEROTWO, MIKU, MAI,
                   NINO, NAO, RAPHTALIA, RUKA,
                   AKI, ASUNA, EMILIA, CHIKA);
+     }
+
+     public List<String> getAllNames() {
+          return Arrays.asList(
+                  CHIZURU, ZEROTWO, MIKU, MAI,
+                  NINO, NAO, RAPHTALIA, RUKA,
+                  AKI, ASUNA, EMILIA, CHIKA,
+                  JOTARO, DIO, GOKU, ALLMIGHT,
+                  ZORO, YUGI, HISOKA, ITACHI,
+                  GOJO, LELOUCH, YUU, BILL);
      }
 }

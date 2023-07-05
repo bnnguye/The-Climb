@@ -36,7 +36,6 @@ public class SliderVolume extends Slider {
     }
 
     public void interact(Input input) {
-        System.out.println("Effect: " + musicPlayer.getEffectVolume() + ", Main: " + musicPlayer.getMainVolume());
         double mouseX = input.getMouseX();
         if (input.isDown(MouseButtons.LEFT)) {
             if (slide.intersects(input.getMousePosition())) {

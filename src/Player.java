@@ -10,6 +10,7 @@ import java.util.HashMap;
 public class Player {
     private final int id;
     private HashMap<String, Keys> controls = new HashMap<>();
+    private PlayerStats playerStats = new PlayerStats();
 
     private Character character = null;
     private SideCharacter sideCharacter = null;
@@ -49,35 +50,37 @@ public class Player {
     }
 
     public void moveCharacter(Input input) {
+        Point previousPos = character.getPos();
         if (input != null) {
             if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Left")))) {
-                getCharacter().move(Controls.WA);
+                character.move(Controls.WA);
             }
             else if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Right")))) {
-                getCharacter().move(Controls.WD);
+                character.move(Controls.WD);
             }
             else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Left")))) {
-                getCharacter().move(Controls.SA);
+                character.move(Controls.SA);
             }
             else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Right")))) {
-                getCharacter().move(Controls.SD);
+                character.move(Controls.SD);
             }
             else if (input.isDown(controls.get("Right"))) {
-                getCharacter().move(Controls.D);
+                character.move(Controls.D);
             }
             else if (input.isDown(controls.get("Up"))) {
-                getCharacter().move(Controls.W);
+                character.move(Controls.W);
             }
             else if (input.isDown(controls.get("Left"))) {
-                getCharacter().move(Controls.A);
+                character.move(Controls.A);
             }
             else if (input.isDown(controls.get("Down"))) {
-                getCharacter().move(Controls.S);
+                character.move(Controls.S);
             }
             else {
-                getCharacter().move(null);
+                character.move(null);
             }
         }
+        playerStats.addDistance(previousPos.distanceTo(character.getPos()));
     }
 
     public void moveComputer(ArrayList<Obstacle> obstacleArrayList) {}
@@ -110,5 +113,9 @@ public class Player {
         this.character = null;
         this.sideCharacter = null;
         this.mapChosen = null;
+    }
+
+    public PlayerStats getPlayerStats() {
+        return playerStats;
     }
 }

@@ -8,7 +8,7 @@ public abstract class Obstacle {
     Image image;
     private Point pos;
     private boolean jotaroAbility = false;
-    private final ArrayList<Integer> playersGainedEXP = new ArrayList<>();
+    private final ArrayList<Integer> playersInteracted = new ArrayList<>();
 
     public Obstacle() {
         pos = new Point(Window.getWidth() * Math.random(), -200);
@@ -28,11 +28,11 @@ public abstract class Obstacle {
         return !jotaroAbility;
     }
 
-    public ArrayList<Integer> getPlayersGainedEXP() {
-        return playersGainedEXP;
+    public ArrayList<Integer> getPlayersInteracted() {
+        return playersInteracted;
     }
-    public void updatePlayersGainedEXP(Integer playerId) {
-        playersGainedEXP.add(playerId);
+    public void updatePlayersInteracted(Integer playerId) {
+        playersInteracted.add(playerId);
     }
 
     @Override

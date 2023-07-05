@@ -218,7 +218,7 @@ public class Button {
             }
         }
         else if (name.equalsIgnoreCase("Tutorial")) {
-
+            settingsSingleton.setGameState(12);
         }
         else if (name.equalsIgnoreCase("Story")) {
             settingsSingleton.setGameMode(0);

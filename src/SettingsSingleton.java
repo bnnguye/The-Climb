@@ -15,7 +15,6 @@ public class SettingsSingleton {
     public synchronized static SettingsSingleton getInstance() {
         if (single_instance == null) {
             single_instance = new SettingsSingleton();
-
         }
         return single_instance;
     }
@@ -34,7 +33,9 @@ public class SettingsSingleton {
     public void setPlayers(int num) {
         players.clear();
         players.add(new Player(1));
-        players.add(new Player(2));
+        if (num == 2) {
+            players.add(new Player(2));
+        }
         if (num == 3) {
             players.add(new Player(3));
         }
