@@ -1,5 +1,6 @@
 public class StorySettingsSingleton {
 
+    private int initialTime;
     private String mode;
     private static StorySettingsSingleton single_instance = null;
 
@@ -36,5 +37,11 @@ public class StorySettingsSingleton {
     }
 
     public int getDialogueInt() { return dialogueInt;}
+
+    public void initialiseTime() {
+        initialTime = TimeLogger.getInstance().getFrames();
+    }
+
+    public int getInitialTime() { return initialTime;}
 
 }

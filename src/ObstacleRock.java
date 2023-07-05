@@ -13,6 +13,10 @@ public class ObstacleRock extends Obstacle {
         this.pos = new Point(Window.getWidth() * Math.random(), -200);
     }
 
+    public ObstacleRock(Point pos) {
+        this.pos = pos;
+    }
+
 
     public void move() {
         pos = new Point(pos.x, pos.y + speed);

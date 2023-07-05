@@ -135,7 +135,6 @@ public class Dialogue {
                     dialogueLineIndex = 0;
                     dialogueLinesIndex++;
 
-                    System.out.println("index, actual size: " + dialogueLinesIndex + "," + dialogueLines.size());
                     if (dialogueLinesIndex == dialogueLines.size()) {
                         dialogueLines.clear();
                         dialogueLinesIndex = 0;

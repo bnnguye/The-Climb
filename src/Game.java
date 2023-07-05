@@ -532,6 +532,7 @@ public class Game extends AbstractGame {
                         }
                     }
                 }
+                gameSettingsSingleton.getMap().update();
             }
 //            else {
 //                if (!settingsSingleton.getGameStateString().equals("Story")) {
@@ -991,6 +992,8 @@ public class Game extends AbstractGame {
                 settingsSingleton.setGameStateString("Tutorial");
                 gameSettingsSingleton.setMap(new Map("Training Ground"));
                 gameSettingsSingleton.getMap().generateMap();
+                obstacles.clear();
+                powerUps.clear();
                 settingsSingleton.setPlayers(1);
                 settingsSingleton.getPlayers().get(0).setCharacter(new Character(CharacterNames.CHIZURU));
                 settingsSingleton.getPlayers().get(0).setSideCharacter(new SideHisoka());
@@ -1001,11 +1004,45 @@ public class Game extends AbstractGame {
                 storySettingsSingleton.setDialogueInt(0);
                 dialogue.setPlayingDialogue(true);
             }
+
+            Character character = players.get(0).getCharacter();
             dialogue.update(input);
             if (!dialogue.isPlayingDialogue()) {
-                storySettingsSingleton.setDialogueInt(1);
+                if (storySettingsSingleton.getDialogueInt() == 0) {
+                    storySettingsSingleton.setDialogueInt(1);
+                    stringDisplays.add(new StringDisplay("This shows how much of the Climb is\n left before you reach the top", 3 * frames,
+                            new FontSize(Fonts.AGENCYB, 40), new Point(Window.getWidth()/2.0 - 100, 90)));
+                    storySettingsSingleton.initialiseTime();
+                }
+                if (timeLogger.getFrames() - storySettingsSingleton.getInitialTime() == 5 * frames) {
+                    obstacles.add(new ObstacleRock(new Point(players.get(0).getCharacter().getPos().x, 0)));
+                }
+                else if (timeLogger.getFrames() - storySettingsSingleton.getInitialTime() == Math.round(5.5 * frames)) {
+                    dialogue.setPlayingDialogue(true);
+                } 
+                if (getBoundingBoxOf(obstacles.get(0).getImage(), obstacles.get(0).getPos()).intersects(character.getRectangle())) {
+                    storySettingsSingleton.setDialogueInt(2);
+                    dialogue.setPlayingDialogue(true);
+                    obstacles.clear();
+                }
+
+                if (!gameSettingsSingleton.getMap().hasFinished()) {
+                    gameSettingsSingleton.getMap().updateTiles(1);
+                }
                 updatePlayerMovement(input);
-                gameSettingsSingleton.getMap().updateTiles(1);
+                System.out.println(gameSettingsSingleton.getMap().hasUpdated());
+                updateObjects();
+            }
+            else {
+                if (storySettingsSingleton.getDialogueInt() == 1) {
+                    updatePlayerMovement(input);
+                }
+            }
+
+            gameSettingsSingleton.getMap().update();
+
+            if (input != null && input.wasPressed(Keys.ESCAPE)) {
+                settingsSingleton.setGameState(0);
             }
         }
         else if (settingsSingleton.getGameState() == 13) {
@@ -1734,7 +1771,7 @@ public class Game extends AbstractGame {
                         player.moveCharacter(input);
                     }
                 }
-                if (!gameSettingsSingleton.getMap().hasFinished() && !character.isMoving()) {
+                if (gameSettingsSingleton.getMap().hasUpdated() && !gameSettingsSingleton.getMap().hasFinished() && !character.isMoving()) {
                     character.slide();
                 }
             }
