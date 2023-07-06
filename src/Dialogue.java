@@ -22,15 +22,13 @@ public class Dialogue {
     private final ArrayList<String> dialogueLines = new ArrayList<>();
     private String dialogueCharacter = null;
 
-    private boolean alternate = false;
+    private boolean alternate = true;
     private final Colour dialogueColour = new Colour(77.0 / 255, 57.0 / 255, 37.0 / 255, 0.7);
     private final FontSize dialogueFont = new FontSize(Fonts.DEJAVUSANS, DIALOGUE_FONT_SIZE);
     private ImagePoint characterOnScreen;
 
     private final double dialogueWidth = Window.getWidth() * 0.1;
     private final double dialogueLength = Window.getHeight() - 300;
-    private final int maxLines = 7;
-    private int currentLines = 0;
 
     private int dialogueLinesIndex = 0;
     private int dialogueLineIndex = 0;
@@ -76,21 +74,25 @@ public class Dialogue {
     }
 
     public void draw() {
-        characterOnScreen.draw();
+        if (characterOnScreen != null) {
+            characterOnScreen.draw();
+        }
         Drawing.drawRectangle(dialogueWidth, dialogueLength, Window.getWidth() * 0.8, 250,
                 dialogueColour);
         dialogueFont.draw(currentDialogue.replaceAll("Nothing: ", ""), dialogueWidth +
                 DIALOGUE_FONT_SIZE, dialogueLength + DIALOGUE_FONT_SIZE);
     }
 
-    public String getFullName(String firstName) {
-        for (String character : new CharacterNames().getAllNames()) {
-            if (character.contains(firstName.toUpperCase())) {
-                return character;
-            }
-        }
-        return firstName;
-    }
+//    public String getFullName(String firstName) {
+//        for (String character : new CharacterNames().getAllNames()) {
+//            if (character.contains(firstName.toUpperCase())) {
+//                return character;
+//            }
+//        }
+//        return firstName;
+//    }
+
+    public int getLineNo() { return dialogueLinesIndex;}
 
 
     public void update(Input input) {
@@ -101,24 +103,22 @@ public class Dialogue {
 
             String dialogueLine = dialogueLines.get(dialogueLinesIndex);
             String newCharacter = dialogueLine.split(" ")[0].substring(0, dialogueLine.split(" ")[0].length() - 1);
-            if (characterOnScreen == null) {
-                characterOnScreen = new ImagePoint(String.format("res/characters/%s/Render.png",
-                        getFullName(newCharacter)), new Point(0, 0));
-                alternate = false;
-            } else {
-                if (!dialogueCharacter.equalsIgnoreCase(newCharacter)) {
-                    alternate = !alternate;
-                }
+            characterOnScreen = new ImagePoint(String.format("res/dialogueRenders/%s.png",
+                    newCharacter), new Point(0, 0));
+            if (dialogueCharacter == null) {
+                dialogueCharacter = newCharacter;
+            }
+            if (!dialogueCharacter.equalsIgnoreCase(newCharacter)) {
+                alternate = !alternate;
             }
             dialogueCharacter = newCharacter;
 
             if (alternate) {
-                characterOnScreen.setPos(dialogueWidth + characterOnScreen.getWidth() / 2,
-                        dialogueLength - characterOnScreen.getHeight() / 2);
+                characterOnScreen.setPos(dialogueWidth,
+                        Window.getHeight() - 300 - characterOnScreen.getHeight());
             } else {
-                characterOnScreen.setPos(Window.getWidth() - dialogueWidth -
-                        characterOnScreen.getWidth() / 2, dialogueLength -
-                        characterOnScreen.getHeight() / 2);
+                characterOnScreen.setPos(Window.getWidth() - dialogueWidth - characterOnScreen.getWidth(),
+                        Window.getHeight() - 300 - characterOnScreen.getHeight());
             }
 
             if (dialogueLines.get(dialogueLinesIndex).length() > currentDialogue.length()) {
@@ -136,6 +136,7 @@ public class Dialogue {
                     dialogueLinesIndex++;
 
                     if (dialogueLinesIndex == dialogueLines.size()) {
+                        characterOnScreen = null;
                         dialogueLines.clear();
                         dialogueLinesIndex = 0;
                         playingDialogue = false;

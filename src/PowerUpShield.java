@@ -11,6 +11,10 @@ public class PowerUpShield extends PowerUp {
         pos = new Point(Window.getWidth() * Math.random(), -200);
     }
 
+    public PowerUpShield(Point pos) {
+        this.pos = pos;
+    }
+
     public Image getImage() {return this.image;}
     public Point getPos() { return this.pos;}
     public void move() {

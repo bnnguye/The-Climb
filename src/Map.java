@@ -150,4 +150,9 @@ public class Map {
     public boolean hasUpdated() {
         return updated;
     }
+
+    public void setCurrentHeight(double newHeight) {
+        generateMap();
+        updateTiles(newHeight);
+    }
 }

@@ -1011,7 +1011,7 @@ public class Game extends AbstractGame {
                 if (storySettingsSingleton.getDialogueInt() == 0) {
                     storySettingsSingleton.setDialogueInt(1);
                     stringDisplays.add(new StringDisplay("This shows how much of the Climb is\n left before you reach the top", 3 * frames,
-                            new FontSize(Fonts.AGENCYB, 40), new Point(Window.getWidth()/2.0 - 100, 90)));
+                            new FontSize(Fonts.AGENCYB, 40), new Point(Window.getWidth()/2.0 - 150, 90)));
                     storySettingsSingleton.initialiseTime();
                 }
                 if (timeLogger.getFrames() - storySettingsSingleton.getInitialTime() == 5 * frames) {
@@ -1019,23 +1019,45 @@ public class Game extends AbstractGame {
                 }
                 else if (timeLogger.getFrames() - storySettingsSingleton.getInitialTime() == Math.round(5.5 * frames)) {
                     dialogue.setPlayingDialogue(true);
-                } 
-                if (getBoundingBoxOf(obstacles.get(0).getImage(), obstacles.get(0).getPos()).intersects(character.getRectangle())) {
-                    storySettingsSingleton.setDialogueInt(2);
+                }
+                if (obstacles.size() == 1) {
+                    if (getBoundingBoxOf(obstacles.get(0).getImage(), obstacles.get(0).getPos()).intersects(character.getRectangle())) {
+                        storySettingsSingleton.setDialogueInt(2);
+                        dialogue.setPlayingDialogue(true);
+                        obstacles.clear();
+                    }
+                }
+
+                if (Math.round(gameSettingsSingleton.getMap().getCurrentHeight())/10 == 120 && powerUps.size() == 0) {
+                    storySettingsSingleton.setDialogueInt(3);
                     dialogue.setPlayingDialogue(true);
-                    obstacles.clear();
+                    powerUps.add(new PowerUpShield(new Point(character.getPos().x, -80)));
+                    for (int i = 0; i < 32; i ++) {
+                        obstacles.add(new ObstacleRock(new Point(i * 60, -700)));
+                    }
+                }
+
+                if (storySettingsSingleton.getDialogueInt() == 3 && character.getLives() == 0) {
+                    storySettingsSingleton.setDialogueInt(4);
+                    dialogue.setPlayingDialogue(true);
                 }
 
                 if (!gameSettingsSingleton.getMap().hasFinished()) {
                     gameSettingsSingleton.getMap().updateTiles(1);
                 }
+                checkCollisionPowerUps();
+                checkCollisionObstacles();
                 updatePlayerMovement(input);
-                System.out.println(gameSettingsSingleton.getMap().hasUpdated());
                 updateObjects();
             }
             else {
                 if (storySettingsSingleton.getDialogueInt() == 1) {
                     updatePlayerMovement(input);
+                }
+                if (storySettingsSingleton.getDialogueInt() == 4) {
+                    character.setLives(1);
+                    storySettingsSingleton.setDialogueInt(3);
+                    gameSettingsSingleton.getMap().setCurrentHeight(1000);
                 }
             }
 
@@ -1353,8 +1375,15 @@ public class Game extends AbstractGame {
             imagePointManagerSingleton.draw();
             if (dialogue.isPlayingDialogue()) {
                 dialogue.draw();
+                if (storySettingsSingleton.getDialogueInt() == 3) {
+                    if (dialogue.getLineNo() == 6 || dialogue.getLineNo() == 7) {
+                        new Image("res/PowerUp/Shield.png").draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
+                    }
+                }
             }
-//            dialogueFont.draw(dialogueLine, Window.getWidth()/5, Window.getHeight() - dialogueFont.getSize());
+            else {
+
+            }
         }
         else if (settingsSingleton.getGameState() == 14) {
             Drawing.drawRectangle(0,0,Window.getWidth(), Window.getHeight(), ColourPresets.WHITE.toColour());

@@ -1,0 +1,9 @@
+Bill: Nice work!
+Bill: You're getting the hang of it already.
+Bill: There's other obstacles that you will encounter throughout your Climbs.
+Bill: Please remember to dodge them to ensure your safety.
+Bill: Now...
+Bill: There are also powerups that you can collect in your Climbs.
+Bill: Take this one for example.
+Bill: This is Naofumi's Shield. It will protect you from obstacles. However, it breaks after one collision.
+Bill: I'll spawn one in for you. Grab the shield before it drops.
