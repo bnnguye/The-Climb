@@ -1053,7 +1053,7 @@ public class Game extends AbstractGame {
                     dialogue.setPlayingDialogue(true);
                 }
                 else if (Math.round(gameSettingsSingleton.getMap().getCurrentHeight()) == 2000 && storySettingsSingleton.getDialogueInt() == 4) {
-                    storySettingsSingleton
+                    storySettingsSingleton.setDialogueInt(5);
                     eventsListener.addEvent(new EventCharacterJoinsTheClimb("Naofumi"));
                 }
 
