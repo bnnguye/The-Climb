@@ -90,11 +90,6 @@ public abstract class Computer extends Player {
             if (lastR == null) {
                 lastR = rectangle;
             }
-            else {
-                if (rectangle.left() < lastR.left()) {
-                    System.out.println("SORTING IS WRONG; currentRectangle.left(): " + rectangle.left() + ", lastR.left(): " + lastR.left());
-                }
-            }
         }
 
         Rectangle lastDangerSpot = null;

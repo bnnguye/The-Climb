@@ -97,14 +97,22 @@ public class Stats {
 
     public void updateGameStats(ArrayList<Player> players) {
         statTracker[settingsSingleton.getGameMode() + 1] = statTracker[settingsSingleton.getGameMode() + 1] + 1;
-        int winnerID = settingsSingleton.getWinner().getId();
-        playersStats.set(winnerID, playersStats.get(winnerID) + 1);
-        for (Player player: players) {
-            if (player.getId() == winnerID) {
-                characterWon(player.getCharacter().getFullName());
-            }
+        if (settingsSingleton.getWinner() != null) {
+            int winnerID = settingsSingleton.getWinner().getId();
+            playersStats.set(winnerID, playersStats.get(winnerID) + 1);
+            for (Player player: players) {
+                if (player.getId() == winnerID) {
+                    characterWon(player.getCharacter().getFullName());
+                }
                 characterPlayed(player.getCharacter().getFullName());
+            }
         }
+        else {
+            for (Player player: players) {
+                characterPlayed(player.getCharacter().getFullName());
+            }
+        }
+
     }
 
     public void characterWon(String fullName) {

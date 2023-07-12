@@ -12,6 +12,7 @@ public class Map {
     Image mapPeek;
     double height;
     double currentHeight;
+    private boolean updated = false;
 
     ArrayList<Tile> tiles = new ArrayList<>();
 
@@ -38,6 +39,9 @@ public class Map {
     }
 
     public void updateTiles(double shift) {
+        if (shift != 0) {
+            updated = true;
+        }
         if (shift < 0 && shift + currentHeight < 0) {
             shift = -currentHeight;
         }
@@ -137,5 +141,24 @@ public class Map {
 
     public void descend() {
         updateTiles(-20);
+    }
+
+    public void update() {
+        updated = false;
+    }
+
+    public boolean hasUpdated() {
+        return updated;
+    }
+
+    public void setCurrentHeight(double newHeight) {
+        generateMap();
+        updateTiles(newHeight);
+    }
+
+    public void shake(double offset) {
+        for (Tile tile: tiles) {
+            tile.setPos(new Point(tile.getPos().x + offset, tile.getPos().y));
+        }
     }
 }

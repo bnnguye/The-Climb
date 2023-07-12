@@ -15,7 +15,7 @@ public class ImagePoint {
     private double scale = 1;
 
     private boolean flashing = false;
-    private boolean transparent = false;
+    private double opacity = 1;
     private boolean shaking = false;
     private boolean darken = false;
     private boolean scaled = false;
@@ -37,19 +37,13 @@ public class ImagePoint {
     public void draw() {
         if (filename != null) {
             if (flashing) {
-                DO.setBlendColour(0.5, 0.5, 0.5,0.7);
-            }
-            else if (transparent && darken) {
-                DO.setBlendColour(0,0,0,0.7);
-            }
-            else if (transparent) {
-                DO.setBlendColour(1,1,1,0.3);
+                DO.setBlendColour(0.5, 0.5, 0.5,opacity);
             }
             else if (darken) {
-                DO.setBlendColour(0,0,0,1);
+                DO.setBlendColour(0,0,0,opacity);
             }
             else {
-                DO.setBlendColour(1,1,1,1);
+                DO.setBlendColour(1,1,1,opacity);
             }
             new Image(filename).drawFromTopLeft(pos.x - ((getWidth() * (1 - scale))/2), pos.y - ((getHeight() * (1 - scale))/2), DO);
         }
@@ -102,12 +96,8 @@ public class ImagePoint {
         this.flashing = flashing;
     }
 
-    public boolean isTransparent() {
-        return transparent;
-    }
-
-    public void setTransparent(boolean transparent) {
-        this.transparent = transparent;
+    public void setOpacity(double opacity) {
+        this.opacity = opacity;
     }
 
     public void setDarken(boolean darken) {
@@ -122,6 +112,10 @@ public class ImagePoint {
 
     public DrawOptions getDO() {
         return DO;
+    }
+
+    public void move(double x, double y) {
+        this.pos = new Point(pos.x + x, pos.y + y);
     }
 
 }

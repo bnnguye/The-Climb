@@ -1,5 +1,8 @@
 import bagel.DrawOptions;
+import bagel.Drawing;
 import bagel.Window;
+import bagel.util.Colour;
+import bagel.util.Point;
 
 public class EventGameStart extends  EventInterface {
 
@@ -16,6 +19,7 @@ public class EventGameStart extends  EventInterface {
         FontSize countDownFont = new FontSize(Fonts.DEJAVUSANS, 250);
         Map map = GameSettingsSingleton.getInstance().getMap();
         canInteract = false;
+        Drawing.drawRectangle(0,0, Window.getWidth(), Window.getHeight(), new Colour(0,0,0,0.8));
 
         if (!init) {
             init = true;
@@ -33,6 +37,11 @@ public class EventGameStart extends  EventInterface {
         if (frames - currentTime <= 3 * refreshRate) {
 
             countDownFont.getFont().drawString(String.format("%d", (frames - currentTime)/refreshRate + 1), Window.getWidth()/2 - countDownFont.getFont().getWidth(String.format("%d", (frames - currentTime)/refreshRate + 1))/2, Window.getHeight()/2, new DrawOptions().setBlendColour(ColourPresets.BLACK.toColour()));
+        }
+        else {
+            FontSize mapFont = new FontSize(Fonts.GEOMATRIX, 100);
+            String mapName = GameSettingsSingleton.getInstance().getMap().getName();
+            mapFont.draw(mapName.toUpperCase(), Window.getWidth()/2 - mapFont.getFont().getWidth(mapName)/2, Window.getHeight()/2 - 50);
         }
     }
 }

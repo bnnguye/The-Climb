@@ -12,9 +12,10 @@ public class EventSideCharacterRotate extends EventInterface{
     private final double maxScale = 1;
     private double calls;
 
-    public EventSideCharacterRotate(int frames, String event) {
-        this.frames = frames + TimeLogger.getInstance().getFrames();
-        this.calls = frames;
+    public EventSideCharacterRotate(String event) {
+        int duration = SettingsSingleton.getInstance().getRefreshRate()/8;
+        this.frames = duration + TimeLogger.getInstance().getFrames();
+        this.calls = duration;
         this.event = event;
     }
 
@@ -28,7 +29,7 @@ public class EventSideCharacterRotate extends EventInterface{
         double sign = event.contains("LEFT") ? 1 : -1;
         double speed = sign * spacing;
         double middleCharacterSpeed = event.contains("LEFT") ? 750 : 135;
-        double shift = this.frames - currentTime + 1;
+        double shift = this.frames - currentTime;
         int middleCharacterIndex = characterRenders.size() % 2 == 1 ?
                 (characterRenders.size() / 2) + 1 : characterRenders.size() / 2;
         int nextCharacterIndex = event.contains("LEFT")? middleCharacterIndex - 1: middleCharacterIndex + 1;
@@ -61,7 +62,7 @@ public class EventSideCharacterRotate extends EventInterface{
             }
         }
         // last frame
-        if (frames - currentTime < 1) {
+        if (frames - currentTime == 1) {
             if (event.contains("RIGHT")) {
                 ImagePoint temp = imagePointManagerSingleton.getImages().get(0);
 

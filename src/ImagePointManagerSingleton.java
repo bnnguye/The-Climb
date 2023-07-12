@@ -100,7 +100,7 @@ public class ImagePointManagerSingleton {
 
     private ArrayList<ImagePoint> getAllImagesWithTag(String tag) {
         ArrayList<ImagePoint> taggedImages = new ArrayList<>();
-        for (ImagePoint image: getImages()) {
+        for (ImagePoint image: images) {
             if (tag.equals(image.getTag())) {
                 taggedImages.add(image);
             }
@@ -108,8 +108,40 @@ public class ImagePointManagerSingleton {
         return taggedImages;
     }
 
+    public ImagePoint getImageWithTag(String tag) {
+        if (imageWithExistsWithTag(tag)) {
+            return getAllImagesWithTag(tag).get(0);
+        }
+        return null;
+    }
+
     public boolean imageWithExistsWithTag(String tag) {
         ArrayList<ImagePoint> taggedImages = getAllImagesWithTag(tag);
         return taggedImages.size() != 0;
+    }
+
+    public void remove(ImagePoint imagePoint) {
+        images.remove(imagePoint);
+    }
+
+    public void remove(int index) {
+        images.remove(index);
+    }
+
+    public ImagePoint get(int index) {
+        return images.get(index);
+    }
+
+    public ImagePoint get(ImagePoint imagePoint) {
+        for (ImagePoint imagePoint1: images) {
+            if (imagePoint == imagePoint1) {
+                return imagePoint1;
+            }
+        }
+        return imagePoint;
+    }
+
+    public void add(int index, ImagePoint imagePoint) {
+        images.add(index, imagePoint);
     }
 }

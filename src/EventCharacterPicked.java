@@ -30,9 +30,9 @@ public class EventCharacterPicked extends EventInterface {
         else if ((frames - currentTime) % 4 == 0) {
             charImage.setFlashing(false);
         }
-        if (frames - TimeLogger.getInstance().getFrames() == 0) {
+        if (frames - TimeLogger.getInstance().getFrames() == 1) {
             charImage.setFlashing(false);
-            charImage.setTransparent(true);
+            charImage.setOpacity(0.3);
         }
     }
 

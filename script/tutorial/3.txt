@@ -1,0 +1,13 @@
+Bill: Nice work!
+Bill: There's other obstacles that you will encounter throughout your Climbs.
+Bill: It gets really difficult later and nearly impossible without any help.
+Bill: Now...
+Bill: I know a few people that may be able to help you out throughout your Climbs...
+Bill: One of them here is right now.
+Bill: Let me introduce to you my good friend...
+Naofumi: Yo.
+Bill: That was Naofumi. He's the Shield Hero from Rising of The Shield Hero.
+Naofumi: I heard you were going to attempt The Climb. Pretty dangerous if you ask me.
+Naofumi: Though I won't be joining you actively, I'll bless you with my shield.
+Bill: This is Naofumi's Shield. It will protect you from obstacles. However, it breaks after one collision.
+Bill: I'll spawn one in for you. Grab the shield before it drops.

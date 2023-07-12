@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class MusicPlayer {
 
-    private static double maxMainVol = 100d;
+    private static double maxMainVol = 50d;
     private static double maxEffectVol = 100d;
     private static double mainVolume = 20d;
     private static double effectVolume = 100d;
@@ -44,10 +44,6 @@ public class MusicPlayer {
         }
         musics.removeAll(musicToRemove);
         mainMusic.setVolume(mainVolume);
-
-        if (mainMusic.aboutToEnd()) {
-            mainMusic.restart();
-        }
     }
 
     public void setMainVolume(double volume) { mainVolume = volume > maxMainVol ? maxMainVol : volume; }
@@ -91,11 +87,11 @@ public class MusicPlayer {
     }
 
     public void changeMaxMain(double maxVol) {
-        this.maxMainVol = maxVol;
+        maxMainVol = maxVol;
     }
 
     public void changeMaxEffect(double maxVol) {
-        this.maxEffectVol = maxVol;
+        maxEffectVol = maxVol;
     }
 
     public double getMaxMainVol() {
