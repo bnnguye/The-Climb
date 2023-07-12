@@ -13,8 +13,8 @@ import java.util.Scanner;
 
 public class Dialogue {
 
-    private final int DIALOGUE_FONT_SIZE = 30;
-    private final int MAX_DIALOGUE_LIMIT = Window.getWidth() / (DIALOGUE_FONT_SIZE - 10);
+    private final int DIALOGUE_FONT_SIZE = 40;
+    private final int MAX_DIALOGUE_LIMIT = Window.getWidth() / (DIALOGUE_FONT_SIZE - 20);
 
     private boolean playingDialogue = false;
 
@@ -24,7 +24,7 @@ public class Dialogue {
 
     private boolean alternate = true;
     private final Colour dialogueColour = new Colour(77.0 / 255, 57.0 / 255, 37.0 / 255, 0.7);
-    private final FontSize dialogueFont = new FontSize(Fonts.DEJAVUSANS, DIALOGUE_FONT_SIZE);
+    private final FontSize dialogueFont = new FontSize(Fonts.TCB, DIALOGUE_FONT_SIZE);
     private ImagePoint characterOnScreen;
 
     private final double dialogueWidth = Window.getWidth() * 0.1;
@@ -79,7 +79,9 @@ public class Dialogue {
         }
         Drawing.drawRectangle(dialogueWidth, dialogueLength, Window.getWidth() * 0.8, 250,
                 dialogueColour);
-        dialogueFont.draw(currentDialogue.replaceAll("Nothing: ", ""), dialogueWidth +
+        String dialogueString = currentDialogue.replaceAll("Nothing: ", "");
+
+        dialogueFont.draw(dialogueString, dialogueWidth +
                 DIALOGUE_FONT_SIZE, dialogueLength + DIALOGUE_FONT_SIZE);
     }
 

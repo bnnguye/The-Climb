@@ -32,7 +32,7 @@ public class EventCharacterPicked extends EventInterface {
         }
         if (frames - TimeLogger.getInstance().getFrames() == 1) {
             charImage.setFlashing(false);
-            charImage.setTransparent(true);
+            charImage.setOpacity(0.3);
         }
     }
 

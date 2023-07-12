@@ -27,12 +27,12 @@ public class EventMapRotate extends EventInterface {
 
         if (frames - TimeLogger.getInstance().getFrames() - duration == 0) {
             mapImages.get(middleIndex).setScale(minScale);
-            mapImages.get(middleIndex).setTransparent(true);
+            mapImages.get(middleIndex).setOpacity(0.3);
         }
 
         for (ImagePoint mapRender : mapImages) {
             mapRender.setScale(minScale);
-            mapRender.setTransparent(true);
+            mapRender.setOpacity(0.3);
 
             double xOffset;
             double yOffset;
@@ -63,7 +63,7 @@ public class EventMapRotate extends EventInterface {
                 getAllMapImages();
                 ImagePoint mapRender = mapImages.get(middleIndex);
                 mapRender.setScale(maxScale);
-                mapRender.setTransparent(false);
+                mapRender.setOpacity(1);
 
 
             }
@@ -78,7 +78,7 @@ public class EventMapRotate extends EventInterface {
                 getAllMapImages();
                 ImagePoint mapRender = mapImages.get(middleIndex);
                 mapRender.setScale(maxScale);
-                mapRender.setTransparent(false);
+                mapRender.setOpacity(1);
             }
         }
     }

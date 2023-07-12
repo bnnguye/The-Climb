@@ -2,6 +2,7 @@ Bill: Welcome to The Climb!
 Bill: This game was developed by me, who wanted to play a game with some of my good friends that were into anime, but we couldn't find any.
 Bill: So I made one!
 Bill: The aim of the game is to reach the top of the Climb.
-Bill: In Story Mode, there will be varying levels of Climbs, where players work together to reach the top together.
+Bill: In Story Mode, there will be varying levels of Climbs, where players work together to reach the top.......together.
 Bill: In VS Mode, players compete against each other on a wide selection of Climbs!
-Bill: Use controls WASD to move your character. Have a go!
+Bill: Alright, let's start now.
+Bill: Use controls WASD to move your character.

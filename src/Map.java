@@ -155,4 +155,10 @@ public class Map {
         generateMap();
         updateTiles(newHeight);
     }
+
+    public void shake(double offset) {
+        for (Tile tile: tiles) {
+            tile.setPos(new Point(tile.getPos().x + offset, tile.getPos().y));
+        }
+    }
 }
