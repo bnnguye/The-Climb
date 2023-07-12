@@ -1060,8 +1060,7 @@ public class Game extends AbstractGame {
 
                 if (storySettingsSingleton.getDialogueInt() == 3 && character.getLives() == 0) {
                     storySettingsSingleton.setDialogueInt(4);
-                    dialogue.setPlayingDialogue(true);
-                }
+                    dialogue.setPlayingDialogue(true); 
 
                 if (!gameSettingsSingleton.getMap().hasFinished()) {
                     gameSettingsSingleton.getMap().updateTiles(1);
