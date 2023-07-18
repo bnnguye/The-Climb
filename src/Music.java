@@ -14,7 +14,6 @@ public class Music {
             audioInput = AudioSystem.getAudioInputStream(musicPath);
             clip = AudioSystem.getClip();
             clip.open(audioInput);
-            clip.start();
             if (clip != null) {
                 gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
                 setVolume(volume);
@@ -22,6 +21,10 @@ public class Music {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void play() {
+        clip.start();
     }
 
     public void stop() {
@@ -35,6 +38,10 @@ public class Music {
             clip.stop();
             clip.setFramePosition(currentFrameLength);
         }
+    }
+
+    public void restart() {
+        clip.setFramePosition(0);
     }
 
     public void resume() {
@@ -68,10 +75,6 @@ public class Music {
 
     public boolean hasEnded() {
         return this.clip.getFramePosition() >= this.clip.getFrameLength();
-    }
-
-    public void restart() {
-        clip.setFramePosition(0);
     }
 
     public int getFrameLength() {return clip.getFrameLength();}

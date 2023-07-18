@@ -1,2 +1,2 @@
-Bill: An obstacle is coming down, get out of the way!
+Chizuru: An obstacle is coming down, get out of the way!
 Use the WASD keys to avoid the obstacle now. (Press SPACE when ready)

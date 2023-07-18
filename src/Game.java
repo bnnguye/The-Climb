@@ -43,7 +43,6 @@ public class Game extends AbstractGame {
 
     private final int frames = settingsSingleton.getRefreshRate();
 
-
     private final Stats stats = new Stats();
     private final Dialogue dialogue = new Dialogue();
 
@@ -116,7 +115,6 @@ public class Game extends AbstractGame {
 
         if (settingsSingleton.getGameState() == 0) {
             if (!"Main Menu".equals(settingsSingleton.getGameStateString())) {
-                settingsSingleton.setGameStateString("Main Menu");
                 players.clear();
                 sliders.clear();
                 gameSettingsSingleton.setMap(null);
@@ -148,10 +146,47 @@ public class Game extends AbstractGame {
                                 ColourPresets.BLACK.toColour())
                 ));
                 menuTitle = "";
-                imagePointManagerSingleton.getImages().clear();
                 musicPlayer.setMainMusic("music/Battle/Giorno.wav");
                 musicPlayer.getMainMusic().setVolume(musicPlayer.getMainVolume());
-                eventsListener.addEvent(new EventGameStateZero());
+                if (!settingsSingleton.getGameStateString().equals("Game Mode")) {
+                    imagePointManagerSingleton.getImages().clear();
+                    eventsListener.addEvent(new EventGameStateZero());
+                }
+                String frontCharacter = playableCharacters.get((int) (Math.random() * playableCharacters.size())).getFullName();
+                ImagePoint frontCover = new ImagePoint(String.format("res/characters/%s/Render.png", frontCharacter), new Point(1000,24), "frontCover");
+                ImagePoint shadow = new ImagePoint(String.format("res/characters/%s/Render.png", frontCharacter), new Point(1000,24), "shadow");
+                shadow.setDarken(true);
+                shadow.setScale(1.1);
+                shadow.setOpacity(0.5);
+                if (!imagePointManagerSingleton.imageWithExistsWithTag("frontCover")) {
+                    imagePointManagerSingleton.add(shadow);
+                    imagePointManagerSingleton.add(frontCover);
+                    imagePointManagerSingleton.get(frontCover).setPos(1000, Window.getHeight() - frontCover.getHeight());
+                }
+                settingsSingleton.setGameStateString("Main Menu");
+            }
+            if (input!= null) {
+                imagePointManagerSingleton.getImageWithTag("shadow").setPos(1000 + (Window.getWidth()/2d - input.getMouseX())/200, 24 + (Window.getHeight()/2d - input.getMouseY())/200);
+            }
+            double opacity = Math.abs(Math.sin(timeLogger.getFrames()))*0.3 + 0.4;
+            imagePointManagerSingleton.getImageWithTag("shadow").setOpacity(opacity);
+            updateDemo(input);
+        }
+        else if (settingsSingleton.getGameState() == 1) {
+
+            if (!settingsSingleton.getGameStateString().equals("Game Mode")) {
+                settingsSingleton.setGameStateString("Game Mode");
+                Button storyButton = new Button("STORY", null,
+                        new FontSize(Fonts.GEOMATRIX, 80),
+                        new Rectangle(350, 480, Window.getWidth(), 80),
+                        ColourPresets.BLACK.toColour());
+                Button versusButton = new Button("VERSUS", null,
+                        new FontSize(Fonts.GEOMATRIX, 80),
+                        new Rectangle(350, 580, Window.getWidth(), 80),
+                        ColourPresets.BLACK.toColour());
+                buttonsToRemove.addAll(buttons);
+                buttons.add(storyButton);
+                buttons.add(versusButton);
 
                 String frontCharacter = playableCharacters.get((int) (Math.random() * playableCharacters.size())).getFullName();
                 ImagePoint frontCover = new ImagePoint(String.format("res/characters/%s/Render.png", frontCharacter), new Point(1000,24), "frontCover");
@@ -165,65 +200,16 @@ public class Game extends AbstractGame {
                     imagePointManagerSingleton.get(frontCover).setPos(1000, Window.getHeight() - frontCover.getHeight());
                 }
             }
-            if (input!= null) {
-                imagePointManagerSingleton.getImageWithTag("shadow").setPos(1000 + (Window.getWidth()/2d - input.getMouseX())/200, 24 + (Window.getHeight()/2d - input.getMouseY())/200);
+            double opacity = Math.abs(Math.sin(timeLogger.getFrames()))*0.3 + 0.4;
+            if (imagePointManagerSingleton.getImageWithTag("shadow") != null) {
+                imagePointManagerSingleton.getImageWithTag("shadow").setOpacity(opacity);
             }
             updateDemo(input);
-        }
-        else if (settingsSingleton.getGameState() == 1) {
-            String storyMenuFileName = "res/menu/StoryMenu.png";
-            String vsMenuFileName = "res/menu/vsMenu.png";
-
-            if (!settingsSingleton.getGameStateString().equals("Game Mode")) {
-                settingsSingleton.setGameStateString("Game Mode");
-                imagePointManagerSingleton.add(new ImagePoint(storyMenuFileName, new Point(Window.getWidth()/2d,0)));
-                imagePointManagerSingleton.add(new ImagePoint(vsMenuFileName, new Point(-Window.getWidth()/2d,0)));
-                Button storyButton = new Button("STORY", null,
-                        new FontSize(Fonts.DEJAVUSANS, 160),
-                        new Rectangle(0,0,new Font(Fonts.DEJAVUSANS, 160).getWidth("STORY"),160),
-                        ColourPresets.WHITE.toColour());
-                Button versusButton = new Button("VS", null,
-                        new FontSize(Fonts.DEJAVUSANS, 160),
-                        new Rectangle(Window.getWidth() - new Font(Fonts.DEJAVUSANS, 160).getWidth("VS"),0,new Font(Fonts.DEJAVUSANS, 160).getWidth("VS"),160),
-                        ColourPresets.WHITE.toColour());
-                buttonsToRemove.addAll(buttons);
-                buttons.add(storyButton);
-                buttons.add(versusButton);
-                menuTitle = "";
-
-            }
-            imagePointManagerSingleton.get(storyMenuFileName).setPos(currentMousePosition.x, 0);
-            imagePointManagerSingleton.get(vsMenuFileName).setPos(-Window.getWidth() + currentMousePosition.x, 0);
 
             if (input != null && input.wasPressed(Keys.ESCAPE)) {
                 settingsSingleton.setGameState(0);
+                eventsListener.addEvent(new EventGameMode());
                 players.clear();
-            }
-        }
-        else if (settingsSingleton.getGameState() == 2) {
-            if (!"Players".equals(settingsSingleton.getGameStateString()))  {
-                buttonsToRemove.addAll(buttons);
-                Button twoPlayerButton = new Button("2", null,
-                        new FontSize(Fonts.DEJAVUSANS, 160),
-                        new Rectangle(0, Window.getHeight()/2d - 160, Window.getWidth(), 160),
-                        ColourPresets.BLACK.toColour());
-                Button threePlayerButton = new Button("3", null,
-                        new FontSize(Fonts.DEJAVUSANS, 160),
-                        new Rectangle(0, Window.getHeight()/2d, Window.getWidth(), 160),
-                        ColourPresets.BLACK.toColour());
-                Button fourPlayerButton = new Button("4", null,
-                        new FontSize(Fonts.DEJAVUSANS, 160),
-                        new Rectangle(0, Window.getHeight()/2d + 160, Window.getWidth(), 160),
-                        ColourPresets.BLACK.toColour());
-                buttons.addAll(Arrays.asList(twoPlayerButton, threePlayerButton, fourPlayerButton));
-                settingsSingleton.setGameStateString("Players");
-                musicPlayer.clear();
-                imagePointManagerSingleton.getImages().clear();
-                imagePointManagerSingleton.setCurrentBackground("res/menu/playerMenu.PNG");
-                menuTitle = "PLAYERS";
-        }
-            if (input != null && input.wasPressed(Keys.ESCAPE)) {
-                settingsSingleton.setGameState(1);
             }
         }
         else if (settingsSingleton.getGameState() == 3) {
@@ -285,7 +271,9 @@ public class Game extends AbstractGame {
 
             if (input != null && input.wasPressed(Keys.ESCAPE)) {
                 imagePointManagerSingleton.getCurrentBackground().setOpacity(1);
-                settingsSingleton.setGameState(2);
+                imagePointManagerSingleton.getImages().clear();
+                eventsListener.addEvent(new EventGameStateZero());
+                settingsSingleton.setGameState(1);
             }
 
         }
@@ -1006,12 +994,12 @@ public class Game extends AbstractGame {
                 imagePointManagerSingleton.getImages().clear();
                 buttons.clear();
                 storySettingsSingleton.setMode("Tutorial");
-                storySettingsSingleton.setDialogueInt(0);
                 dialogue.setPlayingDialogue(true);
             }
             long currentMapHeight = Math.round(gameSettingsSingleton.getMap().getCurrentHeight());
             int dialogueInt = storySettingsSingleton.getDialogueInt();
             Character character = players.get(0).getCharacter();
+
             dialogue.update(input);
             if (!dialogue.isPlayingDialogue()) {
                 if (dialogueInt == 0) {
@@ -1020,10 +1008,10 @@ public class Game extends AbstractGame {
                             new FontSize(Fonts.AGENCYB, 40), new Point(Window.getWidth()/2.0 - 150, 90)));
                     storySettingsSingleton.initialiseTime();
                 }
-                if (timeLogger.getFrames() - storySettingsSingleton.getInitialTime() == 5 * frames) {
+                if (timeLogger.getFrames() - storySettingsSingleton.getInitialTime() == Math.round(4.2 * frames)) {
                     obstacles.add(new ObstacleRock(new Point(players.get(0).getCharacter().getPos().x, 0)));
                 }
-                else if (timeLogger.getFrames() - storySettingsSingleton.getInitialTime() == Math.round(5.3 * frames)) {
+                else if (timeLogger.getFrames() - storySettingsSingleton.getInitialTime() == Math.round(4.5 * frames)) {
                     dialogue.setPlayingDialogue(true);
                 }
                 if (obstacles.size() == 1) {
@@ -1034,27 +1022,23 @@ public class Game extends AbstractGame {
                     }
                 }
 
-                if (currentMapHeight == 1200 && dialogueInt != 3) {
+                if (currentMapHeight == 1000 && dialogueInt != 3) {
                     storySettingsSingleton.setDialogueInt(3);
                     dialogue.setPlayingDialogue(true);
                 }
-                else if (currentMapHeight == 1250) {
-                    powerUps.add(new PowerUpShield(new Point(character.getPos().x, -80)));
-                    for (int i = 0; i < 32; i ++) {
-                        obstacles.add(new ObstacleRock(new Point(i * 80, -1400)));
-                    }
-                }
-                else if (currentMapHeight == 2000 && dialogueInt == 3) {
+
+                if (dialogueInt == 3 && character.hasShield()) {
+                    storySettingsSingleton.setDialogueInt(4);
                     dialogue.setPlayingDialogue(true);
                 }
-                else if (currentMapHeight == 2100 && dialogueInt == 3) {
-                    storySettingsSingleton.setDialogueInt(5);
-                    eventsListener.addEvent(new EventCharacterJoinsTheClimb("Naofumi"));
+                else if (dialogueInt == 3 && !character.hasShield() && powerUps.size() == 0) {
+                    dialogue.setPlayingDialogue(true);
+                    dialogue.setLineNo(12);
+                    gameSettingsSingleton.getMap().setCurrentHeight(1000);
                 }
 
-
-                if (dialogueInt == 3 && character.getLives() == 0) {
-                    storySettingsSingleton.setDialogueInt(4);
+                if (dialogueInt == 4 && character.getLives() == 0) {
+                    character.setLives(1);
                     dialogue.setPlayingDialogue(true);
                 }
 
@@ -1070,16 +1054,35 @@ public class Game extends AbstractGame {
                 if (dialogueInt == 1) {
                     updatePlayerMovement(input);
                 }
+                if (dialogueInt == 3 && dialogue.getLineNo() == 12 && powerUps.size() == 0) {
+                    powerUps.add(new PowerUpShield(new Point(character.getPos().x, -80)));
+                }
                 if (dialogueInt == 4) {
-                    character.setLives(1);
-                    storySettingsSingleton.setDialogueInt(3);
-                    gameSettingsSingleton.getMap().setCurrentHeight(1240);
+                    if (!dialogue.isLoading() && dialogue.getLineNo() == 2) {
+                        if (input != null && input.wasPressed(Keys.SPACE)) {
+                            eventsListener.addEvent(new EventShakeMap(2*frames));
+                            for (int i = 0; i < 32; i ++) {
+                                obstacles.add(new ObstacleRock(new Point(i * 80, -1400)));
+                            }
+                        }
+                    }
+                    if (!dialogue.isLoading() && dialogue.getLineNo() == 4) {
+                        if (input != null && input.wasPressed(Keys.SPACE)) {
+                            dialogue.setPlayingDialogue(false);
+                        }
+                    }
+                }
+                if (dialogueInt == 5) { 
+                    if (dialogue.getLineNo() == 10) {
+                        eventsListener.addEvent(new EventCharacterJoinsTheClimb("Naofumi"));
+                    }
                 }
             }
             gameSettingsSingleton.getMap().update();
 
             if (input != null && input.wasPressed(Keys.ESCAPE)) {
                 settingsSingleton.setGameState(0);
+                storySettingsSingleton.setDialogueInt(0);
                 dialogue.setPlayingDialogue(false);
                 stringDisplays.clear();
             }
@@ -1118,19 +1121,9 @@ public class Game extends AbstractGame {
 
         // TEST GAME
         if (settingsSingleton.getGameState() == -100) {
-            settingsSingleton.setPlayers(2);
-            players.get(0).setCharacter(new Character(CharacterNames.MIKU));
-            players.get(0).setSideCharacter(new SideYugi());
-            players.get(0).getCharacter().gainSpecialAbilityBar(500);
-            players.get(1).setCharacter(new Character(CharacterNames.MAI));
-            players.get(1).setSideCharacter(new SideDio());
-            players.get(1).getCharacter().gainSpecialAbilityBar(500);
-            gameSettingsSingleton.setMap(new Map("Park"));
-            gameSettingsSingleton.getMap().generateMap();
-            gameSettingsSingleton.setMap(gameSettingsSingleton.getMap());
-            settingsSingleton.setGameMode(1);
-            settingsSingleton.setGameState(6);
-            settingsSingleton.setGameStateString("Test");
+            settingsSingleton.setGameState(12);
+            storySettingsSingleton.setDialogueInt(4);
+            storySettingsSingleton.setMode("Tutorial");
         }
     }
 
@@ -1161,21 +1154,21 @@ public class Game extends AbstractGame {
 //            }
         }
         if (settingsSingleton.getGameState() == 1) {
-            imagePointManagerSingleton.draw();
-        }
-        else if (settingsSingleton.getGameState() == 2) {
-            imagePointManagerSingleton.getCurrentBackground().draw();
-            for (Button button: buttons) {
-                if ("234".contains(button.getName())) {
-                    button.setNight();
-                    if (button.isHovering()) {
-                        ImagePoint playerArt = new ImagePoint(String.format("res/menu/%sPlayers.PNG",
-                                button.getName()), new Point(0, 0));
-                        playerArt.setPos(Window.getWidth()/2d - playerArt.getWidth()/2, Window.getHeight() - playerArt.getHeight());
-                        playerArt.draw();
-                    }
-                }
+            drawGame();
+            Drawing.drawRectangle(0,0,Window.getWidth(),Window.getHeight(), new Colour(0,0,0,0.6));
+
+            ImagePoint leftCover = imagePointManagerSingleton.get("res/menu/main/leftcover.png");
+            ImagePoint rightCover = imagePointManagerSingleton.get("res/menu/main/rightcover.png");
+
+
+            if (leftCover != null) {
+                leftCover.draw();
             }
+            if (rightCover != null) {
+                rightCover.draw();
+            }
+            imagePointManagerSingleton.draw();
+            new ImagePoint("res/menu/gamemodeMenu.png", new Point(148,87)).draw();
         }
         else if (settingsSingleton.getGameState() == 3) {
             Character currentCharacter = allCharacters.get(allCharacters.size() % 2 == 1 ?
@@ -1400,7 +1393,10 @@ public class Game extends AbstractGame {
                 if (dialogueInt == 1) {
                     Drawing.drawRectangle(0,0,Window.getWidth(), Window.getHeight(), new Colour(0,0,0,0.5));
                 }
-                dialogue.draw();
+                if (canInteract) {
+                    dialogue.draw();
+                }
+
                 if (dialogueInt == 3) {
                     if (dialogue.getLineNo() == 11) {
                         DO.setScale(2.5,2.5);
@@ -1680,7 +1676,7 @@ public class Game extends AbstractGame {
     public void pickCharacter(Player player, Character character) {
         if (isUnlocked(character.getName())) {
             if (canBePicked(character)) {
-                eventsListener.addEvent(new EventCharacterPicked(frames, String.format("Player %d picked: %s", player.getId(), character.getFullName())));
+                eventsListener.addEvent(new EventCharacterPicked(new Music(character.playLine(), 0).getFrameLength(), String.format("Player %d picked: %s", player.getId(), character.getFullName())));
                 musicPlayer.addMusic("music/misc/Character Picked.wav");
                 player.setCharacter(character);
                 if (musicPlayer.contains(character.playLine())) {
@@ -2274,7 +2270,7 @@ public class Game extends AbstractGame {
         }
         if (canInteract) {
             for (Player player : players) {
-                if (!player.getCharacter().isDead()) {
+                if (player.getCharacter() != null && !player.getCharacter().isDead()) {
                     player.getCharacter().draw();
                     Font gameFont = new Font(Fonts.DEJAVUSANS, 40);
                     gameFont.drawString(String.format("P%s", player.getId()), player.getCharacter().getPos().x,
@@ -2348,7 +2344,8 @@ public class Game extends AbstractGame {
              ImagePoint shadow = new ImagePoint(String.format("res/Characters/%s/render.png", charName),
                      imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", charName)).getPos());
              shadow.setPos(shadow.getPos().x + xOffset, shadow.getPos().y + yOffset);
-             shadow.setOpacity(0.3);
+             double opacity = Math.abs(Math.sin(timeLogger.getFrames()/70d))*0.3 + 0.4;
+             shadow.setOpacity(opacity);
              shadow.setDarken(true);
              shadow.draw();
          }
@@ -2377,7 +2374,7 @@ public class Game extends AbstractGame {
         }
         boolean notDead = false;
         for (Player player: players) {
-            if (!player.getCharacter().isDead()) {
+            if (player.getCharacter() != null && !player.getCharacter().isDead()) {
                 notDead = true;
             }
         }

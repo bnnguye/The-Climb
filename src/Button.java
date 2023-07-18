@@ -111,10 +111,6 @@ public class Button {
         else if (name.equalsIgnoreCase("Exit")) {
             Window.close();
         }
-        else if (name.equalsIgnoreCase("4")) {
-            settingsSingleton.setPlayers(4);
-            settingsSingleton.setGameState(3);
-        }
         else if (name.equalsIgnoreCase("Game Settings")) {
             settingsSingleton.setGameState(10);
             gameSettingsSingleton.setPage(0);
@@ -187,6 +183,7 @@ public class Button {
         }
         else if (name.equalsIgnoreCase("PLAY")) {
                 settingsSingleton.setGameState(1);
+                eventsListenerSingleton.getEventsListener().addEvent(new EventGameMode());
         }
         else if (name.equalsIgnoreCase("Retry")) {
             if (settingsSingleton.getGameMode() < 99) {
@@ -223,19 +220,14 @@ public class Button {
         else if (name.equalsIgnoreCase("Story")) {
             settingsSingleton.setGameMode(0);
             settingsSingleton.setPlayers(2);
-            settingsSingleton.setGameState(2);
+            settingsSingleton.setGameState(3);
             //eventsListenerSingleton.getEventsListener().addEvent(new EventGameModeSelected(2 * frames, "Story Mode selected!"));
         }
-        else if (name.equalsIgnoreCase("3")) {
-            settingsSingleton.setPlayers(3); settingsSingleton.setGameState(3);
-        }
-        else if (name.equalsIgnoreCase("2")) {
-            settingsSingleton.setPlayers(2);
-            settingsSingleton.setGameState(3);
-        }
-        else if (name.equalsIgnoreCase("VS")) {
+        else if (name.equalsIgnoreCase("VERSUS")) {
             settingsSingleton.setGameMode(1);
-            settingsSingleton.setGameState(2);
+            settingsSingleton.setGameState(3);
+            settingsSingleton.getPlayers().clear();
+            settingsSingleton.setPlayers(1);
             //eventsListenerSingleton.getEventsListener().addEvent(new EventGameModeSelected(2 * frames, "Story Mode selected!"));
 
         }

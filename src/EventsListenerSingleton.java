@@ -35,6 +35,7 @@ public class EventsListenerSingleton {
                     canInteract = false;
                 }
                 if (event.getFrames() <= TimeLogger.getInstance().getFrames()) {
+                    System.out.printf("Event finished: %s\n%n", event.getEvent());
                     finishedEvents.add(event);
                     eventsToRemove.add(event);
                 }
