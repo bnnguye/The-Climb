@@ -8,9 +8,7 @@ public class EventSideCharacterRotate extends EventInterface{
 
     ImagePointManagerSingleton imagePointManagerSingleton = ImagePointManagerSingleton.getInstance();
 
-    private final double minScale = 0.275;
-    private final double maxScale = 1;
-    private double calls;
+    private final double calls;
 
     public EventSideCharacterRotate(String event) {
         int duration = SettingsSingleton.getInstance().getRefreshRate()/8;
@@ -23,9 +21,9 @@ public class EventSideCharacterRotate extends EventInterface{
         getAllCharacterImages();
 
         int currentTime = TimeLogger.getInstance().getFrames();
-        double spacing = Window.getHeight()/4;
-        double maxHeight = Window.getHeight()/8;
-        double minHeight = Window.getHeight()*3/4;
+        double spacing = Window.getHeight()/4d;
+        double maxHeight = Window.getHeight()/8d;
+        double minHeight = Window.getHeight()*3/4d;
         double sign = event.contains("LEFT") ? 1 : -1;
         double speed = sign * spacing;
         double middleCharacterSpeed = event.contains("LEFT") ? 750 : 135;
@@ -37,11 +35,15 @@ public class EventSideCharacterRotate extends EventInterface{
 
             ImagePoint nextCharacterImage = imagePointManagerSingleton.getImages().get(nextCharacterIndex);
             ImagePoint middleCharacterImage = imagePointManagerSingleton.getImages().get(middleCharacterIndex);
+            nextCharacterImage.setOpacity(1);
+            middleCharacterImage.setOpacity(0.5);
 
             // set scaling
+            double maxScale = 1;
             imagePointManagerSingleton.getImages().get(nextCharacterIndex).setScale(
                     nextCharacterImage.getScale() + (maxScale - nextCharacterImage.getScale())/shift);
 
+            double minScale = 0.275;
             imagePointManagerSingleton.getImages().get(middleCharacterIndex).setScale(
                     middleCharacterImage.getScale() - (middleCharacterImage.getScale() - minScale)/shift);
             // set positioning

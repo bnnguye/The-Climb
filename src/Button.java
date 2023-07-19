@@ -23,8 +23,8 @@ public class Button {
 
     private final String name;
     private final String displayString;
-    private final Rectangle box;
-    private final Point position;
+    private Rectangle box;
+    private Point position;
     private Image image = null;
     private double scale;
 
@@ -221,14 +221,12 @@ public class Button {
             settingsSingleton.setGameMode(0);
             settingsSingleton.setPlayers(2);
             settingsSingleton.setGameState(3);
-            //eventsListenerSingleton.getEventsListener().addEvent(new EventGameModeSelected(2 * frames, "Story Mode selected!"));
         }
         else if (name.equalsIgnoreCase("VERSUS")) {
             settingsSingleton.setGameMode(1);
             settingsSingleton.setGameState(3);
             settingsSingleton.getPlayers().clear();
             settingsSingleton.setPlayers(1);
-            //eventsListenerSingleton.getEventsListener().addEvent(new EventGameModeSelected(2 * frames, "Story Mode selected!"));
 
         }
         else if (name.equalsIgnoreCase("Decrease Map Speed")) {
@@ -245,6 +243,14 @@ public class Button {
         }
         else if (name.equals("SETTINGS")) {
             settingsSingleton.setGameState(14);
+        }
+        else if (name.equalsIgnoreCase("Add")) {
+            settingsSingleton.getPlayers().add(new Player(settingsSingleton.getPlayers().size() + 1));
+            double spacing = Window.getWidth()/6d;
+            if (settingsSingleton.getPlayers().size() <= 4) {
+                this.position = new Point(settingsSingleton.getPlayers().size() * (this.image.getWidth()*2/3 + spacing) + spacing/3 + 200, 25);
+                this.box = new Rectangle(this.position, box.right() - box.left(), box.bottom() - box.top());
+            }
         }
     }
 
@@ -287,6 +293,11 @@ public class Button {
             return image.getWidth();
         }
         return font.getSize();
+    }
+
+    public void setPosition(Point point) {
+        this.position = point;
+        this.box = new Rectangle(this.position, box.right() - box.left(), box.bottom() - box.top());
     }
 
 }

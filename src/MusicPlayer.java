@@ -5,7 +5,7 @@ public class MusicPlayer {
 
     private static double maxMainVol = 50d;
     private static double maxEffectVol = 100d;
-    private static double mainVolume = 20d;
+    private static double mainVolume = 0d;
     private static double effectVolume = 100d;
 
     private static MusicPlayer musicPlayer = null;
@@ -22,7 +22,9 @@ public class MusicPlayer {
     }
 
     public void addMusic(String fileName) {
-        musics.add(new Music(fileName, effectVolume));
+        Music newMusic = new Music(fileName, effectVolume);
+        musics.add(newMusic);
+        newMusic.play();
     }
 
     public void setMainMusic(String fileName) {

@@ -4,8 +4,6 @@ public class EventSideCharactersPicked extends EventInterface {
 
     private ImagePointManagerSingleton imagePointManagerSingleton = ImagePointManagerSingleton.getInstance();
 
-    private boolean canInteract = false;
-
     public EventSideCharactersPicked(String event) {
         int currentTime = TimeLogger.getInstance().getFrames();
         this.frames = currentTime + SettingsSingleton.getInstance().getRefreshRate();

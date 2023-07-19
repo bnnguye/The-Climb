@@ -77,7 +77,9 @@ public class Music {
         return this.clip.getFramePosition() >= this.clip.getFrameLength();
     }
 
-    public int getFrameLength() {return clip.getFrameLength();}
+    public int getFrameLength() {
+        return (int) Math.round(clip.getFrameLength() * SettingsSingleton.getInstance().getRefreshRate() / 50571.75);
+    }
 
     public int getFramePosition() {return clip.getFramePosition();}
 

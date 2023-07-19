@@ -36,7 +36,9 @@ public class EventCharacterRotate extends EventInterface{
         if (shift >= 1) {
 
             ImagePoint nextCharacterImage = imagePointManagerSingleton.getImages().get(nextCharacterIndex);
+            nextCharacterImage.setOpacity(1);
             ImagePoint middleCharacterImage = imagePointManagerSingleton.getImages().get(middleCharacterIndex);
+            middleCharacterImage.setOpacity(0.5);
 
             // set scaling
             imagePointManagerSingleton.getImages().get(nextCharacterIndex).setScale(
