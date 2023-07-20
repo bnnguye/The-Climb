@@ -169,7 +169,7 @@ public class Game extends AbstractGame {
             if (input!= null) {
                 imagePointManagerSingleton.getImageWithTag("shadow").setPos(1000 + (Window.getWidth()/2d - input.getMouseX())/200, 24 + (Window.getHeight()/2d - input.getMouseY())/200);
             }
-            double opacity = Math.abs(Math.sin(timeLogger.getFrames()))*0.3 + 0.4;
+            double opacity = Math.abs(Math.sin(timeLogger.getFrames()/250d))*0.3 + 0.4;
             imagePointManagerSingleton.getImageWithTag("shadow").setOpacity(opacity);
             updateDemo(input);
         }
@@ -204,7 +204,7 @@ public class Game extends AbstractGame {
             if (input!= null) {
                 imagePointManagerSingleton.getImageWithTag("shadow").setPos(1000 + (Window.getWidth()/2d - input.getMouseX())/200, 24 + (Window.getHeight()/2d - input.getMouseY())/200);
             }
-            double opacity = Math.abs(Math.sin(timeLogger.getFrames()))*0.3 + 0.4;
+            double opacity = Math.abs(Math.sin(timeLogger.getFrames()/250d))*0.3 + 0.4;
             imagePointManagerSingleton.getImageWithTag("shadow").setOpacity(opacity);
             updateDemo(input);
 
@@ -228,8 +228,14 @@ public class Game extends AbstractGame {
                     Image settingsImage = new Image("res/misc/settings.png");
                     Image addImage = new Image("res/misc/add.png");
                     double spacing = Window.getWidth()/6d;
+
                     buttons.add(new Button("Game Settings", settingsImage, new Point((Window.getWidth() - settingsImage.getWidth())/2,20)));
-                    buttons.add(new Button("Add", addImage, new Point(settingsSingleton.getPlayers().size() * (addImage.getWidth()*2/3 + spacing) + spacing/3 - 25/2d, 25)));
+                    if (players.size() <= 1) {
+                        buttons.add(new Button("Add", addImage, new Point(settingsSingleton.getPlayers().size() * (addImage.getWidth()*2/3 + spacing) + spacing/3, 0)));
+                    }
+                    else {
+                        buttons.add(new Button("Add", addImage, new Point(settingsSingleton.getPlayers().size() * (addImage.getWidth()*2/3 + spacing) + spacing/3 + 200, 0)));
+                    }
                 }
                 sortCharacters();
                 adjustCharacterRotation();
@@ -270,7 +276,7 @@ public class Game extends AbstractGame {
                     break;
                 }
             }
-            if (picked && !eventsListener.contains(EventCharacterPicked.class)) {
+            if (picked && !eventsListener.contains(EventCharacterPicked.class) && !eventsListener.contains(EventCharactersPicked.class)) {
                 eventsListener.addEvent(new EventCharactersPicked("All players have picked a character"));
             }
 
@@ -288,10 +294,10 @@ public class Game extends AbstractGame {
 
                     for (Button button: buttons) {
                         if (button.getName().equalsIgnoreCase("add")) {
-                            button.setPosition(new Point(settingsSingleton.getPlayers().size() * (button.getImage().getWidth()*2/3 + spacing) + spacing/3 + 200, 25));
+                            button.setPosition(new Point(settingsSingleton.getPlayers().size() * (button.getImage().getWidth()*2/3 + spacing) + spacing/3 + 200, 0));
 
                             if (settingsSingleton.getPlayers().size() == 1  ) {
-                                button.setPosition(new Point(button.getWidth()*2/3 + spacing*2/3 + 200, 25));
+                                button.setPosition(new Point(button.getWidth()*2/3 + spacing*2/3 + 200, 0));
                             }
                             break;
                         }
@@ -1221,12 +1227,16 @@ public class Game extends AbstractGame {
                 }
             }
             if (isUnlocked(currentCharacter.getName())) {
-                if (canInteract) {
+                if (eventsListener.contains(EventCharacterPicked.class)) {
+                    Drawing.drawRectangle(0, Window.getHeight()/2d - characterFont.getSize()/2d - 35, Window.getWidth(), characterFont.getSize(), new Colour(0,0,0,0.3));
                     drawShadowRender(currentCharacter.getFullName());
                     characterFont.draw(currentCharacter.getName(), Window.getWidth()/5d
                             - characterFont.getFont().getWidth(currentCharacter.getName())/2, Window.getHeight()/2d);
                     characterFont.draw(currentCharacter.getLastName(), Window.getWidth()*4/5d
                             - characterFont.getFont().getWidth(currentCharacter.getLastName())/2, Window.getHeight()/2d);
+                }
+                else {
+                    characterFont.draw("CHOOSE                      WAIFU",Window.getWidth()/5d - 150, Window.getHeight()/2d);
                 }
             }
             else {

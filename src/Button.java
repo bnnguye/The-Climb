@@ -248,7 +248,7 @@ public class Button {
             settingsSingleton.getPlayers().add(new Player(settingsSingleton.getPlayers().size() + 1));
             double spacing = Window.getWidth()/6d;
             if (settingsSingleton.getPlayers().size() <= 4) {
-                this.position = new Point(settingsSingleton.getPlayers().size() * (this.image.getWidth()*2/3 + spacing) + spacing/3 + 200, 25);
+                this.position = new Point(settingsSingleton.getPlayers().size() * (this.image.getWidth()*2/3 + spacing) + spacing/3 + 200, 0);
                 this.box = new Rectangle(this.position, box.right() - box.left(), box.bottom() - box.top());
             }
         }
