@@ -27,6 +27,7 @@ public class Character {
         private boolean shield = false;
         private double specialAbilityBar = 0;
 
+        private PowerUp powerUp = null;
         private double speedDownTimer = 0;
         private double speedUpTimer = 0;
         private double minimisedTimer = 0;
@@ -237,4 +238,6 @@ public class Character {
         }
         public int getLives() {return this.lives;}
         public boolean isMoving() {return moving;}
+        public boolean hasPowerUp() { return powerUp != null;}
+        public void setPowerUp(PowerUp powerUp) { this.powerUp = powerUp;}
 }

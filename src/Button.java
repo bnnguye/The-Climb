@@ -264,10 +264,10 @@ public class Button {
     public void addPowerUpSliders() {
         sliders.addAll(Arrays.asList(
                 new SliderPowerUp("Minimiser", new Point(400, 300)),
-                new SliderPowerUp("SpeedUp", new Point(400, 400)),
-                new SliderPowerUp("SpeedDown", new Point(400, 500)),
-                new SliderPowerUp("Shield", new Point(400, 600)),
-                new SliderPowerUp("SpecialAbilityPoints", new Point(400, 700))));
+                new SliderPowerUp("SpeedUp", new Point(400, 425)),
+                new SliderPowerUp("SpeedDown", new Point(400, 550)),
+                new SliderPowerUp("Shield", new Point(400, 675)),
+                new SliderPowerUp("SpecialAbilityPoints", new Point(400, 800))));
     }
 
     public void addObstacleSliders() {

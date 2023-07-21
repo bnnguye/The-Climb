@@ -3,11 +3,11 @@ import bagel.Window;
 import bagel.util.Point;
 
 public abstract class PowerUp {
-    private String name;
+    String name;
     Image image;
-    private Point pos;
+    Point pos;
     double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
-    private boolean jotaroAbility = false;
+    boolean jotaroAbility = false;
 
 
     public PowerUp() {
@@ -24,5 +24,10 @@ public abstract class PowerUp {
     public boolean canMove() {
         return !jotaroAbility;
     }
-    public void gainPowerUp(Player player) {}
+    public void gainPowerUp(Player player) {
+        if (!player.getCharacter().hasPowerUp()) {
+            player.getCharacter().setPowerUp(this);
+        }
+    }
+    public void activate(Character character) {}
 }

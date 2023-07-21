@@ -1,3 +1,5 @@
+import bagel.util.Rectangle;
+
 public class EventGameFinished extends EventInterface {
 
     private ImagePointManagerSingleton imagePointManagerSingleton = ImagePointManagerSingleton.getInstance();
@@ -10,6 +12,5 @@ public class EventGameFinished extends EventInterface {
     }
 
     public void process() {
-
     }
 }

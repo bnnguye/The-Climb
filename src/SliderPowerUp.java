@@ -40,9 +40,9 @@ public class SliderPowerUp extends Slider {
         currentFrequency = powerUpsSettingsSingleton.getFrequency(name);
         currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
         if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(name)) {
-            Drawing.drawRectangle(topLeft, maxBSize, logo.getHeight(), new Colour(0, 0, 0, 0.5));
-            Drawing.drawRectangle(topLeft, currentBar, logo.getHeight(), new Colour((1 - currentBar/maxBSize), 1, currentBar/maxBSize, currentBar/maxBSize));
-            sliderIndicator.drawFromTopLeft(currentBar + topLeft.x - sliderIndicator.getWidth()/2, topLeft.y - 10);
+            Drawing.drawRectangle(topLeft.x, topLeft.y + logo.getHeight()/4, maxBSize, 50, new Colour(0, 0, 0, 0.5));
+            Drawing.drawRectangle(topLeft.x, topLeft.y + logo.getHeight()/4, currentBar, 50, new Colour((1 - currentBar/maxBSize), 1, currentBar/maxBSize, currentBar/maxBSize));
+            sliderIndicator.drawFromTopLeft(currentBar + topLeft.x - 25, topLeft.y + 10);
         }
         logo.drawFromTopLeft(topLeft.x - logo.getWidth(), topLeft.y);
     }
