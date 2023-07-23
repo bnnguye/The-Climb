@@ -1156,7 +1156,15 @@ public class Game extends AbstractGame {
 
         // TEST GAME
         if (settingsSingleton.getGameState() == -100) {
-            settingsSingleton.setGameState(12);
+            settingsSingleton.setGameState(6);
+            settingsSingleton.setPlayers(2);
+            settingsSingleton.getPlayers().get(0).setCharacter(new Character(CharacterNames.MIKU));
+            settingsSingleton.getPlayers().get(0).setSideCharacter(new SideDio());
+            settingsSingleton.getPlayers().get(0).getCharacter().gainSpecialAbilityBar(10000);
+            settingsSingleton.getPlayers().get(1).setCharacter(new Character(CharacterNames.MAI));
+            settingsSingleton.getPlayers().get(1).setSideCharacter(new SideJotaro());
+            settingsSingleton.getPlayers().get(1).getCharacter().gainSpecialAbilityBar(10000);
+
             storySettingsSingleton.setDialogueInt(4);
             storySettingsSingleton.setMode("Tutorial");
         }
@@ -1825,17 +1833,12 @@ public class Game extends AbstractGame {
 
     public void updateObjects() {
         for (Obstacle obstacle : obstacles) {
-            if (obstacle.canMove()) {
-                obstacle.move();
-            }
+            obstacle.move();
             if ((obstacle.getPos().y > Window.getHeight()) && (!obstaclesToRemove.contains(obstacle))) {
                 obstaclesToRemove.add(obstacle);
             }
         }
         for (PowerUp powerUp : powerUps) {
-            if (powerUp.canMove()) {
-                powerUp.move();
-            }
             if (powerUp.getPos().y > Window.getHeight()) {
                 powerUpsToRemove.add(powerUp);
             }

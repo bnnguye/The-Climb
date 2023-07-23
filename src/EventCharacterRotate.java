@@ -23,9 +23,9 @@ public class EventCharacterRotate extends EventInterface{
         getAllCharacterImages();
 
         int currentTime = TimeLogger.getInstance().getFrames();
-        double spacing = Window.getHeight()/4;
-        double maxHeight = Window.getHeight()/8;
-        double minHeight = Window.getHeight()*3/4;
+        double spacing = Window.getHeight()/4d;
+        double maxHeight = Window.getHeight()/8d;
+        double minHeight = Window.getHeight()*3/4d;
         double sign = event.contains("LEFT") ? 1 : -1;
         double speed = sign * spacing;
         double middleCharacterSpeed = event.contains("LEFT") ? 750 : 135;

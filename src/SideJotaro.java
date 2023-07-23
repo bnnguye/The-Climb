@@ -46,30 +46,25 @@ public class SideJotaro extends SideCharacter{
             MusicPlayer.getInstance().addMusic(getSoundPath());
             timer = 5*frames;
             this.activating = true;
+            for (Obstacle obstacle: obstacles) {
+                obstacle.adjustOffset(-obstacle.getSpeed());
+            }
+            for (PowerUp powerUp: powerUps) {
+                powerUp.adjustOffset(-powerUp.getSpeed());
+            }
         }
         else {
-            if (timer > 3*frames) {
-                this.animating = true;
-            }
-            else {
-                for (Obstacle obstacle: obstacles) {
-                    obstacle.setJotaroAbility(true);
-                }
-                for (PowerUp powerUp: powerUps) {
-                    powerUp.setJotaroAbility(true);
-                }
-                this.animating = false;
-            }
+            this.animating = timer > 3 * frames;
             timer--;
         }
         if (timer <= 0) {
-            for (Obstacle obstacle : obstacles) {
-                obstacle.setJotaroAbility(false);
-            }
-            for (PowerUp powerUp : powerUps) {
-                powerUp.setJotaroAbility(false);
-            }
             this.activating = false;
+            for (Obstacle obstacle: obstacles) {
+                obstacle.adjustOffset(obstacle.getSpeed());
+            }
+            for (PowerUp powerUp: powerUps) {
+                powerUp.adjustOffset(powerUp.getSpeed());
+            }
         }
     }
 
@@ -80,7 +75,7 @@ public class SideJotaro extends SideCharacter{
         Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), darken);
         if (timer > 3*frames) {
             Image special = new Image("res/sidecharacters/JOTARO KUJO/render.png");
-            special.drawFromTopLeft(Window.getWidth()/2 - special.getWidth()/2,Window.getHeight() - special.getHeight());
+            special.drawFromTopLeft(Window.getWidth()/2d - special.getWidth()/2,Window.getHeight() - special.getHeight());
         }
     }
 

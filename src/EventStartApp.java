@@ -44,7 +44,7 @@ public class EventStartApp extends EventInterface {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1,1,1, 2*( currentTime - 1.5 * refreshRate)/(frames - 1.5 * refreshRate)));
         }
         if (frames - currentTime == 1) {
-            SettingsSingleton.getInstance().setGameState(-0);
+            SettingsSingleton.getInstance().setGameState(-100);
         }
     }
 }

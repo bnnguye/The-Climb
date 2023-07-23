@@ -6,6 +6,8 @@ public class PowerUpSpecialAbilityPoints extends PowerUp {
     private String name = "SpecialAbilityPoints";
     private Point pos;
     Image image = new Image("res/PowerUp/SpecialAbilityPoints.png");
+    private final double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
+
 
     public PowerUpSpecialAbilityPoints() {
         pos = new Point(Window.getWidth() * Math.random(), -200);
@@ -14,7 +16,7 @@ public class PowerUpSpecialAbilityPoints extends PowerUp {
     public Image getImage() {return this.image;}
     public Point getPos() { return this.pos;}
     public void move() {
-        this.pos = new Point(pos.x, pos.y + speed);
+        this.pos = new Point(pos.x, pos.y + speed + offset);
     }
     public String getName() { return this.name;}
 

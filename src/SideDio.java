@@ -49,28 +49,23 @@ public class SideDio extends SideCharacter{
             MusicPlayer.getInstance().addMusic("music/sidecharacters/DIO BRANDO/DIO BRANDO.wav");
             timer = 5 * frames;
             this.activating = true;
+            for (Obstacle obstacle: obstacles) {
+                obstacle.adjustOffset(-obstacle.getSpeed());
+            }
+            for (PowerUp powerUp: powerUps) {
+                powerUp.adjustOffset(-powerUp.getSpeed());
+            }
         }
         else {
-            if (timer > 3*frames) {
-                this.animating = true;
-            }
-            else {
-                this.animating = false;
-                for (Obstacle obstacle: obstacles) {
-                    obstacle.setJotaroAbility(true);
-                }
-                for (PowerUp powerUp: powerUps) {
-                    powerUp.setJotaroAbility(true);
-                }
-            }
+            this.animating = timer > 3 * frames;
             timer--;
         }
         if (timer <= 0) {
-            for (Obstacle obstacle : obstacles) {
-                obstacle.setJotaroAbility(false);
+            for (Obstacle obstacle: obstacles) {
+                obstacle.adjustOffset(obstacle.getSpeed());
             }
-            for (PowerUp powerUp : powerUps) {
-                powerUp.setJotaroAbility(false);
+            for (PowerUp powerUp: powerUps) {
+                powerUp.adjustOffset(powerUp.getSpeed());
             }
             this.activating = false;
         }

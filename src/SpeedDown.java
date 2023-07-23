@@ -6,6 +6,7 @@ public class SpeedDown extends PowerUp{
     private String name = "SpeedDown";
     private Point pos;
     Image image = new Image("res/PowerUp/SpeedQuestion.png");
+    private double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public SpeedDown() {
         pos = new Point(Window.getWidth() * Math.random(), -200);

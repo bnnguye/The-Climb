@@ -7,8 +7,9 @@ import java.util.ArrayList;
 public abstract class Obstacle {
     Image image;
     private Point pos;
-    private boolean jotaroAbility = false;
     private final ArrayList<Integer> playersInteracted = new ArrayList<>();
+    private double speed;
+    protected double offset = 0;
 
     public Obstacle() {
         pos = new Point(Window.getWidth() * Math.random(), -200);
@@ -21,11 +22,11 @@ public abstract class Obstacle {
     public Point getPos() {return pos;}
     public void setPos(Point point) { pos = point;}
     public String getName() {return "";}
-    public void setJotaroAbility(boolean bool) {
-        jotaroAbility = bool;
+    public void adjustOffset(double offset) {
+        this.offset += offset;
     }
-    public boolean canMove() {
-        return !jotaroAbility;
+    public double getSpeed() {
+        return speed;
     }
 
     public ArrayList<Integer> getPlayersInteracted() {
