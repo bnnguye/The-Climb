@@ -7,7 +7,7 @@ public abstract class PowerUp {
     protected Image image;
     protected Point pos;
     protected double offset = 0;
-    private double speed;
+    protected double speed;
 
     public PowerUp() {
         pos = new Point(Window.getWidth() * Math.random(), -200);

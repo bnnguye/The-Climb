@@ -37,7 +37,7 @@ public class EventCharacterPicked extends EventInterface {
             charImage.move(50, 0);
         }
         else {
-            charImage.move(0.2,0);
+            charImage.move(0.1,0);
         }
 
         int currentTime = TimeLogger.getInstance().getFrames();

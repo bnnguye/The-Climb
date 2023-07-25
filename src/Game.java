@@ -223,7 +223,6 @@ public class Game extends AbstractGame {
                 powerUps.clear();
                 imagePointManagerSingleton.setCurrentBackground(null);
                 imagePointManagerSingleton.getImages().clear();
-                menuTitle = "";
                 if (settingsSingleton.getGameMode() == 1) {
                     Image settingsImage = new Image("res/misc/settings.png");
                     Image addImage = new Image("res/misc/add.png");
@@ -459,13 +458,13 @@ public class Game extends AbstractGame {
                 int random = Math.min((int) Math.round(Math.random() * players.size()), players.size() - 1);
                 Map mapChosen = players.get(random).getMapChosen();
                 gameSettingsSingleton.setMap(mapChosen);
-                gameSettingsSingleton.getMap().generateMap();
                 settingsSingleton.setGameState(6);
             }
         }
         else if (settingsSingleton.getGameState() == 6) {
             if (settingsSingleton.getGameMode() == 1) {
                 if (!settingsSingleton.getGameStateString().equals("Game")) {
+                    gameSettingsSingleton.getMap().generateMap();
                     if (settingsSingleton.getPlayers().size() == 1) {
                         System.out.println("Loaded computer!");
                         ComputerHard computer = new ComputerHard(2);
@@ -484,12 +483,6 @@ public class Game extends AbstractGame {
                     boolean playingAnimation = false;
                     boolean theWorld = false;
                     for (Player player : players) {
-                        if (player.getCharacter().hasSpecialAbility()) {
-                            if (input != null && input.wasPressed(player.getControl("Primary"))) {
-                                player.getCharacter().useSpecialAbility();
-                                player.getSideCharacter().activateAbility(player, obstacles, powerUps);
-                            }
-                        }
                         if (player.getSideCharacter().isActivating()) {
                             musicPlayer.setMainVolume(0);
                             if ((player.getSideCharacter().getName().equals(CharacterNames.DIO)) || player.getSideCharacter().getName().equals(CharacterNames.JOTARO)) {
@@ -918,7 +911,7 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 9) {
             if (!settingsSingleton.getGameStateString().equals("Create Your Own Map")) {
                 offset = 0;
-                gameSettingsSingleton.setMap(new Map("Custom"));
+                gameSettingsSingleton.setMap(new Map(MapNames.CUSTOM));
                 gameSettingsSingleton.getMap().generateMap();
                 customMapTiles.clear();
                 customMapTiles.addAll(gameSettingsSingleton.getMap().getTiles());
@@ -1018,7 +1011,7 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 12) {
             if (!settingsSingleton.getGameStateString().equals("Tutorial")) {
                 settingsSingleton.setGameStateString("Tutorial");
-                gameSettingsSingleton.setMap(new Map("Training Ground"));
+                gameSettingsSingleton.setMap(new Map(MapNames.TRAINING_GROUND));
                 gameSettingsSingleton.getMap().generateMap();
                 obstacles.clear();
                 powerUps.clear();
@@ -1156,17 +1149,9 @@ public class Game extends AbstractGame {
 
         // TEST GAME
         if (settingsSingleton.getGameState() == -100) {
-            settingsSingleton.setGameState(6);
+            settingsSingleton.setGameState(3);
+            settingsSingleton.setGameMode(1);
             settingsSingleton.setPlayers(2);
-            settingsSingleton.getPlayers().get(0).setCharacter(new Character(CharacterNames.MIKU));
-            settingsSingleton.getPlayers().get(0).setSideCharacter(new SideDio());
-            settingsSingleton.getPlayers().get(0).getCharacter().gainSpecialAbilityBar(10000);
-            settingsSingleton.getPlayers().get(1).setCharacter(new Character(CharacterNames.MAI));
-            settingsSingleton.getPlayers().get(1).setSideCharacter(new SideJotaro());
-            settingsSingleton.getPlayers().get(1).getCharacter().gainSpecialAbilityBar(10000);
-
-            storySettingsSingleton.setDialogueInt(4);
-            storySettingsSingleton.setMode("Tutorial");
         }
     }
 
@@ -1231,7 +1216,9 @@ public class Game extends AbstractGame {
             else {
                 if (eventsListener.contains(EventCharacterPicked.class)) {
                     EventInterface event = eventsListener.getEvent(EventCharacterPicked.class);
-                    Drawing.drawRectangle(0, Window.getHeight()/2d - characterFont.getSize()/2d, 5*timeLogger.getFrames()/event.getFrames(), characterFont.getSize(), new Colour(1,1,1,0.5));
+                    Drawing.drawRectangle(0, Window.getHeight()/2d - characterFont.getSize()/2d,
+                            5*timeLogger.getFrames()/ (double) event.getFrames(), characterFont.getSize(),
+                            new Colour(1,1,1,0.5));
                 }
             }
             if (isUnlocked(currentCharacter.getName())) {
@@ -1839,6 +1826,7 @@ public class Game extends AbstractGame {
             }
         }
         for (PowerUp powerUp : powerUps) {
+            powerUp.move();
             if (powerUp.getPos().y > Window.getHeight()) {
                 powerUpsToRemove.add(powerUp);
             }
@@ -2164,7 +2152,7 @@ public class Game extends AbstractGame {
 
     public void loadPlayableMaps() {
         for (MapNames mapName: MapNames.values()) {
-            playableMaps.add(new Map(mapName.toString()));
+            playableMaps.add(new Map(mapName));
         }
     }
 
@@ -2345,7 +2333,7 @@ public class Game extends AbstractGame {
             for (Player player : players) {
                 if (player.getCharacter() != null && !player.getCharacter().isDead()) {
                     player.getCharacter().draw();
-                    Font gameFont = new Font(Fonts.DEJAVUSANS, 40);
+                    Font gameFont = new Font(Fonts.GEOMATRIX, 40);
                     gameFont.drawString(String.format("P%s", player.getId()), player.getCharacter().getPos().x,
                             player.getCharacter().getPos().y + 100);
                 }
@@ -2411,8 +2399,8 @@ public class Game extends AbstractGame {
     }
 
     public void drawShadowRender(String charName) {
-        double xOffset = -(currentMousePosition.x - Window.getWidth()/2d)/Window.getWidth()*100;
-        double yOffset = -(currentMousePosition.y - Window.getHeight()/2d)/Window.getHeight()*100;
+        double xOffset = -(currentMousePosition.x - Window.getWidth()/2d + 800)/Window.getWidth()*100;
+        double yOffset = -(currentMousePosition.y - Window.getHeight()/2d + 400)/Window.getHeight()*100;
          if (imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", charName)) != null) {
              ImagePoint shadow = new ImagePoint(String.format("res/Characters/%s/render.png", charName),
                      imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", charName)).getPos());
@@ -2432,7 +2420,7 @@ public class Game extends AbstractGame {
             }
         }
         else {
-            gameSettingsSingleton.setMap(new Map("Training Ground"));
+            gameSettingsSingleton.setMap(new Map(MapNames.TRAINING_GROUND));
             gameSettingsSingleton.getMap().generateMap();
         }
 
@@ -2466,7 +2454,7 @@ public class Game extends AbstractGame {
 
     public void updateSettings() {
         if (gameSettingsSingleton.getMap() == null) {
-            gameSettingsSingleton.setMap(new Map("Training Ground"));
+            gameSettingsSingleton.setMap(new Map(MapNames.TRAINING_GROUND));
             gameSettingsSingleton.getMap().generateMap();
         }
         spawnObstacles();

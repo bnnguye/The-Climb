@@ -1,3 +1,4 @@
+import Enums.MapNames;
 import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
@@ -16,8 +17,8 @@ public class Map {
 
     ArrayList<Tile> tiles = new ArrayList<>();
 
-    public Map(String name) {
-        this.name = name;
+    public Map(MapNames name) {
+        this.name = name.toString();
         this.mapPeek = new Image(String.format("res/maps/mapPeeks/%s.png", this.name));
 
     }

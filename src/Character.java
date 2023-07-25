@@ -32,7 +32,6 @@ public class Character {
         private double speedUpTimer = 0;
         private double minimisedTimer = 0;
         private double stunTimer = 0;
-        private boolean gojoAbility = false;
 
         private int lives = 1;
 
@@ -65,7 +64,7 @@ public class Character {
 
         public double getSpeed() {
                 double currentSpeed = this.speed;
-                if (speedDownTimer > 0 || gojoAbility) {
+                if (speedDownTimer > 0) {
                         currentSpeed = speed/5*3;
                         speedDownTimer--;
                 }
@@ -73,6 +72,7 @@ public class Character {
                         currentSpeed = speed*2;
                         speedUpTimer--;
                 }
+
                 return currentSpeed;
         }
 
@@ -165,7 +165,6 @@ public class Character {
                 specialAbilityBar = 0;
                 moving = false;
                 shield = false;
-                gojoAbility = false;
         }
 
         public String playLine() {
@@ -192,7 +191,6 @@ public class Character {
                 stunTimer = 0;
                 speedDownTimer = 0;
                 shield = true;
-                gojoAbility = false;
         }
         public boolean isMinimised() {return minimisedTimer > 0;}
         public boolean isDead() {
@@ -202,12 +200,6 @@ public class Character {
         public Rectangle getRectangle() {return new Rectangle(pos.x, pos.y, this.rectangle.right()- this.rectangle.left(), this.rectangle.bottom() - this.rectangle.top());}
 
         public boolean canMove() { return !(stunTimer > 0);
-        }
-
-        public void updateCharacter() {
-                if (stunTimer > 0) {
-                        stunTimer--;
-                }
         }
 
         public void slide() {
@@ -240,4 +232,10 @@ public class Character {
         public boolean isMoving() {return moving;}
         public boolean hasPowerUp() { return powerUp != null;}
         public void setPowerUp(PowerUp powerUp) { this.powerUp = powerUp;}
+        public void usePowerUp() {
+                if (powerUp != null) {
+                        powerUp.activate(this);
+                        powerUp = null;
+                }
+        }
 }

@@ -1,0 +1,10 @@
+            settingsSingleton.setGameState(6);
+            settingsSingleton.setGameMode(1);
+            settingsSingleton.setPlayers(2);
+            settingsSingleton.getPlayers().get(0).setCharacter(new Character(CharacterNames.MIKU));
+            settingsSingleton.getPlayers().get(0).setSideCharacter(new SideDio());
+            settingsSingleton.getPlayers().get(0).getCharacter().gainSpecialAbilityBar(10000);
+            settingsSingleton.getPlayers().get(1).setCharacter(new Character(CharacterNames.MAI));
+            settingsSingleton.getPlayers().get(1).setSideCharacter(new SideJotaro());
+            settingsSingleton.getPlayers().get(1).getCharacter().gainSpecialAbilityBar(10000);
+            gameSettingsSingleton.setMap(new Map(MapNames.Park));

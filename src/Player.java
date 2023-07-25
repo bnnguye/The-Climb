@@ -25,6 +25,7 @@ public class Player {
             controls.put("Down", Keys.S);
             controls.put("Right", Keys.D);
             controls.put("Primary", Keys.T);
+            controls.put("Secondary", Keys.R);
         }
         else if (id == 2) {
             controls.put("Up", Keys.UP);
@@ -32,6 +33,7 @@ public class Player {
             controls.put("Down", Keys.DOWN);
             controls.put("Right", Keys.RIGHT);
             controls.put("Primary", Keys.P);
+            controls.put("Secondary", Keys.O);
         }
         else if (id == 3) {
             controls.put("Up", Keys.Y);
@@ -39,6 +41,7 @@ public class Player {
             controls.put("Down", Keys.H);
             controls.put("Right", Keys.J);
             controls.put("Primary", Keys.Z);
+            controls.put("Secondary", Keys.X);
         }
         else if (id == 4) {
             controls.put("Up", Keys.O);
@@ -46,6 +49,7 @@ public class Player {
             controls.put("Down", Keys.L);
             controls.put("Right", Keys.SEMICOLON);
             controls.put("Primary", Keys.M);
+            controls.put("Secondary", Keys.N);
         }
     }
 
@@ -75,6 +79,13 @@ public class Player {
             }
             else if (input.isDown(controls.get("Down"))) {
                 character.move(Controls.S);
+            }
+            else if (input.wasPressed(controls.get("Primary"))) {
+                character.useSpecialAbility();
+                sideCharacter.activateAbility(this);
+            }
+            else if (input.wasPressed(controls.get("Secondary"))) {
+                character.usePowerUp();
             }
             else {
                 character.move(null);
