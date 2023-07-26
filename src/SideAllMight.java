@@ -3,7 +3,7 @@ import bagel.Image;
 import java.util.ArrayList;
 
 public class SideAllMight extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+    private final double frames = TimeLogger.getInstance().getRefreshRate();
 
     private String name = CharacterNames.ALLMIGHT;
     private String power = "ONE FOR ALL";
@@ -36,7 +36,7 @@ public class SideAllMight extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
+    public void activateAbility(Player user) {
         if(!this.activating) {
             this.activating = true;
             this.timer = 10 * frames;

@@ -8,7 +8,7 @@ public class EventGameFinished extends EventInterface {
 
     public EventGameFinished(String event) {
         int currentTime = TimeLogger.getInstance().getFrames();
-        this.frames = 4 * SettingsSingleton.getInstance().getRefreshRate() + currentTime;
+        this.frames = 4 * TimeLogger.getInstance().getRefreshRate() + currentTime;
     }
 
     public void process() {

@@ -1,3 +1,4 @@
+import Enums.TileType;
 import bagel.Image;
 import bagel.util.Point;
 
@@ -5,40 +6,32 @@ import java.util.ArrayList;
 
 public class TileSlowLeft extends Tile {
 
-    ArrayList<CollisionBlock> collisionBlocks = new ArrayList<>();
+    private final ArrayList<CollisionBlock> collisionBlocks = new ArrayList<>();
     private Point pos;
-    Image image = new Image("res/Tiles/SlowTile.png");
-    private String name = "SlowLeft";
-    String type = "Slow";
+    private final Image image;
+    private final TileType type = TileType.SLOWLEFT;
 
     TileSlowLeft(Point point) {
-        super(point);
         this.pos = point;
-        collisionBlocks.add(new CollisionBlock(point, 14, image.getHeight()));
+
         if ((java.time.LocalTime.now().getHour() > 18) || (java.time.LocalTime.now().getHour() < 4)) {
             image = new Image("res/Tiles/SlowTileNight.png");
         }
         else {
             image = new Image("res/Tiles/SlowTile.png");
         }
+
+        collisionBlocks.add(new CollisionBlock(point, 14, image.getHeight()));
     }
 
-    @Override
     public ArrayList<CollisionBlock> getCollisionBlocks() {
         return collisionBlocks;
     }
 
-    @Override
-    public void setCollisionBlocks(ArrayList<CollisionBlock> collisionBlocks) {
-        this.collisionBlocks = collisionBlocks;
-    }
-
-    @Override
     public Point getPos() {
         return this.pos;
     }
 
-    @Override
     public void setPos(Point pos) {
         this.pos = pos;
         for (CollisionBlock block: this.collisionBlocks) {
@@ -57,7 +50,5 @@ public class TileSlowLeft extends Tile {
     public Image getImage() {
         return this.image;
     }
-
-    public String getName() {return this.name;}
-    public String getType() {return this.type;}
+    public TileType getType() {return this.type;}
 }

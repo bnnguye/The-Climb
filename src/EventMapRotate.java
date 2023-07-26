@@ -9,7 +9,7 @@ public class EventMapRotate extends EventInterface {
     ArrayList<ImagePoint> mapImages;
 
     public EventMapRotate(String direction) {
-        int duration = SettingsSingleton.getInstance().getRefreshRate()/8;
+        int duration = TimeLogger.getInstance().getRefreshRate()/8;
         this.duration = duration;
         this.frames = duration + TimeLogger.getInstance().getFrames();
         this.event = direction;

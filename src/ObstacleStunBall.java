@@ -7,7 +7,7 @@ public class ObstacleStunBall extends Obstacle{
     Image image = new Image("res/obstacle/stunball.png");
     private Point pos;
     double speed = 2 + GameSettingsSingleton.getInstance().getMapSpeed();
-    double time = 1*SettingsSingleton.getInstance().getRefreshRate();
+    double time = 1*TimeLogger.getInstance().getRefreshRate();
 
     public ObstacleStunBall() {
         this.pos = new Point(Window.getWidth() * Math.random(), -200);

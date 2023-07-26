@@ -7,20 +7,20 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideDio extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+    private final double frames = TimeLogger.getInstance().getRefreshRate();
 
-    private String name = CharacterNames.DIO;
-    private String power = "THE WORLD";
-    private String desc = "Dio's stand \"The World\", is a supernatural \n" +
+    private final String name = CharacterNames.DIO;
+    private final String power = "THE WORLD";
+    private final String desc = "Dio's stand \"The World\", is a supernatural \n" +
             "ability, that allows the user to stop the tracks\n" +
             "of time for a few seconds, freezing all objects\n" +
             "on the entire battlefield. However, there exists a\n" +
             "special individual that rivals this demonic power.";
 
     boolean activating = false;
-    double timer;
+    boolean animating = false;
 
-    int shakeTimer;
+    double timer;
     ArrayList<PowerUp> powerUps;
 
     public String getName() {
@@ -41,10 +41,9 @@ public class SideDio extends SideCharacter{
         this.activating = false;
         this.animating = false;
         this.timer = 0;
-        shakeTimer = 500;
     }
 
-    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
+    public void activateAbility(Player user) {
         if (!this.activating) {
             MusicPlayer.getInstance().addMusic("music/sidecharacters/DIO BRANDO/DIO BRANDO.wav");
             timer = 5 * frames;

@@ -7,7 +7,7 @@ public class EventGameMode extends EventInterface {
     int duration;
 
     public EventGameMode() {
-        duration = SettingsSingleton.getInstance().getRefreshRate()/2;
+        duration = TimeLogger.getInstance().getRefreshRate()/2;
         this.frames = TimeLogger.getInstance().getFrames() + duration;
 
         if (imagePointManagerSingleton.get("res/menu/main/leftcover.png") == null) {
@@ -25,11 +25,9 @@ public class EventGameMode extends EventInterface {
         ImagePoint rightCover = imagePointManagerSingleton.get("res/menu/main/rightcover.png");
 
         if (leftCover != null) {
-            System.out.println("left");
             leftCover.move(offset, 0);
         }
         if (rightCover != null) {
-            System.out.println("right");
             rightCover.move(-offset, 0);
         }
 

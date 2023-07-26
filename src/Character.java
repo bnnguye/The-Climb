@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class Character {
 
-        private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+        private final double frames = TimeLogger.getInstance().getRefreshRate();
 
         private String name;
         private String lastName = "";

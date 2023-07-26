@@ -27,7 +27,7 @@ public class StringDisplay {
     }
 
     public StringDisplay(String name, boolean bool, FontSize fontSize, Point point) {
-        this.time = time*SettingsSingleton.getInstance().getRefreshRate();
+        this.time = time*TimeLogger.getInstance().getRefreshRate();
         this.name = name;
         this.fontSize = fontSize;
         this.permanent = bool;
@@ -43,7 +43,7 @@ public class StringDisplay {
     }
 
     public StringDisplay(String name, boolean bool, FontSize fontSize, Point point, String tag) {
-        this.time = time*SettingsSingleton.getInstance().getRefreshRate();
+        this.time = time*TimeLogger.getInstance().getRefreshRate();
         this.name = name;
         this.fontSize = fontSize;
         this.permanent = bool;

@@ -2,7 +2,7 @@ public class EventCharactersPicked extends EventInterface {
 
     public EventCharactersPicked(String event) {
         this.event = event;
-        this.frames = SettingsSingleton.getInstance().getRefreshRate() + TimeLogger.getInstance().getFrames();
+        this.frames = TimeLogger.getInstance().getRefreshRate() + TimeLogger.getInstance().getFrames();
     }
 
     public void process() {

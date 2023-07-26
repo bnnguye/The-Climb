@@ -41,7 +41,7 @@ public class EventCharacterPicked extends EventInterface {
         }
 
         int currentTime = TimeLogger.getInstance().getFrames();
-        int refreshRate = SettingsSingleton.getInstance().getRefreshRate();
+        int refreshRate = TimeLogger.getInstance().getRefreshRate();
 //        if (duration - (frames - currentTime) < 2*refreshRate) {
 //            if ((frames - currentTime) % 8 == 0) {
 //                charImage.setFlashing(true);

@@ -6,7 +6,7 @@ public class EventSideCharactersPicked extends EventInterface {
 
     public EventSideCharactersPicked(String event) {
         int currentTime = TimeLogger.getInstance().getFrames();
-        this.frames = currentTime + SettingsSingleton.getInstance().getRefreshRate();
+        this.frames = currentTime + TimeLogger.getInstance().getRefreshRate();
         this.event = event;
     }
 

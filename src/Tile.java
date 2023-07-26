@@ -1,40 +1,20 @@
+import Enums.TileType;
 import bagel.Image;
 import bagel.util.Point;
 
 import java.util.ArrayList;
 
 public abstract class Tile {
-    private String name= "";
-    String type = "";
-    ArrayList<CollisionBlock> collisionBlocks;
-    Image image;
-    private Point pos;
 
-    Tile(Point point) {
-        pos = point;
-    }
+    abstract Image getImage();
 
-    public Image getImage() {
-        return image;
-    }
+    abstract ArrayList<CollisionBlock> getCollisionBlocks();
 
-    public ArrayList<CollisionBlock> getCollisionBlocks() {
-        return collisionBlocks;
-    }
+    abstract Point getPos();
 
-    public void setCollisionBlocks(ArrayList<CollisionBlock> collisionBlocks) {
-    }
+    abstract void setPos(Point pos);
 
-    public Point getPos() {
-        return pos;
-    }
+    abstract void draw();
 
-    public void setPos(Point pos) {
-    }
-
-    public void draw() {
-    }
-
-    public String getName() { return name;}
-    public String getType() {return type;}
+    abstract TileType getType();
 }

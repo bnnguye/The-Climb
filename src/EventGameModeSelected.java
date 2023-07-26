@@ -6,7 +6,7 @@ public class EventGameModeSelected extends EventInterface {
     }
 
     public void process() {
-//        int refreshRate = SettingsSingleton.getInstance().getRefreshRate();
+//        int refreshRate = TimeLogger.getInstance().getRefreshRate();
 //        int currentTime = TimeLogger.getInstance().getFrames();
 //        if (frames - refreshRate > currentTime) {
 //            String storyMenuFileName = "res/menu/StoryMenu.png";

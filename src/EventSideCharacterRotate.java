@@ -11,7 +11,7 @@ public class EventSideCharacterRotate extends EventInterface{
     private final double calls;
 
     public EventSideCharacterRotate(String event) {
-        int duration = SettingsSingleton.getInstance().getRefreshRate()/8;
+        int duration = TimeLogger.getInstance().getRefreshRate()/8;
         this.frames = duration + TimeLogger.getInstance().getFrames();
         this.calls = duration;
         this.event = event;

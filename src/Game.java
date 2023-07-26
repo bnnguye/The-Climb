@@ -1,4 +1,5 @@
 import Enums.MapNames;
+import Enums.TileType;
 import bagel.*;
 import bagel.Window;
 import bagel.util.Colour;
@@ -11,19 +12,24 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+
 
 /** "The Climb" - A game created by Bill Nguyen **/
 
 public class Game extends AbstractGame {
 
+    private static final TimeLogger timeLogger = TimeLogger.getInstance();
     private static final SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
     private static final GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
     private static final StorySettingsSingleton storySettingsSingleton = StorySettingsSingleton.getInstance();
-    private static final TimeLogger timeLogger = TimeLogger.getInstance();
     private static final ButtonsSingleton buttonsSingleton = ButtonsSingleton.getInstance();
     private static final EventsListenerSingleton eventsListenerSingleton = EventsListenerSingleton.getInstance();
     private static final ImagePointManagerSingleton imagePointManagerSingleton = ImagePointManagerSingleton.getInstance();
     private static final MusicPlayer musicPlayer = MusicPlayer.getInstance();
+    private static final GameEntities gameEntities = GameEntities.getInstance();
     private static final StringDisplays stringDisplays = new StringDisplays();
 
     private final ArrayList<Button> buttons= buttonsSingleton.getButtons();
@@ -34,14 +40,12 @@ public class Game extends AbstractGame {
     private final EventsListenerSingleton.EventsListener eventsListener = eventsListenerSingleton.getEventsListener();
     private final ArrayList<Character> playableCharacters = new ArrayList<>();
     private final ArrayList<Character> allCharacters = new ArrayList<>();
-    private final ArrayList<Player> players= settingsSingleton.getPlayers();
-    private final ArrayList<Obstacle> obstacles= new ArrayList<>();
-    private final ArrayList<Obstacle> obstaclesToRemove= new ArrayList<>();
-    private final ArrayList<PowerUp> powerUps= new ArrayList<>();
-    private final ArrayList<PowerUp> powerUpsToRemove= new ArrayList<>();
+    private final ArrayList<Player> players = settingsSingleton.getPlayers();
+    private final ArrayList<Obstacle> obstacles = gameEntities.getObstacles();
+    private final ArrayList<PowerUp> powerUps = gameEntities.getPowerUps();
     private final ArrayList<SideCharacter> allSideCharacters= new ArrayList<>();
 
-    private final int frames = settingsSingleton.getRefreshRate();
+    private final int frames = TimeLogger.getInstance().getRefreshRate();
 
     private final Stats stats = new Stats();
     private final Dialogue dialogue = new Dialogue();
@@ -497,8 +501,8 @@ public class Game extends AbstractGame {
                     if (!gameSettingsSingleton.getMap().hasFinished()) {
                         if (!playingAnimation) {
                             musicPlayer.setMainVolume(musicPlayer.getMainVolume());
-                            spawnObstacles();
-                            spawnPowerUps();
+                            gameEntities.spawnObstacles();
+                            gameEntities.spawnPowerUps();
                         }
                     } else {
                         for (Player player : players) {
@@ -516,7 +520,7 @@ public class Game extends AbstractGame {
                         updateExp();
                         if (!theWorld) {
                             updatePlayerMovement(input);
-                            updateObjects();
+                            gameEntities.updateObjects();
                             if (!gameSettingsSingleton.getMap().hasFinished()) {
                                 gameSettingsSingleton.getMap().updateTiles(gameSettingsSingleton.getMapSpeed());
                             }
@@ -524,15 +528,17 @@ public class Game extends AbstractGame {
                             for (Player player : players) {
                                 if (player.getSideCharacter().isActivating() &&
                                         Arrays.asList(CharacterNames.JOTARO, CharacterNames.DIO).contains(player.getSideCharacter().getName())) {
-                                    player.moveCharacter(input);
+                                    if (input != null) {
+                                        player.moveCharacter(input);
+                                    }
                                 }
                             }
                         }
                     }
                     updateAbilities();
                     if (canInteract) {
-                        checkCollisionPowerUps();
-                        checkCollisionObstacles();
+                        gameEntities.checkCollisionPowerUps();
+                        gameEntities.checkCollisionObstacles();
                         checkCollisionTiles();
                     }
 
@@ -962,13 +968,13 @@ public class Game extends AbstractGame {
             }
             else {
                 if (input != null && input.wasPressed(Keys.NUM_1)) {
-                    addTileToCustomMap(tile1.getName());
+                    addTileToCustomMap(tile1.getType());
                 }
                 if (input != null && input.wasPressed(Keys.NUM_2)) {
-                    addTileToCustomMap(tile2.getName());
+                    addTileToCustomMap(tile2.getType());
                 }
                 if (input != null && input.wasPressed(Keys.NUM_3)) {
-                    addTileToCustomMap(tile3.getName());
+                    addTileToCustomMap(tile3.getType());
                 }
                 if (input != null && input.wasPressed(Keys.LEFT)) {
                     if (page > 0) {
@@ -1043,7 +1049,8 @@ public class Game extends AbstractGame {
                     dialogue.setPlayingDialogue(true);
                 }
                 if (obstacles.size() == 1) {
-                    if (getBoundingBoxOf(obstacles.get(0).getImage(), obstacles.get(0).getPos()).intersects(character.getRectangle())) {
+                    if (gameEntities.getBoundingBoxOf(obstacles.get(0).getImage(), obstacles.get(0).getPos()).intersects(
+                            character.getRectangle())) {
                         storySettingsSingleton.setDialogueInt(2);
                         dialogue.setPlayingDialogue(true);
                         obstacles.clear();
@@ -1073,10 +1080,10 @@ public class Game extends AbstractGame {
                 if (!gameSettingsSingleton.getMap().hasFinished()) {
                     gameSettingsSingleton.getMap().updateTiles(1);
                 }
-                checkCollisionPowerUps();
-                checkCollisionObstacles();
+                gameEntities.checkCollisionPowerUps();
+                gameEntities.checkCollisionObstacles();
                 updatePlayerMovement(input);
-                updateObjects();
+                gameEntities.updateObjects();
             }
             else {
                 if (dialogueInt == 1) {
@@ -1144,7 +1151,7 @@ public class Game extends AbstractGame {
         render();
 
         eventsListener.updateEvents();
-        updateTime();
+        timeLogger.updateFrames();
         canInteract = eventsListener.canInteract();
 
         // TEST GAME
@@ -1504,10 +1511,6 @@ public class Game extends AbstractGame {
         gameFont.draw(timeLogger.getDisplayTime(), Window.getWidth() - gameFont.getFont().getWidth(timeLogger.getDisplayTime()), 40);
     }
 
-    public void updateTime() {
-        timeLogger.updateFrames();
-    }
-
     public void addToPlayableCharacter(String name) {
         playableCharacters.add(new Character(name));
     }
@@ -1681,37 +1684,6 @@ public class Game extends AbstractGame {
         }
     }
 
-    public void saveCustomMap() {
-        String currentFile = "res/maps/mapData/Custom.txt";
-        File oldFile = new File(currentFile);
-        try {
-            oldFile.createNewFile();
-            FileWriter fw = new FileWriter(oldFile, false);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter pw = new PrintWriter(bw);
-
-            int count = 0;
-            for (Tile tile: customMapTiles) {
-                String tileName = tile.getName();
-                pw.print(tileName);
-                if (count > 2) {
-                    pw.print('\n');
-                    count = 0;
-                }
-                else {
-                    pw.print(",");
-                    count++;
-                }
-            }
-
-            pw.flush();
-            pw.close();
-            bw.close();
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public boolean canBePicked(Character character) {
         for (Player player : players) {
@@ -1768,6 +1740,38 @@ public class Game extends AbstractGame {
         }
     }
 
+    public void saveCustomMap() {
+        String currentFile = "res/maps/mapData/Custom.txt";
+        File oldFile = new File(currentFile);
+        try {
+            oldFile.createNewFile();
+            FileWriter fw = new FileWriter(oldFile, false);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+
+            int count = 0;
+            for (Tile tile: customMapTiles) {
+                String tileName = tile.getType().toString();
+                pw.print(tileName);
+                if (count > 2) {
+                    pw.print('\n');
+                    count = 0;
+                }
+                else {
+                    pw.print(",");
+                    count++;
+                }
+            }
+
+            pw.flush();
+            pw.close();
+            bw.close();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void checkCollisionTiles() {
         for (Player player: players) {
             if (!gameSettingsSingleton.getMap().hasFinished()) {
@@ -1777,12 +1781,15 @@ public class Game extends AbstractGame {
                 }
             }
             for (Tile tile : gameSettingsSingleton.getMap().getVisibleTiles()) {
-                Rectangle tileRectangle = getBoundingBoxOf(tile.getImage(), new Point(tile.getPos().x, tile.getPos().y));
-                if ((tile.getType().equals("Ice")) && (player.getCharacter().getRectangle().intersects(tileRectangle))) {
-                    player.getCharacter().onIce();
-                }
-                else if ((tile.getType().equals("Slow")) && (player.getCharacter().getRectangle().intersects(tileRectangle))) {
-                    player.getCharacter().onSlow();
+                Rectangle tileRectangle = new Rectangle(new Point(tile.getPos().x, tile.getPos().y),
+                        tile.getImage().getWidth(), tile.getImage().getHeight());
+                if (player.getCharacter().getRectangle().intersects(tileRectangle)) {
+                    if (tile.getType().toString().contains(TileType.ICE.toString())) {
+                        player.getCharacter().onIce();
+                    }
+                    else if (tile.getType().toString().contains(TileType.SLOW.toString())) {
+                        player.getCharacter().onSlow();
+                    }
                 }
                 if (tile.getCollisionBlocks().size() > 0) {
                     for (CollisionBlock block : tile.getCollisionBlocks()) {
@@ -1793,10 +1800,6 @@ public class Game extends AbstractGame {
                 }
             }
         }
-    }
-
-    public void reduceLive(Player player) {
-        player.getCharacter().reduceLive();
     }
 
     public void updatePlayerMovement(Input input) {
@@ -1818,168 +1821,49 @@ public class Game extends AbstractGame {
         }
     }
 
-    public void updateObjects() {
-        for (Obstacle obstacle : obstacles) {
-            obstacle.move();
-            if ((obstacle.getPos().y > Window.getHeight()) && (!obstaclesToRemove.contains(obstacle))) {
-                obstaclesToRemove.add(obstacle);
-            }
-        }
-        for (PowerUp powerUp : powerUps) {
-            powerUp.move();
-            if (powerUp.getPos().y > Window.getHeight()) {
-                powerUpsToRemove.add(powerUp);
-            }
-        }
-        for (Player player: players) {
-            if (player.getCharacter() != null) {
-                player.getCharacter().updateCharacter();
-            }
-        }
-    }
-
     public void updateAbilities() {
         for (Player player: players) {
             if (player.getSideCharacter().isActivating()) {
-                player.getSideCharacter().activateAbility(player, obstacles, powerUps);
+                player.getSideCharacter().activateAbility(player);
             }
         }
     }
 
-    public void checkCollisionObstacles() {
-        for (Obstacle obstacle: obstacles) {
-            Rectangle obstacleRectangle = getBoundingBoxOf(obstacle.getImage(), obstacle.getPos());
-            for (Player player : players) {
-                if (player.getCharacter().getRectangle().intersects(obstacleRectangle)) {
-                    if (!player.getCharacter().isDead()) {
-                        obstaclesToRemove.add(obstacle);
-                        if (player.getCharacter().hasShield()) {
-                            player.getCharacter().popShield();
-                        }
-                        else {
-                            if (obstacle.getName().equals("StunBall")) {
-                                player.getCharacter().gotStunned();
-                            }
-                            else {
-                                reduceLive(player);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        obstacles.removeAll(obstaclesToRemove);
-    }
-
-    public void checkCollisionPowerUps() {
-        for (PowerUp powerUp: powerUps) {
-            for (Player player : players) {
-                if (player.getCharacter().getRectangle().intersects(getBoundingBoxOf(powerUp.getImage(), powerUp.getPos()))) {
-                    if (!player.getCharacter().isDead()) {
-                        powerUp.gainPowerUp(player);
-                        powerUpsToRemove.add(powerUp);
-                        break;
-                    }
-                }
-            }
-        }
-        powerUps.removeAll(powerUpsToRemove);
-    }
-
-    public void spawnPowerUps() {
-        double spawnNo = Math.random()*5;
-        if (spawnNo < 1) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpeedUp")) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedUp")) {
-                    powerUps.add(new PowerUpSpeedUp());
-                }
-            }
-        }
-        else if (spawnNo < 2) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpeedDown")) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedDown")) {
-                    powerUps.add(new SpeedDown());
-                }
-            }
-        }
-        else if (spawnNo < 3) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Minimiser")) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Minimiser")) {
-                    powerUps.add(new PowerUpMinimiser());
-                }
-            }
-        }
-        else if (spawnNo < 4) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Shield")) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Shield")) {
-                    powerUps.add(new PowerUpShield());
-                }
-            }
-        }
-        else {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpecialAbilityPoints")) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpecialAbilityPoints")) {
-                    powerUps.add(new PowerUpSpecialAbilityPoints());
-                }
-            }
-        }
-    }
-
-    public void spawnObstacles() {
-        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isRocks()) {
-            if (Math.random() < ObstaclesSettingsSingleton.getInstance().getFrequency("Rock")) {
-                obstacles.add(new ObstacleRock());
-            }
-        }
-        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isBalls()) {
-            if (Math.random()
-                    < ObstaclesSettingsSingleton.getInstance().getFrequency("Ball")) {
-                obstacles.add(new ObstacleBall());
-            }
-        }
-        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isStunBalls()) {
-            if (Math.random()
-                    < ObstaclesSettingsSingleton.getInstance().getFrequency("StunBall")) {
-                obstacles.add(new ObstacleStunBall());
-            }
-        }
-    }
-
-    public void addTileToCustomMap(String line) {
+    public void addTileToCustomMap(TileType line) {
         int currentRow = customMapTiles.size()/4;
         int currentBlocksInRow = customMapTiles.size()%4;
         Point point = new Point(480 * currentBlocksInRow, 15*offset + 600 + -475 * currentRow);
 
         Tile tile = null;
         switch (line) {
-            case "Basic":
+            case BASIC:
                 tile = new TileBasic(point);
                 break;
-            case "BasicTop":
+            case BASICTOP:
                 tile = new TileBasicTop(point);
                 break;
-            case "BasicLeft":
+            case BASICLEFT:
                 tile = new TileBasicLeft(point);
                 break;
-            case "Ice":
+            case ICE:
                 tile = new TileIce(point);
                 break;
-            case "IceTop":
+            case ICETOP:
                 tile = new TileIceTop(point);
                 break;
-            case "IceLeft":
+            case ICELEFT:
                 tile = new TileIceLeft(point);
                 break;
-            case "Slow":
+            case SLOW:
                 tile = new TileSlow(point);
                 break;
-            case "SlowLeft":
+            case SLOWLEFT:
                 tile = new TileSlowLeft(point);
                 break;
-            case "SlowTop":
+            case SLOWTOP:
                 tile = new TileSlowTop(point);
                 break;
-            case "BasicSad":
+            case BASICSAD:
                 tile = new TileBasicSad(point);
                 break;
         }
@@ -2006,10 +1890,6 @@ public class Game extends AbstractGame {
                     spawnDivider * width, Window.getHeight() - 200));
             spawnDivider++;
         }
-    }
-
-    public Rectangle getBoundingBoxOf(Image image, Point pos) {
-        return image.getBoundingBoxAt(new Point(pos.x + image.getWidth()/2,  pos.y + image.getHeight()/2));
     }
 
     public void updateExp() {
@@ -2445,11 +2325,11 @@ public class Game extends AbstractGame {
         }
         updatePlayerMovement(input);
         checkCollisionTiles();
-        checkCollisionObstacles();
-        checkCollisionPowerUps();
-        updateObjects();
-        spawnPowerUps();
-        spawnObstacles();
+        gameEntities.checkCollisionObstacles();
+        gameEntities.checkCollisionPowerUps();
+        gameEntities.updateObjects();
+        gameEntities.spawnPowerUps();
+        gameEntities.spawnObstacles();
     }
 
     public void updateSettings() {
@@ -2457,9 +2337,9 @@ public class Game extends AbstractGame {
             gameSettingsSingleton.setMap(new Map(MapNames.TRAINING_GROUND));
             gameSettingsSingleton.getMap().generateMap();
         }
-        spawnObstacles();
-        spawnPowerUps();
-        updateObjects();
+        gameEntities.spawnObstacles();
+        gameEntities.spawnPowerUps();
+        gameEntities.updateObjects();
     }
 
     public void loadMapRender() {

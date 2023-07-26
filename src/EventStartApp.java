@@ -28,7 +28,7 @@ public class EventStartApp extends EventInterface {
 
     public void process() {
         double currentTime = TimeLogger.getInstance().getFrames();
-        double refreshRate = SettingsSingleton.getInstance().getRefreshRate();
+        double refreshRate = TimeLogger.getInstance().getRefreshRate();
         Drawing.drawRectangle(0,0, Window.getWidth(), Window.getHeight(), ColourPresets.WHITE.toColour());
         if (frames - currentTime <= 3.5 * refreshRate) {
             String string = "Made by Bill Nguyen";

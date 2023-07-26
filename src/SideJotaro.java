@@ -7,11 +7,11 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideJotaro extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+    private final double frames = TimeLogger.getInstance().getRefreshRate();
 
-    private String name = CharacterNames.JOTARO;
-    private String power = "STAR PLATINUM: THE WORLD";
-    private String desc = "Jotaro calls his Stand \"Star Platinum\" out and uses his ultimate\n" +
+    private final String name = CharacterNames.JOTARO;
+    private final String power = "STAR PLATINUM: THE WORLD";
+    private final String desc = "Jotaro calls his Stand \"Star Platinum\" out and uses his ultimate\n" +
             "ability, \"The World\", stopping time in its tracks for several seconds.\n" +
             "This unique ability was curated within the Kujo blood, however rumors\n" +
             "say a certain vampire has honed this ability as well,\n" +
@@ -19,6 +19,7 @@ public class SideJotaro extends SideCharacter{
 
 
     boolean activating = false;
+    boolean animating = false;
     double timer;
 
     ArrayList<PowerUp> powerUps;
@@ -41,7 +42,7 @@ public class SideJotaro extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
+    public void activateAbility(Player user) {
         if (!this.activating) {
             MusicPlayer.getInstance().addMusic(getSoundPath());
             timer = 5*frames;

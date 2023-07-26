@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Player {
-    private final int id;
+    static int id;
     private HashMap<String, Keys> controls = new HashMap<>();
     private PlayerStats playerStats = new PlayerStats();
 
@@ -55,41 +55,39 @@ public class Player {
 
     public void moveCharacter(Input input) {
         Point previousPos = character.getPos();
-        if (input != null) {
-            if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Left")))) {
-                character.move(Controls.WA);
-            }
-            else if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Right")))) {
-                character.move(Controls.WD);
-            }
-            else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Left")))) {
-                character.move(Controls.SA);
-            }
-            else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Right")))) {
-                character.move(Controls.SD);
-            }
-            else if (input.isDown(controls.get("Right"))) {
-                character.move(Controls.D);
-            }
-            else if (input.isDown(controls.get("Up"))) {
-                character.move(Controls.W);
-            }
-            else if (input.isDown(controls.get("Left"))) {
-                character.move(Controls.A);
-            }
-            else if (input.isDown(controls.get("Down"))) {
-                character.move(Controls.S);
-            }
-            else if (input.wasPressed(controls.get("Primary"))) {
-                character.useSpecialAbility();
-                sideCharacter.activateAbility(this);
-            }
-            else if (input.wasPressed(controls.get("Secondary"))) {
-                character.usePowerUp();
-            }
-            else {
-                character.move(null);
-            }
+        if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Left")))) {
+            character.move(Controls.WA);
+        }
+        else if ((input.isDown(controls.get("Up"))) && (input.isDown(controls.get("Right")))) {
+            character.move(Controls.WD);
+        }
+        else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Left")))) {
+            character.move(Controls.SA);
+        }
+        else if ((input.isDown(controls.get("Down"))) && (input.isDown(controls.get("Right")))) {
+            character.move(Controls.SD);
+        }
+        else if (input.isDown(controls.get("Right"))) {
+            character.move(Controls.D);
+        }
+        else if (input.isDown(controls.get("Up"))) {
+            character.move(Controls.W);
+        }
+        else if (input.isDown(controls.get("Left"))) {
+            character.move(Controls.A);
+        }
+        else if (input.isDown(controls.get("Down"))) {
+            character.move(Controls.S);
+        }
+        else if (input.wasPressed(controls.get("Primary"))) {
+            character.useSpecialAbility();
+            sideCharacter.activateAbility(this);
+        }
+        else if (input.wasPressed(controls.get("Secondary"))) {
+            character.usePowerUp();
+        }
+        else {
+            character.move(null);
         }
         playerStats.addDistance(previousPos.distanceTo(character.getPos()));
     }

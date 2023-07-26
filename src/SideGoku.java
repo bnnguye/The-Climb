@@ -4,11 +4,11 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideGoku extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+    private final double frames = TimeLogger.getInstance().getRefreshRate();
 
-    private String name = CharacterNames.GOKU;
-    private String power = "ULTRA INSTINCT";
-    private String desc = "Son Goku reaches his final evolution \"Ultra Instinct\", becoming ...TBA";
+    private final String name = CharacterNames.GOKU;
+    private final String power = "ULTRA INSTINCT";
+    private final String desc = "Son Goku reaches his final evolution \"Ultra Instinct\", becoming ...TBA";
 
     boolean activating = false;
     boolean animating = false;
@@ -32,7 +32,7 @@ public class SideGoku extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
+    public void activateAbility(Player user) {
         if(!this.activating) {
             MusicPlayer.getInstance().addMusic(getSoundPath());
             this.activating = true;
