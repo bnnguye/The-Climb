@@ -1145,6 +1145,7 @@ public class Game extends AbstractGame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        gameEntities.update();
         updateDisplayStrings();
         updateButtons();
         updateSliders(input);

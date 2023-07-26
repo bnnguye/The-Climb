@@ -4,15 +4,16 @@ import bagel.Window;
 import bagel.util.Point;
 import bagel.util.Rectangle;
 
-public class PowerUpShield extends PowerUp {
+public class PowerUpAbility extends PowerUp {
+    private final PowerUps name = PowerUps.ABILITY;
+    private final Image image = new Image("res/PowerUp/SpecialAbilityPoints.png");
 
-    private final PowerUps name = PowerUps.SHIELD;
-    private final Image image = new Image("res/PowerUp/Shield.png");
+
+    private final double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
     private double offset = 0;
-    private double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public void activate(Character character) {
-        character.shield();
+        character.gainSpecialAbilityBar(10);
     }
 
     public void draw() {
@@ -33,7 +34,6 @@ public class PowerUpShield extends PowerUp {
     public double getSpeed() {
         return speed;
     }
-
 
 
 }

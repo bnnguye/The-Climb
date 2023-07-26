@@ -11,11 +11,11 @@ public class GameEntities {
     private SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
     private GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
 
-    private ArrayList<PowerUp> powerUps = new ArrayList<>();
-    private ArrayList<Obstacle> obstacles = new ArrayList<>();
+    private final ArrayList<PowerUp> powerUps = new ArrayList<>();
+    private final ArrayList<Obstacle> obstacles = new ArrayList<>();
 
-    private ArrayList<PowerUp> powerUpsToRemove = new ArrayList<>();
-    private ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
+    private final ArrayList<PowerUp> powerUpsToRemove = new ArrayList<>();
+    private final ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
 
     public static synchronized GameEntities getInstance() {
         if (single_instance == null) {
@@ -101,7 +101,7 @@ public class GameEntities {
         else {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpecialAbilityPoints")) {
                 if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpecialAbilityPoints")) {
-                    powerUps.add(new PowerUpSpecialAbilityPoints());
+                    powerUps.add(new PowerUpAbility());
                 }
             }
         }
@@ -144,6 +144,11 @@ public class GameEntities {
 
     public Rectangle getBoundingBoxOf(Image image, Point pos) {
         return image.getBoundingBoxAt(new Point(pos.x + image.getWidth()/2,  pos.y + image.getHeight()/2));
+    }
+
+    public void update() {
+        powerUps.remove(powerUpsToRemove);
+        obstacles.remove(obstaclesToRemove);
     }
 
 }
