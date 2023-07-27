@@ -10,6 +10,10 @@ public abstract class PowerUp {
         pos = new Point(Window.getWidth() * Math.random(), -200);
     }
 
+    public PowerUp(Point pos) {
+        this.pos = pos;
+    }
+
     abstract void move();
     abstract Rectangle getRectangle();
     abstract void draw();

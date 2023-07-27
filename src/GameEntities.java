@@ -56,9 +56,10 @@ public class GameEntities {
     public void checkCollisionPowerUps() {
         for (PowerUp powerUp: powerUps) {
             for (Player player : settingsSingleton.getPlayers()) {
-                if (player.getCharacter().getRectangle().intersects(getBoundingBoxOf(powerUp.getImage(), powerUp.getPos()))) {
-                    if (!player.getCharacter().isDead()) {
-                        powerUp.gainPowerUp(player);
+                Character character = player.getCharacter();
+                if (character.getRectangle().intersects(powerUp.getRectangle())) {
+                    if (!character.isDead() && !character.hasPowerUp()) {
+                        character.setPowerUp(powerUp);
                         powerUpsToRemove.add(powerUp);
                         break;
                     }
@@ -69,7 +70,7 @@ public class GameEntities {
     }
 
     public void spawnPowerUps() {
-        double spawnNo = Math.random()*5;
+        double spawnNo = Math.random()*4;
         if (spawnNo < 1) {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpeedUp")) {
                 if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedUp")) {
@@ -78,20 +79,13 @@ public class GameEntities {
             }
         }
         else if (spawnNo < 2) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpeedDown")) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedDown")) {
-                    powerUps.add(new SpeedDown());
-                }
-            }
-        }
-        else if (spawnNo < 3) {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Minimiser")) {
                 if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Minimiser")) {
                     powerUps.add(new PowerUpMinimiser());
                 }
             }
         }
-        else if (spawnNo < 4) {
+        else if (spawnNo < 3) {
             if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Shield")) {
                 if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Shield")) {
                     powerUps.add(new PowerUpShield());
@@ -125,6 +119,7 @@ public class GameEntities {
                 obstacles.add(new ObstacleStunBall());
             }
         }
+        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle())
     }
 
     public void updateObjects() {
@@ -136,7 +131,7 @@ public class GameEntities {
         }
         for (PowerUp powerUp : powerUps) {
             powerUp.move();
-            if (powerUp.getPos().y > Window.getHeight()) {
+            if (powerUp.pos.y > Window.getHeight()) {
                 powerUpsToRemove.add(powerUp);
             }
         }

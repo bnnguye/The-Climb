@@ -8,6 +8,13 @@ public class PowerUpAbility extends PowerUp {
     private final PowerUps name = PowerUps.ABILITY;
     private final Image image = new Image("res/PowerUp/SpecialAbilityPoints.png");
 
+    public PowerUpAbility() {
+        super();
+    }
+
+    public PowerUpAbility(Point point) {
+        super(point);
+    }
 
     private final double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
     private double offset = 0;

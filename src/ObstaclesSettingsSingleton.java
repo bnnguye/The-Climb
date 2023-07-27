@@ -4,9 +4,11 @@ public class ObstaclesSettingsSingleton {
     private double rockFrequency = 0.003;
     private double ballFrequency = 0.003;
     private double stunBallFrequency = 0.003;
+    private double speedDownFrequency = 0.003;
     private boolean rocks = true;
     private boolean balls = true;
     private boolean stunBalls = true;
+    private boolean speedDown = true;
 
 
 
@@ -54,8 +56,11 @@ public class ObstaclesSettingsSingleton {
         else if (string.equalsIgnoreCase("Ball")) {
             return this.balls;
         }
-        if (string.equalsIgnoreCase("StunBall")) {
+        else if (string.equalsIgnoreCase("StunBall")) {
             return this.stunBalls;
+        }
+        else if (string.equalsIgnoreCase("SpeedDown")) {
+            return  this.speedDown;
         }
         return false;
     }
@@ -72,12 +77,4 @@ public class ObstaclesSettingsSingleton {
         }
         return 0;
     }
-
-    public boolean isRocks() {return this.rocks;}
-    public boolean isBalls() {return this.balls;}
-
-    public boolean isStunBalls() {
-        return this.stunBalls;
-    }
-
 }
