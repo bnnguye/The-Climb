@@ -1,3 +1,5 @@
+import Enums.Obstacles;
+import Enums.PowerUps;
 import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
@@ -72,29 +74,29 @@ public class GameEntities {
     public void spawnPowerUps() {
         double spawnNo = Math.random()*4;
         if (spawnNo < 1) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpeedUp")) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpeedUp")) {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.SPEEDUP) {
+                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.SPEEDUP) {
                     powerUps.add(new PowerUpSpeedUp());
                 }
             }
         }
         else if (spawnNo < 2) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Minimiser")) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Minimiser")) {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.MINIMISER) {
+                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.MINIMISER)) {
                     powerUps.add(new PowerUpMinimiser());
                 }
             }
         }
         else if (spawnNo < 3) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("Shield")) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("Shield")) {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.SHIELD) {
+                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.SHIELD)) {
                     powerUps.add(new PowerUpShield());
                 }
             }
         }
         else {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp("SpecialAbilityPoints")) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency("SpecialAbilityPoints")) {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.ABILITY) {
+                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.ABILITY)) {
                     powerUps.add(new PowerUpAbility());
                 }
             }
@@ -102,24 +104,29 @@ public class GameEntities {
     }
 
     public void spawnObstacles() {
-        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isRocks()) {
-            if (Math.random() < ObstaclesSettingsSingleton.getInstance().getFrequency("Rock")) {
+        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(Obstacles.ROCK)) {
+            if (Math.random() < ObstaclesSettingsSingleton.getInstance().getFrequency(Obstacles.ROCK)) {
                 obstacles.add(new ObstacleRock());
             }
         }
-        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isBalls()) {
+        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(Obstacles.BALL)) {
             if (Math.random()
-                    < ObstaclesSettingsSingleton.getInstance().getFrequency("Ball")) {
+                    < ObstaclesSettingsSingleton.getInstance().getFrequency(Obstacles.BALL)) {
                 obstacles.add(new ObstacleBall());
             }
         }
-        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isStunBalls()) {
+        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(Obstacles.STUNBALL)) {
             if (Math.random()
-                    < ObstaclesSettingsSingleton.getInstance().getFrequency("StunBall")) {
+                    < ObstaclesSettingsSingleton.getInstance().getFrequency(Obstacles.STUNBALL)) {
                 obstacles.add(new ObstacleStunBall());
             }
         }
-        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle())
+        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(Obstacles.SPEEDDOWN)) {
+            if (Math.random()
+                    < ObstaclesSettingsSingleton.getInstance().getFrequency(Obstacles.SPEEDDOWN)) {
+                obstacles.add(new ObstacleStunBall());
+            }
+        }
     }
 
     public void updateObjects() {

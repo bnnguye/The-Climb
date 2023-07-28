@@ -1,3 +1,4 @@
+import Enums.Obstacles;
 import bagel.*;
 import bagel.util.Colour;
 import bagel.util.Point;
@@ -9,7 +10,7 @@ public class SliderObstacle extends Slider {
     private final GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
 
     private final Image logo;
-    private final String name;
+    private final Obstacles name;
     private final String type = "Obstacle";
     private final Rectangle slide;
     private Point topLeft;
@@ -18,16 +19,12 @@ public class SliderObstacle extends Slider {
     private final double maxFrequency = 0.005;
     private final double maxBSize = 1220;
 
-    public SliderObstacle(String name, Point topLeft) {
-        this.name = name;
+    public SliderObstacle(Obstacles type, Point topLeft) {
+        this.name = type;
         this.topLeft = topLeft;
 
         this.logo = new Image(String.format("res/%s/%s.png", type, name));
         this.slide = new Rectangle(topLeft, maxBSize, logo.getHeight());
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void draw() {

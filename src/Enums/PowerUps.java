@@ -1,5 +1,5 @@
 package Enums;
 
 public enum PowerUps {
-    SPEEDUP, MINIMISER, SHIELD, ABILITY;
+    SPEEDUP, MINIMISER, SHIELD, ABILITY
 }

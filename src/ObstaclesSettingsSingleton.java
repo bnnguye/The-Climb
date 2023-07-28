@@ -1,3 +1,5 @@
+import Enums.Obstacles;
+
 public class ObstaclesSettingsSingleton {
 
     private static ObstaclesSettingsSingleton single_instance = null;
@@ -19,14 +21,14 @@ public class ObstaclesSettingsSingleton {
         return single_instance;
     }
 
-    public void changeFrequency(String obstacle, double frequency) {
-        if (obstacle.equalsIgnoreCase("Ball")) {
-            this.ballFrequency = frequency;
-        }
-        else if (obstacle.equalsIgnoreCase("Rock")) {
+    public void changeFrequency(Obstacles obstacle, double frequency) {
+        if (obstacle == Obstacles.ROCK) {
             this.rockFrequency = frequency;
         }
-        else if (obstacle.equalsIgnoreCase("StunBall")) {
+        else if (obstacle == Obstacles.BALL) {
+            this.ballFrequency = frequency;
+        }
+        else if (obstacle == Obstacles.STUNBALL) {
             this.stunBallFrequency = frequency;
         }
     }
@@ -49,31 +51,34 @@ public class ObstaclesSettingsSingleton {
         }
     }
 
-    public boolean isObstacle(String string) {
-        if (string.equalsIgnoreCase("Rock")) {
+    public boolean isObstacle(Obstacles type) {
+        if (type == Obstacles.ROCK) {
             return this.rocks;
         }
-        else if (string.equalsIgnoreCase("Ball")) {
+        else if (type == Obstacles.BALL) {
             return this.balls;
         }
-        else if (string.equalsIgnoreCase("StunBall")) {
+        else if (type == Obstacles.STUNBALL) {
             return this.stunBalls;
         }
-        else if (string.equalsIgnoreCase("SpeedDown")) {
+        else if (type == Obstacles.SPEEDDOWN) {
             return  this.speedDown;
         }
         return false;
     }
 
-    public double getFrequency(String obstacle) {
-        if (obstacle.equalsIgnoreCase("rock")) {
-            return this.rockFrequency;
+    public double getFrequency(Obstacles obstacle) {
+        if (obstacle == Obstacles.ROCK) {
+            return rockFrequency;
         }
-        else if (obstacle.equalsIgnoreCase("ball")) {
-            return this.ballFrequency;
+        else if (obstacle == Obstacles.BALL) {
+            return ballFrequency;
         }
-        else if (obstacle.equalsIgnoreCase("stunball")) {
-            return this.stunBallFrequency;
+        else if (obstacle == Obstacles.STUNBALL) {
+            return stunBallFrequency;
+        }
+        else if (obstacle == Obstacles.SPEEDDOWN) {
+            return speedDownFrequency;
         }
         return 0;
     }

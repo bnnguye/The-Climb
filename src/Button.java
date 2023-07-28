@@ -1,3 +1,4 @@
+import Enums.Obstacles;
 import bagel.*;
 import bagel.util.Colour;
 import bagel.util.Rectangle;
@@ -257,24 +258,21 @@ public class Button {
     public String getName() {
         return name;
     }
-    public void setNight() {
-        night = true;
-    }
 
     public void addPowerUpSliders() {
         sliders.addAll(Arrays.asList(
-                new SliderPowerUp("Minimiser", new Point(400, 300)),
+                new SliderPowerUp(PowerUps., new Point(400, 300)),
                 new SliderPowerUp("SpeedUp", new Point(400, 425)),
-                new SliderPowerUp("SpeedDown", new Point(400, 550)),
-                new SliderPowerUp("Shield", new Point(400, 675)),
-                new SliderPowerUp("SpecialAbilityPoints", new Point(400, 800))));
+                new SliderPowerUp("Shield", new Point(400, 550)),
+                new SliderPowerUp("SpecialAbilityPoints", new Point(400, 675))));
     }
 
     public void addObstacleSliders() {
         sliders.addAll(Arrays.asList(
-                new SliderObstacle("Ball", new Point(400, 300)),
-                new SliderObstacle("Rock", new Point(400, 400)),
-                new SliderObstacle("StunBall", new Point(400, 500))));
+                new SliderObstacle(Obstacles.BALL, new Point(400, 300)),
+                new SliderObstacle(Obstacles.ROCK, new Point(400, 400)),
+                new SliderObstacle(Obstacles.STUNBALL, new Point(400, 500)),
+                new SliderObstacle(Obstacles.SPEEDDOWN, new Point(400, 600))));
     }
 
     public Colour translucent(Colour colour) { return new Colour(colour.r, colour.g, colour.b, 0.5);
@@ -282,10 +280,6 @@ public class Button {
 
     public Colour opaque() {
         return new Colour(colour.r, colour.g, colour.b, 1);
-    }
-
-    public Point getPosition() {
-        return position;
     }
 
     public double getWidth() {
