@@ -14,9 +14,15 @@ public abstract class PowerUp {
         this.pos = pos;
     }
 
+    public void setPos(Point pos) {
+        this.pos = pos;
+    }
+    public Point getPos() {return pos;}
+
     abstract void move();
     abstract Rectangle getRectangle();
     abstract void draw();
+    abstract void draw(double x, double y); 
     abstract void activate(Character character);
 
     abstract void adjustOffset(double offset);

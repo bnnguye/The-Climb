@@ -31,23 +31,30 @@ public class ObstaclesSettingsSingleton {
         else if (obstacle == Obstacles.STUNBALL) {
             this.stunBallFrequency = frequency;
         }
+        else if (obstacle == Obstacles.SPEEDDOWN) {
+            this.speedDownFrequency = frequency;
+        }
     }
 
-    public void applySettings(boolean rocks, boolean balls, boolean stunBalls) {
-        this.rocks = rocks;
-        this.balls = balls;
-        this.stunBalls = stunBalls;
-    }
+//    public void applySettings(boolean... rocks) {
+//        this.rocks = rocks;
+//        this.balls = balls;
+//        this.stunBalls = stunBalls;
+//    }
 
-    public void toggle(String obstacle) {
-        if (obstacle.equalsIgnoreCase("Rock")) {
+    public void toggle(Obstacles obstacle) {
+        if (obstacle == Obstacles.ROCK) {
             this.rocks = !this.rocks;
         }
-        else if (obstacle.equalsIgnoreCase("Ball")) {
+        else if (obstacle == Obstacles.BALL) {
+
             this.balls = !this.balls;
         }
-        else if (obstacle.equalsIgnoreCase("StunBall")) {
+        else if (obstacle == Obstacles.STUNBALL) {
             this.stunBalls = !this.stunBalls;
+        }
+        else if (obstacle == Obstacles.SPEEDDOWN) {
+            this.speedDown = !this.speedDown;
         }
     }
 

@@ -29,6 +29,10 @@ public class PowerUpMinimiser extends PowerUp{
         image.drawFromTopLeft(pos.x, pos.y);
     }
 
+    public void draw(double x, double y) {
+        image.drawFromTopLeft(pos.x + x, pos.y + y);
+    }
+
     public void move() {
         this.pos = new Point(pos.x, pos.y + speed + offset);
     }

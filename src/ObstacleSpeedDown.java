@@ -1,3 +1,4 @@
+import Enums.Obstacles;
 import Enums.PowerUps;
 import bagel.Image;
 import bagel.Window;
@@ -5,31 +6,53 @@ import bagel.util.Point;
 import bagel.util.Rectangle;
 
 public class ObstacleSpeedDown extends Obstacle {
-    private final Image image = new Image("res/PowerUp/SpeedQuestion.png");
+    private final Obstacles type = Obstacles.SPEEDDOWN;
+    private final Image image = new Image("res/Obstacle/SpeedDown.png");
     private double offset = 0;
-    private double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
+    private final double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 
-    public void activate(Character character) {
-        character.shield();
+    public void move() {
+        this.pos = new Point(pos.x, pos.y + speed + offset);
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public Rectangle getBoundingBox() {
+        return new Rectangle(pos, image.getWidth(), image.getHeight());
+    }
+
+    public Point getPos() {
+        return pos;
+    }
+
+    public void setPos(Point point) {
+        this.pos = point;
+    }
+
+    public Obstacles getType() {
+        return type;
+    }
+
+    public void adjustOffset(double offset) {
+        this.offset += offset;
+    }
+
+    public double getSpeed() {
+        return speed;
     }
 
     public void draw() {
         image.drawFromTopLeft(pos.x, pos.y);
     }
 
-    public void move() {
-        this.pos = new Point(pos.x, pos.y + speed + offset);
+    public void draw(double x, double y) {
+        image.drawFromTopLeft(pos.x + x, pos.y + y);
     }
 
-    public Rectangle getRectangle() {
-        return new Rectangle(pos, image.getWidth(), image.getHeight());
-    }
-
-    public void adjustOffset(double offset) {
-        this.offset += offset;
-    }
-    public double getSpeed() {
-        return speed;
+    public void collide(Character character) {
+        character.speedDown();
     }
 
 }

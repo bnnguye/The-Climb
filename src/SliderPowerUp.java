@@ -29,15 +29,11 @@ public class SliderPowerUp extends Slider {
         this.slide = new Rectangle(topLeft, maxBSize, width);
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void draw() {
         double currentBar;
         double currentFrequency;
         Image sliderIndicator = new Image("res/misc/sliderIndicatorS.png");
-        currentFrequency = powerUpsSettingsSingleton.getFrequency(name);
+        currentFrequency = powerUpsSettingsSingleton.getFrequency(type);
         currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
         if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(type)) {
             Drawing.drawRectangle(topLeft.x, topLeft.y + logo.getHeight()/4, maxBSize, 50, new Colour(0, 0, 0, 0.5));

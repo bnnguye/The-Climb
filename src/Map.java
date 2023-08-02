@@ -36,7 +36,7 @@ public class Map {
     }
 
     public String getName() {
-        return name;
+        return name.replace("_", " ");
     }
 
     public void updateTiles(double shift) {

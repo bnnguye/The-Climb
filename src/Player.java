@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Player {
-    static int id;
-    private HashMap<String, Keys> controls = new HashMap<>();
-    private PlayerStats playerStats = new PlayerStats();
+    private final int id;
+    private final HashMap<String, Keys> controls = new HashMap<>();
+    private final PlayerStats playerStats = new PlayerStats();
 
     private Character character = null;
     private SideCharacter sideCharacter = null;
@@ -94,7 +94,7 @@ public class Player {
 
     public void moveComputer(ArrayList<Obstacle> obstacleArrayList) {}
 
-    public int getId() { return this.id;}
+    public int getId() { return id;}
     public Character getCharacter() {
         return this.character;
     }

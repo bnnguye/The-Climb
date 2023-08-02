@@ -32,21 +32,17 @@ public class GameEntities {
 
     public void checkCollisionObstacles() {
         for (Obstacle obstacle: obstacles) {
-            Rectangle obstacleRectangle = getBoundingBoxOf(obstacle.getImage(), obstacle.getPos());
+            Rectangle obstacleRectangle = obstacle.getBoundingBox();
             for (Player player : settingsSingleton.getPlayers()) {
-                if (player.getCharacter().getRectangle().intersects(obstacleRectangle)) {
-                    if (!player.getCharacter().isDead()) {
+                Character character = player.getCharacter();
+                if (character.getRectangle().intersects(obstacleRectangle)) {
+                    if (!character.isDead()) {
                         obstaclesToRemove.add(obstacle);
-                        if (player.getCharacter().hasShield()) {
-                            player.getCharacter().popShield();
+                        if (character.hasShield()) {
+                            character.popShield();
                         }
                         else {
-                            if (obstacle.getName().equals("StunBall")) {
-                                player.getCharacter().gotStunned();
-                            }
-                            else {
-                                player.getCharacter().reduceLive();
-                            }
+                            obstacle.collide(character);
                         }
                     }
                 }
@@ -74,28 +70,28 @@ public class GameEntities {
     public void spawnPowerUps() {
         double spawnNo = Math.random()*4;
         if (spawnNo < 1) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.SPEEDUP) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.SPEEDUP) {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.SPEEDUP)) {
+                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.SPEEDUP)) {
                     powerUps.add(new PowerUpSpeedUp());
                 }
             }
         }
         else if (spawnNo < 2) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.MINIMISER) {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.MINIMISER)) {
                 if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.MINIMISER)) {
                     powerUps.add(new PowerUpMinimiser());
                 }
             }
         }
         else if (spawnNo < 3) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.SHIELD) {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.SHIELD)) {
                 if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.SHIELD)) {
                     powerUps.add(new PowerUpShield());
                 }
             }
         }
         else {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.ABILITY) {
+            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.ABILITY)) {
                 if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.ABILITY)) {
                     powerUps.add(new PowerUpAbility());
                 }
@@ -124,7 +120,7 @@ public class GameEntities {
         if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(Obstacles.SPEEDDOWN)) {
             if (Math.random()
                     < ObstaclesSettingsSingleton.getInstance().getFrequency(Obstacles.SPEEDDOWN)) {
-                obstacles.add(new ObstacleStunBall());
+                obstacles.add(new ObstacleSpeedDown());
             }
         }
     }

@@ -6,7 +6,7 @@ import bagel.util.Rectangle;
 
 public class PowerUpAbility extends PowerUp {
     private final PowerUps name = PowerUps.ABILITY;
-    private final Image image = new Image("res/PowerUp/SpecialAbilityPoints.png");
+    private final Image image = new Image("res/PowerUp/ABILITY.png");
 
     public PowerUpAbility() {
         super();
@@ -25,6 +25,10 @@ public class PowerUpAbility extends PowerUp {
 
     public void draw() {
         image.drawFromTopLeft(pos.x, pos.y);
+    }
+
+    public void draw(double x, double y) {
+        image.drawFromTopLeft(pos.x + x, pos.y + y);
     }
 
     public void move() {

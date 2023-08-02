@@ -97,10 +97,11 @@ public class SideItachi extends SideCharacter{
             }
             for (PowerUp powerUp: powerUps) {
                 if (this.left) {
-                    powerUp.getImage().drawFromTopLeft(powerUp.getPos().x - 50, powerUp.getPos().y);
+                    powerUp.setPos(new Point(powerUp.getPos().x, powerUp.getPos().y - 50));
+                    powerUp.draw(-50,0);
                 }
                 else {
-                    powerUp.getImage().drawFromTopLeft(powerUp.getPos().x + 50, powerUp.getPos().y);
+                    powerUp.draw(50,0);
                 }
             }
             Colour red = new Colour(0.7, 0, 0, 0.5);

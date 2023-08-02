@@ -56,7 +56,7 @@ public class EventMapRotate extends EventInterface {
                 ImagePoint temp = imagePointManagerSingleton.get(mapImages.get(mapImages.size()-1));
                 imagePointManagerSingleton.remove(temp);
                 imagePointManagerSingleton.add(0, temp);
-                temp.setPos(Window.getWidth()/2 - (maxScale*temp.getWidth()/2) + (middleIndex * xOffset),
+                temp.setPos(-200 + Window.getWidth()/2 - (maxScale*temp.getWidth()/2) + (middleIndex * xOffset),
                         (Window.getHeight()/2 - (maxScale*temp.getHeight()/2) +
                                 -middleIndex * (spacing + (temp.getHeight()*temp.getScale()))));
 
@@ -71,7 +71,7 @@ public class EventMapRotate extends EventInterface {
                 ImagePoint temp = imagePointManagerSingleton.get(mapImages.get(0));
                 imagePointManagerSingleton.remove(temp);
                 imagePointManagerSingleton.add(temp);
-                temp.setPos(Window.getWidth()/2 - (maxScale*temp.getWidth()/2) + ((middleIndex-1) * xOffset),
+                temp.setPos(200 + Window.getWidth()/2 - (maxScale*temp.getWidth()/2) + ((middleIndex-1) * xOffset),
                         (Window.getHeight()/2 + (maxScale*temp.getHeight()/2) + spacing
                                 + (middleIndex-2) * (spacing + (temp.getHeight()*minScale))));
 

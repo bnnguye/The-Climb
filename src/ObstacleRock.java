@@ -1,29 +1,64 @@
+import Enums.Obstacles;
 import bagel.DrawOptions;
 import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
+import bagel.util.Rectangle;
 
 public class ObstacleRock extends Obstacle {
-    private String name = "Rock";
-    Image image = new Image("res/obstacle/Rock.png");
-    private Point pos;
-    double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
+    private final Obstacles type = Obstacles.ROCK;
+    private final Image image = new Image("res/obstacle/Rock.png");
+    private final double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
+
+    public ObstacleRock(Point point) {
+        this.pos = point;
+    }
 
     public ObstacleRock() {
-        this.pos = new Point(Window.getWidth() * Math.random(), -200);
+        super();
     }
-
-    public ObstacleRock(Point pos) {
-        this.pos = pos;
-    }
-
 
     public void move() {
-        pos = new Point(pos.x, pos.y + speed);
+        this.pos = new Point(pos.x, pos.y + speed + offset);
     }
 
-    public Image getImage() { return this.image;}
-    public Point getPos() {return this.pos;}
-    public void setPos(Point point) { this.pos = point;}
-    public String getName() {return this.name;}
+    public Image getImage() {
+        return image;
+    }
+
+    public Rectangle getBoundingBox() {
+        return new Rectangle(pos, image.getWidth(), image.getHeight());
+    }
+
+    public Point getPos() {
+        return pos;
+    }
+
+    public void setPos(Point point) {
+        this.pos = point;
+    }
+
+    public Obstacles getType() {
+        return type;
+    }
+
+    public void adjustOffset(double offset) {
+        this.offset += offset;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void draw() {
+        image.drawFromTopLeft(pos.x, pos.y);
+    }
+
+    public void draw(double x, double y) {
+        image.drawFromTopLeft(pos.x + x, pos.y + y);
+    }
+
+    public void collide(Character character) {
+        character.reduceLive();
+    }
 }

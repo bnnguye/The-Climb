@@ -1,4 +1,5 @@
 import Enums.Obstacles;
+import Enums.PowerUps;
 import bagel.*;
 import bagel.util.Colour;
 import bagel.util.Rectangle;
@@ -261,10 +262,10 @@ public class Button {
 
     public void addPowerUpSliders() {
         sliders.addAll(Arrays.asList(
-                new SliderPowerUp(PowerUps., new Point(400, 300)),
-                new SliderPowerUp("SpeedUp", new Point(400, 425)),
-                new SliderPowerUp("Shield", new Point(400, 550)),
-                new SliderPowerUp("SpecialAbilityPoints", new Point(400, 675))));
+                new SliderPowerUp(PowerUps.SPEEDUP, new Point(400, 300)),
+                new SliderPowerUp(PowerUps.MINIMISER, new Point(400, 425)),
+                new SliderPowerUp(PowerUps.SHIELD, new Point(400, 550)),
+                new SliderPowerUp(PowerUps.ABILITY, new Point(400, 675))));
     }
 
     public void addObstacleSliders() {

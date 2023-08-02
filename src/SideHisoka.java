@@ -66,7 +66,7 @@ public class SideHisoka extends SideCharacter{
                                     .intersects(bg.getImage().getBoundingBoxAt(new Point(bg.getPos().x -
                                             bg.getImage().getWidth()/2, bg.getPos().y - bg.getImage().getHeight()/2)))) {
                                 if (!player.getCharacter().isDead()) {
-                                    player.getCharacter().gotStunned();
+                                    player.getCharacter().stun();
                                     bgToRemove.add(bg);
                                 }
                             }
