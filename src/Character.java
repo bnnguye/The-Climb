@@ -178,7 +178,7 @@ public class Character {
                 speedDownTimer += 1;
         }
 
-        public boolean hasSpecialAbility() {return specialAbilityBar > 99;}
+        public boolean hasSpecialAbility() {return specialAbilityBar >= 100;}
         public void useSpecialAbility() {
                 specialAbilityBar = 0;
         }
@@ -196,7 +196,7 @@ public class Character {
         public boolean isDead() {
                 return lives <= 0;
         }
-        public void stun() {stunTimer = 3 * frames;}
+        public void stun(int frames) {stunTimer = frames;}
         public Rectangle getRectangle() {return new Rectangle(pos.x, pos.y, this.rectangle.right()- this.rectangle.left(), this.rectangle.bottom() - this.rectangle.top());}
 
         public boolean canMove() { return !(stunTimer > 0);
@@ -236,6 +236,12 @@ public class Character {
                 if (powerUp != null) {
                         powerUp.activate(this);
                         powerUp = null;
+                }
+        }
+
+        public void update() {
+                if (stunTimer > 0) {
+                        stunTimer--;
                 }
         }
 }

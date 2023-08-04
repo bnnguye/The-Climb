@@ -54,6 +54,6 @@ public class ObstacleStunBall extends Obstacle{
     }
 
     public void collide(Character character) {
-        character.stun();
+        character.stun(TimeLogger.getInstance().getFrames());
     }
 }

@@ -1,4 +1,5 @@
 import Enums.MapNames;
+import Enums.Obstacles;
 import Enums.TileType;
 import bagel.*;
 import bagel.Window;
@@ -95,7 +96,7 @@ public class Game extends AbstractGame {
 
         loadCustomMapConfigs();
 
-        eventsListener.addEvent(new EventStartApp(5 * frames / 2, "Game initiated"));
+//        eventsListener.addEvent(new EventStartApp(5 * frames / 2, "Game initiated"));
     }
 
     @Override
@@ -378,7 +379,8 @@ public class Game extends AbstractGame {
                         break;
                     }
                 }
-                if (picked) {
+                if (picked && !eventsListener.contains(EventSideCharacterPicked.class) &&
+                        !eventsListener.contains(EventSideCharactersPicked.class)) {
                     eventsListener.addEvent(new EventSideCharactersPicked("All players have picked a side character"));
                 }
 
@@ -1050,7 +1052,7 @@ public class Game extends AbstractGame {
                     dialogue.setPlayingDialogue(true);
                 }
                 if (obstacles.size() == 1) {
-                    if (gameEntities.getBoundingBoxOf(obstacles.get(0).getImage(), obstacles.get(0).getPos()).intersects(
+                    if (obstacles.get(0).getBoundingBox().intersects(
                             character.getRectangle())) {
                         storySettingsSingleton.setDialogueInt(2);
                         dialogue.setPlayingDialogue(true);
@@ -1146,7 +1148,6 @@ public class Game extends AbstractGame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        gameEntities.update();
         updateDisplayStrings();
         updateButtons();
         updateSliders(input);
@@ -1162,7 +1163,13 @@ public class Game extends AbstractGame {
             settingsSingleton.setGameMode(1);
             settingsSingleton.setPlayers(2);
             players.get(0).setCharacter(new Character(CharacterNames.MIKU));
+            players.get(0).setSideCharacter(new SideJotaro());
+            players.get(0).getCharacter().setPowerUp(new PowerUpMinimiser());
             players.get(1).setCharacter(new Character(CharacterNames.NAO));
+            players.get(1).setSideCharacter(new SideHisoka());
+            gameSettingsSingleton.setMapSpeed(0);
+            gameSettingsSingleton.getObstaclesSettingsSingleton().toggle(Obstacles.BALL);
+            gameSettingsSingleton.getObstaclesSettingsSingleton().toggle(Obstacles.ROCK);
         }
     }
 
@@ -1729,12 +1736,15 @@ public class Game extends AbstractGame {
 
     public void pickSideCharacter(Player player, SideCharacter character) {
         if (canBePicked(character)) {
-            eventsListener.addEvent(new EventSideCharacterPicked(new Music(character.getSoundPath(), 0).getFrameLength(), String.format("Player %d picked: %s", player.getId(), character.getName())));
+            String selectFile = String.format("music/sideCharacters/%s/select.wav", character.getName());
+            Music select = new Music(selectFile, musicPlayer.getEffectVolume());
+            eventsListener.addEvent(new EventSideCharacterPicked(select.getFrameLength(),
+                    String.format("Player %d picked: %s", player.getId(), character.getName())));
             player.setSideCharacter(character);
-            if (!musicPlayer.contains(character.getSoundPath())) {
-                musicPlayer.addMusic(character.getSoundPath());
+            if (!musicPlayer.contains(selectFile)) {
+                musicPlayer.addMusic(selectFile);
             } else {
-                musicPlayer.restart(character.getSoundPath());
+                musicPlayer.restart(selectFile);
             }
         }
     }
@@ -1824,6 +1834,7 @@ public class Game extends AbstractGame {
                     character.slide();
                 }
             }
+            player.getCharacter().update();
         }
     }
 
@@ -2157,7 +2168,7 @@ public class Game extends AbstractGame {
                 buffs++;
             }
             if (player.getCharacter().isSpedDown()) {
-                ImagePoint slowIcon = new ImagePoint("res/PowerUp/SpeedDown.png", new Point(0,0));
+                ImagePoint slowIcon = new ImagePoint("res/obstacle/SpeedDown.png", new Point(0,0));
                 slowIcon.setPos(new Point(characterDisplay.getPos().x + buffs * 50,
                         Window.getHeight() - slowIcon.getHeight()));
                 slowIcon.draw();

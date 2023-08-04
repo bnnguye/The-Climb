@@ -16,9 +16,6 @@ public class GameEntities {
     private final ArrayList<PowerUp> powerUps = new ArrayList<>();
     private final ArrayList<Obstacle> obstacles = new ArrayList<>();
 
-    private final ArrayList<PowerUp> powerUpsToRemove = new ArrayList<>();
-    private final ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
-
     public static synchronized GameEntities getInstance() {
         if (single_instance == null) {
             single_instance = new GameEntities();
@@ -31,11 +28,11 @@ public class GameEntities {
 
 
     public void checkCollisionObstacles() {
+        ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
         for (Obstacle obstacle: obstacles) {
-            Rectangle obstacleRectangle = obstacle.getBoundingBox();
             for (Player player : settingsSingleton.getPlayers()) {
                 Character character = player.getCharacter();
-                if (character.getRectangle().intersects(obstacleRectangle)) {
+                if (character.getRectangle().intersects(obstacle.getBoundingBox())) {
                     if (!character.isDead()) {
                         obstaclesToRemove.add(obstacle);
                         if (character.hasShield()) {
@@ -52,16 +49,22 @@ public class GameEntities {
     }
 
     public void checkCollisionPowerUps() {
+        ArrayList<PowerUp> powerUpsToRemove = new ArrayList<>();
         for (PowerUp powerUp: powerUps) {
             for (Player player : settingsSingleton.getPlayers()) {
                 Character character = player.getCharacter();
                 if (character.getRectangle().intersects(powerUp.getRectangle())) {
                     if (!character.isDead() && !character.hasPowerUp()) {
-                        character.setPowerUp(powerUp);
-                        powerUpsToRemove.add(powerUp);
+                        if (powerUp.getClass() == PowerUpAbility.class) {
+                            powerUp.activate(character);
+                        }
+                        else {
+                            character.setPowerUp(powerUp);
+                        }
                         break;
                     }
                 }
+                powerUpsToRemove.add(powerUp);
             }
         }
         powerUps.removeAll(powerUpsToRemove);
@@ -126,6 +129,9 @@ public class GameEntities {
     }
 
     public void updateObjects() {
+        ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
+        ArrayList<PowerUp> powerUpsToRemove = new ArrayList<>();
+
         for (Obstacle obstacle : obstacles) {
             obstacle.move();
             if ((obstacle.getPos().y > Window.getHeight()) && (!obstaclesToRemove.contains(obstacle))) {
@@ -138,15 +144,7 @@ public class GameEntities {
                 powerUpsToRemove.add(powerUp);
             }
         }
+        obstacles.removeAll(obstaclesToRemove);
+        powerUps.removeAll(powerUpsToRemove);
     }
-
-    public Rectangle getBoundingBoxOf(Image image, Point pos) {
-        return image.getBoundingBoxAt(new Point(pos.x + image.getWidth()/2,  pos.y + image.getHeight()/2));
-    }
-
-    public void update() {
-        powerUps.remove(powerUpsToRemove);
-        obstacles.remove(obstaclesToRemove);
-    }
-
 }

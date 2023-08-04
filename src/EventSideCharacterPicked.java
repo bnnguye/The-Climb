@@ -10,6 +10,7 @@ public class EventSideCharacterPicked extends EventInterface {
     private boolean canInteract = true;
 
     public EventSideCharacterPicked(int frames, String event) {
+        System.out.println(frames/144);
         int currentTime = TimeLogger.getInstance().getFrames();
         this.frames = frames + currentTime;
         this.event = event;

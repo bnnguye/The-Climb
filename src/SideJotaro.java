@@ -22,7 +22,7 @@ public class SideJotaro extends SideCharacter{
     boolean animating = false;
     double timer;
 
-    ArrayList<PowerUp> powerUps;
+    ArrayList<PowerUp> powerUps = GameEntities.getInstance().getPowerUps();
 
     public String getName() {
         return this.name;

@@ -1,15 +1,15 @@
 Game
-Amount of times the game has been opened: 159
+Amount of times the game has been opened: 161
 Amount of games played in VS Mode: 0
-Amount of games played in Story Mode: 210
+Amount of games played in Story Mode: 216
 CHIZURU MIZUHARA
-Played: 25
-Won: 13
+Played: 30
+Won: 17
 ZERO TWO
-Played: 25
-Won: 12
+Played: 30
+Won: 13
 MIKU NAKANO
-Played: 132
+Played: 133
 Won: 33
 MAI SAKURAJIMA
 Played: 129
@@ -18,8 +18,8 @@ NINO NAKANO
 Played: 30
 Won: 22
 NAO TOMORI
-Played: 28
-Won: 12
+Played: 29
+Won: 13
 RAPHTALIA
 Played: 9
 Won: 9

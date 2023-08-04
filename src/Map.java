@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Map {
-    private String name;
+    private final String name;
     Image mapPeek;
     double height;
     double currentHeight;
