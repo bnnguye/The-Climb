@@ -1,3 +1,4 @@
+import Enums.PowerUps;
 import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
@@ -14,6 +15,7 @@ public abstract class PowerUp {
         this.pos = pos;
     }
 
+    abstract PowerUps getType();
     public void setPos(Point pos) {
         this.pos = pos;
     }

@@ -5,8 +5,8 @@ import bagel.util.Point;
 import bagel.util.Rectangle;
 
 public class PowerUpAbility extends PowerUp {
-    private final PowerUps name = PowerUps.ABILITY;
-    private final Image image = new Image("res/PowerUp/ABILITY.png");
+    private final PowerUps type = PowerUps.ABILITY;
+    private final Image image = new Image("res/PowerUps/ABILITY.png");
 
     public PowerUpAbility() {
         super();
@@ -15,6 +15,8 @@ public class PowerUpAbility extends PowerUp {
     public PowerUpAbility(Point point) {
         super(point);
     }
+
+    public PowerUps getType() { return type; }
 
     private final double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
     private double offset = 0;

@@ -1,3 +1,4 @@
+import Enums.PowerUps;
 import bagel.DrawOptions;
 import bagel.Image;
 import bagel.Window;
@@ -231,6 +232,7 @@ public class Character {
         public int getLives() {return this.lives;}
         public boolean isMoving() {return moving;}
         public boolean hasPowerUp() { return powerUp != null;}
+        public PowerUp getPowerUp() {return powerUp;}
         public void setPowerUp(PowerUp powerUp) { this.powerUp = powerUp;}
         public void usePowerUp() {
                 if (powerUp != null) {

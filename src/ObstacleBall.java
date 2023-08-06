@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class ObstacleBall extends Obstacle {
     private final Obstacles type = Obstacles.BALL;
-    private final Image image = new Image("res/obstacle/ball.png");
+    private final Image image = new Image("res/obstacles/ball.png");
     private final double speed = 6 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public ObstacleBall() {

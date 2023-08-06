@@ -5,7 +5,7 @@
 //
 //public class PowerUpLuffy extends PowerUp {
 //    private final PowerUps name = PowerUps.LUFFYSARMS;
-//    private final Image image = new Image("res/PowerUp/Luffy.png");
+//    private final Image image = new Image("res/PowerUps/Luffy.png");
 //    private double offset = 0;
 //    private double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 //

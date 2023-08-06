@@ -6,7 +6,7 @@ import bagel.util.Rectangle;
 
 public class ObstacleStunBall extends Obstacle{
     private final Obstacles type = Obstacles.STUNBALL;
-    private final Image image = new Image("res/obstacle/stunball.png");
+    private final Image image = new Image("res/obstacles/stunball.png");
     private final double speed = 2 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public ObstacleStunBall() {
@@ -54,6 +54,6 @@ public class ObstacleStunBall extends Obstacle{
     }
 
     public void collide(Character character) {
-        character.stun(TimeLogger.getInstance().getFrames());
+        character.stun(TimeLogger.getInstance().getRefreshRate());
     }
 }

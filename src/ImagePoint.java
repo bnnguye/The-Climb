@@ -10,6 +10,7 @@ import bagel.util.Point;
 public class ImagePoint {
     private String filename;
     private String tag = null;
+    private int priority = 0;
     private Point pos;
     private DrawOptions DO;
     private double scale = 1;

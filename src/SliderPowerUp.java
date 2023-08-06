@@ -24,7 +24,7 @@ public class SliderPowerUp extends Slider {
 
     public SliderPowerUp(PowerUps type, Point topLeft) {
         this.type = type;
-        this.logo = new Image(String.format("res/PowerUp/%s.png", type.toString()));
+        this.logo = new Image(String.format("res/PowerUps/%s.png", type.toString()));
         this.topLeft = topLeft;
         this.slide = new Rectangle(topLeft, maxBSize, width);
     }

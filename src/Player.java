@@ -24,16 +24,16 @@ public class Player {
             controls.put("Left", Keys.A);
             controls.put("Down", Keys.S);
             controls.put("Right", Keys.D);
-            controls.put("Primary", Keys.T);
-            controls.put("Secondary", Keys.R);
+            controls.put("Primary", Keys.R);
+            controls.put("Secondary", Keys.T);
         }
         else if (id == 2) {
             controls.put("Up", Keys.UP);
             controls.put("Left", Keys.LEFT);
             controls.put("Down", Keys.DOWN);
             controls.put("Right", Keys.RIGHT);
-            controls.put("Primary", Keys.P);
-            controls.put("Secondary", Keys.O);
+            controls.put("Primary", Keys.O);
+            controls.put("Secondary", Keys.P);
         }
         else if (id == 3) {
             controls.put("Up", Keys.Y);

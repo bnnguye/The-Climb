@@ -7,7 +7,7 @@ import bagel.util.Rectangle;
 
 public class ObstacleRock extends Obstacle {
     private final Obstacles type = Obstacles.ROCK;
-    private final Image image = new Image("res/obstacle/Rock.png");
+    private final Image image = new Image("res/obstacles/Rock.png");
     private final double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public ObstacleRock(Point point) {

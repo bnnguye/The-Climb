@@ -7,7 +7,7 @@ import bagel.util.Rectangle;
 
 public class ObstacleSpeedDown extends Obstacle {
     private final Obstacles type = Obstacles.SPEEDDOWN;
-    private final Image image = new Image("res/Obstacle/SpeedDown.png");
+    private final Image image = new Image("res/Obstacles/SpeedDown.png");
     private double offset = 0;
     private final double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 

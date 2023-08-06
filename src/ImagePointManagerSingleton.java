@@ -1,9 +1,11 @@
 import bagel.util.Point;
+import bagel.util.Rectangle;
 
 import java.util.ArrayList;
 
 public class ImagePointManagerSingleton {
     private static ImagePointManagerSingleton single_instance = null;
+    private ArrayList<Rectangle> rectangles = new ArrayList<>();
     private ArrayList<ImagePoint> images = new ArrayList<>();
     private static ImagePoint currentBackground = null;
 

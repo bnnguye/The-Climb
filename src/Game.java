@@ -471,6 +471,7 @@ public class Game extends AbstractGame {
         else if (settingsSingleton.getGameState() == 6) {
             if (settingsSingleton.getGameMode() == 1) {
                 if (!settingsSingleton.getGameStateString().equals("Game")) {
+                    imagePointManagerSingleton.getImages().clear();
                     gameSettingsSingleton.getMap().generateMap();
                     if (settingsSingleton.getPlayers().size() == 1) {
                         System.out.println("Loaded computer!");
@@ -511,8 +512,8 @@ public class Game extends AbstractGame {
                         for (Player player : players) {
                             if (player.getCharacter().getPos().distanceTo(
                                     new Point(player.getCharacter().getPos().x, 0)) < 10) {
-                                settingsSingleton.setGameState(7);
                                 settingsSingleton.setWinner(player);
+                                eventsListener.addEvent(new EventGameFinished());
                                 settingsSingleton.setGameStateString("Game Finished");
                                 break;
                             }
@@ -553,7 +554,7 @@ public class Game extends AbstractGame {
                     }
                     if (settingsSingleton.getPlayers().size() - deathCounter < 2) {
                         settingsSingleton.setGameStateString("Game Finished");
-                        settingsSingleton.setGameState(7);
+                        eventsListener.addEvent(new EventGameFinished());
                         for (Player player : players) {
                             if (!player.getCharacter().isDead()) {
                                 settingsSingleton.setWinner(player);
@@ -1377,6 +1378,7 @@ public class Game extends AbstractGame {
                     new Font(Fonts.TITANONE, 60).drawString(String.format("SCORE: %.0f", winner.getPlayerStats().getPoints()), Window.getWidth()/2d, Window.getHeight()*3/4d);
                 }
             }
+            imagePointManagerSingleton.draw();
             drawButtons();
         }
         else if (settingsSingleton.getGameState() == 8) {
@@ -1482,7 +1484,7 @@ public class Game extends AbstractGame {
                 if (dialogueInt == 3) {
                     if (dialogue.getLineNo() == 11) {
                         DO.setScale(2.5,2.5);
-                        new Image("res/PowerUp/Shield.png").draw(Window.getWidth()/2.0, Window.getHeight()/2.0, DO);
+                        new Image("res/PowerUps/Shield.png").draw(Window.getWidth()/2.0, Window.getHeight()/2.0, DO);
                         DO.setScale(1,1);
                     }
                 }
@@ -1833,8 +1835,8 @@ public class Game extends AbstractGame {
                 if (gameSettingsSingleton.getMap().hasUpdated() && !gameSettingsSingleton.getMap().hasFinished() && !character.isMoving()) {
                     character.slide();
                 }
+                player.getCharacter().update();
             }
-            player.getCharacter().update();
         }
     }
 
@@ -2129,18 +2131,29 @@ public class Game extends AbstractGame {
         ArrayList<Player> players = settingsSingleton.getPlayers();
         int playerIndex = 0;
         for (Player player: players) {
+            Character character = player.getCharacter();
             ImagePoint characterDisplay = new ImagePoint(String.format("res/characters/%s/Peek.png",
-                    player.getCharacter().getFullName()), new Point(0,0));
-            characterDisplay.setPos(playerIndex*Window.getWidth()/(double) (players.size()),
-                    Window.getHeight() - (characterDisplay.getHeight()));
-            if (player.getCharacter().getSpecialAbilityBar() >= 100) {
+                    character.getFullName()), new Point(0,0));
+            if (character.getSpecialAbilityBar() >= 100) {
                 new FontSize(Fonts.TITANONE, 30).getFont().drawString("Power Ready!",
                         characterDisplay.getPos().x, characterDisplay.getPos().y,
                         new DrawOptions().setBlendColour(247d/255, 251d/255, 142d/255));
             }
-            Image border = new Image("res/misc/Selected.png");
-            border.drawFromTopLeft(characterDisplay.getPos().x, Window.getHeight() - border.getHeight());
+            ImagePoint bigBorder = new ImagePoint("res/misc/Selected.png", new Point(0,0));
+            ImagePoint smallBorder = new ImagePoint("res/misc/Selected.png", new Point(0,0));
+            smallBorder.setScale(0.375);
+            bigBorder.setPos((playerIndex + 1) * 185 + (playerIndex) * bigBorder.getWidth(), Window.getHeight() -
+                    bigBorder.getHeight());
+            smallBorder.setPos((playerIndex +1 ) * 185 + (playerIndex) * bigBorder.getWidth() + 50, Window.getHeight() -
+                    smallBorder.getHeight()*smallBorder.getScale());
+            characterDisplay.setPos(bigBorder.getPos().x, bigBorder.getPos().y);
+            bigBorder.draw();
+            smallBorder.draw();
             characterDisplay.draw();
+            if (character.hasPowerUp()) {
+                new Image(String.format("res/powerUps/%s.png", character.getPowerUp().getType())).
+                        drawFromTopLeft(smallBorder.getPos().x, smallBorder.getPos().y);
+            }
             new FontSize(Fonts.TITANONE, 50).draw(String.format("%.0f", player.getPlayerStats().getPoints()),
                     characterDisplay.getPos().x, Window.getHeight() - 25);
 
@@ -2154,21 +2167,21 @@ public class Game extends AbstractGame {
                 buffs++;
             }
             if (player.getCharacter().isMinimised()) {
-                ImagePoint miniIcon = new ImagePoint("res/PowerUp/Minimiser.png", new Point(0,0));
+                ImagePoint miniIcon = new ImagePoint("res/PowerUps/Minimiser.png", new Point(0,0));
                 miniIcon.setPos(new Point(characterDisplay.getPos().x + buffs * 50,
                         Window.getHeight() - miniIcon.getHeight()));
                 miniIcon.draw();
                 buffs++;
             }
             if (player.getCharacter().isSpedUp()) {
-                ImagePoint speedIcon = new ImagePoint("res/PowerUp/SpeedUp.png", new Point(0,0));
+                ImagePoint speedIcon = new ImagePoint("res/PowerUps/SpeedUp.png", new Point(0,0));
                 speedIcon.setPos(new Point(characterDisplay.getPos().x + buffs * 50,
                         Window.getHeight() - speedIcon.getHeight()));
                 speedIcon.draw();
                 buffs++;
             }
             if (player.getCharacter().isSpedDown()) {
-                ImagePoint slowIcon = new ImagePoint("res/obstacle/SpeedDown.png", new Point(0,0));
+                ImagePoint slowIcon = new ImagePoint("res/obstacles/SpeedDown.png", new Point(0,0));
                 slowIcon.setPos(new Point(characterDisplay.getPos().x + buffs * 50,
                         Window.getHeight() - slowIcon.getHeight()));
                 slowIcon.draw();

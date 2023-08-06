@@ -6,8 +6,8 @@ import bagel.util.Rectangle;
 
 public class PowerUpShield extends PowerUp {
 
-    private final PowerUps name = PowerUps.SHIELD;
-    private final Image image = new Image("res/PowerUp/Shield.png");
+    private final PowerUps type = PowerUps.SHIELD;
+    private final Image image = new Image("res/PowerUps/Shield.png");
     private double offset = 0;
     private double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 
@@ -18,6 +18,8 @@ public class PowerUpShield extends PowerUp {
     public PowerUpShield(Point point) {
         super(point);
     }
+
+    public PowerUps getType() { return type; }
 
     public void activate(Character character) {
         character.shield();

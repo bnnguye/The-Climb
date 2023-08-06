@@ -6,8 +6,8 @@ import bagel.util.Rectangle;
 
 public class PowerUpMinimiser extends PowerUp{
 
-    private final PowerUps name = PowerUps.MINIMISER;
-    private final Image image = new Image("res/PowerUp/Minimiser.png");
+    private final PowerUps type = PowerUps.MINIMISER;
+    private final Image image = new Image("res/PowerUps/Minimiser.png");
 
     public PowerUpMinimiser() {
         super();
@@ -20,6 +20,8 @@ public class PowerUpMinimiser extends PowerUp{
 
     private final double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
     private double offset = 0;
+
+    public PowerUps getType() { return type; }
 
     public void activate(Character character) {
         character.minimiser();
