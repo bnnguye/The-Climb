@@ -119,4 +119,8 @@ public class ImagePoint {
         this.pos = new Point(pos.x + x, pos.y + y);
     }
 
+    public void setColour(double r, double g, double b) {
+        DO.setBlendColour(r, g, b, opacity);
+    }
+
 }

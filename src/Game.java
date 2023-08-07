@@ -508,13 +508,13 @@ public class Game extends AbstractGame {
                             gameEntities.spawnObstacles();
                             gameEntities.spawnPowerUps();
                         }
-                    } else {
+                    }
+                    else {
                         for (Player player : players) {
                             if (player.getCharacter().getPos().distanceTo(
                                     new Point(player.getCharacter().getPos().x, 0)) < 10) {
                                 settingsSingleton.setWinner(player);
                                 eventsListener.addEvent(new EventGameFinished());
-                                settingsSingleton.setGameStateString("Game Finished");
                                 break;
                             }
                         }
@@ -553,13 +553,14 @@ public class Game extends AbstractGame {
                         }
                     }
                     if (settingsSingleton.getPlayers().size() - deathCounter < 2) {
-                        settingsSingleton.setGameStateString("Game Finished");
-                        eventsListener.addEvent(new EventGameFinished());
                         for (Player player : players) {
                             if (!player.getCharacter().isDead()) {
                                 settingsSingleton.setWinner(player);
                                 break;
                             }
+                        }
+                        if (!eventsListener.contains(EventGameFinished.class)) {
+                            eventsListener.addEvent(new EventGameFinished());
                         }
                     }
                 }
@@ -853,7 +854,6 @@ public class Game extends AbstractGame {
                     musicPlayer.setMainMusic("music/misc/Fail.wav");
                     if (settingsSingleton.getWinner() != null) {
                         musicPlayer.addMusic(settingsSingleton.getWinner().getCharacter().playLine());
-
                     }
                     stats.updateGameStats(players);
                     buttonsToRemove.addAll(buttons);
@@ -2120,7 +2120,6 @@ public class Game extends AbstractGame {
 
     public void loadPlayers() {
         for (Player player: players) {
-            System.out.println(player.getId());
             player.getPlayerStats().reset();
             player.getCharacter().setLives(gameSettingsSingleton.getLives());
         }
