@@ -1,47 +1,64 @@
-import bagel.Drawing;
 import bagel.Window;
-import bagel.util.Colour;
 import bagel.util.Point;
 
 public class EventGameFinished extends EventInterface {
 
     ImagePointManagerSingleton imagePointManagerSingleton = ImagePointManagerSingleton.getInstance();
     SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
+    EventsListenerSingleton eventsListenerSingleton = EventsListenerSingleton.getInstance();
+    TimeLogger timeLogger = TimeLogger.getInstance();
+    int refreshRate = timeLogger.getRefreshRate();
 
-    private final int duration;
+    private final int totalDuration;
+    private int currentTime = 0;
 
     public EventGameFinished() {
         this.event = "EventGameFinished";
         this.canInteract = false;
-        this.duration = 3;
-        int currentTime = TimeLogger.getInstance().getFrames();
-        this.frames = duration * TimeLogger.getInstance().getRefreshRate() + currentTime;
-        imagePointManagerSingleton.add(new ImagePoint("res/misc/black.png", new Point(Window.getWidth(),0)));
-        System.out.println("before: " + imagePointManagerSingleton.getImages().size());
+        this.totalDuration = 3;
+        this.frames = totalDuration * TimeLogger.getInstance().getRefreshRate() + timeLogger.getFrames();
+        imagePointManagerSingleton.add(new ImagePoint("res/misc/black.png", new Point(0, -Window.getHeight())));
+        imagePointManagerSingleton.get("res/misc/black.png").setOpacity(0);
     }
 
     public void process() {
-        System.out.println("After: "  + imagePointManagerSingleton.getImages().size());
-        int currentTime = TimeLogger.getInstance().getFrames();
 
-        if (frames - currentTime > TimeLogger.getInstance().getRefreshRate()) {
-            int xoffset = -Window.getWidth()/((duration - 1) * TimeLogger.getInstance().getRefreshRate());
-            System.out.println(xoffset);
-            imagePointManagerSingleton.get("res/misc/black.png").move(xoffset,0);
+        if (currentTime == 2 * refreshRate) {
+            if (settingsSingleton.getWinner() != null) {
+                String winner = settingsSingleton.getWinner().getCharacter().getFullName();
+                imagePointManagerSingleton.add(new ImagePoint(String.format("res/characters/%s/Render.png",
+                        winner), new Point(0,0)));
+                ImagePoint render = imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", winner));
+                render.setPos(Window.getWidth()/2d - render.getWidth()/2, 0);
+                render.setDarken(true);
+                render.setOpacity(0.5);
+            }
+            eventsListenerSingleton.getEventsListener().addEvent(new EventGameStateZero());
+
+            int index = 1;
+            for (Player player: settingsSingleton.getPlayers()) {
+                ImagePoint characterRender = new ImagePoint(String.format("res/characters/%s/Render.png",
+                        player.getCharacter().getFullName()), new Point(1000 * index,24));
+                imagePointManagerSingleton.add(characterRender);
+                index++;
+            }
+            GameSettingsSingleton.getInstance().getMap().generateMap();
         }
-        else if (frames - currentTime <= TimeLogger.getInstance().getRefreshRate()) {
+
+        if (currentTime <= 2 * refreshRate) {
+            double yoffset = Window.getHeight()/ (2.0 * refreshRate);
+            imagePointManagerSingleton.get("res/misc/black.png").move(0,yoffset);
             imagePointManagerSingleton.get("res/misc/black.png").
-                    setOpacity(1 - (frames - currentTime)/TimeLogger.getInstance().getRefreshRate());
+                    setOpacity((double) currentTime / (double) (3 * refreshRate));
+        }
+        else if (currentTime <= 3 * refreshRate) {
 
         }
-        if (frames - currentTime == TimeLogger.getInstance().getRefreshRate()) {
-            imagePointManagerSingleton.add(new ImagePoint("res/misc/white.png", new Point(0,0)));
-            imagePointManagerSingleton.add(new ImagePoint(String.format("res/characters/%s/Render.png", settingsSingleton.getWinner().getCharacter().getFullName()), new Point(0,0)));
-            imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", settingsSingleton.getWinner().getCharacter().getFullName())).setColour(0,0,0);
-        }
-        if (frames - currentTime == 0) {
+
+        if (currentTime + 1 == totalDuration * refreshRate) {
             settingsSingleton.setGameStateString("Game Finished");
-            SettingsSingleton.getInstance().setGameState(7);
+            settingsSingleton.setGameState(7);
         }
+        currentTime++;
     }
 }

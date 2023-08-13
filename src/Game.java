@@ -509,16 +509,6 @@ public class Game extends AbstractGame {
                             gameEntities.spawnPowerUps();
                         }
                     }
-                    else {
-                        for (Player player : players) {
-                            if (player.getCharacter().getPos().distanceTo(
-                                    new Point(player.getCharacter().getPos().x, 0)) < 10) {
-                                settingsSingleton.setWinner(player);
-                                eventsListener.addEvent(new EventGameFinished());
-                                break;
-                            }
-                        }
-                    }
                     if (!playingAnimation) {
                         musicPlayer.setMainVolume(musicPlayer.getMainVolume());
                         updateExp();
@@ -540,29 +530,10 @@ public class Game extends AbstractGame {
                         }
                     }
                     updateAbilities();
-                    if (canInteract) {
-                        gameEntities.checkCollisionPowerUps();
-                        gameEntities.checkCollisionObstacles();
-                        checkCollisionTiles();
-                    }
-
-                    int deathCounter = 0;
-                    for (Player player : players) {
-                        if (player.getCharacter().isDead()) {
-                            deathCounter++;
-                        }
-                    }
-                    if (settingsSingleton.getPlayers().size() - deathCounter < 2) {
-                        for (Player player : players) {
-                            if (!player.getCharacter().isDead()) {
-                                settingsSingleton.setWinner(player);
-                                break;
-                            }
-                        }
-                        if (!eventsListener.contains(EventGameFinished.class)) {
-                            eventsListener.addEvent(new EventGameFinished());
-                        }
-                    }
+                    gameEntities.checkCollisionPowerUps();
+                    gameEntities.checkCollisionObstacles();
+                    checkCollisionTiles();
+                    checkIfGameEnded();
                 }
                 gameSettingsSingleton.getMap().update();
             }
@@ -1160,7 +1131,7 @@ public class Game extends AbstractGame {
 
         // TEST GAME
         if (settingsSingleton.getGameState() == -100) {
-            settingsSingleton.setGameState(5);
+            settingsSingleton.setGameState(0);
             settingsSingleton.setGameMode(1);
             settingsSingleton.setPlayers(2);
             players.get(0).setCharacter(new Character(CharacterNames.MIKU));
@@ -1350,33 +1321,17 @@ public class Game extends AbstractGame {
                     tempFont.draw("REACH THE TOP!", Window.getWidth()/2d - tempFont.getFont().getWidth("REACH THE TOP!")/2, 160);
                 }
                 renderAbilities();
+                imagePointManagerSingleton.draw();
             }
         }
         else if (settingsSingleton.getGameState() == 7) {
-            drawGame();
-            Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.8));
             if (settingsSingleton.getGameMode() == 0) {
                 displayFailScreen();
             }
             else {
+                drawGame();
                 Player winner = settingsSingleton.getWinner();
-                if (winner == null) {
-                    new Font(Fonts.DEJAVUSANS, 110).drawString("DRAW?!?!!", 16, 100);
-                }
-                else {
-                    ImagePoint characterImage = new ImagePoint(
-                            String.format("res/Characters/%s/render.png", winner.getCharacter().getFullName()),
-                            new Point(0,0));
-                    ImagePoint sideCharacterImage = new ImagePoint(
-                            String.format("res/SideCharacters/%s/render.png", winner.getSideCharacter().getName()),
-                            new Point(0,0));
-                    characterImage.setPos(Window.getWidth()/2d - characterImage.getWidth()/2, Window.getHeight() - characterImage.getHeight());
-                    sideCharacterImage.setPos(Window.getWidth()/2d, Window.getHeight() - sideCharacterImage.getHeight());
-                    sideCharacterImage.draw();
-                    characterImage.draw();
-                    new Font(Fonts.GEOMATRIX, 110).drawString(String.format("P%d: %s WINS!", settingsSingleton.getWinner().getId(), settingsSingleton.getWinner().getCharacter().getName()), 16, 100);
-                    new Font(Fonts.TITANONE, 60).drawString(String.format("SCORE: %.0f", winner.getPlayerStats().getPoints()), Window.getWidth()/2d, Window.getHeight()*3/4d);
-                }
+
             }
             imagePointManagerSingleton.draw();
             drawButtons();
@@ -2452,6 +2407,24 @@ public class Game extends AbstractGame {
                 System.out.println("Computer : " + computer.getSideCharacter().getName());
                 break;
             }
+        }
+    }
+
+    public void checkIfGameEnded() {
+        ArrayList<Player> playersAlive = new ArrayList<>();
+        for (Player player : players) {
+            if (!player.getCharacter().isDead()) {
+                playersAlive.add(player);
+            }
+            if (player.getCharacter().getPos().distanceTo(new Point(player.getCharacter().getPos().x, 0)) < 10) {
+                settingsSingleton.setWinner(player);
+                eventsListener.addEvent(new EventGameFinished());
+                return;
+            }
+        }
+        if (playersAlive.size() == 1) {
+            settingsSingleton.setWinner(playersAlive.get(0));
+            eventsListener.addEvent(new EventGameFinished());
         }
     }
 }
