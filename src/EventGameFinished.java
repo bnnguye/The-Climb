@@ -3,12 +3,6 @@ import bagel.util.Point;
 
 public class EventGameFinished extends EventInterface {
 
-    ImagePointManagerSingleton imagePointManagerSingleton = ImagePointManagerSingleton.getInstance();
-    SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
-    EventsListenerSingleton eventsListenerSingleton = EventsListenerSingleton.getInstance();
-    TimeLogger timeLogger = TimeLogger.getInstance();
-    int refreshRate = timeLogger.getRefreshRate();
-
     private final int totalDuration;
     private int currentTime = 0;
 
@@ -27,13 +21,13 @@ public class EventGameFinished extends EventInterface {
             if (settingsSingleton.getWinner() != null) {
                 String winner = settingsSingleton.getWinner().getCharacter().getFullName();
                 imagePointManagerSingleton.add(new ImagePoint(String.format("res/characters/%s/Render.png",
-                        winner), new Point(0,0)));
+                        winner), new Point(0,0), "characterRender"));
                 ImagePoint render = imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", winner));
                 render.setPos(Window.getWidth()/2d - render.getWidth()/2, 0);
                 render.setDarken(true);
                 render.setOpacity(0.5);
             }
-            eventsListenerSingleton.getEventsListener().addEvent(new EventGameStateZero());
+            eventsToBeAdded.add(new EventGameStateZero());
 
             int index = 1;
             for (Player player: settingsSingleton.getPlayers()) {
@@ -56,6 +50,7 @@ public class EventGameFinished extends EventInterface {
         }
 
         if (currentTime + 1 == totalDuration * refreshRate) {
+            System.out.println("Done");
             settingsSingleton.setGameStateString("Game Finished");
             settingsSingleton.setGameState(7);
         }

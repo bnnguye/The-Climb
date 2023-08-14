@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 public class EventCharacterPicked extends EventInterface {
 
-    private ImagePointManagerSingleton imagePointManagerSingleton = ImagePointManagerSingleton.getInstance();
-
     ArrayList<ImagePoint> characterRenders;
 
     ImagePoint charImage;

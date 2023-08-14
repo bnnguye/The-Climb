@@ -22,6 +22,7 @@ import java.awt.GraphicsEnvironment;
 
 public class Game extends AbstractGame {
 
+    private final int frames = TimeLogger.getInstance().getRefreshRate();
     private static final TimeLogger timeLogger = TimeLogger.getInstance();
     private static final SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
     private static final GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
@@ -46,7 +47,6 @@ public class Game extends AbstractGame {
     private final ArrayList<PowerUp> powerUps = gameEntities.getPowerUps();
     private final ArrayList<SideCharacter> allSideCharacters= new ArrayList<>();
 
-    private final int frames = TimeLogger.getInstance().getRefreshRate();
 
     private final Stats stats = new Stats();
     private final Dialogue dialogue = new Dialogue();
@@ -65,6 +65,8 @@ public class Game extends AbstractGame {
     private int offset = 0;
 
     private boolean toggleInfo = false;
+
+    private int ptr = 0;
 
     private String unlocked;
     private boolean canInteract = eventsListenerSingleton.isCanInteract();
@@ -865,6 +867,15 @@ public class Game extends AbstractGame {
                     powerUps.clear();
                     stats.saveStats();
                 }
+
+                if (input != null && input.wasPressed(Keys.A) && ptr > 0) {
+                    eventsListener.addEvent(new EventStatRotate("LEFT"));
+                    ptr--;
+                }
+                else if (input != null && input.wasPressed(Keys.D) && ptr < settingsSingleton.getPlayers().size()) {
+                    eventsListener.addEvent(new EventStatRotate("RIGHT"));
+                    ptr++;
+                }
             }
         }
         else if (settingsSingleton.getGameState() == 8) {
@@ -1131,7 +1142,7 @@ public class Game extends AbstractGame {
 
         // TEST GAME
         if (settingsSingleton.getGameState() == -100) {
-            settingsSingleton.setGameState(0);
+            settingsSingleton.setGameState(6);
             settingsSingleton.setGameMode(1);
             settingsSingleton.setPlayers(2);
             players.get(0).setCharacter(new Character(CharacterNames.MIKU));
@@ -1139,6 +1150,8 @@ public class Game extends AbstractGame {
             players.get(0).getCharacter().setPowerUp(new PowerUpMinimiser());
             players.get(1).setCharacter(new Character(CharacterNames.NAO));
             players.get(1).setSideCharacter(new SideHisoka());
+            gameSettingsSingleton.setMap(new Map(MapNames.TRAINING_GROUND));
+            gameSettingsSingleton.getMap().generateMap();
             gameSettingsSingleton.setMapSpeed(0);
             gameSettingsSingleton.getObstaclesSettingsSingleton().toggle(Obstacles.BALL);
             gameSettingsSingleton.getObstaclesSettingsSingleton().toggle(Obstacles.ROCK);
@@ -1330,10 +1343,9 @@ public class Game extends AbstractGame {
             }
             else {
                 drawGame();
-                Player winner = settingsSingleton.getWinner();
-
+                imagePointManagerSingleton.draw();
+                drawStats();
             }
-            imagePointManagerSingleton.draw();
             drawButtons();
         }
         else if (settingsSingleton.getGameState() == 8) {
@@ -2426,5 +2438,24 @@ public class Game extends AbstractGame {
             settingsSingleton.setWinner(playersAlive.get(0));
             eventsListener.addEvent(new EventGameFinished());
         }
+    }
+
+    public void drawStats() {
+        Player currentPlayer = settingsSingleton.getPlayers().get(ptr);
+        PlayerStats stats = currentPlayer.getPlayerStats();
+        DrawOptions colour = new DrawOptions();
+        FontSize geomatrix = new FontSize(Fonts.GEOMATRIX, 60);
+        FontSize title = new FontSize(Fonts.GEOMATRIX, 100);
+        double opacity = Math.abs(Math.sin(timeLogger.getFrames()/170d))*0.3 + 0.4;
+
+        title.draw("POST GAME STATS", 130, 45, colour.setBlendColour(0,0,0,opacity));
+
+
+        geomatrix.draw(String.format("PLAYER %d", currentPlayer.getId()), 170,320, colour.setBlendColour(0,0,0));
+        geomatrix.draw(String.format("OBSTACLES DODGED: %d", stats.getObstaclesDodged()), 170,460, colour);
+        geomatrix.draw(String.format("CLOSE CALLS: %d", stats.getCloseCalls()), 170,540, colour);
+        geomatrix.draw(String.format("%s : %d", currentPlayer.getSideCharacter().getPower(), stats.getSpecial()), 170,620, colour);
+        geomatrix.draw(String.format("PowerUps Used: %d", stats.getSpecial()), 170,600, colour);
+        geomatrix.draw(String.format("TOTAL POINTS: %f", currentPlayer.getPlayerStats().getPoints()), 170,680, colour);
     }
 }

@@ -38,6 +38,7 @@ public class EventsListenerSingleton {
 
         public void updateEvents() {
             ArrayList<EventInterface> eventsToRemove = new ArrayList<>();
+            ArrayList<EventInterface> eventsToAdd = new ArrayList<>();
             canInteract = true;
             for (EventInterface event: events) {
                 if (event.getFrames() <= TimeLogger.getInstance().getFrames()) {
@@ -50,9 +51,12 @@ public class EventsListenerSingleton {
                         canInteract = false;
                     }
                     event.process();
+                    eventsToAdd.addAll(event.eventsToBeAdded);
                 }
             }
             events.removeAll(eventsToRemove);
+            events.addAll(eventsToAdd);
+            eventsToAdd.clear();
         }
 
         public boolean canInteract() {
