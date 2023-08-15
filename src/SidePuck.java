@@ -7,7 +7,7 @@
 //import java.util.ArrayList;
 //
 //public class SidePuck extends SideCharacter{
-//    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+//    private final double frames = TimeLogger.getInstance().getRefreshRate();
 //
 //    private String name = "Puck";
 //

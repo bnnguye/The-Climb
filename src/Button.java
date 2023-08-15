@@ -1,3 +1,5 @@
+import Enums.Obstacles;
+import Enums.PowerUps;
 import bagel.*;
 import bagel.util.Colour;
 import bagel.util.Rectangle;
@@ -23,8 +25,8 @@ public class Button {
 
     private final String name;
     private final String displayString;
-    private final Rectangle box;
-    private final Point position;
+    private Rectangle box;
+    private Point position;
     private Image image = null;
     private double scale;
 
@@ -111,10 +113,6 @@ public class Button {
         else if (name.equalsIgnoreCase("Exit")) {
             Window.close();
         }
-        else if (name.equalsIgnoreCase("4")) {
-            settingsSingleton.setPlayers(4);
-            settingsSingleton.setGameState(3);
-        }
         else if (name.equalsIgnoreCase("Game Settings")) {
             settingsSingleton.setGameState(10);
             gameSettingsSingleton.setPage(0);
@@ -187,6 +185,7 @@ public class Button {
         }
         else if (name.equalsIgnoreCase("PLAY")) {
                 settingsSingleton.setGameState(1);
+                eventsListenerSingleton.getEventsListener().addEvent(new EventGameMode());
         }
         else if (name.equalsIgnoreCase("Retry")) {
             if (settingsSingleton.getGameMode() < 99) {
@@ -223,20 +222,13 @@ public class Button {
         else if (name.equalsIgnoreCase("Story")) {
             settingsSingleton.setGameMode(0);
             settingsSingleton.setPlayers(2);
-            settingsSingleton.setGameState(2);
-            //eventsListenerSingleton.getEventsListener().addEvent(new EventGameModeSelected(2 * frames, "Story Mode selected!"));
-        }
-        else if (name.equalsIgnoreCase("3")) {
-            settingsSingleton.setPlayers(3); settingsSingleton.setGameState(3);
-        }
-        else if (name.equalsIgnoreCase("2")) {
-            settingsSingleton.setPlayers(2);
             settingsSingleton.setGameState(3);
         }
-        else if (name.equalsIgnoreCase("VS")) {
+        else if (name.equalsIgnoreCase("VERSUS")) {
             settingsSingleton.setGameMode(1);
-            settingsSingleton.setGameState(2);
-            //eventsListenerSingleton.getEventsListener().addEvent(new EventGameModeSelected(2 * frames, "Story Mode selected!"));
+            settingsSingleton.setGameState(3);
+            settingsSingleton.getPlayers().clear();
+            settingsSingleton.setPlayers(1);
 
         }
         else if (name.equalsIgnoreCase("Decrease Map Speed")) {
@@ -254,29 +246,34 @@ public class Button {
         else if (name.equals("SETTINGS")) {
             settingsSingleton.setGameState(14);
         }
+        else if (name.equalsIgnoreCase("Add")) {
+            settingsSingleton.getPlayers().add(new Player(settingsSingleton.getPlayers().size() + 1));
+            double spacing = Window.getWidth()/6d;
+            if (settingsSingleton.getPlayers().size() <= 4) {
+                this.position = new Point(settingsSingleton.getPlayers().size() * (this.image.getWidth()*2/3 + spacing) + spacing/3 + 200, 0);
+                this.box = new Rectangle(this.position, box.right() - box.left(), box.bottom() - box.top());
+            }
+        }
     }
 
     public String getName() {
         return name;
     }
-    public void setNight() {
-        night = true;
-    }
 
     public void addPowerUpSliders() {
         sliders.addAll(Arrays.asList(
-                new SliderPowerUp("Minimiser", new Point(400, 300)),
-                new SliderPowerUp("SpeedUp", new Point(400, 400)),
-                new SliderPowerUp("SpeedDown", new Point(400, 500)),
-                new SliderPowerUp("Shield", new Point(400, 600)),
-                new SliderPowerUp("SpecialAbilityPoints", new Point(400, 700))));
+                new SliderPowerUp(PowerUps.SPEEDUP, new Point(400, 300)),
+                new SliderPowerUp(PowerUps.MINIMISER, new Point(400, 425)),
+                new SliderPowerUp(PowerUps.SHIELD, new Point(400, 550)),
+                new SliderPowerUp(PowerUps.ABILITY, new Point(400, 675))));
     }
 
     public void addObstacleSliders() {
         sliders.addAll(Arrays.asList(
-                new SliderObstacle("Ball", new Point(400, 300)),
-                new SliderObstacle("Rock", new Point(400, 400)),
-                new SliderObstacle("StunBall", new Point(400, 500))));
+                new SliderObstacle(Obstacles.BALL, new Point(400, 300)),
+                new SliderObstacle(Obstacles.ROCK, new Point(400, 400)),
+                new SliderObstacle(Obstacles.STUNBALL, new Point(400, 500)),
+                new SliderObstacle(Obstacles.SPEEDDOWN, new Point(400, 600))));
     }
 
     public Colour translucent(Colour colour) { return new Colour(colour.r, colour.g, colour.b, 0.5);
@@ -286,15 +283,16 @@ public class Button {
         return new Colour(colour.r, colour.g, colour.b, 1);
     }
 
-    public Point getPosition() {
-        return position;
-    }
-
     public double getWidth() {
         if (image != null) {
             return image.getWidth();
         }
         return font.getSize();
+    }
+
+    public void setPosition(Point point) {
+        this.position = point;
+        this.box = new Rectangle(this.position, box.right() - box.left(), box.bottom() - box.top());
     }
 
 }

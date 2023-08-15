@@ -2,7 +2,6 @@ import java.util.ArrayList;
 
 public class SettingsSingleton {
 
-    private final int refreshRate = 144;
     private static SettingsSingleton single_instance = null;
     private static int gameState = -1;
     private static int gameMode = 0;
@@ -28,7 +27,6 @@ public class SettingsSingleton {
     public void setGameStateString(String string) { gameStateString = string;}
     public void setWinner(Player id) { winner = id;}
     public Player getWinner() { return winner;}
-    public int getRefreshRate() {return refreshRate;}
     public boolean isNight() { return theme;}
     public void setPlayers(int num) {
         players.clear();

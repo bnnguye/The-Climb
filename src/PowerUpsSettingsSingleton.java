@@ -1,3 +1,5 @@
+import Enums.PowerUps;
+
 public class PowerUpsSettingsSingleton {
 
     private static PowerUpsSettingsSingleton single_instance = null;
@@ -32,32 +34,25 @@ public class PowerUpsSettingsSingleton {
         this.specialAbility = specialAbility;
     }
 
-    public void toggle(String powerUp) {
-        if (powerUp.equals("SpeedUp")) {
+    public void toggle(PowerUps powerUp) {
+        if (powerUp == PowerUps.SPEEDUP) {
             speedUp = !speedUp;
         }
-        else if (powerUp.equals("SpeedDown")) {
-            speedDown = !speedDown;
-        }
-        else if (powerUp.equals("Minimiser")) {
+        else if (powerUp == PowerUps.MINIMISER) {
             minimiser = !minimiser;
         }
-        else if (powerUp.equals("Shield")) {
+        else if (powerUp == PowerUps.SHIELD) {
             shield = !shield;
         }
-        else if (powerUp.equals("SpecialAbilityPoints")) {
+        else if (powerUp == PowerUps.ABILITY) {
             specialAbility = !specialAbility;
         }
     }
 
-    public void changeFrequency(double speedUp, double speedDown, double minimiser, double shield, double specialAbility) {
+    public void changeFrequency(double speedUp, double minimiser, double shield, double specialAbility) {
         this.speedUpFrequency = speedUp;
         if (speedUp <= 0) {
             this.speedUp = false;
-        }
-        this.speedDownFrequency = speedDown;
-        if (speedDown <= 0) {
-            this.speedDown = false;
         }
         this.minimiserFrequency = minimiser;
         if (minimiser <= 0) {
@@ -75,61 +70,51 @@ public class PowerUpsSettingsSingleton {
     }
 
 
-    public double getFrequency(String string) {
-        if (string.equals("SpeedUp")) {
+    public double getFrequency(PowerUps type) {
+        if (type == PowerUps.SPEEDUP) {
             return this.speedUpFrequency;
         }
-        else if (string.equals("SpeedDown")) {
-            return this.speedDownFrequency;
-        }
-        else if (string.equals("Shield")) {
+        else if (type == PowerUps.SHIELD) {
             return this.shieldFrequency;
         }
-        else if (string.equals("Minimiser")) {
+        else if (type == PowerUps.MINIMISER) {
             return this.minimiserFrequency;
         }
-        else if (string.equals("SpecialAbilityPoints")) {
+        else if (type == PowerUps.ABILITY) {
             return this.specialAbilityFrequency;
         }
         return 0;
     }
 
-    public boolean isPowerUp(String string) {
-        if (string.equals("SpeedUp")) {
-            return this.speedUp;
+    public boolean isPowerUp(PowerUps type) {
+        if (type == PowerUps.ABILITY) {
+            return specialAbility;
         }
-        else if (string.equals("SpeedDown")) {
-            return this.speedDown;
+        else if (type == PowerUps.SHIELD) {
+            return shield;
         }
-        else if (string.equals("Minimiser")) {
-            return this.minimiser;
+        else if (type == PowerUps.MINIMISER) {
+            return minimiser;
         }
-        else if (string.equals("Shield")) {
-            return this.shield;
-        }
-        else if (string.equals("SpecialAbilityPoints")) {
-            return this.specialAbility;
+        else if (type == PowerUps.SPEEDUP) {
+            return speedUp;
         }
         return false;
     }
 
-    public void changeFrequency(String powerUp, double frequency) {
-        if (powerUp.equals("SpeedUp")) {
-            speedUpFrequency = frequency;
-        }
-        else if (powerUp.equals("SpeedDown")) {
-            speedDownFrequency = frequency;
-        }
-        else if (powerUp.equals("Minimiser")) {
-            minimiserFrequency = frequency;
-        }
-        else if (powerUp.equals("Shield")) {
-            shieldFrequency = frequency;
-        }
-        else if (powerUp.equals("SpecialAbilityPoints")) {
+    public void changeFrequency(PowerUps type, double frequency) {
+        if (type == PowerUps.ABILITY) {
             specialAbilityFrequency = frequency;
         }
+        else if (type == PowerUps.SHIELD) {
+            shieldFrequency = frequency;
+        }
+        else if (type == PowerUps.MINIMISER) {
+            minimiserFrequency = frequency;
+        }
+        else if (type == PowerUps.SPEEDUP) {
+            speedUpFrequency = frequency;
+        }
     }
-
 
 }

@@ -1,3 +1,4 @@
+import Enums.MapNames;
 import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Map {
-    private String name;
+    private final String name;
     Image mapPeek;
     double height;
     double currentHeight;
@@ -16,9 +17,9 @@ public class Map {
 
     ArrayList<Tile> tiles = new ArrayList<>();
 
-    public Map(String name) {
-        this.name = name;
-        this.mapPeek = new Image(String.format("res/maps/mapPeeks/%s.png", this.name));
+    public Map(MapNames name) {
+        this.name = name.toString();
+        this.mapPeek = new Image(String.format("res/maps/mapPeeks/%s.png", this.name.replace("_", " ")));
 
     }
 
@@ -35,7 +36,7 @@ public class Map {
     }
 
     public String getName() {
-        return name;
+        return name.replace("_", " ");
     }
 
     public void updateTiles(double shift) {
@@ -65,7 +66,7 @@ public class Map {
         this.height = -Window.getHeight();
         this.currentHeight = 0;
         try {
-            Scanner scanner = new Scanner(new File(String.format("res/maps/mapData/%s.txt", this.name)));
+            Scanner scanner = new Scanner(new File(String.format("res/maps/mapData/%s.txt", this.name.replace("_", " "))));
             while(scanner.hasNextLine()) {
                 String[] line = scanner.nextLine().split(",");
                 for (String tileType: line) {

@@ -8,11 +8,11 @@ import bagel.util.Rectangle;
 import java.util.ArrayList;
 
 public class SideLelouch extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+    private final double frames = TimeLogger.getInstance().getRefreshRate();
 
-    private String name = CharacterNames.LELOUCH;
-    private String power = "GEASS";
-    private String desc = "Lelouch's Geass, bestowed upon him by C.C., gives him \n" +
+    private final String name = CharacterNames.LELOUCH;
+    private final String power = "GEASS";
+    private final String desc = "Lelouch's Geass, bestowed upon him by C.C., gives him \n" +
             "\"The Power of Absolute Obedience\", allowing him to command\n" +
             "his targets at will, granted they are within his scope of vision.\n" +
             "When his ability is cast and his opponents are within his line of sight,\n" +
@@ -44,7 +44,7 @@ public class SideLelouch extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
+    public void activateAbility(Player user) {
         if(!this.activating) {
             MusicPlayer.getInstance().addMusic(getSoundPath());
             this.user = user;

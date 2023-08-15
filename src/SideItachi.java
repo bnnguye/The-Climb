@@ -7,20 +7,19 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideItachi extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+    private final double frames = TimeLogger.getInstance().getRefreshRate();
 
-    private String name = CharacterNames.ITACHI;
-    private String power = "INFINITE TSUKUYOMI";
-    private String desc = "Itachi activates his unique ability \"Infinite Tsukuyomi\"\n," +
+    private final String name = CharacterNames.ITACHI;
+    private final String power = "INFINITE TSUKUYOMI";
+    private final String desc = "Itachi activates his unique ability \"Infinite Tsukuyomi\"\n," +
             "sending all those who look into his left eye into a hallucination.\n" +
             "Those strong enough will be sent into a state of confusion, while\n" +
             "the rest have their lives taken by the hands of the shinobi.";
 
-    boolean activating = false;
+    private boolean activating = false;
+    private boolean animating = false;
     double timer;
 
-    private ArrayList<Obstacle> obstacles;
-    private ArrayList<PowerUp> powerUps;
     private boolean left = true;
 
     public String getName() {
@@ -41,9 +40,7 @@ public class SideItachi extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
-        this.obstacles = obstacles;
-        this.powerUps = powerUps;
+    public void activateAbility(Player user) {
         if (!MusicPlayer.getInstance().contains(getSoundPath()) && !MusicPlayer.getInstance().hasEnded(getSoundPath())) {
             MusicPlayer.getInstance().addMusic(getSoundPath());
         }
@@ -100,10 +97,11 @@ public class SideItachi extends SideCharacter{
             }
             for (PowerUp powerUp: powerUps) {
                 if (this.left) {
-                    powerUp.getImage().drawFromTopLeft(powerUp.getPos().x - 50, powerUp.getPos().y);
+                    powerUp.setPos(new Point(powerUp.getPos().x, powerUp.getPos().y - 50));
+                    powerUp.draw(-50,0);
                 }
                 else {
-                    powerUp.getImage().drawFromTopLeft(powerUp.getPos().x + 50, powerUp.getPos().y);
+                    powerUp.draw(50,0);
                 }
             }
             Colour red = new Colour(0.7, 0, 0, 0.5);

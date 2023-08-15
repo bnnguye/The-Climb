@@ -1,29 +1,53 @@
+import Enums.PowerUps;
 import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
+import bagel.util.Rectangle;
 
 public class PowerUpShield extends PowerUp {
-    private String name = "Shield";
-    private Point pos;
-    Image image = new Image("res/PowerUp/Shield.png");
+
+    private final PowerUps type = PowerUps.SHIELD;
+    private final Image image = new Image("res/PowerUps/Shield.png");
+    private double offset = 0;
+    private double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public PowerUpShield() {
-        pos = new Point(Window.getWidth() * Math.random(), -200);
+        super();
     }
 
-    public PowerUpShield(Point pos) {
-        this.pos = pos;
+    public PowerUpShield(Point point) {
+        super(point);
     }
 
-    public Image getImage() {return this.image;}
-    public Point getPos() { return this.pos;}
+    public PowerUps getType() { return type; }
+
+    public void activate(Character character) {
+        character.shield();
+    }
+
+    public void draw() {
+        image.drawFromTopLeft(pos.x, pos.y);
+    }
+
+    public void draw(double x, double y) {
+        image.drawFromTopLeft(pos.x + x, pos.y + y);
+    }
+
     public void move() {
-        this.pos = new Point(pos.x, pos.y + speed);
+        this.pos = new Point(pos.x, pos.y + speed + offset);
     }
-    public String getName() { return this.name;}
 
-    public void gainPowerUp(Player player) {
-        player.getCharacter().shield();
+    public Rectangle getRectangle() {
+        return new Rectangle(pos, image.getWidth(), image.getHeight());
     }
+
+    public void adjustOffset(double offset) {
+        this.offset += offset;
+    }
+    public double getSpeed() {
+        return speed;
+    }
+
+
 
 }

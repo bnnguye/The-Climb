@@ -1,12 +1,16 @@
+import Enums.Obstacles;
+
 public class ObstaclesSettingsSingleton {
 
     private static ObstaclesSettingsSingleton single_instance = null;
     private double rockFrequency = 0.003;
     private double ballFrequency = 0.003;
     private double stunBallFrequency = 0.003;
+    private double speedDownFrequency = 0.003;
     private boolean rocks = true;
     private boolean balls = true;
     private boolean stunBalls = true;
+    private boolean speedDown = true;
 
 
 
@@ -17,67 +21,72 @@ public class ObstaclesSettingsSingleton {
         return single_instance;
     }
 
-    public void changeFrequency(String obstacle, double frequency) {
-        if (obstacle.equalsIgnoreCase("Ball")) {
-            this.ballFrequency = frequency;
-        }
-        else if (obstacle.equalsIgnoreCase("Rock")) {
+    public void changeFrequency(Obstacles obstacle, double frequency) {
+        if (obstacle == Obstacles.ROCK) {
             this.rockFrequency = frequency;
         }
-        else if (obstacle.equalsIgnoreCase("StunBall")) {
+        else if (obstacle == Obstacles.BALL) {
+            this.ballFrequency = frequency;
+        }
+        else if (obstacle == Obstacles.STUNBALL) {
             this.stunBallFrequency = frequency;
         }
+        else if (obstacle == Obstacles.SPEEDDOWN) {
+            this.speedDownFrequency = frequency;
+        }
     }
 
-    public void applySettings(boolean rocks, boolean balls, boolean stunBalls) {
-        this.rocks = rocks;
-        this.balls = balls;
-        this.stunBalls = stunBalls;
-    }
+//    public void applySettings(boolean... rocks) {
+//        this.rocks = rocks;
+//        this.balls = balls;
+//        this.stunBalls = stunBalls;
+//    }
 
-    public void toggle(String obstacle) {
-        if (obstacle.equalsIgnoreCase("Rock")) {
+    public void toggle(Obstacles obstacle) {
+        if (obstacle == Obstacles.ROCK) {
             this.rocks = !this.rocks;
         }
-        else if (obstacle.equalsIgnoreCase("Ball")) {
+        else if (obstacle == Obstacles.BALL) {
+
             this.balls = !this.balls;
         }
-        else if (obstacle.equalsIgnoreCase("StunBall")) {
+        else if (obstacle == Obstacles.STUNBALL) {
             this.stunBalls = !this.stunBalls;
+        }
+        else if (obstacle == Obstacles.SPEEDDOWN) {
+            this.speedDown = !this.speedDown;
         }
     }
 
-    public boolean isObstacle(String string) {
-        if (string.equalsIgnoreCase("Rock")) {
+    public boolean isObstacle(Obstacles type) {
+        if (type == Obstacles.ROCK) {
             return this.rocks;
         }
-        else if (string.equalsIgnoreCase("Ball")) {
+        else if (type == Obstacles.BALL) {
             return this.balls;
         }
-        if (string.equalsIgnoreCase("StunBall")) {
+        else if (type == Obstacles.STUNBALL) {
             return this.stunBalls;
+        }
+        else if (type == Obstacles.SPEEDDOWN) {
+            return  this.speedDown;
         }
         return false;
     }
 
-    public double getFrequency(String obstacle) {
-        if (obstacle.equalsIgnoreCase("rock")) {
-            return this.rockFrequency;
+    public double getFrequency(Obstacles obstacle) {
+        if (obstacle == Obstacles.ROCK) {
+            return rockFrequency;
         }
-        else if (obstacle.equalsIgnoreCase("ball")) {
-            return this.ballFrequency;
+        else if (obstacle == Obstacles.BALL) {
+            return ballFrequency;
         }
-        else if (obstacle.equalsIgnoreCase("stunball")) {
-            return this.stunBallFrequency;
+        else if (obstacle == Obstacles.STUNBALL) {
+            return stunBallFrequency;
+        }
+        else if (obstacle == Obstacles.SPEEDDOWN) {
+            return speedDownFrequency;
         }
         return 0;
     }
-
-    public boolean isRocks() {return this.rocks;}
-    public boolean isBalls() {return this.balls;}
-
-    public boolean isStunBalls() {
-        return this.stunBalls;
-    }
-
 }

@@ -42,4 +42,4 @@ Special Ability Gain: Fills special ability bar up.
 
 POWERDOWNS
 
-SpeedDown: Grants a movement speed debuff for 3 seconds.
+ObstacleSpeedDown: Grants a movement speed debuff for 3 seconds.

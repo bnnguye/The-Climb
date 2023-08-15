@@ -1,3 +1,4 @@
+import Enums.PowerUps;
 import bagel.DrawOptions;
 import bagel.Image;
 import bagel.Window;
@@ -10,7 +11,7 @@ import java.util.Scanner;
 
 public class Character {
 
-        private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+        private final double frames = TimeLogger.getInstance().getRefreshRate();
 
         private String name;
         private String lastName = "";
@@ -27,11 +28,11 @@ public class Character {
         private boolean shield = false;
         private double specialAbilityBar = 0;
 
+        private PowerUp powerUp = null;
         private double speedDownTimer = 0;
         private double speedUpTimer = 0;
         private double minimisedTimer = 0;
         private double stunTimer = 0;
-        private boolean gojoAbility = false;
 
         private int lives = 1;
 
@@ -64,7 +65,7 @@ public class Character {
 
         public double getSpeed() {
                 double currentSpeed = this.speed;
-                if (speedDownTimer > 0 || gojoAbility) {
+                if (speedDownTimer > 0) {
                         currentSpeed = speed/5*3;
                         speedDownTimer--;
                 }
@@ -72,6 +73,7 @@ public class Character {
                         currentSpeed = speed*2;
                         speedUpTimer--;
                 }
+
                 return currentSpeed;
         }
 
@@ -152,6 +154,7 @@ public class Character {
 
         public void setPosition(Point point) { pos = point;}
         public Point getPos() { return pos;}
+        public Point getCentre() { return new Point(pos.x + (rectangle.right() - rectangle.left())/2d, pos.y + (rectangle.bottom() - rectangle.top())/2d); }
 
         public void popShield() { shield = false;}
         public boolean hasShield() { return shield;}
@@ -164,7 +167,6 @@ public class Character {
                 specialAbilityBar = 0;
                 moving = false;
                 shield = false;
-                gojoAbility = false;
         }
 
         public String playLine() {
@@ -178,7 +180,7 @@ public class Character {
                 speedDownTimer += 1;
         }
 
-        public boolean hasSpecialAbility() {return specialAbilityBar > 99;}
+        public boolean hasSpecialAbility() {return specialAbilityBar >= 100;}
         public void useSpecialAbility() {
                 specialAbilityBar = 0;
         }
@@ -191,22 +193,15 @@ public class Character {
                 stunTimer = 0;
                 speedDownTimer = 0;
                 shield = true;
-                gojoAbility = false;
         }
         public boolean isMinimised() {return minimisedTimer > 0;}
         public boolean isDead() {
                 return lives <= 0;
         }
-        public void gotStunned() {stunTimer = 3 * frames;}
+        public void stun(int frames) {stunTimer = frames;}
         public Rectangle getRectangle() {return new Rectangle(pos.x, pos.y, this.rectangle.right()- this.rectangle.left(), this.rectangle.bottom() - this.rectangle.top());}
 
         public boolean canMove() { return !(stunTimer > 0);
-        }
-
-        public void updateCharacter() {
-                if (stunTimer > 0) {
-                        stunTimer--;
-                }
         }
 
         public void slide() {
@@ -237,4 +232,19 @@ public class Character {
         }
         public int getLives() {return this.lives;}
         public boolean isMoving() {return moving;}
+        public boolean hasPowerUp() { return powerUp != null;}
+        public PowerUp getPowerUp() {return powerUp;}
+        public void setPowerUp(PowerUp powerUp) { this.powerUp = powerUp;}
+        public void usePowerUp() {
+                if (powerUp != null) {
+                        powerUp.activate(this);
+                        powerUp = null;
+                }
+        }
+
+        public void update() {
+                if (stunTimer > 0) {
+                        stunTimer--;
+                }
+        }
 }

@@ -1,28 +1,32 @@
+import Enums.PowerUps;
 import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
+import bagel.util.Rectangle;
 
 public abstract class PowerUp {
-    private String name;
-    Image image;
-    private Point pos;
-    double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
-    private boolean jotaroAbility = false;
-
+    protected Point pos;
 
     public PowerUp() {
         pos = new Point(Window.getWidth() * Math.random(), -200);
     }
 
-    public void move() {pos = new Point(pos.x, pos.y + speed);}
-    public Image getImage() {return image;}
-    public Point getPos() { return pos;}
-    public String getName() { return name;}
-    public void setJotaroAbility(boolean bool) {
-        jotaroAbility = bool;
+    public PowerUp(Point pos) {
+        this.pos = pos;
     }
-    public boolean canMove() {
-        return !jotaroAbility;
+
+    abstract PowerUps getType();
+    public void setPos(Point pos) {
+        this.pos = pos;
     }
-    public void gainPowerUp(Player player) {}
+    public Point getPos() {return pos;}
+
+    abstract void move();
+    abstract Rectangle getRectangle();
+    abstract void draw();
+    abstract void draw(double x, double y); 
+    abstract void activate(Character character);
+
+    abstract void adjustOffset(double offset);
+    abstract double getSpeed();
 }

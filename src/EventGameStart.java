@@ -6,7 +6,7 @@ import bagel.util.Point;
 
 public class EventGameStart extends  EventInterface {
 
-    int refreshRate = SettingsSingleton.getInstance().getRefreshRate();
+    int refreshRate = TimeLogger.getInstance().getRefreshRate();
 
     private boolean init = false;
 

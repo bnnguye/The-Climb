@@ -7,7 +7,7 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideYuu extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+    private final double frames = TimeLogger.getInstance().getRefreshRate();
 
     private String name = CharacterNames.YUU;
     private String power = "PLUNDER";
@@ -38,7 +38,7 @@ public class SideYuu extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
+    public void activateAbility(Player user) {
         if (!this.activating) {
             MusicPlayer.getInstance().addMusic("music/sidecharacters/YUU OTOSAKA/YUU OTOSAKA.wav");
             this.activating = true;
@@ -50,7 +50,7 @@ public class SideYuu extends SideCharacter{
         else if (timer == 0) {
             temporarySideCharacter = getSideCharacter(findClosest(user, SettingsSingleton.getInstance().getPlayers()));
             if (temporarySideCharacter != null) {
-                temporarySideCharacter.activateAbility(user, obstacles, powerUps);
+                temporarySideCharacter.activateAbility(user);
             }
             else {
                 this.activating = false;
@@ -61,7 +61,7 @@ public class SideYuu extends SideCharacter{
                 this.activating = false;
             }
             else {
-                temporarySideCharacter.activateAbility(user, obstacles, powerUps);
+                temporarySideCharacter.activateAbility(user);
                 if (!temporarySideCharacter.isAnimating()) {
                     this.animating = false;
                 }

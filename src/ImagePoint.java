@@ -10,6 +10,7 @@ import bagel.util.Point;
 public class ImagePoint {
     private String filename;
     private String tag = null;
+    private int priority = 0;
     private Point pos;
     private DrawOptions DO;
     private double scale = 1;
@@ -116,6 +117,10 @@ public class ImagePoint {
 
     public void move(double x, double y) {
         this.pos = new Point(pos.x + x, pos.y + y);
+    }
+
+    public void setColour(double r, double g, double b) {
+        DO.setBlendColour(r, g, b, opacity);
     }
 
 }

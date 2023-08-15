@@ -1,0 +1,5 @@
+package Enums;
+
+public enum TileType {
+    BASIC, BASICTOP, BASICLEFT, BASICSAD, ICE, ICELEFT, ICETOP, SLOW, SLOWLEFT, SLOWTOP;
+}

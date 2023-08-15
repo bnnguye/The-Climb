@@ -8,7 +8,7 @@ import bagel.util.Rectangle;
 import java.util.ArrayList;
 
 public class SideZoro extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+    private final double frames = TimeLogger.getInstance().getRefreshRate();
     private String name = CharacterNames.ZORO;
     private String power = "PURGATORY ONIGIRI";
     private String desc = "Zoro strikes the battlefield with three slashes,\n" +
@@ -16,6 +16,7 @@ public class SideZoro extends SideCharacter{
 
 
     boolean activating = false;
+    boolean animating = false;
     double timer;
     double shakeTimer;
 
@@ -37,7 +38,7 @@ public class SideZoro extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
+    public void activateAbility(Player user) {
         ArrayList<Obstacle> obstaclesToRemove = new ArrayList<>();
         if (!this.activating) {
             MusicPlayer.getInstance().addMusic(getSoundPath());

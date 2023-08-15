@@ -6,11 +6,11 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideHisoka extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
+    private final double frames = TimeLogger.getInstance().getRefreshRate();
 
-    private String name = CharacterNames.HISOKA;
-    private String power = "BUNGEE GUM";
-    private String desc = "Hisoka Morow's signature move \"Bungee Gum\" allows him\n" +
+    private final String name = CharacterNames.HISOKA;
+    private final String power = "BUNGEE GUM";
+    private final String desc = "Hisoka Morow's signature move \"Bungee Gum\" allows him\n" +
             "to trap his opponents by converting his aura into a sticky substance,\n" +
             "freezing any character caught within its path for several seconds.";
 
@@ -18,7 +18,6 @@ public class SideHisoka extends SideCharacter{
     boolean animating = false;
     double timer;
 
-    boolean shoot = false;
     ArrayList<ObstacleBungeeGum> bungeeGums;
 
     public String getName() {
@@ -38,7 +37,7 @@ public class SideHisoka extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
+    public void activateAbility(Player user) {
         if(!this.activating) {
             MusicPlayer.getInstance().addMusic(getSoundPath());
             this.activating = true;
@@ -54,12 +53,7 @@ public class SideHisoka extends SideCharacter{
             bungeeGums.add(new ObstacleBungeeGum(user.getCharacter().getPos(), "SE"));
         }
 
-        if (timer > 8*frames) {
-            this.animating = true;
-        }
-        else {
-            this.animating = false;
-        }
+        this.animating = timer > 8 * frames;
         this.timer--;
         if (timer < 8*frames) {
             if (bungeeGums.size() > 0) {
@@ -72,7 +66,7 @@ public class SideHisoka extends SideCharacter{
                                     .intersects(bg.getImage().getBoundingBoxAt(new Point(bg.getPos().x -
                                             bg.getImage().getWidth()/2, bg.getPos().y - bg.getImage().getHeight()/2)))) {
                                 if (!player.getCharacter().isDead()) {
-                                    player.getCharacter().gotStunned();
+                                    player.getCharacter().stun(2 * TimeLogger.getInstance().getRefreshRate());
                                     bgToRemove.add(bg);
                                 }
                             }

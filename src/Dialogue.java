@@ -22,9 +22,11 @@ public class Dialogue {
     private final ArrayList<String> dialogueLines = new ArrayList<>();
     private String dialogueCharacter = null;
 
+    private boolean loading = true;
     private boolean alternate = true;
-    private final Colour dialogueColour = new Colour(77.0 / 255, 57.0 / 255, 37.0 / 255, 0.7);
+    private final Colour dialogueColour = new Colour(0, 0, 0, 0.7);
     private final FontSize dialogueFont = new FontSize(Fonts.TCB, DIALOGUE_FONT_SIZE);
+    private final FontSize nameFont = new FontSize(Fonts.TCB, DIALOGUE_FONT_SIZE + 10);
     private ImagePoint characterOnScreen;
 
     private final double dialogueWidth = Window.getWidth() * 0.1;
@@ -80,9 +82,9 @@ public class Dialogue {
         Drawing.drawRectangle(dialogueWidth, dialogueLength, Window.getWidth() * 0.8, 250,
                 dialogueColour);
         String dialogueString = currentDialogue.replaceAll("Nothing: ", "");
-
+        nameFont.draw(dialogueCharacter.toUpperCase(), dialogueWidth + nameFont.getSize()/2, dialogueLength + nameFont.getSize() - 15);
         dialogueFont.draw(dialogueString, dialogueWidth +
-                DIALOGUE_FONT_SIZE, dialogueLength + DIALOGUE_FONT_SIZE);
+                DIALOGUE_FONT_SIZE, dialogueLength + 2*DIALOGUE_FONT_SIZE);
     }
 
 //    public String getFullName(String firstName) {
@@ -95,6 +97,10 @@ public class Dialogue {
 //    }
 
     public int getLineNo() { return dialogueLinesIndex;}
+
+    public void setLineNo(int lineNo) { this.dialogueLinesIndex = lineNo;}
+
+    public boolean isLoading() { return loading;}
 
 
     public void update(Input input) {
@@ -123,21 +129,27 @@ public class Dialogue {
                         Window.getHeight() - 300 - characterOnScreen.getHeight());
             }
 
-            if (dialogueLines.get(dialogueLinesIndex).length() > currentDialogue.length()) {
-                currentDialogue += dialogueLines.get(dialogueLinesIndex).charAt(dialogueLineIndex);
+            String dialogueWithoutName = dialogueLines.get(dialogueLinesIndex).split(": ")[1];
+
+            if (dialogueWithoutName.length() > currentDialogue.length()) {
+                loading = true;
+                currentDialogue += dialogueWithoutName.charAt(dialogueLineIndex);
                 dialogueLineIndex++;
 
                 if (input != null && input.wasPressed(Keys.SPACE)) {
-                    currentDialogue = dialogueLines.get(dialogueLinesIndex);
+                    loading = false;
+                    currentDialogue = dialogueWithoutName;
                 }
             }
             else {
+                loading = false;
                 if (input != null && input.wasPressed(Keys.SPACE)) {
                     currentDialogue = "";
                     dialogueLineIndex = 0;
                     dialogueLinesIndex++;
 
                     if (dialogueLinesIndex == dialogueLines.size()) {
+                        loading = true;
                         characterOnScreen = null;
                         dialogueLines.clear();
                         dialogueLinesIndex = 0;

@@ -7,10 +7,11 @@ import bagel.util.Point;
 import java.util.ArrayList;
 
 public class SideGojo extends SideCharacter{
-    private final double frames = SettingsSingleton.getInstance().getRefreshRate();
-    private String name = CharacterNames.GOJO;
-    private String power = "MUGEN";
-    private String desc = "Gojo Satoru's ability \"Mugen (Infinity)\" is the neutral form\n" +
+    private final double frames = TimeLogger.getInstance().getRefreshRate();
+
+    private final String name = CharacterNames.GOJO;
+    private final String power = "MUGEN";
+    private final String desc = "Gojo Satoru's ability \"Mugen (Infinity)\" is the neutral form\n" +
             "of Gojo's base ability " +
             "\"Mukagen (Limitless)\". When activated, Gojo invokes\n" +
             "a gravitational hold in the middle of the battlefield." +
@@ -41,7 +42,7 @@ public class SideGojo extends SideCharacter{
     }
 
 
-    public void activateAbility(Player user, ArrayList<Obstacle> obstacles, ArrayList<PowerUp> powerUps) {
+    public void activateAbility(Player user) {
         if(!this.activating) {
             MusicPlayer.getInstance().addMusic(getSoundPath());
             this.activating = true;
