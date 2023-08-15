@@ -5,6 +5,7 @@ public abstract class EventInterface {
     ImagePointManagerSingleton imagePointManagerSingleton = ImagePointManagerSingleton.getInstance();
     SettingsSingleton settingsSingleton = SettingsSingleton.getInstance();
     EventsListenerSingleton eventsListenerSingleton = EventsListenerSingleton.getInstance();
+    MusicPlayer musicPlayer = MusicPlayer.getInstance();
     TimeLogger timeLogger = TimeLogger.getInstance();
     int refreshRate = timeLogger.getRefreshRate();
 

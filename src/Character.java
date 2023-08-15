@@ -154,6 +154,7 @@ public class Character {
 
         public void setPosition(Point point) { pos = point;}
         public Point getPos() { return pos;}
+        public Point getCentre() { return new Point(pos.x + (rectangle.right() - rectangle.left())/2d, pos.y + (rectangle.bottom() - rectangle.top())/2d); }
 
         public void popShield() { shield = false;}
         public boolean hasShield() { return shield;}

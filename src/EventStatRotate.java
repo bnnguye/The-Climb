@@ -2,13 +2,13 @@ public class EventStatRotate extends EventInterface {
     public EventStatRotate(String event) {
         this.event = event;
         this.canInteract = false;
-        this.frames = refreshRate + timeLogger.getFrames();
+        this.frames = 20 + timeLogger.getFrames();
     }
 
     public void process() {
-        double xoffset = this.event.contains("LEFT") ? -1000.0/refreshRate : 1000.0/refreshRate;
+        double xoffset = this.event.contains("RIGHT") ? -2000.0/20 : 2000.0/20;
         for (ImagePoint imagePoint: imagePointManagerSingleton.getImages()) {
-            if (imagePoint.getTag().equalsIgnoreCase("characterRender")) {
+            if (("characterRender").equalsIgnoreCase(imagePoint.getTag())) {
                 imagePoint.move(xoffset, 0);
             }
         }

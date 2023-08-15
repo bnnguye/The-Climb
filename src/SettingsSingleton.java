@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class SettingsSingleton {
 
     private static SettingsSingleton single_instance = null;
-    private static int gameState = -100;
+    private static int gameState = -1;
     private static int gameMode = 0;
     private static String gameStateString = "";
 

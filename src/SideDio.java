@@ -21,7 +21,6 @@ public class SideDio extends SideCharacter{
     boolean animating = false;
 
     double timer;
-    ArrayList<PowerUp> powerUps;
 
     public String getName() {
         return this.name;

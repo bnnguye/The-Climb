@@ -73,12 +73,12 @@ public class SideYugi extends SideCharacter{
                 for (Player player : players) {
                     if (player.getId() != user.getId()) {
                         if (exodiaPiece.getImage().getBoundingBoxAt(new Point(exodiaPiece.getPos().x - exodiaPiece.getImage().getWidth()/2, exodiaPiece.getPos().y - exodiaPiece.getImage().getHeight()/2)).intersects(player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()))) {
-                            exodiaPiece.setPos(new Point(exodiaPiece.getPos().x, Window.getHeight() + 200));
+                            exodiaPiece.setPos(new Point(exodiaPiece.getPos().x, -map.getHeight() + Math.random() * (map.getHeight() - map.getCurrentHeight())));
                         }
                     }
                 }
                 if (exodiaPiece.getPos().y > Window.getHeight()) {
-                    exodiaPiece.setPos(new Point(exodiaPiece.getPos().x, -2*Window.getHeight()));
+                    exodiaPiece.setPos(new Point(exodiaPiece.getPos().x, -map.getHeight() + Math.random() * (map.getHeight() - map.getCurrentHeight())));
                 }
             }
             exodiaPieces.removeAll(exodiaPiecesToRemove);

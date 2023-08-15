@@ -22,7 +22,7 @@ public class SliderObstacle extends Slider {
         this.name = type;
         this.topLeft = topLeft;
 
-        this.logo = new Image(String.format("res/Obstacle/%s.png", type, name));
+        this.logo = new Image(String.format("res/Obstacles/%s.png", type, name));
         this.slide = new Rectangle(topLeft, maxBSize, logo.getHeight());
     }
 

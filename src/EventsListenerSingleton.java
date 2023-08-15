@@ -52,6 +52,7 @@ public class EventsListenerSingleton {
                     }
                     event.process();
                     eventsToAdd.addAll(event.eventsToBeAdded);
+                    event.eventsToBeAdded.clear();
                 }
             }
             events.removeAll(eventsToRemove);

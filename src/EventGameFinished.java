@@ -19,40 +19,31 @@ public class EventGameFinished extends EventInterface {
 
         if (currentTime == 2 * refreshRate) {
             if (settingsSingleton.getWinner() != null) {
-                String winner = settingsSingleton.getWinner().getCharacter().getFullName();
-                imagePointManagerSingleton.add(new ImagePoint(String.format("res/characters/%s/Render.png",
-                        winner), new Point(0,0), "characterRender"));
-                ImagePoint render = imagePointManagerSingleton.get(String.format("res/characters/%s/Render.png", winner));
-                render.setPos(Window.getWidth()/2d - render.getWidth()/2, 0);
-                render.setDarken(true);
-                render.setOpacity(0.5);
+                musicPlayer.addMusic(settingsSingleton.getWinner().getCharacter().playLine());
             }
-            eventsToBeAdded.add(new EventGameStateZero());
-
-            int index = 1;
-            for (Player player: settingsSingleton.getPlayers()) {
-                ImagePoint characterRender = new ImagePoint(String.format("res/characters/%s/Render.png",
-                        player.getCharacter().getFullName()), new Point(1000 * index,24));
-                imagePointManagerSingleton.add(characterRender);
-                index++;
-            }
-            GameSettingsSingleton.getInstance().getMap().generateMap();
         }
 
-        if (currentTime <= 2 * refreshRate) {
+        if (currentTime < 2 * refreshRate) {
             double yoffset = Window.getHeight()/ (2.0 * refreshRate);
             imagePointManagerSingleton.get("res/misc/black.png").move(0,yoffset);
             imagePointManagerSingleton.get("res/misc/black.png").
                     setOpacity((double) currentTime / (double) (3 * refreshRate));
         }
-        else if (currentTime <= 3 * refreshRate) {
-
-        }
 
         if (currentTime + 1 == totalDuration * refreshRate) {
-            System.out.println("Done");
+
+            int index = 0;
+            for (Player player: settingsSingleton.getPlayers()) {
+                ImagePoint characterRender = new ImagePoint(String.format("res/characters/%s/Render.png",
+                        player.getCharacter().getFullName()), new Point(0,0), "characterRender");
+                characterRender.setPos(1000 + 2000 * index, Window.getHeight() - characterRender.getHeight());
+                imagePointManagerSingleton.add(characterRender);
+                index++;
+            }
+
             settingsSingleton.setGameStateString("Game Finished");
             settingsSingleton.setGameState(7);
+            eventsToBeAdded.add(new EventGameStateZero());
         }
         currentTime++;
     }

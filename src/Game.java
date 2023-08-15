@@ -98,7 +98,7 @@ public class Game extends AbstractGame {
 
         loadCustomMapConfigs();
 
-//        eventsListener.addEvent(new EventStartApp(5 * frames / 2, "Game initiated"));
+        eventsListener.addEvent(new EventStartApp(5 * frames / 2, "Game initiated"));
     }
 
     @Override
@@ -823,20 +823,18 @@ public class Game extends AbstractGame {
             }
             else {
                 if (settingsSingleton.getGameStateString().equalsIgnoreCase("Game Finished")) {
+                    sortCharacterRenders();
                     settingsSingleton.setGameStateString("Retry or Menu?");
                     musicPlayer.setMainMusic("music/misc/Fail.wav");
-                    if (settingsSingleton.getWinner() != null) {
-                        musicPlayer.addMusic(settingsSingleton.getWinner().getCharacter().playLine());
-                    }
                     stats.updateGameStats(players);
                     buttonsToRemove.addAll(buttons);
-                    buttons.add(new Button("Back", "Back",
-                            new FontSize(Fonts.GEOMATRIX, 100),
-                            new Rectangle(0, Window.getHeight() - 100, Window.getWidth(), 100),
+                    buttons.add(new Button("Back", "RETURN",
+                            new FontSize(Fonts.GEOMATRIX, 35),
+                            new Rectangle(420, Window.getHeight() - 40, 120, 35),
                             ColourPresets.WHITE.toColour()));
-                    buttons.add(new Button("Retry", "Restart",
-                            new FontSize(Fonts.GEOMATRIX, 100),
-                            new Rectangle(0, Window.getHeight() - 250, Window.getWidth(), 100),
+                    buttons.add(new Button("Retry", "PLAY AGAIN?",
+                            new FontSize(Fonts.GEOMATRIX, 70),
+                            new Rectangle(10, Window.getHeight() - 75, 400, 70),
                             ColourPresets.WHITE.toColour()));
                 }
                 else if (Arrays.asList("Retry", "Back").contains(settingsSingleton.getGameStateString())) {
@@ -872,7 +870,7 @@ public class Game extends AbstractGame {
                     eventsListener.addEvent(new EventStatRotate("LEFT"));
                     ptr--;
                 }
-                else if (input != null && input.wasPressed(Keys.D) && ptr < settingsSingleton.getPlayers().size()) {
+                else if (input != null && input.wasPressed(Keys.D) && ptr < settingsSingleton.getPlayers().size() - 1) {
                     eventsListener.addEvent(new EventStatRotate("RIGHT"));
                     ptr++;
                 }
@@ -1264,6 +1262,11 @@ public class Game extends AbstractGame {
             if (canInteract || eventsListener.contains(EventCharacterRotate.class)) {
                 drawButtons();
             }
+
+            FontSize legendFont = new FontSize(Fonts.TITANONE, 25);
+            legendFont.draw("[SPACE] - Select\n[ESC] - Go Back/Return\n" +
+                    "[< >] - Navigate/Rotate", Window.getWidth()/2 -
+                    legendFont.getFont().getWidth("[I] - Toggle Info")/2 , Window.getHeight() - 80);
         }
         else if (settingsSingleton.getGameState() == 4 ) {
             SideCharacter currentCharacter = allSideCharacters.get(allSideCharacters.size() % 2 == 1 ?
@@ -1301,6 +1304,10 @@ public class Game extends AbstractGame {
             if (canInteract) {
                 drawButtons();
             }
+            FontSize legendFont = new FontSize(Fonts.TITANONE, 25);
+            legendFont.draw("[I] - Toggle Info\n[SPACE] - Select\n[ESC] - Go Back/Return\n" +
+                    "[< >] - Navigate/Rotate", Window.getWidth()/2d -
+                    legendFont.getFont().getWidth("[I] - Toggle Info")/2 , Window.getHeight() - 80);
         }
         else if (settingsSingleton.getGameState() == 5) {
 
@@ -1809,6 +1816,9 @@ public class Game extends AbstractGame {
 
     public void updateAbilities() {
         for (Player player: players) {
+            if (player.getSideCharacter().getName().equals(CharacterNames.YUGI)) {
+                player.getSideCharacter().activateAbility(player);
+            }
             if (player.getSideCharacter().isActivating()) {
                 player.getSideCharacter().activateAbility(player);
             }
@@ -1898,20 +1908,21 @@ public class Game extends AbstractGame {
                     obstacle.getPos().y + obstacle.getImage().getHeight()/2);
             Drawing.drawRectangle(obstacleCentre, 10,10, new Colour(0,0,0));
             for (Player player: players) {
-                Point characterCentre = player.getCharacter().getPos();
+                Point characterCentre = player.getCharacter().getCentre();
                 Drawing.drawRectangle(characterCentre, 200, 10, new Colour(0,0,0));
-                if (!player.getSideCharacter().isActivating()) {
-                    if (!obstacle.getPlayersInteracted().contains(player.getId())) {
-                        if (Math.abs(obstacleCentre.y -characterCentre.y) < 10) {
-                            double distance = Math.abs(obstacleCentre.x - characterCentre.x);
-                            if (distance < 200) {
-                                if (distance < 20) {
-                                    player.getPlayerStats().closeCall();
-                                }
-                                player.getCharacter().gainSpecialAbilityBar((200 - distance)/10);
-                                player.getPlayerStats().obstacleDodged();
-                                obstacle.updatePlayersInteracted(player.getId());
+                if (!obstacle.getPlayersInteracted().contains(player.getId())) {
+                    if (Math.abs(obstacleCentre.y -characterCentre.y) < 10) {
+                        double distance = Math.abs(obstacleCentre.x - characterCentre.x);
+                        if (distance < 100) {
+                            if (distance < 70) {
+                                player.getPlayerStats().closeCall();
+                                player.getCharacter().gainSpecialAbilityBar(8);
                             }
+                            else {
+                                player.getCharacter().gainSpecialAbilityBar(5);
+                            }
+                            player.getPlayerStats().obstacleDodged();
+                            obstacle.updatePlayersInteracted(player.getId());
                         }
                     }
                 }
@@ -2097,6 +2108,7 @@ public class Game extends AbstractGame {
         ArrayList<Player> players = settingsSingleton.getPlayers();
         int playerIndex = 0;
         for (Player player: players) {
+            ImagePoint fillUpBar = new ImagePoint("res/misc/Fill.png", new Point(0,0));
             Character character = player.getCharacter();
             ImagePoint characterDisplay = new ImagePoint(String.format("res/characters/%s/Peek.png",
                     character.getFullName()), new Point(0,0));
@@ -2110,9 +2122,13 @@ public class Game extends AbstractGame {
             smallBorder.setScale(0.375);
             bigBorder.setPos((playerIndex + 1) * 185 + (playerIndex) * bigBorder.getWidth(), Window.getHeight() -
                     bigBorder.getHeight());
+            fillUpBar.setPos(bigBorder.getPos());
             smallBorder.setPos((playerIndex +1 ) * 185 + (playerIndex) * bigBorder.getWidth() + 50, Window.getHeight() -
                     smallBorder.getHeight()*smallBorder.getScale());
             characterDisplay.setPos(bigBorder.getPos().x, bigBorder.getPos().y);
+            fillUpBar.setColour(238d/255d, 240/255d, 125/255d);
+            fillUpBar.setOpacity(player.getCharacter().getSpecialAbilityBar()/100d);
+            fillUpBar.draw();
             bigBorder.draw();
             smallBorder.draw();
             characterDisplay.draw();
@@ -2430,12 +2446,14 @@ public class Game extends AbstractGame {
             }
             if (player.getCharacter().getPos().distanceTo(new Point(player.getCharacter().getPos().x, 0)) < 10) {
                 settingsSingleton.setWinner(player);
+                ptr = settingsSingleton.getPlayers().indexOf(settingsSingleton.getWinner());
                 eventsListener.addEvent(new EventGameFinished());
                 return;
             }
         }
         if (playersAlive.size() == 1) {
             settingsSingleton.setWinner(playersAlive.get(0));
+            ptr = settingsSingleton.getPlayers().indexOf(settingsSingleton.getWinner());
             eventsListener.addEvent(new EventGameFinished());
         }
     }
@@ -2444,18 +2462,40 @@ public class Game extends AbstractGame {
         Player currentPlayer = settingsSingleton.getPlayers().get(ptr);
         PlayerStats stats = currentPlayer.getPlayerStats();
         DrawOptions colour = new DrawOptions();
-        FontSize geomatrix = new FontSize(Fonts.GEOMATRIX, 60);
-        FontSize title = new FontSize(Fonts.GEOMATRIX, 100);
-        double opacity = Math.abs(Math.sin(timeLogger.getFrames()/170d))*0.3 + 0.4;
+        FontSize geomatrix = new FontSize(Fonts.GEOMATRIX, 70);
+        FontSize title = new FontSize(Fonts.GEOMATRIX, 120);
+        FontSize player = new FontSize(Fonts.GEOMATRIX, 100);
+        double opacity = Math.abs(Math.sin(timeLogger.getFrames()/50d))*0.3 + 0.4;
 
-        title.draw("POST GAME STATS", 130, 45, colour.setBlendColour(0,0,0,opacity));
+        title.draw("POST GAME STATS", 130, 130, colour.setBlendColour(0,0,0,opacity));
 
-
-        geomatrix.draw(String.format("PLAYER %d", currentPlayer.getId()), 170,320, colour.setBlendColour(0,0,0));
+        colour.setBlendColour(0,0,0,1);
+        player.draw(String.format("PLAYER %d", currentPlayer.getId()), 170,320, colour.setBlendColour(0,0,0, 0.7));
+        colour.setBlendColour(1,1,1,1);
         geomatrix.draw(String.format("OBSTACLES DODGED: %d", stats.getObstaclesDodged()), 170,460, colour);
         geomatrix.draw(String.format("CLOSE CALLS: %d", stats.getCloseCalls()), 170,540, colour);
         geomatrix.draw(String.format("%s : %d", currentPlayer.getSideCharacter().getPower(), stats.getSpecial()), 170,620, colour);
-        geomatrix.draw(String.format("PowerUps Used: %d", stats.getSpecial()), 170,600, colour);
-        geomatrix.draw(String.format("TOTAL POINTS: %f", currentPlayer.getPlayerStats().getPoints()), 170,680, colour);
+        geomatrix.draw(String.format("POWERUPS USED: %d", stats.getSpecial()), 170,700, colour);
+        geomatrix.draw(String.format("TOTAL POINTS: %d", (int) currentPlayer.getPlayerStats().getPoints()), 170,900, colour);
+
+        FontSize winner = new FontSize(Fonts.GEOMATRIX, 50);
+        FontSize winnerName = new FontSize(Fonts.GEOMATRIX, 70);
+        FontSize sideWinner = new FontSize(Fonts.GEOMATRIX, 30);
+
+        winner.draw("WINNER:", 1315,800, colour.setBlendColour(1,1,1));
+        winnerName.draw(settingsSingleton.getWinner().getCharacter().getFullName(), 1240,850, colour.setBlendColour(1,1,1));
+        sideWinner.draw(settingsSingleton.getWinner().getSideCharacter().getName(), 1333,870, colour.setBlendColour(1,1,1));
+
+        new ImagePoint(String.format("res/sidecharacters/%s/ingame.png",
+                settingsSingleton.getPlayers().get(ptr).getSideCharacter().getName()), new Point(1360, 900)).draw();
+
+    }
+
+    public void sortCharacterRenders() {
+        for (ImagePoint imagePoint: imagePointManagerSingleton.getImages()) {
+            if ("characterRender".equalsIgnoreCase(imagePoint.getTag())) {
+                imagePoint.move(-2000 * ptr, 0);
+            }
+        }
     }
 }
