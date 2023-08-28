@@ -1,5 +1,4 @@
 import Enums.MapNames;
-import Enums.Obstacles;
 import Enums.TileType;
 import bagel.*;
 import bagel.Window;
@@ -12,10 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
-
-import java.awt.DisplayMode;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 
 
 /** "The Climb" - A game created by Bill Nguyen **/
@@ -176,7 +171,7 @@ public class Game extends AbstractGame {
             if (input!= null) {
                 imagePointManagerSingleton.getImageWithTag("shadow").setPos(1000 + (Window.getWidth()/2d - input.getMouseX())/200, 24 + (Window.getHeight()/2d - input.getMouseY())/200);
             }
-            double opacity = Math.abs(Math.sin(timeLogger.getFrames()/250d))*0.3 + 0.4;
+            double opacity = Math.abs(Math.sin(timeLogger.getTime()/250d))*0.3 + 0.4;
             imagePointManagerSingleton.getImageWithTag("shadow").setOpacity(opacity);
             updateDemo(input);
         }
@@ -211,7 +206,7 @@ public class Game extends AbstractGame {
             if (input!= null) {
                 imagePointManagerSingleton.getImageWithTag("shadow").setPos(1000 + (Window.getWidth()/2d - input.getMouseX())/200, 24 + (Window.getHeight()/2d - input.getMouseY())/200);
             }
-            double opacity = Math.abs(Math.sin(timeLogger.getFrames()/250d))*0.3 + 0.4;
+            double opacity = Math.abs(Math.sin(timeLogger.getTime()/250d))*0.3 + 0.4;
             imagePointManagerSingleton.getImageWithTag("shadow").setOpacity(opacity);
             updateDemo(input);
 
@@ -487,55 +482,57 @@ public class Game extends AbstractGame {
                     musicPlayer.clear();
                     settingsSingleton.setGameStateString("Game");
                     eventsListener.addEvent(new EventGameStart());
-                    canInteract = false;
                 }
                 if (canInteract) {
                     boolean playingAnimation = false;
                     boolean theWorld = false;
-                    for (Player player : players) {
-                        if (player.getSideCharacter().isActivating()) {
-                            musicPlayer.setMainVolume(0);
-                            if ((player.getSideCharacter().getName().equals(CharacterNames.DIO)) || player.getSideCharacter().getName().equals(CharacterNames.JOTARO)) {
-                                theWorld = true;
+                    boolean dio = dio();
+                    if (!dio) {
+                        for (Player player : players) {
+                            if (player.getSideCharacter().isActivating()) {
+                                musicPlayer.setMainVolume(0);
+                                if ((player.getSideCharacter().getName().equals(CharacterNames.DIO)) || player.getSideCharacter().getName().equals(CharacterNames.JOTARO)) {
+                                    theWorld = true;
+                                }
+                            }
+                            if (player.getSideCharacter().isAnimating()) {
+                                musicPlayer.setMainVolume(0);
+                                playingAnimation = true;
                             }
                         }
-                        if (player.getSideCharacter().isAnimating()) {
-                            musicPlayer.setMainVolume(0);
-                            playingAnimation = true;
+                        if (!gameSettingsSingleton.getMap().hasFinished()) {
+                            if (!playingAnimation) {
+                                musicPlayer.setMainVolume(musicPlayer.getMainVolume());
+                                gameEntities.spawnObstacles();
+                                gameEntities.spawnPowerUps();
+                            }
                         }
-                    }
-                    if (!gameSettingsSingleton.getMap().hasFinished()) {
                         if (!playingAnimation) {
                             musicPlayer.setMainVolume(musicPlayer.getMainVolume());
-                            gameEntities.spawnObstacles();
-                            gameEntities.spawnPowerUps();
-                        }
-                    }
-                    if (!playingAnimation) {
-                        musicPlayer.setMainVolume(musicPlayer.getMainVolume());
-                        updateExp();
-                        if (!theWorld) {
-                            updatePlayerMovement(input);
-                            gameEntities.updateObjects();
-                            if (!gameSettingsSingleton.getMap().hasFinished()) {
-                                gameSettingsSingleton.getMap().updateTiles(gameSettingsSingleton.getMapSpeed());
-                            }
-                        } else {
-                            for (Player player : players) {
-                                if (player.getSideCharacter().isActivating() &&
-                                        Arrays.asList(CharacterNames.JOTARO, CharacterNames.DIO).contains(player.getSideCharacter().getName())) {
-                                    if (input != null) {
-                                        player.moveCharacter(input);
+                            updateExp();
+                            if (!theWorld) {
+                                updatePlayerMovement(input);
+                                gameEntities.updateObjects();
+                                if (!gameSettingsSingleton.getMap().hasFinished()) {
+                                    gameSettingsSingleton.getMap().updateTiles(gameSettingsSingleton.getMapSpeed());
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    if (player.getSideCharacter().isActivating() &&
+                                            Arrays.asList(CharacterNames.JOTARO, CharacterNames.DIO).contains(player.getSideCharacter().getName())) {
+                                        if (input != null) {
+                                            player.moveCharacter(input);
+                                        }
                                     }
                                 }
                             }
                         }
+                        updateAbilities();
+                        gameEntities.checkCollisionPowerUps();
+                        gameEntities.checkCollisionObstacles();
+                        checkCollisionTiles();
+                        checkIfGameEnded();
                     }
-                    updateAbilities();
-                    gameEntities.checkCollisionPowerUps();
-                    gameEntities.checkCollisionObstacles();
-                    checkCollisionTiles();
-                    checkIfGameEnded();
                 }
                 gameSettingsSingleton.getMap().update();
             }
@@ -662,7 +659,7 @@ public class Game extends AbstractGame {
 //                                playingDialogue = true;
 //                                endDialogue = false;
 //                                gameSettingsSingleton.getObstaclesSettingsSingleton().applySettings(true, true, true);
-//                                gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency("StunBall", 0.995);
+//                                gameSettingsSingleton.getObstaclesSettingsSingleton().changeFrequency("ObstacleDio", 0.995);
 //                            }
 //
 //                            if (endDialogue) {
@@ -1026,10 +1023,10 @@ public class Game extends AbstractGame {
                             new FontSize(Fonts.AGENCYB, 40), new Point(Window.getWidth()/2.0 - 150, 90)));
                     storySettingsSingleton.initialiseTime();
                 }
-                if (timeLogger.getFrames() - storySettingsSingleton.getInitialTime() == Math.round(4.2 * frames)) {
+                if (timeLogger.getTime() - storySettingsSingleton.getInitialTime() == Math.round(4.2 * frames)) {
                     obstacles.add(new ObstacleRock(new Point(players.get(0).getCharacter().getPos().x, 0)));
                 }
-                else if (timeLogger.getFrames() - storySettingsSingleton.getInitialTime() == Math.round(4.5 * frames)) {
+                else if (timeLogger.getTime() - storySettingsSingleton.getInitialTime() == Math.round(4.5 * frames)) {
                     dialogue.setPlayingDialogue(true);
                 }
                 if (obstacles.size() == 1) {
@@ -1135,24 +1132,23 @@ public class Game extends AbstractGame {
         render();
 
         eventsListener.updateEvents();
-        timeLogger.updateFrames();
+        timeLogger.updateTime();
         canInteract = eventsListener.canInteract();
 
         // TEST GAME
         if (settingsSingleton.getGameState() == -100) {
-            settingsSingleton.setGameState(6);
+            settingsSingleton.setGameState(5);
             settingsSingleton.setGameMode(1);
-            settingsSingleton.setPlayers(2);
+            settingsSingleton.setPlayers(1);
             players.get(0).setCharacter(new Character(CharacterNames.MIKU));
-            players.get(0).setSideCharacter(new SideJotaro());
+            players.get(0).setSideCharacter(new SideZoro());
+            players.get(0).getCharacter().gainSpecialAbilityBar(100);
             players.get(0).getCharacter().setPowerUp(new PowerUpMinimiser());
-            players.get(1).setCharacter(new Character(CharacterNames.NAO));
-            players.get(1).setSideCharacter(new SideHisoka());
+//            players.get(1).setCharacter(new Character(CharacterNames.NAO));
+//            players.get(1).setSideCharacter(new SideHisoka());
             gameSettingsSingleton.setMap(new Map(MapNames.TRAINING_GROUND));
             gameSettingsSingleton.getMap().generateMap();
-            gameSettingsSingleton.setMapSpeed(0);
-            gameSettingsSingleton.getObstaclesSettingsSingleton().toggle(Obstacles.BALL);
-            gameSettingsSingleton.getObstaclesSettingsSingleton().toggle(Obstacles.ROCK);
+            gameSettingsSingleton.setMapSpeed(1);
         }
     }
 
@@ -1218,7 +1214,7 @@ public class Game extends AbstractGame {
                 if (eventsListener.contains(EventCharacterPicked.class)) {
                     EventInterface event = eventsListener.getEvent(EventCharacterPicked.class);
                     Drawing.drawRectangle(0, Window.getHeight()/2d - characterFont.getSize()/2d,
-                            5*timeLogger.getFrames()/ (double) event.getFrames(), characterFont.getSize(),
+                            5*timeLogger.getTime()/ (double) event.getFrames(), characterFont.getSize(),
                             new Colour(1,1,1,0.5));
                 }
             }
@@ -1323,8 +1319,6 @@ public class Game extends AbstractGame {
             new ImagePoint("res/menu/bar.png", new Point(-200,0)).draw();
 
             drawMapPicked();
-            Image dio = new Image("res/maps/mapcharacters/dio.png");
-            dio.drawFromTopLeft(Window.getWidth() - dio.getWidth(), Window.getHeight() - dio.getHeight());
             new FontSize(Fonts.TITANONE, 90).draw(mapName, 1275 - 200,Window.getHeight()/2d);
         }
         else if (settingsSingleton.getGameState() == 6) {
@@ -1605,7 +1599,7 @@ public class Game extends AbstractGame {
             border.drawFromTopLeft(i * ((border.getWidth()*2/3) + spacing) + spacing/3 + timeSpace, 0);
             String name = String.format("P%d\nSelecting...", currentPlayer.getId());
             if (currentPlayer.getId() == getIDOfPlayerPickingCharacter()) {
-                if (TimeLogger.getInstance().getFrames() % 144 < 72) {
+                if (TimeLogger.getInstance().getTime() % 144 < 72) {
                     name = String.format("P%d", currentPlayer.getId());
                 }
                 ImagePoint characterPeek = new ImagePoint(String.format("res/characters/%s/peek.png", currentCharacter.getFullName()),
@@ -2235,7 +2229,7 @@ public class Game extends AbstractGame {
             powerUp.draw();
         }
         for (Obstacle obstacle: obstacles) {
-            obstacle.getImage().drawFromTopLeft(obstacle.getPos().x, obstacle.getPos().y);
+            obstacle.draw();
         }
         if (gameSettingsSingleton.getMap() != null && !gameSettingsSingleton.getMap().hasFinished()) {
             drawCurrentHeight();
@@ -2297,7 +2291,7 @@ public class Game extends AbstractGame {
              ImagePoint shadow = new ImagePoint(String.format("res/Characters/%s/render.png", charName),
                      imagePointManagerSingleton.get(String.format("res/Characters/%s/render.png", charName)).getPos());
              shadow.setPos(shadow.getPos().x + xOffset, shadow.getPos().y + yOffset);
-             double opacity = Math.abs(Math.sin(timeLogger.getFrames()/70d))*0.3 + 0.4;
+             double opacity = Math.abs(Math.sin(timeLogger.getTime()/70d))*0.3 + 0.4;
              shadow.setOpacity(opacity);
              shadow.setDarken(true);
              shadow.draw();
@@ -2419,6 +2413,12 @@ public class Game extends AbstractGame {
                 notPicked ++;
             }
         }
+
+        String character = getCharacterLinkedWithMap(playableMaps.get(middleIndex).getName());
+
+        Image characterRender = new Image(String.format("res/maps/mapcharacters/%s/%s.png",
+                character, character));
+        characterRender.drawFromTopLeft(0,0);
     }
 
     public void loadComputer(Computer computer) {
@@ -2456,6 +2456,9 @@ public class Game extends AbstractGame {
             ptr = settingsSingleton.getPlayers().indexOf(settingsSingleton.getWinner());
             eventsListener.addEvent(new EventGameFinished());
         }
+        else if (playersAlive.size() == 0) {
+            eventsListener.addEvent(new EventGameFinished());
+        }
     }
 
     public void drawStats() {
@@ -2465,7 +2468,7 @@ public class Game extends AbstractGame {
         FontSize geomatrix = new FontSize(Fonts.GEOMATRIX, 70);
         FontSize title = new FontSize(Fonts.GEOMATRIX, 120);
         FontSize player = new FontSize(Fonts.GEOMATRIX, 100);
-        double opacity = Math.abs(Math.sin(timeLogger.getFrames()/50d))*0.3 + 0.4;
+        double opacity = Math.abs(Math.sin(timeLogger.getTime()/50d))*0.3 + 0.4;
 
         title.draw("POST GAME STATS", 130, 130, colour.setBlendColour(0,0,0,opacity));
 
@@ -2497,5 +2500,41 @@ public class Game extends AbstractGame {
                 imagePoint.move(-2000 * ptr, 0);
             }
         }
+    }
+
+    public String getCharacterLinkedWithMap(String name) {
+        if (name.equals(MapNames.ROSWAALS_MANSION.toString().replace("_", " "))) {
+            return "ROSWAAL";
+        }
+        else if (name.equals(MapNames.DRESSROSA.toString().replace("_", " "))) {
+            return "DOFLAMINGO";
+        }
+        else if (name.equals(MapNames.PLANET_79.toString().replace("_", " "))) {
+            return "FRIEZA";
+        }
+        else if (name.equals(MapNames.WALL_OF_MARIA.toString().replace("_", " "))) {
+            return "EREN";
+        }
+        else if (name.equals(MapNames.CENTRAL_CATHEDRAL.toString().replace("_", " "))) {
+            return "HEATHCLIFF";
+        }
+        else if (name.equals(MapNames.DIOS_MANSION.toString().replace("_", " "))){
+            return "DIO";
+        }
+        else if (name.equals(MapNames.GREED_ISLAND.toString().replace("_", " "))){
+            return "ALL FOR ONE";
+        }
+        else {
+            return "BILL";
+        }
+    }
+
+    public boolean dio() {
+        for (EventInterface event: eventsListener.events) {
+            if (event.dio) {
+                return true;
+            }
+        }
+        return false;
     }
 }

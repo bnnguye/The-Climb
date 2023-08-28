@@ -1,5 +1,3 @@
-import bagel.util.Point;
-
 import java.io.*;
 import java.util.Scanner;
 
@@ -44,7 +42,7 @@ public class StorySettingsSingleton {
     public int getDialogueInt() { return dialogueInt;}
 
     public void initialiseTime() {
-        initialTime = TimeLogger.getInstance().getFrames();
+        initialTime = TimeLogger.getInstance().getTime();
     }
 
     public int getInitialTime() { return initialTime;}

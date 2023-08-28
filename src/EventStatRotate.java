@@ -2,7 +2,7 @@ public class EventStatRotate extends EventInterface {
     public EventStatRotate(String event) {
         this.event = event;
         this.canInteract = false;
-        this.frames = 20 + timeLogger.getFrames();
+        this.frames = 20 + timeLogger.getTime();
     }
 
     public void process() {

@@ -12,7 +12,7 @@ public class EventSideCharacterRotate extends EventInterface{
 
     public EventSideCharacterRotate(String event) {
         int duration = TimeLogger.getInstance().getRefreshRate()/8;
-        this.frames = duration + TimeLogger.getInstance().getFrames();
+        this.frames = duration + TimeLogger.getInstance().getTime();
         this.calls = duration;
         this.event = event;
     }
@@ -20,7 +20,7 @@ public class EventSideCharacterRotate extends EventInterface{
     public void process() {
         getAllCharacterImages();
 
-        int currentTime = TimeLogger.getInstance().getFrames();
+        int currentTime = TimeLogger.getInstance().getTime();
         double spacing = Window.getHeight()/4d;
         double maxHeight = Window.getHeight()/8d;
         double minHeight = Window.getHeight()*3/4d;

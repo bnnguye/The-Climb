@@ -108,6 +108,17 @@ public class Player {
         return controls.get(control);
     }
 
+    public void reverseControls() {
+        swapControls("Left", "Right");
+        swapControls("Up", "Down");
+    }
+
+    private void swapControls(String c1, String c2) {
+        Keys temp = controls.get(c1);
+        controls.put(c1, controls.get(c2));
+        controls.put(c2, temp);
+    }
+
     public void setCharacter(Character character) {
         this.character = character;
     }

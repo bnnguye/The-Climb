@@ -1,7 +1,7 @@
 public class EventGameModeSelected extends EventInterface {
 
     public EventGameModeSelected(int frames, String event) {
-        this.frames = frames + TimeLogger.getInstance().getFrames();
+        this.frames = frames + TimeLogger.getInstance().getTime();
         this.event = event;
     }
 

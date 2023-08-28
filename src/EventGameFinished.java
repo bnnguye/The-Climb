@@ -10,7 +10,7 @@ public class EventGameFinished extends EventInterface {
         this.event = "EventGameFinished";
         this.canInteract = false;
         this.totalDuration = 3;
-        this.frames = totalDuration * TimeLogger.getInstance().getRefreshRate() + timeLogger.getFrames();
+        this.frames = totalDuration * TimeLogger.getInstance().getRefreshRate() + timeLogger.getTime();
         imagePointManagerSingleton.add(new ImagePoint("res/misc/black.png", new Point(0, -Window.getHeight())));
         imagePointManagerSingleton.get("res/misc/black.png").setOpacity(0);
     }

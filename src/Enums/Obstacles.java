@@ -1,5 +1,6 @@
 package Enums;
 
 public enum Obstacles {
-    ROCK, BALL, STUNBALL, SPEEDDOWN
+    ROCK, BALL, SPEEDDOWN,
+    DIO
 }

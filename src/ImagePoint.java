@@ -1,6 +1,7 @@
 import bagel.DrawOptions;
 import bagel.Image;
 import bagel.util.Point;
+import bagel.util.Rectangle;
 
 /**
  * The class ImagePoint acts as a container/extension to bagel.Image
@@ -47,6 +48,21 @@ public class ImagePoint {
                 DO.setBlendColour(1,1,1,opacity);
             }
             new Image(filename).drawFromTopLeft(pos.x - ((getWidth() * (1 - scale))/2), pos.y - ((getHeight() * (1 - scale))/2), DO);
+        }
+    }
+
+    public void draw(double x, double y) {
+        if (filename != null) {
+            if (flashing) {
+                DO.setBlendColour(0.5, 0.5, 0.5,opacity);
+            }
+            else if (darken) {
+                DO.setBlendColour(0,0,0,opacity);
+            }
+            else {
+                DO.setBlendColour(1,1,1,opacity);
+            }
+            new Image(filename).drawFromTopLeft(pos.x - ((getWidth() * (1 - scale))/2) + x, pos.y - ((getHeight() * (1 - scale))/2) + y, DO);
         }
     }
 
@@ -121,6 +137,10 @@ public class ImagePoint {
 
     public void setColour(double r, double g, double b) {
         DO.setBlendColour(r, g, b, opacity);
+    }
+
+    public Rectangle getRectangle() {
+        return new Rectangle(this.pos, getWidth() * scale, getHeight() * scale);
     }
 
 }

@@ -9,7 +9,7 @@ public class EventShakeMap extends EventInterface {
 
     public EventShakeMap (int duration) {
         this.event = "Event Shake Map";
-        this.frames = duration + TimeLogger.getInstance().getFrames();
+        this.frames = duration + TimeLogger.getInstance().getTime();
         this.duration = duration;
         if (GameSettingsSingleton.getInstance().getMap() != null) {
             GameSettingsSingleton.getInstance().getMap().shake(50);
@@ -18,7 +18,7 @@ public class EventShakeMap extends EventInterface {
     }
 
     public void process() {
-        int currentTime = TimeLogger.getInstance().getFrames();
+        int currentTime = TimeLogger.getInstance().getTime();
         Map map = GameSettingsSingleton.getInstance().getMap();
         canInteract = frames - currentTime <= duration / 2;
 

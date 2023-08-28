@@ -9,7 +9,7 @@ public class EventGameStateZero extends EventInterface {
 
     public EventGameStateZero() {
         this.event = "EventGameStateZero";
-        this.frames = 40 + TimeLogger.getInstance().getFrames();
+        this.frames = 40 + TimeLogger.getInstance().getTime();
         imagePointManagerSingleton.add(new ImagePoint("res/menu/main/leftcover.png", new Point(0,5000)));
         imagePointManagerSingleton.add(new ImagePoint("res/menu/main/rightcover.png", new Point(0,5000)));
     }

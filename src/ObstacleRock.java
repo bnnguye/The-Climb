@@ -1,45 +1,37 @@
-import Enums.Obstacles;
-import bagel.DrawOptions;
-import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
 import bagel.util.Rectangle;
 
 public class ObstacleRock extends Obstacle {
-    private final Obstacles type = Obstacles.ROCK;
-    private final Image image = new Image("res/obstacles/Rock.png");
+    private final ImagePoint image = new ImagePoint("res/obstacles/Rock.png",
+            new Point(Window.getWidth() * Math.random(), -600));
     private final double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public ObstacleRock(Point point) {
-        this.pos = point;
+        image.setPos(point);
     }
 
     public ObstacleRock() {
-        super();
+        image.setScale(0.1);
     }
 
     public void move() {
-        this.pos = new Point(pos.x, pos.y + speed + offset);
+        image.move(0, speed + offset);
     }
 
-    public Image getImage() {
+    public ImagePoint getImage() {
         return image;
     }
 
-    public Rectangle getBoundingBox() {
-        return new Rectangle(pos, image.getWidth(), image.getHeight());
+    public Rectangle getBoundingBox() { return image.getRectangle();
     }
 
     public Point getPos() {
-        return pos;
+        return image.getPos();
     }
 
     public void setPos(Point point) {
-        this.pos = point;
-    }
-
-    public Obstacles getType() {
-        return type;
+        image.setPos(point);
     }
 
     public void adjustOffset(double offset) {
@@ -51,14 +43,18 @@ public class ObstacleRock extends Obstacle {
     }
 
     public void draw() {
-        image.drawFromTopLeft(pos.x, pos.y);
+        image.draw();
     }
 
     public void draw(double x, double y) {
-        image.drawFromTopLeft(pos.x + x, pos.y + y);
+        image.draw(x, y);
     }
 
     public void collide(Character character) {
         character.reduceLive();
+    }
+
+    public void increaseScale(double val) {
+
     }
 }

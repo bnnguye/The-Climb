@@ -150,7 +150,7 @@ public class SideZoro extends SideCharacter{
                 for (Obstacle obstacle: obstacles) {
                     for (Point point: hitbox) {
                         Rectangle rectangle = new Rectangle(point, 5,5);
-                        if(obstacle.getImage().getBoundingBoxAt(obstacle.getPos()).intersects(rectangle)) {
+                        if(obstacle.getBoundingBox().intersects(rectangle)) {
                             obstaclesToRemove.add(obstacle);
                             break;
                         }
