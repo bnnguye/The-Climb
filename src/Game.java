@@ -820,6 +820,7 @@ public class Game extends AbstractGame {
             }
             else {
                 if (settingsSingleton.getGameStateString().equalsIgnoreCase("Game Finished")) {
+                    eventsListener.events.clear();
                     sortCharacterRenders();
                     settingsSingleton.setGameStateString("Retry or Menu?");
                     musicPlayer.setMainMusic("music/misc/Fail.wav");
@@ -1137,7 +1138,7 @@ public class Game extends AbstractGame {
 
         // TEST GAME
         if (settingsSingleton.getGameState() == -100) {
-            settingsSingleton.setGameState(5);
+            settingsSingleton.setGameState(6);
             settingsSingleton.setGameMode(1);
             settingsSingleton.setPlayers(1);
             players.get(0).setCharacter(new Character(CharacterNames.MIKU));
@@ -1146,7 +1147,7 @@ public class Game extends AbstractGame {
             players.get(0).getCharacter().setPowerUp(new PowerUpMinimiser());
 //            players.get(1).setCharacter(new Character(CharacterNames.NAO));
 //            players.get(1).setSideCharacter(new SideHisoka());
-            gameSettingsSingleton.setMap(new Map(MapNames.TRAINING_GROUND));
+            gameSettingsSingleton.setMap(new Map(MapNames.WALL_OF_MARIA));
             gameSettingsSingleton.getMap().generateMap();
             gameSettingsSingleton.setMapSpeed(1);
         }
@@ -2430,7 +2431,7 @@ public class Game extends AbstractGame {
             }
         }
         for (SideCharacter character: allSideCharacters) {
-            if (!players.get(0).getSideCharacter().getName().equalsIgnoreCase(character.getName())) {
+            if (!players.get(0).getSideCharacter().getName().equalsIgnoreCase(character.getName()) && !character.getName().equals(CharacterNames.GOKU)) {
                 computer.setSideCharacter(character);
                 System.out.println("Computer : " + computer.getSideCharacter().getName());
                 break;

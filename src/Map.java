@@ -299,11 +299,12 @@ public class Map {
         else if (name == MapNames.PLANET_79) {
         }
         else if (name == MapNames.WALL_OF_MARIA) {
+            eventTimes.addAll(Arrays.asList(100, 3000, 5000));
         }
         else if (name == MapNames.CENTRAL_CATHEDRAL) {
         }
         else if (name == MapNames.DIOS_MANSION) {
-            eventTimes.addAll(Arrays.asList(50));
+            eventTimes.addAll(Arrays.asList(1000, 3000, 5000));
         }
         else if (name == MapNames.GREED_ISLAND) {
         }

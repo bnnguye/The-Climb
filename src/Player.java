@@ -79,7 +79,7 @@ public class Player {
         else if (input.isDown(controls.get("Down"))) {
             character.move(Controls.S);
         }
-        else if (input.wasPressed(controls.get("Primary"))) {
+        else if (input.wasPressed(controls.get("Primary")) && character.hasSpecialAbility()) {
             character.useSpecialAbility();
             sideCharacter.activateAbility(this);
         }

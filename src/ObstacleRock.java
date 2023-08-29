@@ -9,6 +9,7 @@ public class ObstacleRock extends Obstacle {
 
     public ObstacleRock(Point point) {
         image.setPos(point);
+        image.setScale(0.1);
     }
 
     public ObstacleRock() {
@@ -55,6 +56,6 @@ public class ObstacleRock extends Obstacle {
     }
 
     public void increaseScale(double val) {
-
+        image.setScale(image.getScale() + val);
     }
 }
