@@ -11,7 +11,7 @@ public class EventEren extends EventInterface {
     public EventEren() {
         canInteract = true;
         musicPlayer.addMusic("music/mapEvents/Eren/eren.wav");
-        frames = timeLogger.getTime() + 22 * refreshRate;
+        frames = timeLogger.getTime() + 18 * refreshRate;
         imagePointManagerSingleton.add(render);
     }
 

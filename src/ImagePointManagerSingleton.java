@@ -146,4 +146,12 @@ public class ImagePointManagerSingleton {
     public void add(int index, ImagePoint imagePoint) {
         images.add(index, imagePoint);
     }
+
+    public void removeAll(ArrayList<ImagePoint> imagesToBeRemoved) {
+        images.removeAll(imagesToBeRemoved);
+    }
+
+    public void addAll(ArrayList<ImagePoint> imagesToBeAdded) {
+        images.addAll(imagesToBeAdded);
+    }
 }

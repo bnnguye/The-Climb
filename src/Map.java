@@ -295,6 +295,7 @@ public class Map {
         if (name == MapNames.ROSWAALS_MANSION) {
         }
         else if (name == MapNames.DRESSROSA) {
+            eventTimes.addAll(Arrays.asList(500, 1500, 2500));
         }
         else if (name == MapNames.PLANET_79) {
         }
