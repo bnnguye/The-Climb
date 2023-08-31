@@ -8,7 +8,7 @@ public class EventGameMode extends EventInterface {
 
     public EventGameMode() {
         duration = TimeLogger.getInstance().getRefreshRate()/2;
-        this.frames = TimeLogger.getInstance().getFrames() + duration;
+        this.frames = TimeLogger.getInstance().getTime() + duration;
 
         if (imagePointManagerSingleton.get("res/menu/main/leftcover.png") == null) {
             imagePointManagerSingleton.add(new ImagePoint("res/menu/main/leftcover.png", new Point(0,0)));
@@ -17,7 +17,7 @@ public class EventGameMode extends EventInterface {
     }
 
     public void process() {
-        int currentTime = TimeLogger.getInstance().getFrames();
+        int currentTime = TimeLogger.getInstance().getTime();
         int offset = frames - currentTime <= duration/2? 50: -50;
 
 

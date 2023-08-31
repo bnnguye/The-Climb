@@ -11,7 +11,7 @@ public class EventMapRotate extends EventInterface {
     public EventMapRotate(String direction) {
         int duration = TimeLogger.getInstance().getRefreshRate()/8;
         this.duration = duration;
-        this.frames = duration + TimeLogger.getInstance().getFrames();
+        this.frames = duration + TimeLogger.getInstance().getTime();
         this.event = direction;
     }
 
@@ -25,7 +25,7 @@ public class EventMapRotate extends EventInterface {
         double maxScale = 0.3;
         int middleIndex = mapImages.size() % 2 == 1 ? mapImages.size() / 2 + 1 : mapImages.size() / 2;
 
-        if (frames - TimeLogger.getInstance().getFrames() - duration == 0) {
+        if (frames - TimeLogger.getInstance().getTime() - duration == 0) {
             mapImages.get(middleIndex).setScale(minScale);
             mapImages.get(middleIndex).setOpacity(0.3);
         }
@@ -49,7 +49,7 @@ public class EventMapRotate extends EventInterface {
             index++;
         }
 
-        if (frames - TimeLogger.getInstance().getFrames() == 1) {
+        if (frames - TimeLogger.getInstance().getTime() == 1) {
             double xOffset = 400;
 
             if (event.contains("DOWN")) {
@@ -71,8 +71,8 @@ public class EventMapRotate extends EventInterface {
                 ImagePoint temp = imagePointManagerSingleton.get(mapImages.get(0));
                 imagePointManagerSingleton.remove(temp);
                 imagePointManagerSingleton.add(temp);
-                temp.setPos(200 + Window.getWidth()/2d - (maxScale*temp.getWidth()/2) + ((middleIndex-1) * xOffset),
-                        (Window.getHeight()/2d + (maxScale*temp.getHeight()/2) + spacing
+                temp.setPos(-1000 + Window.getWidth()/2d - (maxScale*temp.getWidth()/2) + (middleIndex * xOffset),
+                        - 250 + (Window.getHeight()/2d + (maxScale*temp.getHeight()/2) + spacing
                                 + (middleIndex-2) * (spacing + (temp.getHeight()*minScale))));
 
                 getAllMapImages();

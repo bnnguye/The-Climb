@@ -9,9 +9,12 @@ public abstract class EventInterface {
     TimeLogger timeLogger = TimeLogger.getInstance();
     int refreshRate = timeLogger.getRefreshRate();
 
+    public boolean dio = false;
+
     ArrayList<EventInterface> eventsToBeAdded = new ArrayList<>();
 
     public int frames;
+    protected int timePassed = 0;
 
     public String event;
 

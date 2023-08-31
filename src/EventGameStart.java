@@ -2,7 +2,6 @@ import bagel.DrawOptions;
 import bagel.Drawing;
 import bagel.Window;
 import bagel.util.Colour;
-import bagel.util.Point;
 
 public class EventGameStart extends  EventInterface {
 
@@ -11,11 +10,11 @@ public class EventGameStart extends  EventInterface {
     private boolean init = false;
 
     public EventGameStart() {
-        this.frames = (5 * refreshRate) + TimeLogger.getInstance().getFrames();
+        this.frames = (5 * refreshRate) + TimeLogger.getInstance().getTime();
     }
 
     public void process() {
-        int currentTime = TimeLogger.getInstance().getFrames();
+        int currentTime = TimeLogger.getInstance().getTime();
         FontSize countDownFont = new FontSize(Fonts.DEJAVUSANS, 250);
         Map map = GameSettingsSingleton.getInstance().getMap();
         canInteract = false;

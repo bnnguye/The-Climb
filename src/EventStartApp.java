@@ -8,7 +8,7 @@ public class EventStartApp extends EventInterface {
 
     public EventStartApp(int frames, String event) {
         this.event = event;
-        this.frames = TimeLogger.getInstance().getFrames() + frames;
+        this.frames = TimeLogger.getInstance().getTime() + frames;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class EventStartApp extends EventInterface {
     }
 
     public void process() {
-        double currentTime = TimeLogger.getInstance().getFrames();
+        double currentTime = TimeLogger.getInstance().getTime();
         double refreshRate = TimeLogger.getInstance().getRefreshRate();
         Drawing.drawRectangle(0,0, Window.getWidth(), Window.getHeight(), ColourPresets.WHITE.toColour());
         if (frames - currentTime <= 3.5 * refreshRate) {
@@ -44,7 +44,7 @@ public class EventStartApp extends EventInterface {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(1,1,1, 2*( currentTime - 1.5 * refreshRate)/(frames - 1.5 * refreshRate)));
         }
         if (frames - currentTime == 1) {
-            SettingsSingleton.getInstance().setGameState(0);
+            SettingsSingleton.getInstance().setGameState(-100);
         }
     }
 }

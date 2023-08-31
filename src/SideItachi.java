@@ -89,10 +89,10 @@ public class SideItachi extends SideCharacter{
         else {
             for(Obstacle obstacle: obstacles) {
                 if (this.left) {
-                    obstacle.getImage().drawFromTopLeft(obstacle.getPos().x - 50, obstacle.getPos().y);
+                    obstacle.draw(-50, 0);
                 }
                 else {
-                    obstacle.getImage().drawFromTopLeft(obstacle.getPos().x + 50, obstacle.getPos().y);
+                    obstacle.draw(50, 0);
                 }
             }
             for (PowerUp powerUp: powerUps) {

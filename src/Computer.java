@@ -81,7 +81,7 @@ public abstract class Computer extends Player {
             for (int i = 0; i < updateRate; i++) {
                 mockObstacle.move();
             }
-            dangerSpots.add(mockObstacle.getImage().getBoundingBoxAt(mockObstacle.getPos()));
+            dangerSpots.add(mockObstacle.getBoundingBox());
         }
 
         ArrayList<Rectangle> sortedDangerSpots = sort(dangerSpots);
@@ -118,13 +118,7 @@ public abstract class Computer extends Player {
     }
 
     private ArrayList<Rectangle> sort(ArrayList<Rectangle> obstacles) {
-        obstacles.sort(new Comparator<Rectangle>() {
-            @Override
-            public int compare(Rectangle o1, Rectangle o2) {
-                return Double.compare(o1.left(), o2.left());
-            }
-        });
-
+        obstacles.sort(Comparator.comparingDouble(Rectangle::left));
         return obstacles;
     }
 

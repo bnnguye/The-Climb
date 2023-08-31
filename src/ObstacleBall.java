@@ -7,37 +7,27 @@ import bagel.util.Rectangle;
 import java.util.ArrayList;
 
 public class ObstacleBall extends Obstacle {
-    private final Obstacles type = Obstacles.BALL;
-    private final Image image = new Image("res/obstacles/ball.png");
+    private final ImagePoint image = new ImagePoint("res/obstacles/ball.png",
+            new Point(Window.getWidth() * Math.random(), -600));
     private final double speed = 6 + GameSettingsSingleton.getInstance().getMapSpeed();
 
-    public ObstacleBall() {
-        this.pos = new Point(Window.getWidth() * Math.random(), -600);
-    }
-
-
     public void move() {
-        this.pos = new Point(pos.x, pos.y + speed + offset);
+        image.move(0, speed + offset);
     }
 
-    public Image getImage() {
+    public ImagePoint getImage() {
         return image;
     }
 
-    public Rectangle getBoundingBox() {
-        return new Rectangle(pos, image.getWidth(), image.getHeight());
+    public Rectangle getBoundingBox() { return image.getRectangle();
     }
 
     public Point getPos() {
-        return pos;
+        return image.getPos();
     }
 
     public void setPos(Point point) {
-        this.pos = point;
-    }
-
-    public Obstacles getType() {
-        return type;
+        image.setPos(point);
     }
 
     public void adjustOffset(double offset) {
@@ -49,11 +39,11 @@ public class ObstacleBall extends Obstacle {
     }
 
     public void draw() {
-        image.drawFromTopLeft(pos.x, pos.y);
+        image.draw();
     }
 
     public void draw(double x, double y) {
-        image.drawFromTopLeft(pos.x + x, pos.y + y);
+        image.draw(x, y);
     }
 
     public void collide(Character character) {

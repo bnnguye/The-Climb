@@ -13,7 +13,7 @@ public class EventCharacterPicked extends EventInterface {
 
     public EventCharacterPicked(int frames, String event) {
         duration = frames;
-        int currentTime = TimeLogger.getInstance().getFrames();
+        int currentTime = TimeLogger.getInstance().getTime();
         this.frames = frames + currentTime;
         this.event = event;
         this.canInteract = false;
@@ -38,18 +38,7 @@ public class EventCharacterPicked extends EventInterface {
             charImage.move(0.1,0);
         }
 
-        int currentTime = TimeLogger.getInstance().getFrames();
-        int refreshRate = TimeLogger.getInstance().getRefreshRate();
-//        if (duration - (frames - currentTime) < 2*refreshRate) {
-//            if ((frames - currentTime) % 8 == 0) {
-//                charImage.setFlashing(true);
-//            }
-//            else if ((frames - currentTime) % 4 == 0) {
-//                charImage.setFlashing(false);
-//            }
-//        }
-
-        if (frames - TimeLogger.getInstance().getFrames() == 1) {
+        if (frames - TimeLogger.getInstance().getTime() == 1) {
             charImage.setFlashing(false);
             charImage.setOpacity(0.3);
             charImage.setPos(originalPosition);

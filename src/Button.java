@@ -272,8 +272,7 @@ public class Button {
         sliders.addAll(Arrays.asList(
                 new SliderObstacle(Obstacles.BALL, new Point(400, 300)),
                 new SliderObstacle(Obstacles.ROCK, new Point(400, 400)),
-                new SliderObstacle(Obstacles.STUNBALL, new Point(400, 500)),
-                new SliderObstacle(Obstacles.SPEEDDOWN, new Point(400, 600))));
+                new SliderObstacle(Obstacles.SPEEDDOWN, new Point(400, 550))));
     }
 
     public Colour translucent(Colour colour) { return new Colour(colour.r, colour.g, colour.b, 0.5);

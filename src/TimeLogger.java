@@ -33,11 +33,11 @@ public class TimeLogger {
         return single_instance;
     }
 
-    public void updateFrames() {
+    public void updateTime() {
         frames++;
     }
 
-    public int getFrames() {
+    public int getTime() {
         return frames;
     }
 

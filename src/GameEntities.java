@@ -114,12 +114,6 @@ public class GameEntities {
                 obstacles.add(new ObstacleBall());
             }
         }
-        if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(Obstacles.STUNBALL)) {
-            if (Math.random()
-                    < ObstaclesSettingsSingleton.getInstance().getFrequency(Obstacles.STUNBALL)) {
-                obstacles.add(new ObstacleStunBall());
-            }
-        }
         if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(Obstacles.SPEEDDOWN)) {
             if (Math.random()
                     < ObstaclesSettingsSingleton.getInstance().getFrequency(Obstacles.SPEEDDOWN)) {

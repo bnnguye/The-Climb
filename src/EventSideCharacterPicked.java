@@ -11,7 +11,7 @@ public class EventSideCharacterPicked extends EventInterface {
 
     public EventSideCharacterPicked(int frames, String event) {
         System.out.println(frames/144);
-        int currentTime = TimeLogger.getInstance().getFrames();
+        int currentTime = TimeLogger.getInstance().getTime();
         this.frames = frames + currentTime;
         this.event = event;
     }
@@ -23,7 +23,7 @@ public class EventSideCharacterPicked extends EventInterface {
                 (characterRenders.size() / 2) + 1 : characterRenders.size() / 2;
 
         charImage = imagePointManagerSingleton.getImages().get(middleCharacterIndex);
-        int currentTime = TimeLogger.getInstance().getFrames();
+        int currentTime = TimeLogger.getInstance().getTime();
         canInteract = false;
         if ((frames - currentTime) % 8 == 0) {
             charImage.setFlashing(true);
@@ -31,7 +31,7 @@ public class EventSideCharacterPicked extends EventInterface {
         else if ((frames - currentTime) % 4 == 0) {
             charImage.setFlashing(false);
         }
-        if (frames - TimeLogger.getInstance().getFrames() == 1) {
+        if (frames - TimeLogger.getInstance().getTime() == 1) {
             charImage.setFlashing(false);
             charImage.setOpacity(0.3);
         }
