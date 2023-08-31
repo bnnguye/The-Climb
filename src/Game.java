@@ -1147,7 +1147,7 @@ public class Game extends AbstractGame {
             players.get(0).getCharacter().setPowerUp(new PowerUpMinimiser());
 //            players.get(1).setCharacter(new Character(CharacterNames.NAO));
 //            players.get(1).setSideCharacter(new SideHisoka());
-            gameSettingsSingleton.setMap(new Map(MapNames.DRESSROSA));
+            gameSettingsSingleton.setMap(new Map(MapNames.PLANET_79));
             gameSettingsSingleton.getMap().generateMap();
             gameSettingsSingleton.setMapSpeed(1);
         }

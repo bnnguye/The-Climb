@@ -66,10 +66,6 @@ public class Map {
         }
     }
 
-    public Image getMapPeek() {
-        return mapPeek;
-    }
-
     public String getName() {
         return name.toString().replace("_", " ");
     }
@@ -276,15 +272,12 @@ public class Map {
             else if (tile3 == null) {
                 tile3 = tile;
             }
-            else if (tile4 == null) {
-                tile4 = tile;
-            }
             else {
+                tile4 = tile;
                 newTiles.addAll(Arrays.asList(tile4, tile3, tile2, tile1));
                 tile1 = null;
                 tile2 = null;
                 tile3 = null;
-                tile4 = null;
             }
         }
         tiles = newTiles;
@@ -293,11 +286,13 @@ public class Map {
     public void loadEventTimes() {
         eventTimes.clear();
         if (name == MapNames.ROSWAALS_MANSION) {
+            eventTimes.addAll(Arrays.asList(500, 1500, 2500));
         }
         else if (name == MapNames.DRESSROSA) {
             eventTimes.addAll(Arrays.asList(500, 1500, 2500));
         }
         else if (name == MapNames.PLANET_79) {
+            eventTimes.addAll(Arrays.asList(100, 2000, 3000));
         }
         else if (name == MapNames.WALL_OF_MARIA) {
             eventTimes.addAll(Arrays.asList(100, 3000, 5000));
