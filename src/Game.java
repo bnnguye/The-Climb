@@ -534,6 +534,14 @@ public class Game extends AbstractGame {
                         checkIfGameEnded();
                     }
                 }
+                for (Player player: players) {
+                    if (input != null && input.wasPressed(player.getControl("Primary"))) {
+                        if (player.getCharacter().hasSpecialAbility()) {
+                            player.getCharacter().useSpecialAbility();
+                            player.getSideCharacter().activateAbility(player);
+                        }
+                    }
+                }
                 gameSettingsSingleton.getMap().update();
             }
 //            else {
@@ -1140,16 +1148,20 @@ public class Game extends AbstractGame {
         if (settingsSingleton.getGameState() == -100) {
             settingsSingleton.setGameState(6);
             settingsSingleton.setGameMode(1);
-            settingsSingleton.setPlayers(1);
+            settingsSingleton.setPlayers(2);
             players.get(0).setCharacter(new Character(CharacterNames.MIKU));
-            players.get(0).setSideCharacter(new SideZoro());
+            players.get(0).setSideCharacter(new SideDio());
             players.get(0).getCharacter().gainSpecialAbilityBar(100);
             players.get(0).getCharacter().setPowerUp(new PowerUpMinimiser());
+            players.get(1).setCharacter(new Character(CharacterNames.RAPHTALIA));
+            players.get(1).setSideCharacter(new SideJotaro());
+            players.get(1).getCharacter().gainSpecialAbilityBar(100);
+            players.get(1).getCharacter().setPowerUp(new PowerUpSpeedUp());
 //            players.get(1).setCharacter(new Character(CharacterNames.NAO));
 //            players.get(1).setSideCharacter(new SideHisoka());
             gameSettingsSingleton.setMap(new Map(MapNames.PLANET_79));
             gameSettingsSingleton.getMap().generateMap();
-            gameSettingsSingleton.setMapSpeed(1);
+            gameSettingsSingleton.setMapSpeed(0);
         }
     }
 
@@ -1326,10 +1338,8 @@ public class Game extends AbstractGame {
             if (settingsSingleton.getGameMode() == 1) {
                 menuTitle = null;
                 drawGame();
-                if (canInteract) {
-                    displayCharacterStats();
-                }
                 if(!gameSettingsSingleton.getMap().hasFinished()) {
+                    displayCharacterStats();
                 }
                 else {
                     FontSize tempFont = new FontSize(Fonts.AGENCYB, 100);
@@ -2168,8 +2178,7 @@ public class Game extends AbstractGame {
                 ImagePoint sideCharacter = new ImagePoint(String.format("res/sideCharacters/%s/inGame.png",
                         player.getSideCharacter().getName()),
                         new Point(0,0));
-                sideCharacter.setPos(characterDisplay.getWidth() +
-                                playerIndex*Window.getWidth()/(double)players.size(),
+                sideCharacter.setPos(characterDisplay.getWidth() + characterDisplay.getPos().x,
                         Window.getHeight() - characterDisplay.getHeight());
                 sideCharacter.setSection(0, 0, sideCharacter.getWidth(),
                         sideCharacter.getHeight()*player.getCharacter().getSpecialAbilityBar()/100);
