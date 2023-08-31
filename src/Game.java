@@ -906,6 +906,7 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 9) {
             if (!settingsSingleton.getGameStateString().equals("Create Your Own Map")) {
+                System.out.println("Map Custom");
                 offset = 0;
                 gameSettingsSingleton.setMap(new Map(MapNames.CUSTOM));
                 gameSettingsSingleton.getMap().generateMap();

@@ -131,31 +131,31 @@ public class Map {
 
     public Tile tileChooser(String line, Point point) {
         Tile tile = null;
-        if (line.equals("Basic")) {
+        if (line.equalsIgnoreCase("Basic")) {
             tile = new TileBasic(point);
         }
-        else if (line.equals("BasicTop")) {
+        else if (line.equalsIgnoreCase("BasicTop")) {
             tile = new TileBasicTop(point);
         }
-        else if (line.equals("BasicLeft")) {
+        else if (line.equalsIgnoreCase("BasicLeft")) {
             tile = new TileBasicLeft(point);
         }
-        else if (line.equals("Ice")) {
+        else if (line.equalsIgnoreCase("Ice")) {
             tile = new TileIce(point);
         }
-        else if (line.equals("IceTop")) {
+        else if (line.equalsIgnoreCase("IceTop")) {
             tile = new TileIceTop(point);
         }
-        else if (line.equals("IceLeft")) {
+        else if (line.equalsIgnoreCase("IceLeft")) {
             tile = new TileIceLeft(point);
         }
-        else if (line.equals("Slow")) {
+        else if (line.equalsIgnoreCase("Slow")) {
             tile = new TileSlow(point);
         }
-        else if (line.equals("SlowLeft")) {
+        else if (line.equalsIgnoreCase("SlowLeft")) {
             tile = new TileSlowLeft(point);
         }
-        else if (line.equals("BasicSad")) {
+        else if (line.equalsIgnoreCase("BasicSad")) {
             tile = new TileBasicSad(point);
         }
         return tile;
