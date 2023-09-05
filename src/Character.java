@@ -136,13 +136,13 @@ public class Character {
                 }
                 image = picture;
                 if (minimisedTimer > 0) {
-                        rectangle = new Rectangle(new Point(pos.x - image.getWidth()/4, pos.y - image.getHeight()/4), image.getWidth()/2, image.getHeight()/2);
+                        rectangle = new Rectangle(pos.x, pos.y, image.getWidth()/2, image.getHeight()/2);
                         //Drawing.drawRectangle(new Point(pos.x - image.getWidth()/4, pos.y - image.getHeight()/4), image.getWidth()/2, image.getHeight()/2, new Colour(0,0,0,0.5));
-                        picture.drawFromTopLeft(pos.x, pos.y, new DrawOptions().setScale(0.5, 0.5));
+                        picture.drawFromTopLeft(pos.x - image.getWidth()/4, pos.y - image.getHeight()/4, new DrawOptions().setScale(0.5, 0.5));
                         minimisedTimer--;
                 }
                 else {
-                        rectangle = new Rectangle(new Point(pos.x - image.getWidth()/2, pos.y - image.getHeight()/2), image.getWidth(), image.getHeight());
+                        rectangle = new Rectangle(pos.x, pos.y, image.getWidth(), image.getHeight());
                         //Drawing.drawRectangle(new Point(pos.x - image.getWidth()/2, pos.y - image.getHeight()/2), image.getWidth(), image.getHeight(), new Colour(0,0,0,0.5));
                         picture.drawFromTopLeft(pos.x, pos.y);
                 }
@@ -199,7 +199,9 @@ public class Character {
                 return lives <= 0;
         }
         public void stun(int frames) {stunTimer = frames;}
-        public Rectangle getRectangle() {return new Rectangle(pos.x, pos.y, this.rectangle.right()- this.rectangle.left(), this.rectangle.bottom() - this.rectangle.top());}
+        public Rectangle getRectangle() {
+                return rectangle;
+        }
 
         public boolean canMove() { return !(stunTimer > 0);
         }

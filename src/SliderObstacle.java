@@ -14,7 +14,7 @@ public class SliderObstacle extends Slider {
     private final Rectangle slide;
 
     private final double minimumFrequency = 0.002;
-    private final double maxFrequency = 0.005;
+    private final double maxFrequency = 0.04;
     private final double maxBSize = 1220;
 
     public SliderObstacle(Obstacles type, Point topLeft) {

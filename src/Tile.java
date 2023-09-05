@@ -16,5 +16,7 @@ public abstract class Tile {
 
     abstract void draw();
 
+    abstract void drawCollisionBlocks();
+
     abstract TileType getType();
 }

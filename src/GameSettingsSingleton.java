@@ -19,16 +19,16 @@ public class GameSettingsSingleton {
         return mapSpeed;
     }
     public void setMapSpeed(double mapSpeed) {
-        if (mapSpeed < 1) {
-            mapSpeed = 1;
+        if (mapSpeed < 0) {
+            mapSpeed = 0;
         }
         else if (mapSpeed > 3) {
             mapSpeed = 3;
         }
         this.mapSpeed = mapSpeed;
     }
-    public ObstaclesSettingsSingleton getObstaclesSettingsSingleton() {return obstaclesSettingsSingleton.getInstance();}
-    public PowerUpsSettingsSingleton getPowerUpsSettingsSingleton() {return powerUpsSettingsSingleton.getInstance();}
+    public ObstaclesSettingsSingleton getObstaclesSettingsSingleton() {return ObstaclesSettingsSingleton.getInstance();}
+    public PowerUpsSettingsSingleton getPowerUpsSettingsSingleton() {return PowerUpsSettingsSingleton.getInstance();}
     public int getPage() {return page;}
     public void setPage(int num) {page = num;}
 

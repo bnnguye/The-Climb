@@ -22,7 +22,8 @@ public class PowerUpAbility extends PowerUp {
     private double offset = 0;
 
     public void activate(Character character) {
-        character.gainSpecialAbilityBar(10);
+        MusicPlayer.getInstance().addMusic("music/misc/AbilityGain.wav");
+        character.gainSpecialAbilityBar(20);
     }
 
     public void draw() {

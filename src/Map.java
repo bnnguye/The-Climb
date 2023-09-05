@@ -1,7 +1,7 @@
 import Enums.MapNames;
 import Enums.Obstacles;
-import bagel.Image;
-import bagel.Window;
+import bagel.*;
+import bagel.util.Colour;
 import bagel.util.Point;
 
 import java.io.File;
@@ -23,6 +23,7 @@ public class Map {
     private ArrayList<Integer> eventTimes = new ArrayList<>();
 
     ArrayList<Tile> tiles = new ArrayList<>();
+    ArrayList<ImagePoint> rocks = new ArrayList<>();
 
     public Map(MapNames name) {
         this.name = name;
@@ -64,6 +65,15 @@ public class Map {
                 tile.draw();
             }
         }
+        for (ImagePoint rock: rocks) {
+            rock.draw();
+        }
+
+        for(Tile tile: getVisibleTiles()) {
+            if ((tile.getPos().y < Window.getHeight() + tile.getImage().getHeight()) && (tile.getPos().y > -tile.getImage().getHeight())) {
+                tile.drawCollisionBlocks();
+            }
+        }
     }
 
     public String getName() {
@@ -86,9 +96,33 @@ public class Map {
             tile.setPos(new Point(tile.getPos().x, tile.getPos().y + shift));
         }
         tiles.removeAll(tilesToRemove);
+        for (ImagePoint rock : rocks) {
+            rock.move(0, shift);
+        }
     }
 
     public boolean hasFinished() { return currentHeight > height; }
+
+    private void generateRocks() {
+        rocks.clear();
+        double rockHeight = 0;
+        double rockWidth = 0;
+        double lastRockX = 0;
+        while (rockHeight < height + Window.getHeight()) {
+            int rockType = (int) Math.round(Math.random() * 10);
+            ImagePoint rock = new ImagePoint(String.format("res/rocks/%d.png", rockType), new Point(lastRockX, -height + rockHeight * Math.random()));
+            lastRockX = rock.getPos().x + rock.getWidth();
+            if (Math.random() > 0.1) {
+                rocks.add(rock);
+            }
+            rockWidth += rock.getWidth();
+            if (rockWidth > Window.getWidth()) {
+                lastRockX = 0;
+                rockWidth = 0;
+                rockHeight += rock.getHeight();
+            }
+        }
+    }
 
     public void generateMap() {
         loadEventTimes();
@@ -115,7 +149,7 @@ public class Map {
             e.printStackTrace();
         }
 
-
+//        generateRocks();
         ObstaclesSettingsSingleton obstaclesSettings = GameSettingsSingleton.getInstance().getObstaclesSettingsSingleton();
 
         if (name == MapNames.CENTRAL_CATHEDRAL) {
@@ -292,7 +326,7 @@ public class Map {
             eventTimes.addAll(Arrays.asList(500, 1500, 2500));
         }
         else if (name == MapNames.PLANET_79) {
-            eventTimes.addAll(Arrays.asList(100, 2000, 3000));
+            eventTimes.addAll(Arrays.asList(1000, 2500, 3500));
         }
         else if (name == MapNames.WALL_OF_MARIA) {
             eventTimes.addAll(Arrays.asList(100, 3000, 5000));
@@ -306,5 +340,9 @@ public class Map {
         }
         else {
         }
+    }
+
+    public ArrayList<Integer> getEventTimes() {
+        return eventTimes;
     }
 }

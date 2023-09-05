@@ -54,17 +54,17 @@ public class GameEntities {
             for (Player player : settingsSingleton.getPlayers()) {
                 Character character = player.getCharacter();
                 if (character.getRectangle().intersects(powerUp.getRectangle())) {
-                    if (!character.isDead() && !character.hasPowerUp()) {
+                    if (!character.isDead()) {
                         if (powerUp.getClass() == PowerUpAbility.class) {
                             powerUp.activate(character);
                         }
-                        else {
+                        else if (!character.hasPowerUp()) {
                             character.setPowerUp(powerUp);
                         }
+                        powerUpsToRemove.add(powerUp);
                         break;
                     }
                 }
-                powerUpsToRemove.add(powerUp);
             }
         }
         powerUps.removeAll(powerUpsToRemove);
@@ -72,30 +72,31 @@ public class GameEntities {
 
     public void spawnPowerUps() {
         double spawnNo = Math.random()*4;
+        double spawnSeed = Math.random();
         if (spawnNo < 1) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.SPEEDUP)) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.SPEEDUP)) {
+            if (PowerUpsSettingsSingleton.getInstance().isPowerUp(PowerUps.SPEEDUP)) {
+                if (spawnSeed < PowerUpsSettingsSingleton.getInstance().getFrequency(PowerUps.SPEEDUP)) {
                     powerUps.add(new PowerUpSpeedUp());
                 }
             }
         }
         else if (spawnNo < 2) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.MINIMISER)) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.MINIMISER)) {
+            if (PowerUpsSettingsSingleton.getInstance().isPowerUp(PowerUps.MINIMISER)) {
+                if (spawnSeed < PowerUpsSettingsSingleton.getInstance().getFrequency(PowerUps.MINIMISER)) {
                     powerUps.add(new PowerUpMinimiser());
                 }
             }
         }
         else if (spawnNo < 3) {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.SHIELD)) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.SHIELD)) {
+            if (PowerUpsSettingsSingleton.getInstance().isPowerUp(PowerUps.SHIELD)) {
+                if (spawnSeed < PowerUpsSettingsSingleton.getInstance().getFrequency(PowerUps.SHIELD)) {
                     powerUps.add(new PowerUpShield());
                 }
             }
         }
         else {
-            if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(PowerUps.ABILITY)) {
-                if (Math.random() < gameSettingsSingleton.getPowerUpsSettingsSingleton().getFrequency(PowerUps.ABILITY)) {
+            if (PowerUpsSettingsSingleton.getInstance().isPowerUp(PowerUps.ABILITY)) {
+                if (spawnSeed < PowerUpsSettingsSingleton.getInstance().getFrequency(PowerUps.ABILITY)) {
                     powerUps.add(new PowerUpAbility());
                 }
             }
@@ -138,6 +139,7 @@ public class GameEntities {
                 powerUpsToRemove.add(powerUp);
             }
         }
+
         obstacles.removeAll(obstaclesToRemove);
         powerUps.removeAll(powerUpsToRemove);
     }

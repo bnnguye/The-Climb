@@ -23,7 +23,8 @@ public class PowerUpSpeedUp extends PowerUp{
 
 
     public void activate(Character character) {
-            character.speedUp();
+        MusicPlayer.getInstance().addMusic("music/misc/speedUp.wav");
+        character.speedUp();
         }
 
     public void draw() {

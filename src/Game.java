@@ -121,6 +121,7 @@ public class Game extends AbstractGame {
                 players.clear();
                 sliders.clear();
                 gameSettingsSingleton.setMap(null);
+                powerUps.clear();
                 obstacles.clear();
                 musicPlayer.clear();
                 musicPlayer.clearEnded();
@@ -260,11 +261,11 @@ public class Game extends AbstractGame {
             }
 
             if (input != null && input.isDown(Keys.RIGHT)) {
-                eventsListener.addEvent(new EventCharacterRotate("Rotate LEFT"));
-                rotateCharacter("LEFT");
-            } else if (input != null && input.isDown(Keys.LEFT)) {
                 eventsListener.addEvent(new EventCharacterRotate("Rotate RIGHT"));
                 rotateCharacter("RIGHT");
+            } else if (input != null && input.isDown(Keys.LEFT)) {
+                eventsListener.addEvent(new EventCharacterRotate("Rotate LEFT"));
+                rotateCharacter("LEFT");
             }
 
             if (input != null && input.wasPressed(Keys.SPACE)) {
@@ -358,11 +359,11 @@ public class Game extends AbstractGame {
                 imagePointManagerSingleton.setCurrentBackground((String.format("res/sidecharacters/%s/bg.png", currentCharacter.getName())));
 
                 if (input != null && input.isDown(Keys.RIGHT)) {
-                    eventsListener.addEvent(new EventSideCharacterRotate("Rotate LEFT"));
-                    rotateCharacter("LEFT");
-                } else if (input != null && input.isDown(Keys.LEFT)) {
                     eventsListener.addEvent(new EventSideCharacterRotate("Rotate RIGHT"));
                     rotateCharacter("RIGHT");
+                } else if (input != null && input.isDown(Keys.LEFT)) {
+                    eventsListener.addEvent(new EventSideCharacterRotate("Rotate LEFT"));
+                    rotateCharacter("LEFT");
                 }
 
                 if (input != null && input.wasPressed(Keys.SPACE)) {
@@ -906,7 +907,6 @@ public class Game extends AbstractGame {
         }
         else if (settingsSingleton.getGameState() == 9) {
             if (!settingsSingleton.getGameStateString().equals("Create Your Own Map")) {
-                System.out.println("Map Custom");
                 offset = 0;
                 gameSettingsSingleton.setMap(new Map(MapNames.CUSTOM));
                 gameSettingsSingleton.getMap().generateMap();
@@ -1162,7 +1162,7 @@ public class Game extends AbstractGame {
 //            players.get(1).setSideCharacter(new SideHisoka());
             gameSettingsSingleton.setMap(new Map(MapNames.PLANET_79));
             gameSettingsSingleton.getMap().generateMap();
-            gameSettingsSingleton.setMapSpeed(0);
+            gameSettingsSingleton.setMapSpeed(1);
         }
     }
 
@@ -1348,6 +1348,17 @@ public class Game extends AbstractGame {
                 }
                 renderAbilities();
                 imagePointManagerSingleton.draw();
+
+                // debugging collision to image misalignment
+//                for (Player player: players) {
+//                    Rectangle rectangle = player.getCharacter().getRectangle();
+//                    Drawing.drawRectangle(rectangle.topLeft(), rectangle.right() - rectangle.left(), rectangle.bottom() - rectangle.top(), new Colour(0,0,0,0.5));
+//                }
+//                for (Obstacle obstacle: gameEntities.getObstacles()) {
+//                    Rectangle rectangle = obstacle.getBoundingBox();
+//                    Drawing.drawRectangle(rectangle.topLeft(), rectangle.right() - rectangle.left(), rectangle.bottom() - rectangle.top(), new Colour(0,0,0,0.5));
+//
+//                }
             }
         }
         else if (settingsSingleton.getGameState() == 7) {
@@ -1392,6 +1403,7 @@ public class Game extends AbstractGame {
             Font victoryFont = new Font(Fonts.DEJAVUSANS, 110);
             for (Tile tile: customMapTiles) {
                 tile.draw();
+                tile.drawCollisionBlocks();
             }
             if (!addingTile) {
                 playerFont.drawString("S: Save and Exit | ESC: Exit without Saving | Arrow Keys: Navigate\nA: Add | R: Remove last block | D: Jump to start", 100, 50);
@@ -2118,11 +2130,6 @@ public class Game extends AbstractGame {
             Character character = player.getCharacter();
             ImagePoint characterDisplay = new ImagePoint(String.format("res/characters/%s/Peek.png",
                     character.getFullName()), new Point(0,0));
-            if (character.getSpecialAbilityBar() >= 100) {
-                new FontSize(Fonts.TITANONE, 30).getFont().drawString("Power Ready!",
-                        characterDisplay.getPos().x, characterDisplay.getPos().y,
-                        new DrawOptions().setBlendColour(247d/255, 251d/255, 142d/255));
-            }
             ImagePoint bigBorder = new ImagePoint("res/misc/Selected.png", new Point(0,0));
             ImagePoint smallBorder = new ImagePoint("res/misc/Selected.png", new Point(0,0));
             smallBorder.setScale(0.375);
@@ -2134,6 +2141,12 @@ public class Game extends AbstractGame {
             characterDisplay.setPos(bigBorder.getPos().x, bigBorder.getPos().y);
             fillUpBar.setColour(238d/255d, 240/255d, 125/255d);
             fillUpBar.setOpacity(player.getCharacter().getSpecialAbilityBar()/100d);
+
+            if (character.getSpecialAbilityBar() >= 100) {
+                new FontSize(Fonts.TITANONE, 30).getFont().drawString("Power Ready!",
+                        characterDisplay.getPos().x, characterDisplay.getPos().y,
+                        new DrawOptions().setBlendColour(247d/255, 251d/255, 142d/255));
+            }
             fillUpBar.draw();
             bigBorder.draw();
             smallBorder.draw();
@@ -2201,15 +2214,15 @@ public class Game extends AbstractGame {
     }
 
     public void drawCurrentHeight() {
-        Font gameFont = new FontSize(Fonts.DEJAVUSANS, 40).getFont();
+        Font gameFont = new FontSize(Fonts.GEOMATRIX, 40).getFont();
         if (!settingsSingleton.isNight()) {
             gameFont.drawString(String.format("%4.0f/%4.0fm", gameSettingsSingleton.getMap().getCurrentHeight()/10,
-                    gameSettingsSingleton.getMap().getHeight()/10), Window.getWidth()/2d - 50, 50,
+                    gameSettingsSingleton.getMap().getHeight()/10), Window.getWidth()/2d - 100, 250,
                     new DrawOptions().setBlendColour(ColourPresets.WHITE.toColour()));
         }
         else {
             gameFont.drawString(String.format("%4.0f/%4.0fm", gameSettingsSingleton.getMap().getCurrentHeight()/10,
-                    gameSettingsSingleton.getMap().getHeight()/10), Window.getWidth()/2d - 50, 50,
+                    gameSettingsSingleton.getMap().getHeight()/10), Window.getWidth()/2d - 100, 250,
                     new DrawOptions().setBlendColour(ColourPresets.BLACK.toColour()));
         }
     }
@@ -2243,7 +2256,7 @@ public class Game extends AbstractGame {
             obstacle.draw();
         }
         if (gameSettingsSingleton.getMap() != null && !gameSettingsSingleton.getMap().hasFinished()) {
-            drawCurrentHeight();
+            displayMapStats();
         }
     }
 
@@ -2496,9 +2509,14 @@ public class Game extends AbstractGame {
         FontSize winnerName = new FontSize(Fonts.GEOMATRIX, 70);
         FontSize sideWinner = new FontSize(Fonts.GEOMATRIX, 30);
 
-        winner.draw("WINNER:", 1315,800, colour.setBlendColour(1,1,1));
-        winnerName.draw(settingsSingleton.getWinner().getCharacter().getFullName(), 1240,850, colour.setBlendColour(1,1,1));
-        sideWinner.draw(settingsSingleton.getWinner().getSideCharacter().getName(), 1333,870, colour.setBlendColour(1,1,1));
+        if (settingsSingleton.getWinner() != null) {
+            winner.draw("WINNER:", 1315,800, colour.setBlendColour(1,1,1));
+            winnerName.draw(settingsSingleton.getWinner().getCharacter().getFullName(), 1240,850, colour.setBlendColour(1,1,1));
+            sideWinner.draw(settingsSingleton.getWinner().getSideCharacter().getName(), 1333,870, colour.setBlendColour(1,1,1));
+        }
+        else {
+            winnerName.draw("DRAW!", 1315,800, colour.setBlendColour(1,1,1));
+        }
 
         new ImagePoint(String.format("res/sidecharacters/%s/ingame.png",
                 settingsSingleton.getPlayers().get(ptr).getSideCharacter().getName()), new Point(1360, 900)).draw();
@@ -2547,5 +2565,22 @@ public class Game extends AbstractGame {
             }
         }
         return false;
+    }
+
+    public void displayMapStats() {
+        Map map = gameSettingsSingleton.getMap();
+        new Image(String.format("res/maps/mapCharacters/%s/peek.png", map.getCharacter())).draw(Window.getWidth()/2d, 100);
+        new Image("res/misc/selected.png").draw(Window.getWidth()/2d, 100);
+        Font font = new Font(Fonts.GEOMATRIX, 40);
+        String desc = map.getName().concat(": " + map.getCharacter());
+        font.drawString(desc, (Window.getWidth()/2d - font.getWidth(desc)/2d), 230);
+
+        Drawing.drawRectangle(0, 0, Window.getWidth(), 10, new Colour(0,0,0,0.5));
+        Drawing.drawRectangle(0, 0, (map.getCurrentHeight()/map.getHeight())*Window.getWidth(), 10, new Colour(1,1,1,0.7));
+
+        for (Integer event: map.getEventTimes()) {
+            Drawing.drawRectangle(event/(map.getHeight())*Window.getWidth(), 0, 1, 20, new Colour(0,0,0,1));
+        }
+
     }
 }

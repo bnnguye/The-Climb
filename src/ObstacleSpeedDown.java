@@ -47,6 +47,7 @@ public class ObstacleSpeedDown extends Obstacle {
     }
 
     public void collide(Character character) {
+        MusicPlayer.getInstance().addMusic("music/misc/speedDown.wav");
         character.speedDown();
     }
 

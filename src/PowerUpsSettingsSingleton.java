@@ -5,14 +5,12 @@ public class PowerUpsSettingsSingleton {
     private static PowerUpsSettingsSingleton single_instance = null;
 
 
-    private double speedUpFrequency = 0.003;
-    private double speedDownFrequency = 0.003;
-    private double minimiserFrequency = 0.003;
-    private double shieldFrequency = 0.003;
-    private double specialAbilityFrequency = 0.003;
+    private double speedUpFrequency = 0.01;
+    private double minimiserFrequency = 0.01;
+    private double shieldFrequency = 0.01;
+    private double specialAbilityFrequency = 0.01;
 
     private boolean speedUp = true;
-    private boolean speedDown = true;
     private boolean minimiser = true;
     private boolean shield = true;
     private boolean specialAbility = true;
@@ -28,7 +26,6 @@ public class PowerUpsSettingsSingleton {
 
     public void applySettings(boolean speedUp, boolean speedDown, boolean minimiser, boolean shield, boolean specialAbility) {
         this.speedUp = speedUp;
-        this.speedDown = speedDown;
         this.minimiser = minimiser;
         this.shield = shield;
         this.specialAbility = specialAbility;

@@ -14,7 +14,7 @@ public class TileSlow extends Tile {
     TileSlow(Point point) {
         this.pos = point;
 
-        if ((java.time.LocalTime.now().getHour() > 18) || (java.time.LocalTime.now().getHour() < 4)) {
+        if (SettingsSingleton.getInstance().isNight()) {
             image = new Image("res/Tiles/SlowTileNight.png");
         }
         else {
@@ -41,6 +41,13 @@ public class TileSlow extends Tile {
     public void draw() {
         this.image.drawFromTopLeft(this.pos.x, this.pos.y);
     }
+
+    public void drawCollisionBlocks(){
+        for (CollisionBlock block: this.collisionBlocks) {
+            block.updatePos(this.pos);
+            block.draw();
+        }
+    };
 
     public Image getImage() {
         return this.image;

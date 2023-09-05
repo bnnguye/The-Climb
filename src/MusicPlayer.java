@@ -5,8 +5,8 @@ public class MusicPlayer {
 
     private static double maxMainVol = 50d;
     private static double maxEffectVol = 100d;
-    private static double mainVolume = 10d;
-    private static double effectVolume = 50d;
+    private static double mainVolume = 5d;
+    private static double effectVolume = 20d;
 
     private static MusicPlayer musicPlayer = null;
     private static Music mainMusic = new Music("music/misc/Silence.wav", mainVolume);

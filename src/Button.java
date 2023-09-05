@@ -31,7 +31,6 @@ public class Button {
     private double scale;
 
     private boolean hovering = false;
-    private boolean night = false;
     private Colour colour = new Colour(1,1,1,0);
 
 
@@ -61,10 +60,9 @@ public class Button {
     public Button(String name, Image image, Point topLeft, double scale) {
         this.name = name;
         this.displayString = name;
-        Rectangle collisionImage = new Rectangle(topLeft.x + image.getWidth()*scale/2,
+        this.box = new Rectangle(topLeft.x + image.getWidth()*scale/2,
                 topLeft.y + image.getHeight()*scale/2,
                 image.getWidth()*scale, image.getHeight()*scale);
-        this.box = collisionImage;
         this.position = topLeft;
         this.image = image;
         this.scale = scale;

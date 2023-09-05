@@ -8,6 +8,7 @@ public class PowerUpMinimiser extends PowerUp{
 
     private final PowerUps type = PowerUps.MINIMISER;
     private final Image image = new Image("res/PowerUps/Minimiser.png");
+    private final double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public PowerUpMinimiser() {
         super();
@@ -17,13 +18,12 @@ public class PowerUpMinimiser extends PowerUp{
         super(point);
     }
 
-
-    private final double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
     private double offset = 0;
 
     public PowerUps getType() { return type; }
 
     public void activate(Character character) {
+        MusicPlayer.getInstance().addMusic("music/misc/minimiser.wav");
         character.minimiser();
     }
 
