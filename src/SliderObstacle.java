@@ -1,4 +1,5 @@
 import Enums.Obstacles;
+import Enums.PowerUps;
 import bagel.*;
 import bagel.util.Colour;
 import bagel.util.Point;
@@ -9,13 +10,13 @@ public class SliderObstacle extends Slider {
     private final ObstaclesSettingsSingleton obstaclesSettingsSingleton = ObstaclesSettingsSingleton.getInstance();
     private final GameSettingsSingleton gameSettingsSingleton = GameSettingsSingleton.getInstance();
 
-    private final ImagePoint logo;
-    private final Obstacles name;
-    private final Rectangle slide;
-
+    private ImagePoint logo;
+    private Obstacles name;
+    private Rectangle slide;
     private final double minimumFrequency = 0.002;
     private final double maxFrequency = 0.04;
     private final double maxBSize = 1220;
+    private int width = 50;
 
     public SliderObstacle(Obstacles type, Point topLeft) {
         this.name = type;
@@ -24,19 +25,24 @@ public class SliderObstacle extends Slider {
         if (type == Obstacles.ROCK) {
             logo.setScale(0.1);
         }
-        this.slide = new Rectangle(topLeft, maxBSize, logo.getHeight() * logo.getScale());
+        logo.setPos(topLeft.x - logo.getWidth()*logo.getScale()/2, topLeft.y);
+        this.slide = new Rectangle(topLeft, maxBSize, width);
     }
 
     public void draw() {
-        Point topLeft = logo.getPos();
-        double currentFrequency = obstaclesSettingsSingleton.getFrequency(name);
-        double currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
-        Image sliderIndicator = new Image("res/misc/sliderIndicatorS.png");
+        Point topLeft = new Point(logo.getPos().x + logo.getWidth()*logo.getScale()/2, logo.getPos().y);
+        double currentBar;
+        double currentFrequency;
+        currentFrequency = obstaclesSettingsSingleton.getFrequency(name);
+        currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
+
         if (gameSettingsSingleton.getObstaclesSettingsSingleton().isObstacle(name)) {
-            Drawing.drawRectangle(topLeft, maxBSize, logo.getHeight() * logo.getScale(), new Colour(0, 0, 0, 0.5));
-            Drawing.drawRectangle(topLeft, currentBar, logo.getHeight() * logo.getScale(),
-                    new Colour((1 - currentBar/maxBSize), currentBar/maxBSize, currentBar/(maxBSize*2), currentBar/maxBSize));
-            sliderIndicator.drawFromTopLeft(currentBar + topLeft.x - sliderIndicator.getWidth()/2, topLeft.y - 10);
+            Drawing.drawRectangle(topLeft.x, topLeft.y + logo.getHeight()*logo.getScale()/4, maxBSize, 50, new Colour(0, 0, 0, 0.3));
+            Drawing.drawRectangle(topLeft.x, topLeft.y + logo.getHeight()*logo.getScale()/4, currentBar, 50,
+                    new Colour( (1 - (maxBSize - currentBar)/maxBSize)*25.5/100 + 106.7/255d,
+                            (1 - (maxBSize - currentBar)/maxBSize)*25.5/100 + 143.9/255d,
+                            (1 - (maxBSize - currentBar)/maxBSize)*25.5/100 + 121.6/255d));
+            drawSliderIndicator(logo.getHeight()*logo.getScale()*1.1, currentBar + topLeft.x, topLeft.y - logo.getHeight()*logo.getScale()/2);
         }
         logo.draw();
     }
@@ -70,5 +76,9 @@ public class SliderObstacle extends Slider {
         this.logo.setPos(new Point(x, y));
     }
 
+    private void drawSliderIndicator(double size, double x, double y) {
+        Drawing.drawRectangle(x,y + size/2, 11, size + 10, new Colour(0.7,0.7,0.7,1));
+        Drawing.drawRectangle(x + 2.75,y + size/2 + 4, 5, size, new Colour(0.2,0.2,0.2,1));
+    }
 
 }

@@ -65,9 +65,6 @@ public class Map {
                 tile.draw();
             }
         }
-        for (ImagePoint rock: rocks) {
-            rock.draw();
-        }
 
         for(Tile tile: getVisibleTiles()) {
             if ((tile.getPos().y < Window.getHeight() + tile.getImage().getHeight()) && (tile.getPos().y > -tile.getImage().getHeight())) {
@@ -192,6 +189,9 @@ public class Map {
         else if (line.equalsIgnoreCase("BasicSad")) {
             tile = new TileBasicSad(point);
         }
+        else if (line.equalsIgnoreCase("SlowTop")) {
+            tile = new TileSlowTop(point);
+        }
         return tile;
     }
     public ArrayList<Tile> getTiles() {return tiles;}
@@ -220,7 +220,7 @@ public class Map {
     }
 
     public void descend() {
-        updateTiles(-20);
+        updateTiles(-40);
     }
 
     public void update() {
@@ -326,7 +326,7 @@ public class Map {
             eventTimes.addAll(Arrays.asList(500, 1500, 2500));
         }
         else if (name == MapNames.PLANET_79) {
-            eventTimes.addAll(Arrays.asList(1000, 2500, 3500));
+            eventTimes.addAll(Arrays.asList(10, 2500, 3500));
         }
         else if (name == MapNames.WALL_OF_MARIA) {
             eventTimes.addAll(Arrays.asList(100, 3000, 5000));
@@ -334,9 +334,11 @@ public class Map {
         else if (name == MapNames.CENTRAL_CATHEDRAL) {
         }
         else if (name == MapNames.DIOS_MANSION) {
-            eventTimes.addAll(Arrays.asList(1000, 3000, 5000));
+            eventTimes.addAll(Arrays.asList(1000, 3500, 5000));
         }
         else if (name == MapNames.GREED_ISLAND) {
+            eventTimes.addAll(Arrays.asList(1000, 2000, 3000, 4000, 5000));
+
         }
         else {
         }

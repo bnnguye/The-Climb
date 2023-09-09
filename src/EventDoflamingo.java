@@ -47,8 +47,10 @@ public class EventDoflamingo extends EventInterface {
         for (ImagePoint rectangle: rectangles) {
             rectangle.move(0, 16);
             for (Player player: settingsSingleton.getPlayers()) {
-                if (player.getCharacter().getRectangle().intersects(rectangle.getRectangle())) {
+                if (player.getCharacter().getLives() > 0 && player.getCharacter().getRectangle().intersects(rectangle.getRectangle())) {
                     player.getCharacter().reduceLive();
+                    rectanglesToRemove.add(rectangle);
+                    break;
                 }
             }
             if (rectangle.getPos().y > Window.getHeight()) {

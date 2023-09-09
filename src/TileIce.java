@@ -43,7 +43,6 @@ public class TileIce extends Tile {
 
     public void drawCollisionBlocks(){
         for (CollisionBlock block: this.collisionBlocks) {
-            block.updatePos(this.pos);
             block.draw();
         }
     };

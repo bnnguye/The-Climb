@@ -34,7 +34,7 @@ public class Character {
         private double minimisedTimer = 0;
         private double stunTimer = 0;
 
-        private int lives = 1;
+        private int lives = 3;
 
 
         public Character(String name) {
@@ -165,6 +165,7 @@ public class Character {
                 speedDownTimer = 0;
                 stunTimer = 0;
                 specialAbilityBar = 0;
+                this.powerUp = null;
                 moving = false;
                 shield = false;
         }
@@ -230,7 +231,7 @@ public class Character {
                 this.lives = lives;
         }
         public void reduceLive() {
-                this.lives--;
+                if (lives > 0) { lives--; }
         }
         public int getLives() {return this.lives;}
         public boolean isMoving() {return moving;}

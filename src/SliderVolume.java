@@ -32,12 +32,15 @@ public class SliderVolume extends Slider {
         Drawing.drawRectangle(topLeft, maxBSize, width, new Colour(0, 0, 0, 0.5));
         Drawing.drawRectangle(topLeft, currentBar, width, new Colour((1 - currentBar/maxBSize), 1, currentBar/maxBSize, currentBar/maxBSize));
         sliderIndicator.drawFromTopLeft(currentBar + topLeft.x - sliderIndicator.getWidth()/2, topLeft.y - 10);
-        new FontSize(Fonts.DEJAVUSANS, width).draw(name, topLeft.x, topLeft.y - 10, new DrawOptions().setBlendColour(Colour.BLACK));
+        new FontSize(Fonts.GEOMATRIX, width).draw(name, topLeft.x, topLeft.y - 10, new DrawOptions().setBlendColour(Colour.BLACK));
     }
 
     public void interact(Input input) {
-        double mouseX = input.getMouseX();
-        if (input.isDown(MouseButtons.LEFT)) {
+        double mouseX = 0;
+        if (input != null) {
+            mouseX = input.getMouseX();
+        }
+        if (input != null && input.isDown(MouseButtons.LEFT)) {
             if (slide.intersects(input.getMousePosition())) {
                 if (mouseX > topLeft.x + maxBSize) {
                     mouseX = topLeft.x + maxBSize;
@@ -48,6 +51,12 @@ public class SliderVolume extends Slider {
                 }
                 else if (newFrequency < minimumFrequency()) {
                     newFrequency = minimumFrequency();
+                }
+                else if ((int) newFrequency == 0) {
+                    newFrequency = 0;
+                }
+                else if ((int) (newFrequency + 0.5) == maxFrequency()) {
+                    newFrequency = maxFrequency();
                 }
                 if (name.equals("Main Volume")) {
                     musicPlayer.setMainVolume(newFrequency);

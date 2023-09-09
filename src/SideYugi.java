@@ -50,8 +50,8 @@ public class SideYugi extends SideCharacter{
         if(!this.activating) {
             this.timer = 3 * frames;
             MusicPlayer.getInstance().addMusic("music/sidecharacters/yami yugi/Yugi Transformation.wav");
-            this.activating = true;
-            this.animating = true;
+            activating = true;
+            animating = true;
             exodiaPieces.clear();
             exodiaPiecesCollected.clear();
             exodiaPieces.add(new ExodiaPiece("Head",new Point(Math.random()*Window.getWidth(), - Window.getHeight() - map.getCurrentHeight() - Math.random()*(map.getHeight() - map.getCurrentHeight()))));

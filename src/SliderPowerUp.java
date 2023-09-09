@@ -18,7 +18,7 @@ public class SliderPowerUp extends Slider {
     private Rectangle slide;
     private Point topLeft;
     private final double minimumFrequency = 0.002;
-    private final double maxFrequency = 0.005;
+    private final double maxFrequency = 0.04;
     private final double maxBSize = 1220;
     private int width = 50;
 
@@ -32,15 +32,18 @@ public class SliderPowerUp extends Slider {
     public void draw() {
         double currentBar;
         double currentFrequency;
-        Image sliderIndicator = new Image("res/misc/sliderIndicatorS.png");
         currentFrequency = powerUpsSettingsSingleton.getFrequency(type);
         currentBar = (currentFrequency - minimumFrequency)/(maxFrequency - minimumFrequency) * maxBSize;
+
         if (gameSettingsSingleton.getPowerUpsSettingsSingleton().isPowerUp(type)) {
-            Drawing.drawRectangle(topLeft.x, topLeft.y + logo.getHeight()/4, maxBSize, 50, new Colour(0, 0, 0, 0.5));
-            Drawing.drawRectangle(topLeft.x, topLeft.y + logo.getHeight()/4, currentBar, 50, new Colour((1 - currentBar/maxBSize), 1, currentBar/maxBSize, currentBar/maxBSize));
-            sliderIndicator.drawFromTopLeft(currentBar + topLeft.x - 25, topLeft.y + 10);
+            Drawing.drawRectangle(topLeft.x, topLeft.y + logo.getHeight()/4, maxBSize, 50, new Colour(0, 0, 0, 0.3));
+            Drawing.drawRectangle(topLeft.x, topLeft.y + logo.getHeight()/4, currentBar, 50,
+                    new Colour( (1 - (maxBSize - currentBar)/maxBSize)*25.5/100 + 106.7/255d,
+                            (1 - (maxBSize - currentBar)/maxBSize)*25.5/100 + 143.9/255d,
+                            (1 - (maxBSize - currentBar)/maxBSize)*25.5/100 + 121.6/255d));
+            drawSliderIndicator(logo.getHeight()*1.1, currentBar + topLeft.x, topLeft.y - logo.getHeight()/2);
         }
-        logo.drawFromTopLeft(topLeft.x - logo.getWidth(), topLeft.y);
+        logo.drawFromTopLeft(topLeft.x - logo.getWidth()/4, topLeft.y);
     }
 
     public void interact(Input input) {
@@ -61,7 +64,7 @@ public class SliderPowerUp extends Slider {
             }
         }
         if (input.wasPressed(MouseButtons.LEFT)) {
-            if (logo.getBoundingBoxAt(new Point(topLeft.x - logo.getWidth()/2
+            if (logo.getBoundingBoxAt(new Point(topLeft.x + logo.getWidth()/4
                     , topLeft.y + logo.getHeight()/2)).intersects(input.getMousePosition())) {
                 powerUpsSettingsSingleton.toggle(type);
             }
@@ -70,5 +73,10 @@ public class SliderPowerUp extends Slider {
 
     public void setPos(double x, double y) {
         this.topLeft = new Point(x, y);
+    }
+
+    private void drawSliderIndicator(double size, double x, double y) {
+        Drawing.drawRectangle(x,y + size/2, 11, size + 10, new Colour(0.7,0.7,0.7,1));
+        Drawing.drawRectangle(x + 2.75,y + size/2 + 4, 5, size, new Colour(0.2,0.2,0.2,1));
     }
 }

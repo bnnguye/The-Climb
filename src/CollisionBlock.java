@@ -1,10 +1,14 @@
+import bagel.DrawOptions;
 import bagel.Drawing;
+import bagel.Image;
 import bagel.util.Colour;
 import bagel.util.Point;
 import bagel.util.Rectangle;
 
 
 public class CollisionBlock {
+    DrawOptions drawOptions = new DrawOptions();
+    Image rock = new Image("res/misc/Collision.png");
     Rectangle rectangle;
     private Point pos;
     double width;
@@ -17,6 +21,9 @@ public class CollisionBlock {
         this.width = width;
         this.height = height;
         this.pos = point;
+        if (width < height) {
+            drawOptions.setRotation(90/360d);
+        }
     }
 
     public void updatePos(Point point) {
@@ -25,7 +32,14 @@ public class CollisionBlock {
     }
 
     public void draw() {
-        Drawing.drawRectangle(pos, this.width, this.height, color);
+//        Drawing.drawRectangle(pos, this.width, this.height, color);
+        if (width < height) {
+            drawOptions.setRotation(570/360d);
+            rock.drawFromTopLeft(pos.x - rock.getWidth()/2, pos.y + rock.getWidth()/2 - 40, drawOptions);
+        }
+        else {
+            rock.drawFromTopLeft(pos.x, pos.y - rock.getHeight()/2);
+        }
     }
 
     public Rectangle getRectangle() {return this.rectangle;}

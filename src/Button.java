@@ -242,6 +242,7 @@ public class Button {
             gameSettingsSingleton.setLives(gameSettingsSingleton.getLives() + 1);
         }
         else if (name.equals("SETTINGS")) {
+            eventsListenerSingleton.getEventsListener().addEvent(new EventGameMode());
             settingsSingleton.setGameState(14);
         }
         else if (name.equalsIgnoreCase("Add")) {

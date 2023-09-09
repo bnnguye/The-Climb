@@ -138,4 +138,40 @@ public class Player {
     public PlayerStats getPlayerStats() {
         return playerStats;
     }
+
+    public void resetControls() {
+        controls.clear();
+        if (id == 1) {
+            controls.put("Up", Keys.W);
+            controls.put("Left", Keys.A);
+            controls.put("Down", Keys.S);
+            controls.put("Right", Keys.D);
+            controls.put("Primary", Keys.R);
+            controls.put("Secondary", Keys.T);
+        }
+        else if (id == 2) {
+            controls.put("Up", Keys.UP);
+            controls.put("Left", Keys.LEFT);
+            controls.put("Down", Keys.DOWN);
+            controls.put("Right", Keys.RIGHT);
+            controls.put("Primary", Keys.O);
+            controls.put("Secondary", Keys.P);
+        }
+        else if (id == 3) {
+            controls.put("Up", Keys.Y);
+            controls.put("Left", Keys.G);
+            controls.put("Down", Keys.H);
+            controls.put("Right", Keys.J);
+            controls.put("Primary", Keys.Z);
+            controls.put("Secondary", Keys.X);
+        }
+        else if (id == 4) {
+            controls.put("Up", Keys.O);
+            controls.put("Left", Keys.K);
+            controls.put("Down", Keys.L);
+            controls.put("Right", Keys.SEMICOLON);
+            controls.put("Primary", Keys.M);
+            controls.put("Secondary", Keys.N);
+        }
+    }
 }
