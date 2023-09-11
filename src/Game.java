@@ -539,8 +539,14 @@ public class Game extends AbstractGame {
                 for (Player player: players) {
                     if (input != null && input.wasPressed(player.getControl("Primary"))) {
                         if (player.getCharacter().hasSpecialAbility()) {
+                            player.getPlayerStats().usedSpecial();
                             player.getCharacter().useSpecialAbility();
                             player.getSideCharacter().activateAbility(player);
+                        }
+                    }
+                    else if (input != null && input.wasPressed(player.getControl("Secondary"))) {
+                        if (player.getCharacter().hasPowerUp()) {
+                            player.getPlayerStats().usedPowerUp();
                         }
                     }
                 }
@@ -830,6 +836,11 @@ public class Game extends AbstractGame {
             }
             else {
                 if (settingsSingleton.getGameStateString().equalsIgnoreCase("Game Finished")) {
+                    for (Player player: players) {
+                        player.getPlayerStats().reset();
+                        player.getCharacter().setLives(gameSettingsSingleton.getLives());
+                        player.getCharacter().reset();
+                    }
                     eventsListener.events.clear();
                     sortCharacterRenders();
                     settingsSingleton.setGameStateString("Retry or Menu?");
@@ -1151,11 +1162,11 @@ public class Game extends AbstractGame {
 
         // TEST GAME
         if (settingsSingleton.getGameState() == -100) {
-            settingsSingleton.setGameState(0);
+            settingsSingleton.setGameState(6);
             settingsSingleton.setGameMode(1);
             settingsSingleton.setPlayers(2);
             players.get(0).setCharacter(new Character(CharacterNames.MIKU));
-            players.get(0).setSideCharacter(new SideDio());
+            players.get(0).setSideCharacter(new SideLelouch());
             players.get(0).getCharacter().gainSpecialAbilityBar(100);
             players.get(0).getCharacter().setPowerUp(new PowerUpMinimiser());
             players.get(1).setCharacter(new Character(CharacterNames.RAPHTALIA));
@@ -1164,7 +1175,7 @@ public class Game extends AbstractGame {
             players.get(1).getCharacter().setPowerUp(new PowerUpSpeedUp());
 //            players.get(1).setCharacter(new Character(CharacterNames.NAO));
 //            players.get(1).setSideCharacter(new SideHisoka());
-            gameSettingsSingleton.setMap(new Map(MapNames.PLANET_79));
+            gameSettingsSingleton.setMap(new Map(MapNames.TRAINING_GROUND));
             gameSettingsSingleton.getMap().generateMap();
             gameSettingsSingleton.setMapSpeed(1);
         }
@@ -1258,6 +1269,13 @@ public class Game extends AbstractGame {
             if (!eventsListener.contains(EventCharacterPicked.class)) {
                 drawBorders(currentCharacter);
                 imagePointManagerSingleton.drawImagesWithTag("CharacterRender");
+                ImagePoint controls = new ImagePoint("res/menu/controls.png", new Point(0,0));
+                controls.setPos(Window.getWidth()/2d - controls.getWidth()/2, Window.getHeight() - controls.getHeight());
+                controls.draw();
+                FontSize legendFont = new FontSize(Fonts.TITANONE, 25);
+                legendFont.draw("[SPACE] - Select\n[ESC] - Go Back/Return\n" +
+                        "[< >] - Navigate/Rotate", Window.getWidth()/2d -
+                        legendFont.getFont().getWidth("[I] - Toggle Info")/2 - 50 , Window.getHeight() - 55, DO.setBlendColour(0,0,0,1));
             }
             else {
                 imagePointManagerSingleton.get(imagePointManagerSingleton.getImages().size()/2).draw();
@@ -1276,11 +1294,6 @@ public class Game extends AbstractGame {
             if (canInteract || eventsListener.contains(EventCharacterRotate.class)) {
                 drawButtons();
             }
-
-            FontSize legendFont = new FontSize(Fonts.TITANONE, 25);
-            legendFont.draw("[SPACE] - Select\n[ESC] - Go Back/Return\n" +
-                    "[< >] - Navigate/Rotate", Window.getWidth()/2 -
-                    legendFont.getFont().getWidth("[I] - Toggle Info")/2 , Window.getHeight() - 80);
         }
         else if (settingsSingleton.getGameState() == 4 ) {
             SideCharacter currentCharacter = allSideCharacters.get(allSideCharacters.size() % 2 == 1 ?
@@ -1318,10 +1331,13 @@ public class Game extends AbstractGame {
             if (canInteract) {
                 drawButtons();
             }
+            ImagePoint controls = new ImagePoint("res/menu/controls.png", new Point(0,0));
+            controls.setPos(Window.getWidth()/2d - controls.getWidth()/2, Window.getHeight() - controls.getHeight());
+            controls.draw();
             FontSize legendFont = new FontSize(Fonts.TITANONE, 25);
             legendFont.draw("[I] - Toggle Info\n[SPACE] - Select\n[ESC] - Go Back/Return\n" +
                     "[< >] - Navigate/Rotate", Window.getWidth()/2d -
-                    legendFont.getFont().getWidth("[I] - Toggle Info")/2 , Window.getHeight() - 80);
+                    legendFont.getFont().getWidth("[I] - Toggle Info")/2 , Window.getHeight() - 80, DO.setBlendColour(Colour.BLACK));
         }
         else if (settingsSingleton.getGameState() == 5) {
 
@@ -2134,11 +2150,6 @@ public class Game extends AbstractGame {
     }
 
     public void loadPlayers() {
-        for (Player player: players) {
-            player.getPlayerStats().reset();
-            player.getCharacter().setLives(gameSettingsSingleton.getLives());
-            player.getCharacter().reset();
-        }
         setPlayersPosition();
     }
 
@@ -2518,6 +2529,7 @@ public class Game extends AbstractGame {
         }
         else if (playersAlive.size() == 0) {
             eventsListener.addEvent(new EventGameFinished());
+
         }
     }
 
@@ -2534,11 +2546,10 @@ public class Game extends AbstractGame {
 
         colour.setBlendColour(0,0,0,1);
         player.draw(String.format("PLAYER %d", currentPlayer.getId()), 170,320, colour.setBlendColour(0,0,0, 0.7));
-        colour.setBlendColour(1,1,1,1);
         geomatrix.draw(String.format("OBSTACLES DODGED: %d", stats.getObstaclesDodged()), 170,460, colour);
         geomatrix.draw(String.format("CLOSE CALLS: %d", stats.getCloseCalls()), 170,540, colour);
         geomatrix.draw(String.format("%s : %d", currentPlayer.getSideCharacter().getPower(), stats.getSpecial()), 170,620, colour);
-        geomatrix.draw(String.format("POWERUPS USED: %d", stats.getSpecial()), 170,700, colour);
+        geomatrix.draw(String.format("POWERUPS USED: %d", stats.getPowerUpsUsed()), 170,700, colour);
         geomatrix.draw(String.format("TOTAL POINTS: %d", (int) currentPlayer.getPlayerStats().getPoints()), 170,900, colour);
 
         FontSize winner = new FontSize(Fonts.GEOMATRIX, 50);

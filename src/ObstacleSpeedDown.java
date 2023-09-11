@@ -30,9 +30,7 @@ public class ObstacleSpeedDown extends Obstacle {
         image.setPos(point);
     }
 
-    public void adjustOffset(double offset) {
-        this.offset += offset;
-    }
+
 
     public double getSpeed() {
         return speed;

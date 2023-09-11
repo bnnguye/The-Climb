@@ -43,7 +43,7 @@ public class EventGameFinished extends EventInterface {
 
             settingsSingleton.setGameStateString("Game Finished");
             settingsSingleton.setGameState(7);
-            eventsToBeAdded.add(new EventGameStateZero());
+            eventsToBeAdded.add(new EventGameMode());
         }
         currentTime++;
     }

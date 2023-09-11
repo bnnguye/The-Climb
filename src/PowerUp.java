@@ -6,6 +6,7 @@ import bagel.util.Rectangle;
 
 public abstract class PowerUp {
     protected Point pos;
+    protected double offset = 0;
 
     public PowerUp() {
         pos = new Point(Window.getWidth() * Math.random(), -200);
@@ -27,6 +28,11 @@ public abstract class PowerUp {
     abstract void draw(double x, double y); 
     abstract void activate(Character character);
 
-    abstract void adjustOffset(double offset);
+    public double getOffset() {
+        return offset;
+    }
+    public void adjustOffset(double offset) { this.offset += offset;}
+
+    public void setOffset(double offset) {this.offset = offset;}
     abstract double getSpeed();
 }

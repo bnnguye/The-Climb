@@ -18,8 +18,6 @@ public class PowerUpMinimiser extends PowerUp{
         super(point);
     }
 
-    private double offset = 0;
-
     public PowerUps getType() { return type; }
 
     public void activate(Character character) {
@@ -43,9 +41,7 @@ public class PowerUpMinimiser extends PowerUp{
         return new Rectangle(pos, image.getWidth(), image.getHeight());
     }
 
-    public void adjustOffset(double offset) {
-        this.offset += offset;
-    }
+
     public double getSpeed() {
         return speed;
     }

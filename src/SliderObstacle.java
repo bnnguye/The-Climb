@@ -48,7 +48,7 @@ public class SliderObstacle extends Slider {
     }
 
     public void interact(Input input) {
-        double mouseX = input.getMouseX();
+        double mouseX = input.getMouseX() - 40;
         Point topLeft = logo.getPos();
         if (input.isDown(MouseButtons.LEFT)) {
             if (slide.intersects(input.getMousePosition())) {

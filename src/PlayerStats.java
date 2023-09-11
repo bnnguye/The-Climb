@@ -56,6 +56,8 @@ public class PlayerStats {
         return this.special;
     }
 
+    public int getPowerUpsUsed() { return powerUpsUsed;}
+
     public void reset() {
         obstaclesDodged = 0;
         closeCalls = 0;

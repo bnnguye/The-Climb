@@ -13,11 +13,18 @@ public abstract class Obstacle {
     abstract Rectangle getBoundingBox();
     abstract Point getPos();
     abstract void setPos(Point point);
-    abstract void adjustOffset(double offset);
+
+    public void adjustOffset(double offset) { this.offset += offset;}
+    public void setOffset(double offset) {this.offset = offset;}
     abstract double getSpeed();
     abstract void draw();
     abstract void draw(double x, double y);
     abstract void collide(Character character);
+
+
+    public double getOffset() {
+        return offset;
+    }
 
     public ArrayList<Integer> getPlayersInteracted() {
         return playersInteracted;

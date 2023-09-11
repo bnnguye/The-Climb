@@ -58,13 +58,13 @@ public class SideJotaro extends SideCharacter{
             this.animating = timer > 3 * frames;
             timer--;
         }
-        if (timer <= 0) {
+        if (timer == 0) {
             this.activating = false;
             for (Obstacle obstacle: obstacles) {
-                obstacle.adjustOffset(obstacle.getSpeed());
+                obstacle.setOffset(0);
             }
             for (PowerUp powerUp: powerUps) {
-                powerUp.adjustOffset(powerUp.getSpeed());
+                powerUp.setOffset(0);
             }
         }
     }

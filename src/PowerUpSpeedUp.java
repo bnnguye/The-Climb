@@ -8,7 +8,6 @@ public class PowerUpSpeedUp extends PowerUp{
 
     private final PowerUps type = PowerUps.SPEEDUP;
     private final Image image = new Image("res/PowerUps/SpeedUp.png");
-    private double offset = 0;
     private double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public PowerUpSpeedUp() {
@@ -43,9 +42,7 @@ public class PowerUpSpeedUp extends PowerUp{
         return new Rectangle(pos, image.getWidth(), image.getHeight());
     }
 
-    public void adjustOffset(double offset) {
-        this.offset += offset;
-    }
+
     public double getSpeed() {
             return speed;
         }

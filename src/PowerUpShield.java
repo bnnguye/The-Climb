@@ -8,7 +8,6 @@ public class PowerUpShield extends PowerUp {
 
     private final PowerUps type = PowerUps.SHIELD;
     private final Image image = new Image("res/PowerUps/Shield.png");
-    private double offset = 0;
     private double speed = 3 + GameSettingsSingleton.getInstance().getMapSpeed();
 
     public PowerUpShield() {
@@ -41,9 +40,7 @@ public class PowerUpShield extends PowerUp {
         return new Rectangle(pos, image.getWidth(), image.getHeight());
     }
 
-    public void adjustOffset(double offset) {
-        this.offset += offset;
-    }
+
     public double getSpeed() {
         return speed;
     }

@@ -19,7 +19,6 @@ public class PowerUpAbility extends PowerUp {
     public PowerUps getType() { return type; }
 
     private final double speed = 1 + GameSettingsSingleton.getInstance().getMapSpeed();
-    private double offset = 0;
 
     public void activate(Character character) {
         MusicPlayer.getInstance().addMusic("music/misc/AbilityGain.wav");
@@ -42,9 +41,7 @@ public class PowerUpAbility extends PowerUp {
         return new Rectangle(pos, image.getWidth(), image.getHeight());
     }
 
-    public void adjustOffset(double offset) {
-        this.offset += offset;
-    }
+
     public double getSpeed() {
         return speed;
     }

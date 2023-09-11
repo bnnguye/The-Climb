@@ -49,10 +49,10 @@ public class SideLelouch extends SideCharacter{
             MusicPlayer.getInstance().addMusic(getSoundPath());
             this.user = user;
             this.activating = true;
-            this.timer = 6 * frames;
+            this.timer = 8 * frames;
         }
 
-        if (timer > 1*frames) {
+        if (timer > 4*frames) {
             Drawing.drawRectangle(0, 0, Window.getWidth(), Window.getHeight(), new Colour(0, 0, 0, 0.5));
             this.animating = true;
         }
@@ -64,7 +64,7 @@ public class SideLelouch extends SideCharacter{
             Rectangle vertical = new Rectangle(user.getCharacter().getPos().x, 0, 2, Window.getHeight());
             Rectangle horizontal = new Rectangle(0, user.getCharacter().getPos().y, Window.getWidth(), 2);
             for (Player player: SettingsSingleton.getInstance().getPlayers()) {
-                if((player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(horizontal)) || (player.getCharacter().getImage().getBoundingBoxAt(player.getCharacter().getPos()).intersects(vertical))) {
+                if((player.getCharacter().getRectangle().intersects(horizontal)) || player.getCharacter().getRectangle().intersects(vertical)) {
                     if (player.getId() != user.getId()) {
                         if (!player.getCharacter().isDead()) {
                             player.getCharacter().setLives(0);
@@ -79,7 +79,7 @@ public class SideLelouch extends SideCharacter{
     }
 
     public void renderAbility() {
-        if (timer > 1 *frames) {
+        if (timer > 4 *frames) {
             Image special = new Image("res/sidecharacters/Lelouch Lamperouge/special.png");
             special.drawFromTopLeft(0,0);
         }
